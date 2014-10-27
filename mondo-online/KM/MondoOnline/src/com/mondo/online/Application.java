@@ -33,6 +33,6 @@ public class Application extends UI {
         navigator.addView(SessionSelectionPage.NAME, new SessionSelectionPage(navigator));
         navigator.addView(CollaborationPage.NAME, new CollaborationPage(navigator));
         
-        navigator.navigateTo(LoginPage.NAME);
+        navigator.navigateTo(CollaborationPage.NAME);
 	}
 }
