@@ -30,7 +30,6 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 		        Notification.show("Value: " + cc.getValue());
 		    }
 		});
-
 		addComponent(cc);
 	}
 

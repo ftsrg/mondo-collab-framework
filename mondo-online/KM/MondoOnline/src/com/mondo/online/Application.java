@@ -15,24 +15,26 @@ import com.vaadin.ui.UI;
 @Theme("mondoonline")
 public class Application extends UI {
 
-    Navigator navigator;
-	
+	Navigator navigator;
+
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = Application.class)
 	public static class Servlet extends VaadinServlet {
-		
+
 	}
 
 	@Override
 	protected void init(VaadinRequest request) {
 		// Create a navigator to control the views
-        navigator = new Navigator(this, this);
-        
-        // Create and register the views
-        navigator.addView(LoginPage.NAME, new LoginPage(navigator));
-        navigator.addView(SessionSelectionPage.NAME, new SessionSelectionPage(navigator));
-        navigator.addView(CollaborationPage.NAME, new CollaborationPage(navigator));
-        
-        navigator.navigateTo(CollaborationPage.NAME);
+		navigator = new Navigator(this, this);
+
+		// Create and register the views
+		navigator.addView(LoginPage.NAME, new LoginPage(navigator));
+		navigator.addView(SessionSelectionPage.NAME, new SessionSelectionPage(
+				navigator));
+		navigator.addView(CollaborationPage.NAME, new CollaborationPage(
+				navigator));
+
+		navigator.navigateTo(CollaborationPage.NAME);
 	}
 }

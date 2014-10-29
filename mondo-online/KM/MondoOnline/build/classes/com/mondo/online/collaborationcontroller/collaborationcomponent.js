@@ -2,20 +2,89 @@ var collaborationLibrary = collaborationLibrary || {};
 collaborationLibrary.model = null;
 
 collaborationLibrary.CollaborationComponent = function(element) {
-	element.innerHTML = 
-		"<div id=\"workspace\" " +
-			"style=\"width: 800px; " +
-			"height: 800px; " +
-			"margin: 20px; \">" +
-		"</div>";
+	var editDialog = $('<div/>').attr('id', 'editDialog')
+		.append($('<span/>').text("Edit element"));
+	var editPropertiesTable = $('<table />')
+		.attr('id', 'editPropertiesTable');
+	var saveButton = $('<input/>')
+		.attr('type', 'button')
+		.attr('value', 'save')
+		.attr('id', 'saveButton');
+	var cancelButton = $('<input/>')
+		.attr('type', 'button')
+		.attr('value', 'cancel')
+		.attr('id', 'cancelButton');
 	
+	editDialog.append(
+		editPropertiesTable,
+		cancelButton,
+		saveButton
+	);
+	
+	element.innerHTML = $('<div />').append(
+		$('<div />').attr('id', 'workspace'),
+		$('<div />').attr('id', 'editDialogContainer')
+			.append(editDialog)
+	).html();
+	
+	// function to find a node by id in an array of nodes
+	var getNode = function(id, nodes) {
+		for(var i in nodes) {
+			if(nodes[i].id == id) {
+				return nodes[i];
+			}
+		}
+	}
 	var cc = this;
-	this.setModel = function(modelString) {
-		if(!modelString) {
+	
+	// prepare popup function for editing nodes
+	var editNodeDialog = function(node) {
+		var propertiesTable = $('#editPropertiesTable'); 
+		propertiesTable.empty();
+		
+		for (var property in node) {
+		    if (node.hasOwnProperty(property)) {
+		    	var propLabel = property + ':';
+		    	var propValue = node[property];
+		        propertiesTable.append(
+		        	$('<tr/>').append(
+		        		$('<td class="label"/>').text(propLabel),
+		        		$('<td/>').append(
+		        			$('<input/>')
+		        				.attr('id', property)
+		        				.attr('value', propValue)
+	    				)
+		        	)
+		        );
+		    } 
+		}
+		$('#editDialogContainer #saveButton').click(function(){
+			var editedNode = {};
+			$('#editPropertiesTable input').each(function() {
+				editedNode[this.id] = this.value;
+			});
+			var data = {
+				originalNode: node,
+				editedNode: editedNode
+			};
+        	cc.editElement(data);
+			$('#editDialogContainer').hide();
+			$('#editPropertiesTable').empty();
+			$(this).unbind('click');
+		});
+		$('#editDialogContainer #cancelButton').click(function(){
+			$('#editDialogContainer').hide();
+			$('#editPropertiesTable').empty();
+			$(this).unbind('click');
+		});
+		$('#editDialogContainer').show();
+	}
+	
+	this.setModel = function(model) {
+		if(!model) {
 			return false;
 		}
 
-		var model = JSON.parse(modelString);
 		var nodes = model.nodes;
 		var edges = model.edges;
 		
@@ -30,13 +99,10 @@ collaborationLibrary.CollaborationComponent = function(element) {
 			      initiallyVisible: true
 			},
 	        onEdit: function(data,callback) {
-	        	alert("edit yay");
-	        	for(var i in model.nodes) {
-	        		if(model.nodes[i].id == data.id) {
-	    	    		cc.editElement(JSON.stringify(model.nodes[i]));
-	        		}
-	        	}
-	        	//editElement(JSON.stringify(data));
+	        	var node = getNode(data.id, nodes);
+		        if(node !== null) {
+		        	editNodeDialog(node);
+		        }
 	        },
 		    nodes: {
 		        shape: 'box'	
@@ -45,8 +111,8 @@ collaborationLibrary.CollaborationComponent = function(element) {
 		network = new vis.Network(container, data, options);
 		
 		network.on('select', function(properties) {
-			//document.getElementById('info').innerHTML += 'selection: ' + JSON.stringify(properties) + '<br>';
+			$('#editDialogContainer').hide();
+			$('#editPropertiesTable').empty();
 		});
 	}
-
 };

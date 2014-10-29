@@ -10,9 +10,10 @@ function() {
     	collaborationComponent.setModel(this.getState().model);
     };
     
-    this.loadModel();
     var connector = this;
     collaborationComponent.editElement = function(jsonData) {
     	connector.editElement(jsonData);
     }
+    
+    this.loadModel();
 };
