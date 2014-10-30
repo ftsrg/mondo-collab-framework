@@ -11,9 +11,14 @@ function() {
     };
     
     var connector = this;
+    collaborationComponent.addElement = function(jsonData) {
+    	connector.addElement(jsonData);
+    }
     collaborationComponent.editElement = function(jsonData) {
     	connector.editElement(jsonData);
     }
-    
+    collaborationComponent.deleteElement = function(jsonData) {
+    	connector.deleteElement(jsonData);
+    }
     this.loadModel();
 };

@@ -16,14 +16,13 @@
 }
 
 #editDialog {
-	width: 250px;
 	background-color: #f9f9f9;
 	border: 3px solid #5394ED;
 	border-radius: 5px;
-	padding: 5px 0px;
+	padding: 10px;
 	text-align: center;
 	margin-top: 100px;
-	margin-left: 330px;
+	margin-left: 280px;
 }
 
 #editPropertiesTable {

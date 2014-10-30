@@ -28,15 +28,71 @@ collaborationLibrary.CollaborationComponent = function(element) {
 	).html();
 	
 	// function to find a node by id in an array of nodes
+	
+	var cc = this;
+	
+	this.setModel = function(model) {
+		if(!model) {
+			return false;
+		}
+
+		cc.model = model;
+		var nodes = model.nodes;
+		var edges = model.edges;
+		
+		var container = document.getElementById('workspace');
+		var data = {
+		    nodes: nodes,
+		    edges: edges
+		};
+		var options = {
+			keyboard: true,
+			smoothCurves: false,
+			dataManipulation: {
+			      enabled: true,
+			      initiallyVisible: true
+			},
+			onAdd: function(data,callback) {
+		        var newNode = {
+		        	id: data.id,
+		        	label: "New element",
+		        	x: data.x,
+		        	y: data.y,
+		        	SomeAttribute: ""		        	
+		        }; 
+		        cc.addElement(newNode);
+		    },
+	        onEdit: function(data,callback) {
+	        	var node = getNode(data.id, nodes);
+	        	editNodeDialog(node);
+	        },
+	        onDelete: function(data, callback) {
+	        	var deletionData = {
+	        		nodeId: data.nodes.shift(),
+	        		edgeIds: data.edges
+	        	}
+	        	cc.deleteElement(deletionData);
+	        },
+		    nodes: {
+		        shape: 'box'	
+		    }
+		};
+		network = new vis.Network(container, data, options);
+		
+		network.on('select', function(properties) {
+			$('#editDialogContainer').hide();
+			$('#editPropertiesTable').empty();
+		});
+	}
+	
 	var getNode = function(id, nodes) {
 		for(var i in nodes) {
 			if(nodes[i].id == id) {
 				return nodes[i];
 			}
 		}
+		return null;
 	}
-	var cc = this;
-	
 	// prepare popup function for editing nodes
 	var editNodeDialog = function(node) {
 		var propertiesTable = $('#editPropertiesTable'); 
@@ -58,11 +114,18 @@ collaborationLibrary.CollaborationComponent = function(element) {
 		        );
 		    } 
 		}
-		$('#editDialogContainer #saveButton').click(function(){
+		$('#editDialogContainer #saveButton').click(function() {
 			var editedNode = {};
 			$('#editPropertiesTable input').each(function() {
 				editedNode[this.id] = this.value;
 			});
+			editedNode.x = parseInt(editedNode.x.trim());
+			editedNode.y = parseInt(editedNode.y.trim());
+			if(isNaN(editedNode.x) 
+			|| isNaN(editedNode.y)) {
+				alert("Invalid data!\nX, Y have to be numbers.");
+				return;
+			}
 			var data = {
 				originalNode: node,
 				editedNode: editedNode
@@ -72,47 +135,12 @@ collaborationLibrary.CollaborationComponent = function(element) {
 			$('#editPropertiesTable').empty();
 			$(this).unbind('click');
 		});
+		
 		$('#editDialogContainer #cancelButton').click(function(){
 			$('#editDialogContainer').hide();
 			$('#editPropertiesTable').empty();
 			$(this).unbind('click');
 		});
 		$('#editDialogContainer').show();
-	}
-	
-	this.setModel = function(model) {
-		if(!model) {
-			return false;
-		}
-
-		var nodes = model.nodes;
-		var edges = model.edges;
-		
-		var container = document.getElementById('workspace');
-		var data = {
-		    nodes: nodes,
-		    edges: edges
-		};
-		var options = {
-			dataManipulation: {
-			      enabled: true,
-			      initiallyVisible: true
-			},
-	        onEdit: function(data,callback) {
-	        	var node = getNode(data.id, nodes);
-		        if(node !== null) {
-		        	editNodeDialog(node);
-		        }
-	        },
-		    nodes: {
-		        shape: 'box'	
-		    }
-		};
-		network = new vis.Network(container, data, options);
-		
-		network.on('select', function(properties) {
-			$('#editDialogContainer').hide();
-			$('#editPropertiesTable').empty();
-		});
 	}
 };
