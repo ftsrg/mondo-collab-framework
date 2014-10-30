@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="operationtracemodel" nsURI="http://operationtracemodel/1.0"
+    nsPrefix="operationtracemodel">
+  <eClassifiers xsi:type="ecore:EClass" name="Trace">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Commands" upperBound="-1"
+        eType="#//Command" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="firstCommand" eType="#//Command"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cementary" lowerBound="1"
+        eType="#//Cementary" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lastCommand" eType="#//Command"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Command">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Steps" upperBound="-1"
+        eType="#//Step" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextCommand" eType="#//Command"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="firstStep" eType="#//Step"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Step">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextStep" eType="#//Step"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="element" eType="#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Element">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="element" lowerBound="1"
+        eType="#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Insert" eSuperTypes="#//Step">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inserted" lowerBound="1"
+        eType="#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Update" eSuperTypes="#//Step">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="atribute" lowerBound="1"
+        eType="#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="oldValue" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="newValue" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Delete" eSuperTypes="#//Step">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deleted" lowerBound="1"
+        eType="#//Element"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EObject" instanceClassName="org.eclipse.emf.ecore.EObject"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Cementary">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deleted" upperBound="-1"
+        eType="#//Element" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Serializable" instanceClassName="java.io.Serializable"/>
+</ecore:EPackage>
