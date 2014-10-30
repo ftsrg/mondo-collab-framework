@@ -1,0 +1,15 @@
+package wtspecquery
+
+import "http://WTSpec/2.0";
+
+pattern sysId(S, N) {
+	Subsystem.sysId(S, N);
+}
+
+/*
+ * Find Subsystems which contains CtrlUnit99 item
+ */
+pattern ctrlUnit99(S, WTC) {
+	Subsystem.itsWTCs(S, WTC);
+	CtrlUnit99(WTC);
+}

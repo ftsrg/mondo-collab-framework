@@ -1,0 +1,29 @@
+namespace hu.bme.mit.ftsrg.xacml.ikerlan{
+	import hu.bme.mit.ftsrg.xacml.ikerlan.Attributes.*
+	
+	policyset topLevel {
+		apply permitOverrides
+		designerPolicy
+		editorPolicy
+	}
+		
+	policy designerPolicy {
+		target clause user.role == "designer"
+		apply denyOverrides
+		rule {
+			permit
+		}
+	}
+	
+	policy editorPolicy {
+		target clause user.role == "editor"
+		apply denyOverrides
+		rule {
+			permit
+		}
+		rule {
+			deny
+			condition resource.resourceType == "WTCOutput"
+		}
+	}
+}

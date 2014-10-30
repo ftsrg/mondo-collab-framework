@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+  <name>org.wso2.balana</name>
+  <comment>This is the pom file that defines the build process for the WSO2 Balana Core. Balana is XACML
+    open source project which is based on the sunxacml http://sunxacml.sourceforge.net/ under the license 
+    http://sunxacml.sourceforge.net/license.txt. But future development is released under Apache2 license
+    http://www.apache.org/licenses/LICENSE-2.0. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
