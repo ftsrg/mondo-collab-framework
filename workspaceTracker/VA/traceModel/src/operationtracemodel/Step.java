@@ -2,7 +2,9 @@
  */
 package operationtracemodel;
 
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * <!-- begin-user-doc -->
@@ -14,11 +16,12 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link operationtracemodel.Step#getNextStep <em>Next Step</em>}</li>
  *   <li>{@link operationtracemodel.Step#getElement <em>Element</em>}</li>
+ *   <li>{@link operationtracemodel.Step#getFeature <em>Feature</em>}</li>
  * </ul>
  * </p>
  *
  * @see operationtracemodel.OperationtracemodelPackage#getStep()
- * @model
+ * @model abstract="true"
  * @generated
  */
 public interface Step extends EObject {
@@ -57,12 +60,12 @@ public interface Step extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Element</em>' attribute.
-	 * @see #setElement(EObject)
+	 * @see #setElement(Notifier)
 	 * @see operationtracemodel.OperationtracemodelPackage#getStep_Element()
-	 * @model dataType="operationtracemodel.EObject"
+	 * @model dataType="operationtracemodel.Notifier" required="true"
 	 * @generated
 	 */
-	EObject getElement();
+	Notifier getElement();
 
 	/**
 	 * Sets the value of the '{@link operationtracemodel.Step#getElement <em>Element</em>}' attribute.
@@ -72,6 +75,32 @@ public interface Step extends EObject {
 	 * @see #getElement()
 	 * @generated
 	 */
-	void setElement(EObject value);
+	void setElement(Notifier value);
+
+	/**
+	 * Returns the value of the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Feature</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Feature</em>' attribute.
+	 * @see #setFeature(EStructuralFeature)
+	 * @see operationtracemodel.OperationtracemodelPackage#getStep_Feature()
+	 * @model dataType="operationtracemodel.EStructuralFeature" required="true"
+	 * @generated
+	 */
+	EStructuralFeature getFeature();
+
+	/**
+	 * Sets the value of the '{@link operationtracemodel.Step#getFeature <em>Feature</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Feature</em>' attribute.
+	 * @see #getFeature()
+	 * @generated
+	 */
+	void setFeature(EStructuralFeature value);
 
 } // Step

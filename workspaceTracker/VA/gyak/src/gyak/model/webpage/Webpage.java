@@ -157,26 +157,26 @@ public interface Webpage extends EObject {
 	void setCategories(Category value);
 
 	/**
-	 * Returns the value of the '<em><b>Temp</b></em>' reference.
+	 * Returns the value of the '<em><b>Temp</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Temp</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Temp</em>' reference.
+	 * @return the value of the '<em>Temp</em>' containment reference.
 	 * @see #setTemp(Temp)
 	 * @see gyak.model.webpage.WebpagePackage#getWebpage_Temp()
-	 * @model required="true"
+	 * @model containment="true" required="true"
 	 * @generated
 	 */
 	Temp getTemp();
 
 	/**
-	 * Sets the value of the '{@link gyak.model.webpage.Webpage#getTemp <em>Temp</em>}' reference.
+	 * Sets the value of the '{@link gyak.model.webpage.Webpage#getTemp <em>Temp</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Temp</em>' reference.
+	 * @param value the new value of the '<em>Temp</em>' containment reference.
 	 * @see #getTemp()
 	 * @generated
 	 */

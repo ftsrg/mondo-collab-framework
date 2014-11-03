@@ -77,12 +77,12 @@ public interface Trace extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Cementary</em>' containment reference.
-	 * @see #setCementary(Cementary)
+	 * @see #setCementary(Cemetary)
 	 * @see operationtracemodel.OperationtracemodelPackage#getTrace_Cementary()
 	 * @model containment="true" required="true"
 	 * @generated
 	 */
-	Cementary getCementary();
+	Cemetary getCementary();
 
 	/**
 	 * Sets the value of the '{@link operationtracemodel.Trace#getCementary <em>Cementary</em>}' containment reference.
@@ -92,7 +92,7 @@ public interface Trace extends EObject {
 	 * @see #getCementary()
 	 * @generated
 	 */
-	void setCementary(Cementary value);
+	void setCementary(Cemetary value);
 
 	/**
 	 * Returns the value of the '<em><b>Last Command</b></em>' reference.

@@ -3,23 +3,17 @@
 package operationtracemodel.impl;
 
 import java.util.Collection;
-
-import operationtracemodel.Cementary;
+import operationtracemodel.Cemetary;
 import operationtracemodel.Command;
 import operationtracemodel.OperationtracemodelPackage;
 import operationtracemodel.Trace;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -68,7 +62,7 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 	 * @generated
 	 * @ordered
 	 */
-	protected Cementary cementary;
+	protected Cemetary cementary;
 
 	/**
 	 * The cached value of the '{@link #getLastCommand() <em>Last Command</em>}' reference.
@@ -154,7 +148,7 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Cementary getCementary() {
+	public Cemetary getCementary() {
 		return cementary;
 	}
 
@@ -163,8 +157,8 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetCementary(Cementary newCementary, NotificationChain msgs) {
-		Cementary oldCementary = cementary;
+	public NotificationChain basicSetCementary(Cemetary newCementary, NotificationChain msgs) {
+		Cemetary oldCementary = cementary;
 		cementary = newCementary;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.TRACE__CEMENTARY, oldCementary, newCementary);
@@ -178,7 +172,7 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCementary(Cementary newCementary) {
+	public void setCementary(Cemetary newCementary) {
 		if (newCementary != cementary) {
 			NotificationChain msgs = null;
 			if (cementary != null)
@@ -285,7 +279,7 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 				setFirstCommand((Command)newValue);
 				return;
 			case OperationtracemodelPackage.TRACE__CEMENTARY:
-				setCementary((Cementary)newValue);
+				setCementary((Cemetary)newValue);
 				return;
 			case OperationtracemodelPackage.TRACE__LAST_COMMAND:
 				setLastCommand((Command)newValue);
@@ -309,7 +303,7 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 				setFirstCommand((Command)null);
 				return;
 			case OperationtracemodelPackage.TRACE__CEMENTARY:
-				setCementary((Cementary)null);
+				setCementary((Cemetary)null);
 				return;
 			case OperationtracemodelPackage.TRACE__LAST_COMMAND:
 				setLastCommand((Command)null);

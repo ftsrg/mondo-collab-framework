@@ -2,26 +2,29 @@
  */
 package operationtracemodel.impl;
 
-import operationtracemodel.Insert;
+import operationtracemodel.DeteletedElement;
 import operationtracemodel.OperationtracemodelPackage;
+
 import org.eclipse.emf.ecore.EClass;
+
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Insert</b></em>'.
+ * An implementation of the model object '<em><b>Deteleted Element</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * </p>
  *
  * @generated
  */
-public abstract class InsertImpl extends StepImpl implements Insert {
+public abstract class DeteletedElementImpl extends MinimalEObjectImpl.Container implements DeteletedElement {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected InsertImpl() {
+	protected DeteletedElementImpl() {
 		super();
 	}
 
@@ -32,7 +35,7 @@ public abstract class InsertImpl extends StepImpl implements Insert {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return OperationtracemodelPackage.Literals.INSERT;
+		return OperationtracemodelPackage.Literals.DETELETED_ELEMENT;
 	}
 
-} //InsertImpl
+} //DeteletedElementImpl

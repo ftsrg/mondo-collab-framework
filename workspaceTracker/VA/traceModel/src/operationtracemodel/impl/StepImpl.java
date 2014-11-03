@@ -5,8 +5,9 @@ package operationtracemodel.impl;
 import operationtracemodel.OperationtracemodelPackage;
 import operationtracemodel.Step;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -20,12 +21,13 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <ul>
  *   <li>{@link operationtracemodel.impl.StepImpl#getNextStep <em>Next Step</em>}</li>
  *   <li>{@link operationtracemodel.impl.StepImpl#getElement <em>Element</em>}</li>
+ *   <li>{@link operationtracemodel.impl.StepImpl#getFeature <em>Feature</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class StepImpl extends MinimalEObjectImpl.Container implements Step {
+public abstract class StepImpl extends MinimalEObjectImpl.Container implements Step {
 	/**
 	 * The cached value of the '{@link #getNextStep() <em>Next Step</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -44,7 +46,7 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final EObject ELEMENT_EDEFAULT = null;
+	protected static final Notifier ELEMENT_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getElement() <em>Element</em>}' attribute.
@@ -54,7 +56,27 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 	 * @generated
 	 * @ordered
 	 */
-	protected EObject element = ELEMENT_EDEFAULT;
+	protected Notifier element = ELEMENT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getFeature() <em>Feature</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFeature()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final EStructuralFeature FEATURE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getFeature() <em>Feature</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFeature()
+	 * @generated
+	 * @ordered
+	 */
+	protected EStructuralFeature feature = FEATURE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -118,7 +140,7 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EObject getElement() {
+	public Notifier getElement() {
 		return element;
 	}
 
@@ -127,11 +149,32 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElement(EObject newElement) {
-		EObject oldElement = element;
+	public void setElement(Notifier newElement) {
+		Notifier oldElement = element;
 		element = newElement;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.STEP__ELEMENT, oldElement, element));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EStructuralFeature getFeature() {
+		return feature;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFeature(EStructuralFeature newFeature) {
+		EStructuralFeature oldFeature = feature;
+		feature = newFeature;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.STEP__FEATURE, oldFeature, feature));
 	}
 
 	/**
@@ -147,6 +190,8 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 				return basicGetNextStep();
 			case OperationtracemodelPackage.STEP__ELEMENT:
 				return getElement();
+			case OperationtracemodelPackage.STEP__FEATURE:
+				return getFeature();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -163,7 +208,10 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 				setNextStep((Step)newValue);
 				return;
 			case OperationtracemodelPackage.STEP__ELEMENT:
-				setElement((EObject)newValue);
+				setElement((Notifier)newValue);
+				return;
+			case OperationtracemodelPackage.STEP__FEATURE:
+				setFeature((EStructuralFeature)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -183,6 +231,9 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 			case OperationtracemodelPackage.STEP__ELEMENT:
 				setElement(ELEMENT_EDEFAULT);
 				return;
+			case OperationtracemodelPackage.STEP__FEATURE:
+				setFeature(FEATURE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -199,6 +250,8 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 				return nextStep != null;
 			case OperationtracemodelPackage.STEP__ELEMENT:
 				return ELEMENT_EDEFAULT == null ? element != null : !ELEMENT_EDEFAULT.equals(element);
+			case OperationtracemodelPackage.STEP__FEATURE:
+				return FEATURE_EDEFAULT == null ? feature != null : !FEATURE_EDEFAULT.equals(feature);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -215,6 +268,8 @@ public class StepImpl extends MinimalEObjectImpl.Container implements Step {
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (element: ");
 		result.append(element);
+		result.append(", feature: ");
+		result.append(feature);
 		result.append(')');
 		return result.toString();
 	}

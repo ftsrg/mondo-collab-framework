@@ -112,7 +112,7 @@ public interface WebpagePackage extends EPackage {
 	int WEBPAGE__CATEGORIES = 4;
 
 	/**
-	 * The feature id for the '<em><b>Temp</b></em>' reference.
+	 * The feature id for the '<em><b>Temp</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -268,13 +268,22 @@ public interface WebpagePackage extends EPackage {
 	int ARTICLES__CREATED = 1;
 
 	/**
+	 * The feature id for the '<em><b>Ize</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARTICLES__IZE = 2;
+
+	/**
 	 * The number of structural features of the '<em>Articles</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARTICLES_FEATURE_COUNT = 2;
+	int ARTICLES_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link gyak.model.webpage.impl.TempImpl <em>Temp</em>}' class.
@@ -372,10 +381,10 @@ public interface WebpagePackage extends EPackage {
 	EReference getWebpage_Categories();
 
 	/**
-	 * Returns the meta object for the reference '{@link gyak.model.webpage.Webpage#getTemp <em>Temp</em>}'.
+	 * Returns the meta object for the containment reference '{@link gyak.model.webpage.Webpage#getTemp <em>Temp</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Temp</em>'.
+	 * @return the meta object for the containment reference '<em>Temp</em>'.
 	 * @see gyak.model.webpage.Webpage#getTemp()
 	 * @see #getWebpage()
 	 * @generated
@@ -523,6 +532,17 @@ public interface WebpagePackage extends EPackage {
 	EAttribute getArticles_Created();
 
 	/**
+	 * Returns the meta object for the reference list '{@link gyak.model.webpage.Articles#getIze <em>Ize</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Ize</em>'.
+	 * @see gyak.model.webpage.Articles#getIze()
+	 * @see #getArticles()
+	 * @generated
+	 */
+	EReference getArticles_Ize();
+
+	/**
 	 * Returns the meta object for class '{@link gyak.model.webpage.Temp <em>Temp</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -616,7 +636,7 @@ public interface WebpagePackage extends EPackage {
 		EReference WEBPAGE__CATEGORIES = eINSTANCE.getWebpage_Categories();
 
 		/**
-		 * The meta object literal for the '<em><b>Temp</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Temp</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -732,6 +752,14 @@ public interface WebpagePackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute ARTICLES__CREATED = eINSTANCE.getArticles_Created();
+
+		/**
+		 * The meta object literal for the '<em><b>Ize</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ARTICLES__IZE = eINSTANCE.getArticles_Ize();
 
 		/**
 		 * The meta object literal for the '{@link gyak.model.webpage.impl.TempImpl <em>Temp</em>}' class.

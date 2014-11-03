@@ -205,13 +205,22 @@ public interface OperationtracemodelPackage extends EPackage {
 	int STEP__ELEMENT = 1;
 
 	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STEP__FEATURE = 2;
+
+	/**
 	 * The number of structural features of the '<em>Step</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STEP_FEATURE_COUNT = 2;
+	int STEP_FEATURE_COUNT = 3;
 
 	/**
 	 * The number of operations of the '<em>Step</em>' class.
@@ -223,41 +232,32 @@ public interface OperationtracemodelPackage extends EPackage {
 	int STEP_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.ElementImpl <em>Element</em>}' class.
+	 * The meta object id for the '{@link operationtracemodel.impl.DeteletedElementImpl <em>Deteleted Element</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.ElementImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getElement()
+	 * @see operationtracemodel.impl.DeteletedElementImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeteletedElement()
 	 * @generated
 	 */
-	int ELEMENT = 3;
+	int DETELETED_ELEMENT = 3;
 
 	/**
-	 * The feature id for the '<em><b>Element</b></em>' attribute.
+	 * The number of structural features of the '<em>Deteleted Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ELEMENT__ELEMENT = 0;
+	int DETELETED_ELEMENT_FEATURE_COUNT = 0;
 
 	/**
-	 * The number of structural features of the '<em>Element</em>' class.
+	 * The number of operations of the '<em>Deteleted Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ELEMENT_FEATURE_COUNT = 1;
-
-	/**
-	 * The number of operations of the '<em>Element</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ELEMENT_OPERATION_COUNT = 0;
+	int DETELETED_ELEMENT_OPERATION_COUNT = 0;
 
 	/**
 	 * The meta object id for the '{@link operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
@@ -288,13 +288,13 @@ public interface OperationtracemodelPackage extends EPackage {
 	int INSERT__ELEMENT = STEP__ELEMENT;
 
 	/**
-	 * The feature id for the '<em><b>Inserted</b></em>' attribute.
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSERT__INSERTED = STEP_FEATURE_COUNT + 0;
+	int INSERT__FEATURE = STEP__FEATURE;
 
 	/**
 	 * The number of structural features of the '<em>Insert</em>' class.
@@ -303,7 +303,7 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSERT_FEATURE_COUNT = STEP_FEATURE_COUNT + 1;
+	int INSERT_FEATURE_COUNT = STEP_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Insert</em>' class.
@@ -343,31 +343,13 @@ public interface OperationtracemodelPackage extends EPackage {
 	int UPDATE__ELEMENT = STEP__ELEMENT;
 
 	/**
-	 * The feature id for the '<em><b>Atribute</b></em>' attribute.
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int UPDATE__ATRIBUTE = STEP_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Old Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int UPDATE__OLD_VALUE = STEP_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>New Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int UPDATE__NEW_VALUE = STEP_FEATURE_COUNT + 2;
+	int UPDATE__FEATURE = STEP__FEATURE;
 
 	/**
 	 * The number of structural features of the '<em>Update</em>' class.
@@ -376,7 +358,7 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int UPDATE_FEATURE_COUNT = STEP_FEATURE_COUNT + 3;
+	int UPDATE_FEATURE_COUNT = STEP_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Update</em>' class.
@@ -416,6 +398,15 @@ public interface OperationtracemodelPackage extends EPackage {
 	int DELETE__ELEMENT = STEP__ELEMENT;
 
 	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE__FEATURE = STEP__FEATURE;
+
+	/**
 	 * The feature id for the '<em><b>Deleted</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -443,14 +434,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int DELETE_OPERATION_COUNT = STEP_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.CementaryImpl <em>Cementary</em>}' class.
+	 * The meta object id for the '{@link operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.CementaryImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getCementary()
+	 * @see operationtracemodel.impl.CemetaryImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetary()
 	 * @generated
 	 */
-	int CEMENTARY = 7;
+	int CEMETARY = 7;
 
 	/**
 	 * The feature id for the '<em><b>Deleted</b></em>' containment reference list.
@@ -459,25 +450,373 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CEMENTARY__DELETED = 0;
+	int CEMETARY__DELETED = 0;
 
 	/**
-	 * The number of structural features of the '<em>Cementary</em>' class.
+	 * The number of structural features of the '<em>Cemetary</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CEMENTARY_FEATURE_COUNT = 1;
+	int CEMETARY_FEATURE_COUNT = 1;
 
 	/**
-	 * The number of operations of the '<em>Cementary</em>' class.
+	 * The number of operations of the '<em>Cemetary</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CEMENTARY_OPERATION_COUNT = 0;
+	int CEMETARY_OPERATION_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see operationtracemodel.impl.InsertAttributeImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertAttribute()
+	 * @generated
+	 */
+	int INSERT_ATTRIBUTE = 8;
+
+	/**
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_ATTRIBUTE__NEXT_STEP = INSERT__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_ATTRIBUTE__ELEMENT = INSERT__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_ATTRIBUTE__FEATURE = INSERT__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>New Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_ATTRIBUTE__NEW_VALUE = INSERT_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Insert Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_ATTRIBUTE_FEATURE_COUNT = INSERT_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Insert Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_ATTRIBUTE_OPERATION_COUNT = INSERT_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link operationtracemodel.impl.InsertReferenceImpl <em>Insert Reference</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see operationtracemodel.impl.InsertReferenceImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertReference()
+	 * @generated
+	 */
+	int INSERT_REFERENCE = 9;
+
+	/**
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_REFERENCE__NEXT_STEP = INSERT__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_REFERENCE__ELEMENT = INSERT__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_REFERENCE__FEATURE = INSERT__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>New Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_REFERENCE__NEW_VALUE = INSERT_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Insert Reference</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_REFERENCE_FEATURE_COUNT = INSERT_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Insert Reference</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_REFERENCE_OPERATION_COUNT = INSERT_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link operationtracemodel.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see operationtracemodel.impl.UpdateAttributeImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateAttribute()
+	 * @generated
+	 */
+	int UPDATE_ATTRIBUTE = 10;
+
+	/**
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_ATTRIBUTE__NEXT_STEP = UPDATE__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_ATTRIBUTE__ELEMENT = UPDATE__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_ATTRIBUTE__FEATURE = UPDATE__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>New Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_ATTRIBUTE__NEW_VALUE = UPDATE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_ATTRIBUTE__OLD_VALUE = UPDATE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Update Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_ATTRIBUTE_FEATURE_COUNT = UPDATE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>Update Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_ATTRIBUTE_OPERATION_COUNT = UPDATE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link operationtracemodel.impl.UpdateReferenceImpl <em>Update Reference</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see operationtracemodel.impl.UpdateReferenceImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateReference()
+	 * @generated
+	 */
+	int UPDATE_REFERENCE = 11;
+
+	/**
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE__NEXT_STEP = UPDATE__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE__ELEMENT = UPDATE__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE__FEATURE = UPDATE__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>New Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE__NEW_VALUE = UPDATE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE__OLD_VALUE = UPDATE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Update Reference</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE_FEATURE_COUNT = UPDATE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>Update Reference</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE_OPERATION_COUNT = UPDATE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link operationtracemodel.impl.DeleteAttributeImpl <em>Delete Attribute</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see operationtracemodel.impl.DeleteAttributeImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeleteAttribute()
+	 * @generated
+	 */
+	int DELETE_ATTRIBUTE = 12;
+
+	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_ATTRIBUTE__OLD_VALUE = DETELETED_ELEMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Delete Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_ATTRIBUTE_FEATURE_COUNT = DETELETED_ELEMENT_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Delete Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_ATTRIBUTE_OPERATION_COUNT = DETELETED_ELEMENT_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link operationtracemodel.impl.DeleteReferenceImpl <em>Delete Reference</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see operationtracemodel.impl.DeleteReferenceImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeleteReference()
+	 * @generated
+	 */
+	int DELETE_REFERENCE = 13;
+
+	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_REFERENCE__OLD_VALUE = DETELETED_ELEMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Delete Reference</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_REFERENCE_FEATURE_COUNT = DETELETED_ELEMENT_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Delete Reference</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_REFERENCE_OPERATION_COUNT = DETELETED_ELEMENT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '<em>EObject</em>' data type.
@@ -487,19 +826,28 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getEObject()
 	 * @generated
 	 */
-	int EOBJECT = 8;
+	int EOBJECT = 14;
 
 
 	/**
-	 * The meta object id for the '<em>Serializable</em>' data type.
+	 * The meta object id for the '<em>Notifier</em>' data type.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see java.io.Serializable
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getSerializable()
+	 * @see org.eclipse.emf.common.notify.Notifier
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getNotifier()
 	 * @generated
 	 */
-	int SERIALIZABLE = 9;
+	int NOTIFIER = 15;
 
+	/**
+	 * The meta object id for the '<em>EStructural Feature</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.emf.ecore.EStructuralFeature
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getEStructuralFeature()
+	 * @generated
+	 */
+	int ESTRUCTURAL_FEATURE = 16;
 
 	/**
 	 * Returns the meta object for class '{@link operationtracemodel.Trace <em>Trace</em>}'.
@@ -631,25 +979,25 @@ public interface OperationtracemodelPackage extends EPackage {
 	EAttribute getStep_Element();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Element <em>Element</em>}'.
+	 * Returns the meta object for the attribute '{@link operationtracemodel.Step#getFeature <em>Feature</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Element</em>'.
-	 * @see operationtracemodel.Element
+	 * @return the meta object for the attribute '<em>Feature</em>'.
+	 * @see operationtracemodel.Step#getFeature()
+	 * @see #getStep()
 	 * @generated
 	 */
-	EClass getElement();
+	EAttribute getStep_Feature();
 
 	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.Element#getElement <em>Element</em>}'.
+	 * Returns the meta object for class '{@link operationtracemodel.DeteletedElement <em>Deteleted Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Element</em>'.
-	 * @see operationtracemodel.Element#getElement()
-	 * @see #getElement()
+	 * @return the meta object for class '<em>Deteleted Element</em>'.
+	 * @see operationtracemodel.DeteletedElement
 	 * @generated
 	 */
-	EAttribute getElement_Element();
+	EClass getDeteletedElement();
 
 	/**
 	 * Returns the meta object for class '{@link operationtracemodel.Insert <em>Insert</em>}'.
@@ -662,17 +1010,6 @@ public interface OperationtracemodelPackage extends EPackage {
 	EClass getInsert();
 
 	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.Insert#getInserted <em>Inserted</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Inserted</em>'.
-	 * @see operationtracemodel.Insert#getInserted()
-	 * @see #getInsert()
-	 * @generated
-	 */
-	EAttribute getInsert_Inserted();
-
-	/**
 	 * Returns the meta object for class '{@link operationtracemodel.Update <em>Update</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -681,39 +1018,6 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getUpdate();
-
-	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.Update#getAtribute <em>Atribute</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Atribute</em>'.
-	 * @see operationtracemodel.Update#getAtribute()
-	 * @see #getUpdate()
-	 * @generated
-	 */
-	EAttribute getUpdate_Atribute();
-
-	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.Update#getOldValue <em>Old Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Old Value</em>'.
-	 * @see operationtracemodel.Update#getOldValue()
-	 * @see #getUpdate()
-	 * @generated
-	 */
-	EAttribute getUpdate_OldValue();
-
-	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.Update#getNewValue <em>New Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>New Value</em>'.
-	 * @see operationtracemodel.Update#getNewValue()
-	 * @see #getUpdate()
-	 * @generated
-	 */
-	EAttribute getUpdate_NewValue();
 
 	/**
 	 * Returns the meta object for class '{@link operationtracemodel.Delete <em>Delete</em>}'.
@@ -737,25 +1041,173 @@ public interface OperationtracemodelPackage extends EPackage {
 	EReference getDelete_Deleted();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Cementary <em>Cementary</em>}'.
+	 * Returns the meta object for class '{@link operationtracemodel.Cemetary <em>Cemetary</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Cementary</em>'.
-	 * @see operationtracemodel.Cementary
+	 * @return the meta object for class '<em>Cemetary</em>'.
+	 * @see operationtracemodel.Cemetary
 	 * @generated
 	 */
-	EClass getCementary();
+	EClass getCemetary();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link operationtracemodel.Cementary#getDeleted <em>Deleted</em>}'.
+	 * Returns the meta object for the containment reference list '{@link operationtracemodel.Cemetary#getDeleted <em>Deleted</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Deleted</em>'.
-	 * @see operationtracemodel.Cementary#getDeleted()
-	 * @see #getCementary()
+	 * @see operationtracemodel.Cemetary#getDeleted()
+	 * @see #getCemetary()
 	 * @generated
 	 */
-	EReference getCementary_Deleted();
+	EReference getCemetary_Deleted();
+
+	/**
+	 * Returns the meta object for class '{@link operationtracemodel.InsertAttribute <em>Insert Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Insert Attribute</em>'.
+	 * @see operationtracemodel.InsertAttribute
+	 * @generated
+	 */
+	EClass getInsertAttribute();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.InsertAttribute#getNewValue <em>New Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>New Value</em>'.
+	 * @see operationtracemodel.InsertAttribute#getNewValue()
+	 * @see #getInsertAttribute()
+	 * @generated
+	 */
+	EAttribute getInsertAttribute_NewValue();
+
+	/**
+	 * Returns the meta object for class '{@link operationtracemodel.InsertReference <em>Insert Reference</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Insert Reference</em>'.
+	 * @see operationtracemodel.InsertReference
+	 * @generated
+	 */
+	EClass getInsertReference();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.InsertReference#getNewValue <em>New Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>New Value</em>'.
+	 * @see operationtracemodel.InsertReference#getNewValue()
+	 * @see #getInsertReference()
+	 * @generated
+	 */
+	EAttribute getInsertReference_NewValue();
+
+	/**
+	 * Returns the meta object for class '{@link operationtracemodel.UpdateAttribute <em>Update Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Update Attribute</em>'.
+	 * @see operationtracemodel.UpdateAttribute
+	 * @generated
+	 */
+	EClass getUpdateAttribute();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.UpdateAttribute#getNewValue <em>New Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>New Value</em>'.
+	 * @see operationtracemodel.UpdateAttribute#getNewValue()
+	 * @see #getUpdateAttribute()
+	 * @generated
+	 */
+	EAttribute getUpdateAttribute_NewValue();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.UpdateAttribute#getOldValue <em>Old Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Old Value</em>'.
+	 * @see operationtracemodel.UpdateAttribute#getOldValue()
+	 * @see #getUpdateAttribute()
+	 * @generated
+	 */
+	EAttribute getUpdateAttribute_OldValue();
+
+	/**
+	 * Returns the meta object for class '{@link operationtracemodel.UpdateReference <em>Update Reference</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Update Reference</em>'.
+	 * @see operationtracemodel.UpdateReference
+	 * @generated
+	 */
+	EClass getUpdateReference();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.UpdateReference#getNewValue <em>New Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>New Value</em>'.
+	 * @see operationtracemodel.UpdateReference#getNewValue()
+	 * @see #getUpdateReference()
+	 * @generated
+	 */
+	EAttribute getUpdateReference_NewValue();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.UpdateReference#getOldValue <em>Old Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Old Value</em>'.
+	 * @see operationtracemodel.UpdateReference#getOldValue()
+	 * @see #getUpdateReference()
+	 * @generated
+	 */
+	EAttribute getUpdateReference_OldValue();
+
+	/**
+	 * Returns the meta object for class '{@link operationtracemodel.DeleteAttribute <em>Delete Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Delete Attribute</em>'.
+	 * @see operationtracemodel.DeleteAttribute
+	 * @generated
+	 */
+	EClass getDeleteAttribute();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.DeleteAttribute#getOldValue <em>Old Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Old Value</em>'.
+	 * @see operationtracemodel.DeleteAttribute#getOldValue()
+	 * @see #getDeleteAttribute()
+	 * @generated
+	 */
+	EAttribute getDeleteAttribute_OldValue();
+
+	/**
+	 * Returns the meta object for class '{@link operationtracemodel.DeleteReference <em>Delete Reference</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Delete Reference</em>'.
+	 * @see operationtracemodel.DeleteReference
+	 * @generated
+	 */
+	EClass getDeleteReference();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.DeleteReference#getOldValue <em>Old Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Old Value</em>'.
+	 * @see operationtracemodel.DeleteReference#getOldValue()
+	 * @see #getDeleteReference()
+	 * @generated
+	 */
+	EAttribute getDeleteReference_OldValue();
 
 	/**
 	 * Returns the meta object for data type '{@link org.eclipse.emf.ecore.EObject <em>EObject</em>}'.
@@ -769,15 +1221,26 @@ public interface OperationtracemodelPackage extends EPackage {
 	EDataType getEObject();
 
 	/**
-	 * Returns the meta object for data type '{@link java.io.Serializable <em>Serializable</em>}'.
+	 * Returns the meta object for data type '{@link org.eclipse.emf.common.notify.Notifier <em>Notifier</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Serializable</em>'.
-	 * @see java.io.Serializable
-	 * @model instanceClass="java.io.Serializable"
+	 * @return the meta object for data type '<em>Notifier</em>'.
+	 * @see org.eclipse.emf.common.notify.Notifier
+	 * @model instanceClass="org.eclipse.emf.common.notify.Notifier"
 	 * @generated
 	 */
-	EDataType getSerializable();
+	EDataType getNotifier();
+
+	/**
+	 * Returns the meta object for data type '{@link org.eclipse.emf.ecore.EStructuralFeature <em>EStructural Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>EStructural Feature</em>'.
+	 * @see org.eclipse.emf.ecore.EStructuralFeature
+	 * @model instanceClass="org.eclipse.emf.ecore.EStructuralFeature"
+	 * @generated
+	 */
+	EDataType getEStructuralFeature();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -905,22 +1368,22 @@ public interface OperationtracemodelPackage extends EPackage {
 		EAttribute STEP__ELEMENT = eINSTANCE.getStep_Element();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.ElementImpl <em>Element</em>}' class.
+		 * The meta object literal for the '<em><b>Feature</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.ElementImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getElement()
 		 * @generated
 		 */
-		EClass ELEMENT = eINSTANCE.getElement();
+		EAttribute STEP__FEATURE = eINSTANCE.getStep_Feature();
 
 		/**
-		 * The meta object literal for the '<em><b>Element</b></em>' attribute feature.
+		 * The meta object literal for the '{@link operationtracemodel.impl.DeteletedElementImpl <em>Deteleted Element</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
+		 * @see operationtracemodel.impl.DeteletedElementImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeteletedElement()
 		 * @generated
 		 */
-		EAttribute ELEMENT__ELEMENT = eINSTANCE.getElement_Element();
+		EClass DETELETED_ELEMENT = eINSTANCE.getDeteletedElement();
 
 		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
@@ -933,14 +1396,6 @@ public interface OperationtracemodelPackage extends EPackage {
 		EClass INSERT = eINSTANCE.getInsert();
 
 		/**
-		 * The meta object literal for the '<em><b>Inserted</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute INSERT__INSERTED = eINSTANCE.getInsert_Inserted();
-
-		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.UpdateImpl <em>Update</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -949,30 +1404,6 @@ public interface OperationtracemodelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass UPDATE = eINSTANCE.getUpdate();
-
-		/**
-		 * The meta object literal for the '<em><b>Atribute</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute UPDATE__ATRIBUTE = eINSTANCE.getUpdate_Atribute();
-
-		/**
-		 * The meta object literal for the '<em><b>Old Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute UPDATE__OLD_VALUE = eINSTANCE.getUpdate_OldValue();
-
-		/**
-		 * The meta object literal for the '<em><b>New Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute UPDATE__NEW_VALUE = eINSTANCE.getUpdate_NewValue();
 
 		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.DeleteImpl <em>Delete</em>}' class.
@@ -993,14 +1424,14 @@ public interface OperationtracemodelPackage extends EPackage {
 		EReference DELETE__DELETED = eINSTANCE.getDelete_Deleted();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.CementaryImpl <em>Cementary</em>}' class.
+		 * The meta object literal for the '{@link operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.CementaryImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getCementary()
+		 * @see operationtracemodel.impl.CemetaryImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetary()
 		 * @generated
 		 */
-		EClass CEMENTARY = eINSTANCE.getCementary();
+		EClass CEMETARY = eINSTANCE.getCemetary();
 
 		/**
 		 * The meta object literal for the '<em><b>Deleted</b></em>' containment reference list feature.
@@ -1008,7 +1439,131 @@ public interface OperationtracemodelPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CEMENTARY__DELETED = eINSTANCE.getCementary_Deleted();
+		EReference CEMETARY__DELETED = eINSTANCE.getCemetary_Deleted();
+
+		/**
+		 * The meta object literal for the '{@link operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see operationtracemodel.impl.InsertAttributeImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertAttribute()
+		 * @generated
+		 */
+		EClass INSERT_ATTRIBUTE = eINSTANCE.getInsertAttribute();
+
+		/**
+		 * The meta object literal for the '<em><b>New Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INSERT_ATTRIBUTE__NEW_VALUE = eINSTANCE.getInsertAttribute_NewValue();
+
+		/**
+		 * The meta object literal for the '{@link operationtracemodel.impl.InsertReferenceImpl <em>Insert Reference</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see operationtracemodel.impl.InsertReferenceImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertReference()
+		 * @generated
+		 */
+		EClass INSERT_REFERENCE = eINSTANCE.getInsertReference();
+
+		/**
+		 * The meta object literal for the '<em><b>New Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INSERT_REFERENCE__NEW_VALUE = eINSTANCE.getInsertReference_NewValue();
+
+		/**
+		 * The meta object literal for the '{@link operationtracemodel.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see operationtracemodel.impl.UpdateAttributeImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateAttribute()
+		 * @generated
+		 */
+		EClass UPDATE_ATTRIBUTE = eINSTANCE.getUpdateAttribute();
+
+		/**
+		 * The meta object literal for the '<em><b>New Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute UPDATE_ATTRIBUTE__NEW_VALUE = eINSTANCE.getUpdateAttribute_NewValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Old Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute UPDATE_ATTRIBUTE__OLD_VALUE = eINSTANCE.getUpdateAttribute_OldValue();
+
+		/**
+		 * The meta object literal for the '{@link operationtracemodel.impl.UpdateReferenceImpl <em>Update Reference</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see operationtracemodel.impl.UpdateReferenceImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateReference()
+		 * @generated
+		 */
+		EClass UPDATE_REFERENCE = eINSTANCE.getUpdateReference();
+
+		/**
+		 * The meta object literal for the '<em><b>New Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute UPDATE_REFERENCE__NEW_VALUE = eINSTANCE.getUpdateReference_NewValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Old Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute UPDATE_REFERENCE__OLD_VALUE = eINSTANCE.getUpdateReference_OldValue();
+
+		/**
+		 * The meta object literal for the '{@link operationtracemodel.impl.DeleteAttributeImpl <em>Delete Attribute</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see operationtracemodel.impl.DeleteAttributeImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeleteAttribute()
+		 * @generated
+		 */
+		EClass DELETE_ATTRIBUTE = eINSTANCE.getDeleteAttribute();
+
+		/**
+		 * The meta object literal for the '<em><b>Old Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DELETE_ATTRIBUTE__OLD_VALUE = eINSTANCE.getDeleteAttribute_OldValue();
+
+		/**
+		 * The meta object literal for the '{@link operationtracemodel.impl.DeleteReferenceImpl <em>Delete Reference</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see operationtracemodel.impl.DeleteReferenceImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeleteReference()
+		 * @generated
+		 */
+		EClass DELETE_REFERENCE = eINSTANCE.getDeleteReference();
+
+		/**
+		 * The meta object literal for the '<em><b>Old Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DELETE_REFERENCE__OLD_VALUE = eINSTANCE.getDeleteReference_OldValue();
 
 		/**
 		 * The meta object literal for the '<em>EObject</em>' data type.
@@ -1021,14 +1576,24 @@ public interface OperationtracemodelPackage extends EPackage {
 		EDataType EOBJECT = eINSTANCE.getEObject();
 
 		/**
-		 * The meta object literal for the '<em>Serializable</em>' data type.
+		 * The meta object literal for the '<em>Notifier</em>' data type.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see java.io.Serializable
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getSerializable()
+		 * @see org.eclipse.emf.common.notify.Notifier
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getNotifier()
 		 * @generated
 		 */
-		EDataType SERIALIZABLE = eINSTANCE.getSerializable();
+		EDataType NOTIFIER = eINSTANCE.getNotifier();
+
+		/**
+		 * The meta object literal for the '<em>EStructural Feature</em>' data type.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.emf.ecore.EStructuralFeature
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getEStructuralFeature()
+		 * @generated
+		 */
+		EDataType ESTRUCTURAL_FEATURE = eINSTANCE.getEStructuralFeature();
 
 	}
 

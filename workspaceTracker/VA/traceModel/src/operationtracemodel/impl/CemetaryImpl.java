@@ -4,8 +4,8 @@ package operationtracemodel.impl;
 
 import java.util.Collection;
 
-import operationtracemodel.Cementary;
-import operationtracemodel.Element;
+import operationtracemodel.Cemetary;
+import operationtracemodel.DeteletedElement;
 import operationtracemodel.OperationtracemodelPackage;
 
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -22,18 +22,18 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Cementary</b></em>'.
+ * An implementation of the model object '<em><b>Cemetary</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link operationtracemodel.impl.CementaryImpl#getDeleted <em>Deleted</em>}</li>
+ *   <li>{@link operationtracemodel.impl.CemetaryImpl#getDeleted <em>Deleted</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class CementaryImpl extends MinimalEObjectImpl.Container implements Cementary {
+public class CemetaryImpl extends MinimalEObjectImpl.Container implements Cemetary {
 	/**
 	 * The cached value of the '{@link #getDeleted() <em>Deleted</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -42,14 +42,14 @@ public class CementaryImpl extends MinimalEObjectImpl.Container implements Cemen
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Element> deleted;
+	protected EList<DeteletedElement> deleted;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected CementaryImpl() {
+	protected CemetaryImpl() {
 		super();
 	}
 
@@ -60,7 +60,7 @@ public class CementaryImpl extends MinimalEObjectImpl.Container implements Cemen
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return OperationtracemodelPackage.Literals.CEMENTARY;
+		return OperationtracemodelPackage.Literals.CEMETARY;
 	}
 
 	/**
@@ -68,9 +68,9 @@ public class CementaryImpl extends MinimalEObjectImpl.Container implements Cemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Element> getDeleted() {
+	public EList<DeteletedElement> getDeleted() {
 		if (deleted == null) {
-			deleted = new EObjectContainmentEList<Element>(Element.class, this, OperationtracemodelPackage.CEMENTARY__DELETED);
+			deleted = new EObjectContainmentEList<DeteletedElement>(DeteletedElement.class, this, OperationtracemodelPackage.CEMETARY__DELETED);
 		}
 		return deleted;
 	}
@@ -83,7 +83,7 @@ public class CementaryImpl extends MinimalEObjectImpl.Container implements Cemen
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case OperationtracemodelPackage.CEMENTARY__DELETED:
+			case OperationtracemodelPackage.CEMETARY__DELETED:
 				return ((InternalEList<?>)getDeleted()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -97,7 +97,7 @@ public class CementaryImpl extends MinimalEObjectImpl.Container implements Cemen
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case OperationtracemodelPackage.CEMENTARY__DELETED:
+			case OperationtracemodelPackage.CEMETARY__DELETED:
 				return getDeleted();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -112,9 +112,9 @@ public class CementaryImpl extends MinimalEObjectImpl.Container implements Cemen
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case OperationtracemodelPackage.CEMENTARY__DELETED:
+			case OperationtracemodelPackage.CEMETARY__DELETED:
 				getDeleted().clear();
-				getDeleted().addAll((Collection<? extends Element>)newValue);
+				getDeleted().addAll((Collection<? extends DeteletedElement>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -128,7 +128,7 @@ public class CementaryImpl extends MinimalEObjectImpl.Container implements Cemen
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case OperationtracemodelPackage.CEMENTARY__DELETED:
+			case OperationtracemodelPackage.CEMETARY__DELETED:
 				getDeleted().clear();
 				return;
 		}
@@ -143,10 +143,10 @@ public class CementaryImpl extends MinimalEObjectImpl.Container implements Cemen
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case OperationtracemodelPackage.CEMENTARY__DELETED:
+			case OperationtracemodelPackage.CEMETARY__DELETED:
 				return deleted != null && !deleted.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
-} //CementaryImpl
+} //CemetaryImpl

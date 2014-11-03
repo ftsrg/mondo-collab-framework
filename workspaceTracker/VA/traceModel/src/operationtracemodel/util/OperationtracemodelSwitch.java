@@ -84,9 +84,9 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OperationtracemodelPackage.ELEMENT: {
-				Element element = (Element)theEObject;
-				T result = caseElement(element);
+			case OperationtracemodelPackage.DETELETED_ELEMENT: {
+				DeteletedElement deteletedElement = (DeteletedElement)theEObject;
+				T result = caseDeteletedElement(deteletedElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -111,9 +111,55 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OperationtracemodelPackage.CEMENTARY: {
-				Cementary cementary = (Cementary)theEObject;
-				T result = caseCementary(cementary);
+			case OperationtracemodelPackage.CEMETARY: {
+				Cemetary cemetary = (Cemetary)theEObject;
+				T result = caseCemetary(cemetary);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OperationtracemodelPackage.INSERT_ATTRIBUTE: {
+				InsertAttribute insertAttribute = (InsertAttribute)theEObject;
+				T result = caseInsertAttribute(insertAttribute);
+				if (result == null) result = caseInsert(insertAttribute);
+				if (result == null) result = caseStep(insertAttribute);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OperationtracemodelPackage.INSERT_REFERENCE: {
+				InsertReference insertReference = (InsertReference)theEObject;
+				T result = caseInsertReference(insertReference);
+				if (result == null) result = caseInsert(insertReference);
+				if (result == null) result = caseStep(insertReference);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OperationtracemodelPackage.UPDATE_ATTRIBUTE: {
+				UpdateAttribute updateAttribute = (UpdateAttribute)theEObject;
+				T result = caseUpdateAttribute(updateAttribute);
+				if (result == null) result = caseUpdate(updateAttribute);
+				if (result == null) result = caseStep(updateAttribute);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OperationtracemodelPackage.UPDATE_REFERENCE: {
+				UpdateReference updateReference = (UpdateReference)theEObject;
+				T result = caseUpdateReference(updateReference);
+				if (result == null) result = caseUpdate(updateReference);
+				if (result == null) result = caseStep(updateReference);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OperationtracemodelPackage.DELETE_ATTRIBUTE: {
+				DeleteAttribute deleteAttribute = (DeleteAttribute)theEObject;
+				T result = caseDeleteAttribute(deleteAttribute);
+				if (result == null) result = caseDeteletedElement(deleteAttribute);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OperationtracemodelPackage.DELETE_REFERENCE: {
+				DeleteReference deleteReference = (DeleteReference)theEObject;
+				T result = caseDeleteReference(deleteReference);
+				if (result == null) result = caseDeteletedElement(deleteReference);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -167,17 +213,17 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Deteleted Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Deteleted Element</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseElement(Element object) {
+	public T caseDeteletedElement(DeteletedElement object) {
 		return null;
 	}
 
@@ -227,17 +273,107 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Cementary</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Cemetary</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Cementary</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Cemetary</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseCementary(Cementary object) {
+	public T caseCemetary(Cemetary object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Insert Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Insert Attribute</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseInsertAttribute(InsertAttribute object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Insert Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Insert Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseInsertReference(InsertReference object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Update Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Update Attribute</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseUpdateAttribute(UpdateAttribute object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Update Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Update Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseUpdateReference(UpdateReference object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Delete Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Delete Attribute</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDeleteAttribute(DeleteAttribute object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Delete Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Delete Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDeleteReference(DeleteReference object) {
 		return null;
 	}
 

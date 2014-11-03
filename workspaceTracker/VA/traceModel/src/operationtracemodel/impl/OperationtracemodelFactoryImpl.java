@@ -2,16 +2,14 @@
  */
 package operationtracemodel.impl;
 
-import java.io.Serializable;
 import operationtracemodel.*;
-
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
@@ -60,12 +58,14 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 		switch (eClass.getClassifierID()) {
 			case OperationtracemodelPackage.TRACE: return createTrace();
 			case OperationtracemodelPackage.COMMAND: return createCommand();
-			case OperationtracemodelPackage.STEP: return createStep();
-			case OperationtracemodelPackage.ELEMENT: return createElement();
-			case OperationtracemodelPackage.INSERT: return createInsert();
-			case OperationtracemodelPackage.UPDATE: return createUpdate();
 			case OperationtracemodelPackage.DELETE: return createDelete();
-			case OperationtracemodelPackage.CEMENTARY: return createCementary();
+			case OperationtracemodelPackage.CEMETARY: return createCemetary();
+			case OperationtracemodelPackage.INSERT_ATTRIBUTE: return createInsertAttribute();
+			case OperationtracemodelPackage.INSERT_REFERENCE: return createInsertReference();
+			case OperationtracemodelPackage.UPDATE_ATTRIBUTE: return createUpdateAttribute();
+			case OperationtracemodelPackage.UPDATE_REFERENCE: return createUpdateReference();
+			case OperationtracemodelPackage.DELETE_ATTRIBUTE: return createDeleteAttribute();
+			case OperationtracemodelPackage.DELETE_REFERENCE: return createDeleteReference();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -81,8 +81,10 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 		switch (eDataType.getClassifierID()) {
 			case OperationtracemodelPackage.EOBJECT:
 				return createEObjectFromString(eDataType, initialValue);
-			case OperationtracemodelPackage.SERIALIZABLE:
-				return createSerializableFromString(eDataType, initialValue);
+			case OperationtracemodelPackage.NOTIFIER:
+				return createNotifierFromString(eDataType, initialValue);
+			case OperationtracemodelPackage.ESTRUCTURAL_FEATURE:
+				return createEStructuralFeatureFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -98,8 +100,10 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 		switch (eDataType.getClassifierID()) {
 			case OperationtracemodelPackage.EOBJECT:
 				return convertEObjectToString(eDataType, instanceValue);
-			case OperationtracemodelPackage.SERIALIZABLE:
-				return convertSerializableToString(eDataType, instanceValue);
+			case OperationtracemodelPackage.NOTIFIER:
+				return convertNotifierToString(eDataType, instanceValue);
+			case OperationtracemodelPackage.ESTRUCTURAL_FEATURE:
+				return convertEStructuralFeatureToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -130,46 +134,6 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Step createStep() {
-		StepImpl step = new StepImpl();
-		return step;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Element createElement() {
-		ElementImpl element = new ElementImpl();
-		return element;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Insert createInsert() {
-		InsertImpl insert = new InsertImpl();
-		return insert;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Update createUpdate() {
-		UpdateImpl update = new UpdateImpl();
-		return update;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public Delete createDelete() {
 		DeleteImpl delete = new DeleteImpl();
 		return delete;
@@ -180,9 +144,69 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Cementary createCementary() {
-		CementaryImpl cementary = new CementaryImpl();
-		return cementary;
+	public Cemetary createCemetary() {
+		CemetaryImpl cemetary = new CemetaryImpl();
+		return cemetary;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public InsertAttribute createInsertAttribute() {
+		InsertAttributeImpl insertAttribute = new InsertAttributeImpl();
+		return insertAttribute;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public InsertReference createInsertReference() {
+		InsertReferenceImpl insertReference = new InsertReferenceImpl();
+		return insertReference;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public UpdateAttribute createUpdateAttribute() {
+		UpdateAttributeImpl updateAttribute = new UpdateAttributeImpl();
+		return updateAttribute;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public UpdateReference createUpdateReference() {
+		UpdateReferenceImpl updateReference = new UpdateReferenceImpl();
+		return updateReference;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DeleteAttribute createDeleteAttribute() {
+		DeleteAttributeImpl deleteAttribute = new DeleteAttributeImpl();
+		return deleteAttribute;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DeleteReference createDeleteReference() {
+		DeleteReferenceImpl deleteReference = new DeleteReferenceImpl();
+		return deleteReference;
 	}
 
 	/**
@@ -208,8 +232,8 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Serializable createSerializableFromString(EDataType eDataType, String initialValue) {
-		return (Serializable)super.createFromString(eDataType, initialValue);
+	public Notifier createNotifierFromString(EDataType eDataType, String initialValue) {
+		return (Notifier)super.createFromString(eDataType, initialValue);
 	}
 
 	/**
@@ -217,7 +241,25 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertSerializableToString(EDataType eDataType, Object instanceValue) {
+	public String convertNotifierToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EStructuralFeature createEStructuralFeatureFromString(EDataType eDataType, String initialValue) {
+		return (EStructuralFeature)super.createFromString(eDataType, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertEStructuralFeatureToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 

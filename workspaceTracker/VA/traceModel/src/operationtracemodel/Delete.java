@@ -30,12 +30,12 @@ public interface Delete extends Step {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Deleted</em>' reference.
-	 * @see #setDeleted(Element)
+	 * @see #setDeleted(DeteletedElement)
 	 * @see operationtracemodel.OperationtracemodelPackage#getDelete_Deleted()
 	 * @model required="true"
 	 * @generated
 	 */
-	Element getDeleted();
+	DeteletedElement getDeleted();
 
 	/**
 	 * Sets the value of the '{@link operationtracemodel.Delete#getDeleted <em>Deleted</em>}' reference.
@@ -45,5 +45,5 @@ public interface Delete extends Step {
 	 * @see #getDeleted()
 	 * @generated
 	 */
-	void setDeleted(Element value);
+	void setDeleted(DeteletedElement value);
 } // Delete

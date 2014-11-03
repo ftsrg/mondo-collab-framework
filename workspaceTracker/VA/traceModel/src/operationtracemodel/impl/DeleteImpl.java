@@ -3,9 +3,8 @@
 package operationtracemodel.impl;
 
 import operationtracemodel.Delete;
-import operationtracemodel.Element;
+import operationtracemodel.DeteletedElement;
 import operationtracemodel.OperationtracemodelPackage;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -33,7 +32,7 @@ public class DeleteImpl extends StepImpl implements Delete {
 	 * @generated
 	 * @ordered
 	 */
-	protected Element deleted;
+	protected DeteletedElement deleted;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -59,10 +58,10 @@ public class DeleteImpl extends StepImpl implements Delete {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Element getDeleted() {
+	public DeteletedElement getDeleted() {
 		if (deleted != null && deleted.eIsProxy()) {
 			InternalEObject oldDeleted = (InternalEObject)deleted;
-			deleted = (Element)eResolveProxy(oldDeleted);
+			deleted = (DeteletedElement)eResolveProxy(oldDeleted);
 			if (deleted != oldDeleted) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OperationtracemodelPackage.DELETE__DELETED, oldDeleted, deleted));
@@ -76,7 +75,7 @@ public class DeleteImpl extends StepImpl implements Delete {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Element basicGetDeleted() {
+	public DeteletedElement basicGetDeleted() {
 		return deleted;
 	}
 
@@ -85,8 +84,8 @@ public class DeleteImpl extends StepImpl implements Delete {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDeleted(Element newDeleted) {
-		Element oldDeleted = deleted;
+	public void setDeleted(DeteletedElement newDeleted) {
+		DeteletedElement oldDeleted = deleted;
 		deleted = newDeleted;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.DELETE__DELETED, oldDeleted, deleted));
@@ -116,7 +115,7 @@ public class DeleteImpl extends StepImpl implements Delete {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case OperationtracemodelPackage.DELETE__DELETED:
-				setDeleted((Element)newValue);
+				setDeleted((DeteletedElement)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -131,7 +130,7 @@ public class DeleteImpl extends StepImpl implements Delete {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case OperationtracemodelPackage.DELETE__DELETED:
-				setDeleted((Element)null);
+				setDeleted((DeteletedElement)null);
 				return;
 		}
 		super.eUnset(featureID);

@@ -2,6 +2,10 @@ package com.offline.workspaceTracker;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 
@@ -15,25 +19,54 @@ public class MyContentAdapter extends EContentAdapter{
 	
 	@SuppressWarnings("unchecked")
 	public void notifyChanged(Notification notification) {
-		
+		System.out.println(notification.getNotifier().getClass() + ":" + notification.getFeature());
 		super.notifyChanged(notification);
 		switch(notification.getEventType()) {
 		case Notification.ADD :
-			myResourceSet.insertStep(notification.getNotifier(), notification.getNewValue());
+			
+			if(notification.getFeature() instanceof EAttribute){
+				myResourceSet.insertStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), true);
+			} else if(notification.getFeature() instanceof EReference || notification.getFeature() == null) {
+				myResourceSet.insertStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
+			}
 			break;
 		case Notification.ADD_MANY :
 			for(Object o : (Collection<Object>)(notification.getNewValue())){
-				myResourceSet.insertStep(notification.getNotifier(), o);
+				if(notification.getFeature() instanceof EAttribute){
+					myResourceSet.insertStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), o, true);
+				} else if(notification.getFeature() instanceof EReference) {
+					myResourceSet.insertStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), o, false);
+				}
 			}
-			
 			break;
 		case Notification.SET :
-			if(notification.getOldValue() == null || !notification.getOldValue().equals(notification.getNewValue())) {
-				myResourceSet.updateStep(notification.getNotifier(), notification.getFeature(), notification.getOldValue(), notification.getNewValue());
+			if(notification.getOldValue() != null && notification.getNewValue() !=null && !notification.getOldValue().equals(notification.getNewValue())) {
+				if(notification.getFeature() instanceof EAttribute){
+					myResourceSet.updateStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), notification.getNewValue(), true);
+				} else if(notification.getFeature() instanceof EReference) {
+					myResourceSet.updateStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), notification.getNewValue(), false);
+
+				}
+			} else if(notification.getOldValue() == null) {
+				if(notification.getFeature() instanceof EAttribute){
+					myResourceSet.insertStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), true);
+				} else if(notification.getFeature() instanceof EReference) {
+					myResourceSet.insertStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
+				}
+			} else if (notification.getNewValue() == null) {
+				if(notification.getFeature() instanceof EAttribute){
+					myResourceSet.deleteStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), true);
+				} else if(notification.getFeature() instanceof EReference) {
+					myResourceSet.deleteStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
+				}
 			}
 			break;	
 		case Notification.REMOVE :
-			myResourceSet.deleteStep(notification.getNotifier(), notification.getOldValue());
+			if(notification.getFeature() instanceof EAttribute){
+				myResourceSet.deleteStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), true);
+			} else if(notification.getFeature() instanceof EReference) {
+				myResourceSet.deleteStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
+			}
 			break;	
 		case 6 :
 			myResourceSet.endCommand();

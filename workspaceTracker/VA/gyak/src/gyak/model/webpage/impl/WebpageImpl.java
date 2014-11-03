@@ -126,7 +126,7 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 	protected Category categories;
 
 	/**
-	 * The cached value of the '{@link #getTemp() <em>Temp</em>}' reference.
+	 * The cached value of the '{@link #getTemp() <em>Temp</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getTemp()
@@ -286,14 +286,6 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 	 * @generated
 	 */
 	public Temp getTemp() {
-		if (temp != null && temp.eIsProxy()) {
-			InternalEObject oldTemp = (InternalEObject)temp;
-			temp = (Temp)eResolveProxy(oldTemp);
-			if (temp != oldTemp) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, WebpagePackage.WEBPAGE__TEMP, oldTemp, temp));
-			}
-		}
 		return temp;
 	}
 
@@ -302,8 +294,14 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Temp basicGetTemp() {
-		return temp;
+	public NotificationChain basicSetTemp(Temp newTemp, NotificationChain msgs) {
+		Temp oldTemp = temp;
+		temp = newTemp;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WebpagePackage.WEBPAGE__TEMP, oldTemp, newTemp);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -312,10 +310,17 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 	 * @generated
 	 */
 	public void setTemp(Temp newTemp) {
-		Temp oldTemp = temp;
-		temp = newTemp;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WebpagePackage.WEBPAGE__TEMP, oldTemp, temp));
+		if (newTemp != temp) {
+			NotificationChain msgs = null;
+			if (temp != null)
+				msgs = ((InternalEObject)temp).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WebpagePackage.WEBPAGE__TEMP, null, msgs);
+			if (newTemp != null)
+				msgs = ((InternalEObject)newTemp).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WebpagePackage.WEBPAGE__TEMP, null, msgs);
+			msgs = basicSetTemp(newTemp, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, WebpagePackage.WEBPAGE__TEMP, newTemp, newTemp));
 	}
 
 	/**
@@ -327,6 +332,8 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 		switch (featureID) {
 			case WebpagePackage.WEBPAGE__CATEGORIES:
 				return basicSetCategories(null, msgs);
+			case WebpagePackage.WEBPAGE__TEMP:
+				return basicSetTemp(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -349,8 +356,7 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 			case WebpagePackage.WEBPAGE__CATEGORIES:
 				return getCategories();
 			case WebpagePackage.WEBPAGE__TEMP:
-				if (resolve) return getTemp();
-				return basicGetTemp();
+				return getTemp();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}

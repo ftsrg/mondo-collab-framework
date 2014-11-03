@@ -40,42 +40,6 @@ public interface OperationtracemodelFactory extends EFactory {
 	Command createCommand();
 
 	/**
-	 * Returns a new object of class '<em>Step</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Step</em>'.
-	 * @generated
-	 */
-	Step createStep();
-
-	/**
-	 * Returns a new object of class '<em>Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Element</em>'.
-	 * @generated
-	 */
-	Element createElement();
-
-	/**
-	 * Returns a new object of class '<em>Insert</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Insert</em>'.
-	 * @generated
-	 */
-	Insert createInsert();
-
-	/**
-	 * Returns a new object of class '<em>Update</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Update</em>'.
-	 * @generated
-	 */
-	Update createUpdate();
-
-	/**
 	 * Returns a new object of class '<em>Delete</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -85,13 +49,67 @@ public interface OperationtracemodelFactory extends EFactory {
 	Delete createDelete();
 
 	/**
-	 * Returns a new object of class '<em>Cementary</em>'.
+	 * Returns a new object of class '<em>Cemetary</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Cementary</em>'.
+	 * @return a new object of class '<em>Cemetary</em>'.
 	 * @generated
 	 */
-	Cementary createCementary();
+	Cemetary createCemetary();
+
+	/**
+	 * Returns a new object of class '<em>Insert Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Insert Attribute</em>'.
+	 * @generated
+	 */
+	InsertAttribute createInsertAttribute();
+
+	/**
+	 * Returns a new object of class '<em>Insert Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Insert Reference</em>'.
+	 * @generated
+	 */
+	InsertReference createInsertReference();
+
+	/**
+	 * Returns a new object of class '<em>Update Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Update Attribute</em>'.
+	 * @generated
+	 */
+	UpdateAttribute createUpdateAttribute();
+
+	/**
+	 * Returns a new object of class '<em>Update Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Update Reference</em>'.
+	 * @generated
+	 */
+	UpdateReference createUpdateReference();
+
+	/**
+	 * Returns a new object of class '<em>Delete Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Delete Attribute</em>'.
+	 * @generated
+	 */
+	DeleteAttribute createDeleteAttribute();
+
+	/**
+	 * Returns a new object of class '<em>Delete Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Delete Reference</em>'.
+	 * @generated
+	 */
+	DeleteReference createDeleteReference();
 
 	/**
 	 * Returns the package supported by this factory.

@@ -4,6 +4,7 @@ package gyak.model.webpage;
 
 import java.util.Calendar;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -16,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link gyak.model.webpage.Articles#getName <em>Name</em>}</li>
  *   <li>{@link gyak.model.webpage.Articles#getCreated <em>Created</em>}</li>
+ *   <li>{@link gyak.model.webpage.Articles#getIze <em>Ize</em>}</li>
  * </ul>
  * </p>
  *
@@ -75,5 +77,21 @@ public interface Articles extends EObject {
 	 * @generated
 	 */
 	void setCreated(Calendar value);
+
+	/**
+	 * Returns the value of the '<em><b>Ize</b></em>' reference list.
+	 * The list contents are of type {@link gyak.model.webpage.MyWeb}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Ize</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Ize</em>' reference list.
+	 * @see gyak.model.webpage.WebpagePackage#getArticles_Ize()
+	 * @model type="gyak.model.webpage.MyWeb"
+	 * @generated
+	 */
+	EList getIze();
 
 } // Articles

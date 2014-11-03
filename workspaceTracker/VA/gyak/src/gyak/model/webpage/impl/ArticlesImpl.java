@@ -3,16 +3,20 @@
 package gyak.model.webpage.impl;
 
 import gyak.model.webpage.Articles;
+import gyak.model.webpage.MyWeb;
 import gyak.model.webpage.WebpagePackage;
 
 import java.util.Calendar;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,6 +27,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <ul>
  *   <li>{@link gyak.model.webpage.impl.ArticlesImpl#getName <em>Name</em>}</li>
  *   <li>{@link gyak.model.webpage.impl.ArticlesImpl#getCreated <em>Created</em>}</li>
+ *   <li>{@link gyak.model.webpage.impl.ArticlesImpl#getIze <em>Ize</em>}</li>
  * </ul>
  * </p>
  *
@@ -68,6 +73,16 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 	 * @ordered
 	 */
 	protected Calendar created = CREATED_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getIze() <em>Ize</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIze()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList ize;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -134,12 +149,26 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList getIze() {
+		if (ize == null) {
+			ize = new EObjectResolvingEList(MyWeb.class, this, WebpagePackage.ARTICLES__IZE);
+		}
+		return ize;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case WebpagePackage.ARTICLES__NAME:
 				return getName();
 			case WebpagePackage.ARTICLES__CREATED:
 				return getCreated();
+			case WebpagePackage.ARTICLES__IZE:
+				return getIze();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -156,6 +185,10 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 				return;
 			case WebpagePackage.ARTICLES__CREATED:
 				setCreated((Calendar)newValue);
+				return;
+			case WebpagePackage.ARTICLES__IZE:
+				getIze().clear();
+				getIze().addAll((Collection)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -174,6 +207,9 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 			case WebpagePackage.ARTICLES__CREATED:
 				setCreated(CREATED_EDEFAULT);
 				return;
+			case WebpagePackage.ARTICLES__IZE:
+				getIze().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -189,6 +225,8 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case WebpagePackage.ARTICLES__CREATED:
 				return CREATED_EDEFAULT == null ? created != null : !CREATED_EDEFAULT.equals(created);
+			case WebpagePackage.ARTICLES__IZE:
+				return ize != null && !ize.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
