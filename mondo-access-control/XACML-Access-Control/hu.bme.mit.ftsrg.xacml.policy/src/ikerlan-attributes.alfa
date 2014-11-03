@@ -1,0 +1,32 @@
+namespace hu.bme.mit.ftsrg.xacml.ikerlan{
+    namespace Attributes{
+        namespace user{
+            attribute role{
+                category = subjectCat
+                id = "role"
+                type = string
+            }           
+        }
+        
+        namespace action{
+            attribute actionId{
+                category = actionCat
+                id = "actionId"
+                type = string
+            }           
+        }
+        
+        namespace resource{
+        	attribute resourceType{
+        		category = resourceCat
+        		id = "resource-type"
+        		type = string
+        	}
+        	attribute resourceId{
+        		category = resourceCat
+        		id = "resource-id"
+        		type = string
+        	}
+        }
+    }
+}
