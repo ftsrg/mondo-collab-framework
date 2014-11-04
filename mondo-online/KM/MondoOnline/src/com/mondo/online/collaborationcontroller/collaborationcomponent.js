@@ -1,7 +1,7 @@
 var collaborationLibrary = collaborationLibrary || {};
 collaborationLibrary.model = null;
 
-collaborationLibrary.CollaborationComponent = function(element) {
+collaborationLibrary.CollaborationComponent = function(component) {
 	var editDialog = $('<div/>').attr('id', 'editDialog')
 		.append($('<span/>').text("Edit element"));
 	var editPropertiesTable = $('<table />')
@@ -21,7 +21,7 @@ collaborationLibrary.CollaborationComponent = function(element) {
 		saveButton
 	);
 	
-	element.innerHTML = $('<div />').append(
+	component.innerHTML = $('<div />').append(
 		$('<div />').attr('id', 'workspace'),
 		$('<div />').attr('id', 'editDialogContainer')
 			.append(editDialog)
@@ -49,27 +49,43 @@ collaborationLibrary.CollaborationComponent = function(element) {
 			keyboard: true,
 			smoothCurves: false,
 			dataManipulation: {
-			      enabled: true,
-			      initiallyVisible: true
+			    enabled: true,
+			    initiallyVisible: true
 			},
-			onAdd: function(data,callback) {
+			onAdd: function(newData, callback) {
 		        var newNode = {
-		        	id: data.id,
-		        	label: "New element",
-		        	x: data.x,
-		        	y: data.y,
+        			elementType: 1,
+		        	id: newData.id,
+		        	label: "New node",
+		        	x: newData.x,
+		        	y: newData.y,
 		        	SomeAttribute: ""		        	
 		        }; 
 		        cc.addElement(newNode);
 		    },
-	        onEdit: function(data,callback) {
-	        	var node = getNode(data.id, nodes);
-	        	editNodeDialog(node);
+	        onEdit: function(nodeData, callback) {
+	        	var node = getElement(nodeData.id, nodes);
+	        	editDialog(node);
 	        },
-	        onDelete: function(data, callback) {
+	        onEditEdge: function(edgeData, callback) {
+	        	var edge = getElement(edgeData.id, edges);
+	        	editDialog(edge);
+	        },
+	        onConnect: function(newEdgeData, callback) {
+	        	var id = generateEdgeId(edges);
+	        	var newEdge = {
+        			elementType: 2,
+		        	id: id,
+		        	name: "New connection",
+		        	from: newEdgeData.from,
+		        	to: newEdgeData.to
+		        }; 
+		        cc.addElement(newEdge);
+	        },
+	        onDelete: function(dataToDelete, callback) {
 	        	var deletionData = {
-	        		nodeId: data.nodes.shift(),
-	        		edgeIds: data.edges
+	        		nodeId: dataToDelete.nodes.shift(),
+	        		edgeIds: dataToDelete.edges
 	        	}
 	        	cc.deleteElement(deletionData);
 	        },
@@ -80,28 +96,49 @@ collaborationLibrary.CollaborationComponent = function(element) {
 		network = new vis.Network(container, data, options);
 		
 		network.on('select', function(properties) {
-			$('#editDialogContainer').hide();
-			$('#editPropertiesTable').empty();
+			closeEditDialog();
 		});
 	}
 	
-	var getNode = function(id, nodes) {
-		for(var i in nodes) {
-			if(nodes[i].id == id) {
-				return nodes[i];
+	var getElement = function(id, stack) {
+		for(var i in stack) {
+			if(stack[i].id == id) {
+				return stack[i];
 			}
 		}
 		return null;
 	}
-	// prepare popup function for editing nodes
-	var editNodeDialog = function(node) {
+	
+	var generateEdgeId = function(edges) {
+		var num = 0;
+		var pattern = /^NewId_(\d)+$/;
+		for(var i in edges) {
+			if(pattern.test(edges[i].id)) {
+				var numAtTheEnd = parseInt(edges[i].id.substr(6));
+				if(!isNaN(numAtTheEnd) && numAtTheEnd >= num) {
+					num = numAtTheEnd + 1; 
+				}
+			}
+		}
+		return "NewId_" + num;
+	}
+	
+	var closeEditDialog = function() {
+		$("#editDialogContainer #cancelButton").unbind("click");
+		$("#editDialogContainer #saveButton").unbind("click");
+		$('#editDialogContainer').hide();
+		$('#editPropertiesTable').empty();
+	}
+	// prepare pop-up function for editing nodes
+	// TODO rename node to generic
+	var editDialog = function(element) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
 		
-		for (var property in node) {
-		    if (node.hasOwnProperty(property)) {
+		for(var property in element) {
+		    if(element.hasOwnProperty(property) && property != "elementType") {
 		    	var propLabel = property + ':';
-		    	var propValue = node[property];
+		    	var propValue = element[property];
 		        propertiesTable.append(
 		        	$('<tr/>').append(
 		        		$('<td class="label"/>').text(propLabel),
@@ -115,31 +152,32 @@ collaborationLibrary.CollaborationComponent = function(element) {
 		    } 
 		}
 		$('#editDialogContainer #saveButton').click(function() {
-			var editedNode = {};
+			var editedElement = {};
 			$('#editPropertiesTable input').each(function() {
-				editedNode[this.id] = this.value;
+				editedElement[this.id] = this.value;
 			});
-			editedNode.x = parseInt(editedNode.x.trim());
-			editedNode.y = parseInt(editedNode.y.trim());
-			if(isNaN(editedNode.x) 
-			|| isNaN(editedNode.y)) {
-				alert("Invalid data!\nX, Y have to be numbers.");
-				return;
+			editedElement["elementType"] = element["elementType"];
+			if(element["elementType"] == 1) {
+				editedElement.x = parseInt(editedElement.x.trim());
+				editedElement.y = parseInt(editedElement.y.trim());
+			
+				if(isNaN(editedElement.x) 
+				|| isNaN(editedElement.y)) {
+					alert("Invalid data!\nX and Y have to be numbers.");
+					return;
+				}
 			}
-			var data = {
-				originalNode: node,
-				editedNode: editedNode
+			var editData = {
+				original: element,
+				edited: editedElement
 			};
-        	cc.editElement(data);
-			$('#editDialogContainer').hide();
-			$('#editPropertiesTable').empty();
-			$(this).unbind('click');
+			closeEditDialog();
+			
+			cc.editElement(editData);
 		});
 		
 		$('#editDialogContainer #cancelButton').click(function(){
-			$('#editDialogContainer').hide();
-			$('#editPropertiesTable').empty();
-			$(this).unbind('click');
+			closeEditDialog();
 		});
 		$('#editDialogContainer').show();
 	}

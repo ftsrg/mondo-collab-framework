@@ -31109,7 +31109,10 @@ return /******/ (function(modules) { // webpackBootstrap
       }
       else if (this._getSelectedEdgeCount() == 1 && this._getSelectedNodeCount() == 0) {
         var editButton = document.getElementById("network-manipulate-editEdge");
-        editButton.onclick = this._createEditEdgeToolbar.bind(this);
+        
+        // modification by MK
+        // editButton.onclick = this._createEditEdgeToolbar.bind(this);
+        editButton.onclick = this._editEdge.bind(this);
       }
       if (this._selectionIsEmpty() == false) {
         var deleteButton = document.getElementById("network-manipulate-delete");
@@ -31467,6 +31470,9 @@ return /******/ (function(modules) { // webpackBootstrap
    */
   exports._editEdge = function(sourceNodeId,targetNodeId) {
     if (this.editMode == true) {
+      // the following line has been inserted by MK in order to alter  
+      // edge editing
+      this.edgeBeingEdited = this._getSelectedEdge();
       var defaultData = {id: this.edgeBeingEdited.id, from:sourceNodeId, to:targetNodeId};
       if (this.triggerFunctions.editEdge) {
         if (this.triggerFunctions.editEdge.length == 2) {

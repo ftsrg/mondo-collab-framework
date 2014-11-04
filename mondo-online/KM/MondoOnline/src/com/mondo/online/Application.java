@@ -18,9 +18,9 @@ public class Application extends UI {
 	Navigator navigator;
 
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = Application.class)
+	@VaadinServletConfiguration(productionMode = false, ui = Application.class, widgetset = "com.mondo.online.widgetset.MondoonlineWidgetset")
 	public static class Servlet extends VaadinServlet {
-
+ 
 	}
 
 	@Override
