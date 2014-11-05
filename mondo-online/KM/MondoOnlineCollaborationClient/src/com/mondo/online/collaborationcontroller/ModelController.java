@@ -14,13 +14,13 @@ import org.json.JSONObject;
 @ClientEndpoint
 public class ModelController {
 	
-	private static Session session;
+	private Session session;
 	
-	static private CollaborationComponent cc;
+	private CollaborationComponent cc;
 	
 	@OnOpen
     public void onOpen(Session session) {
-		ModelController.session = session;
+		this.session = session;
         System.out.println("Connected to endpoint: " + session.getBasicRemote());
     }
     
@@ -28,7 +28,7 @@ public class ModelController {
     public void processMessage(String message) {
     	try {
     		System.out.println("recieved model: " + message);
-			ModelController.cc.setModel(new JSONObject(message));
+			this.cc.setModel(new JSONObject(message));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -40,14 +40,14 @@ public class ModelController {
         t.printStackTrace();
     }
     
-    public static void setCollaborationComponent(CollaborationComponent newCC) {
-    	cc = newCC;
+    public void setCollaborationComponent(CollaborationComponent newCC) {
+    	this.cc = newCC;
     }
     
-    public static void updateModel(String model) {
+    public void updateModel(String model) {
         System.out.println("Sending message to endpoint: " + model);
         try {
-			session.getBasicRemote().sendText(model);
+			this.session.getBasicRemote().sendText(model);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
