@@ -1,6 +1,6 @@
 #workspace {
 	position: absolute;
-	width: 800px; 
+	width: 1000px; 
 	height: 800px;
 	margin: 20px; 
 	border: 3px solid #5394ED;
@@ -22,7 +22,7 @@
 	padding: 10px;
 	text-align: center;
 	margin-top: 100px;
-	margin-left: 280px;
+	margin-left: 400px;
 }
 
 #editPropertiesTable {

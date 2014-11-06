@@ -6918,7 +6918,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
                 endDate.week(start.week() - 1 + offset)
                 endDate.year(start.year());
-                break
+                break;
               case "monthly":
                 if (startDate.month() != endDate.month()) {
                   offset = 1;
@@ -6951,7 +6951,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 case "weekly":
                   startDate.add(7, 'days');
                   endDate.add(7, 'days');
-                  break
+                  break;
                 case "monthly":
                   startDate.add(1, 'months');
                   endDate.add(1, 'months');
@@ -21942,12 +21942,12 @@ return /******/ (function(modules) { // webpackBootstrap
     edit: 'Edit',
     del: 'Delete selected',
     back: 'Back',
-    addNode: 'Add Node',
-    addEdge: 'Add Edge',
-    editNode: 'Edit Node',
-    editEdge: 'Edit Edge',
-    addDescription: 'Click in an empty space to place a new node.',
-    edgeDescription: 'Click on a node and drag the edge to another node to connect them.',
+    addNode: 'Add Element',
+    addEdge: 'Connect Elements',
+    editNode: 'Edit Element',
+    editEdge: 'Edit Connection',
+    addDescription: 'Click in an empty space to place a new element.',
+    edgeDescription: 'Click on an element and drag the line to another element to connect them.',
     editEdgeDescription: 'Click on the control points and drag them to a node to connect to it.',
     createEdgeError: 'Cannot link edges to a cluster.',
     deleteClusterError: 'Clusters cannot be deleted.'

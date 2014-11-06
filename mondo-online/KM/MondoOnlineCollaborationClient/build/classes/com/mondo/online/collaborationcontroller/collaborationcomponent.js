@@ -30,19 +30,25 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	var cc = this;
 	
 	this.setModel = function(model) {
+		/*
 		if(!model) {
 			return false;
 		}
-
+		*/
 		cc.model = model;
 		var nodes = model.nodes;
 		var edges = model.edges;
-		
+		for(var i in edges) {
+			edges[i].style = "arrow";
+		}
+		for(var i in nodes) {
+			nodes[i] = setElementView(nodes[i]);
+		}
 		var container = document.getElementById('workspace');
 		var data = {
 		    nodes: nodes,
 		    edges: edges
-		};
+		}; 
 		var options = {
 			keyboard: true,
 			smoothCurves: false,
@@ -53,30 +59,33 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			onAdd: function(newData, callback) {
 		        var newNode = {
         			elementType: 1,
+		        	type: "",
 		        	id: newData.id,
-		        	label: "New node",
+		        	label: "New element",
+		        	group: "",
 		        	x: newData.x,
-		        	y: newData.y,
-		        	SomeAttribute: ""		        	
+		        	y: newData.y		        	
 		        }; 
-		        cc.addElement(newNode);
+		        editDialog(newNode, true);
 		    },
 	        onEdit: function(nodeData, callback) {
 	        	var node = getElement(nodeData.id, nodes);
-	        	editDialog(node);
+	        	editDialog(node, false);
 	        },
 	        onEditEdge: function(edgeData, callback) {
 	        	var edge = getElement(edgeData.id, edges);
-	        	editDialog(edge);
+	        	editDialog(edge, false);
 	        },
 	        onConnect: function(newEdgeData, callback) {
 	        	var id = generateEdgeId(edges);
 	        	var newEdge = {
         			elementType: 2,
+        			type: "",
 		        	id: id,
-		        	name: "New connection",
 		        	from: newEdgeData.from,
-		        	to: newEdgeData.to
+		        	to: newEdgeData.to,
+		        	name: "New connection",
+		        	group: ""
 		        }; 
 		        cc.addElement(newEdge);
 	        },
@@ -129,24 +138,39 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	}
 	// prepare pop-up function for editing nodes
 	// TODO rename node to generic
-	var editDialog = function(element) {
+	var editDialog = function(element, isNewElement) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
-		
+		var types = ["SubSystem", "CtrlUnit", "SystemInput", "SystemOutput", "SystemParam", "SystemFault", "SystemVariable"];
+
 		for(var property in element) {
-		    if(element.hasOwnProperty(property) && property != "elementType") {
+		    if(element.hasOwnProperty(property) && property != "elementType"
+		    && property != "shape" && property != "radius"  && property != "style") {
 		    	var propLabel = property + ':';
 		    	var propValue = element[property];
-		        propertiesTable.append(
-		        	$('<tr/>').append(
-		        		$('<td class="label"/>').text(propLabel),
-		        		$('<td/>').append(
-		        			$('<input/>')
-		        				.attr('id', property)
-		        				.attr('value', propValue)
-	    				)
-		        	)
-		        );
+		    	var inputCell = $('<td/>');
+		    	var input = null;
+		    	if(property == "type" && element['elementType'] != 2) {
+		    		input = $('<select/>').attr('id', property);
+		    		for(var i in types) {
+		    			input.append($('<option>' + types[i] + '</option>')
+	    					.attr('value', types[i])
+		    			);
+		    		}
+		    	} else {
+		    		input =	$('<input/>')
+        				.attr('id', property)
+        				.attr('value', propValue);
+		    	}
+		    	if(input != null) {
+			    	inputCell.append(input);
+			    	propertiesTable.append(
+			        	$('<tr/>').append(
+			        		$('<td class="label"/>').text(propLabel),
+			        		inputCell
+			        	)
+			        );
+		    	}
 		    } 
 		}
 		$('#editDialogContainer #saveButton').click(function() {
@@ -158,20 +182,26 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			if(element["elementType"] == 1) {
 				editedElement.x = parseInt(editedElement.x.trim());
 				editedElement.y = parseInt(editedElement.y.trim());
-			
+				
 				if(isNaN(editedElement.x) 
 				|| isNaN(editedElement.y)) {
 					alert("Invalid data!\nX and Y have to be numbers.");
 					return;
 				}
+				
+				editedElement["type"] = $('#editPropertiesTable select').val();
 			}
-			var editData = {
-				original: element,
-				edited: editedElement
-			};
-			closeEditDialog();
 			
-			cc.editElement(editData);
+			if(isNewElement) {
+				cc.addElement(editedElement);
+			} else {
+				var editData = {
+					original: element,
+					edited: editedElement
+				};
+				cc.editElement(editData);
+			}
+			closeEditDialog();
 		});
 		
 		$('#editDialogContainer #cancelButton').click(function(){

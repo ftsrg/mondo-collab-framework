@@ -19,7 +19,7 @@ public class LoginPage extends AbsoluteLayout implements View {
 	public LoginPage(final Navigator navigator) {
 		this.navigator = navigator;
 		setSizeFull();
-		
+		 
 		Label textUserName = new Label();
 		textUserName.setValue("User name:");
 		textUserName.setWidth("110px");

@@ -19,7 +19,7 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 		
 		final CollaborationComponent cc = new CollaborationComponent();
 
-		// Set the value from server-side
+		// Set the value from server- side
 		cc.setValue("Server-side value");
 
 		// Process a value input by the user from the client-side

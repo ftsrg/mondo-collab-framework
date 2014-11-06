@@ -3,6 +3,8 @@ package com.mondo.online.collaborationcontroller;
 import java.io.IOException;
 
 import javax.websocket.ClientEndpoint;
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -22,22 +24,30 @@ public class ModelController {
     public void onOpen(Session session) {
 		this.session = session;
         System.out.println("Connected to endpoint: " + session.getBasicRemote());
+        System.out.println("Max message length: "  + session.getMaxTextMessageBufferSize());
     }
     
     @OnMessage
     public void processMessage(String message) {
     	try {
     		System.out.println("recieved model: " + message);
+    		System.out.println("Model length: " + message.length());
 			this.cc.setModel(new JSONObject(message));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
-    
+     
     @OnError
     public void processError(Throwable t) {
         t.printStackTrace();
+    }
+    
+    @OnClose
+    public void onClose(Session userSession, CloseReason reason) {
+        System.out.println("closing websocket by client");
+        this.session = null;
     }
     
     public void setCollaborationComponent(CollaborationComponent newCC) {

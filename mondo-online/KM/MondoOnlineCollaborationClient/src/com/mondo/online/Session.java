@@ -9,3 +9,4 @@ public class Session {
 		this.title = title;
 	}
 }
+ 

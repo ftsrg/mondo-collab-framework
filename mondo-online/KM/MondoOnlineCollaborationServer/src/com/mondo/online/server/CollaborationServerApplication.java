@@ -75,63 +75,213 @@ public class CollaborationServerApplication {
 	@OnClose
 	public void onClose (Session session) {
 	    // Remove session from the connected sessions set
+		System.out.println("removing session from websocket...");
 		clients.remove(session);
 	}
 	
 	private void loadModel() throws JSONException {
 		// load dummy model
-		JSONObject model = new JSONObject();
 		JSONArray nodes = new JSONArray();
-		int[] posXs = {100, 250, 175, 280, 130};
-		int[] posYs = {500, 500, 250, 380, 650};
-		for (int i = 0; i < 5; i++) {
-			JSONObject node = new JSONObject();
-			node.put("elementType", 1);
-			node.put("id", "" + i);
-			node.put("label", "Node " + i);
-			node.put("SomeAttribute", "Some value " + i);
-			node.put("x", posXs[i]);
-			node.put("y", posYs[i]);
-			nodes.put(node);
-		}
-		model.put("nodes", nodes);
-
 		JSONArray edges = new JSONArray();
-		for (int i = 0; i < 3; i++) {
-			JSONObject edge = new JSONObject();
-			edge.put("elementType", 2);
-			edge.put("id", "edge_" + i);
-			edge.put("from", "" + i);
-			edge.put("to", "" + (i + 1));
-			edge.put("name", "connection " + i);
-			edges.put(edge);
-		}
-		JSONObject edge = new JSONObject();
-		edge.put("elementType", 2);
-		edge.put("id", "edge_3");
-		edge.put("from", "0");
-		edge.put("to", "4");
-		edge.put("name", "connection 4");
-		JSONObject edge2 = new JSONObject();
-		edge2.put("elementType", 2);
-		edge2.put("id", "edge_4");
-		edge2.put("from", "2");
-		edge2.put("to", "4");
-		edge2.put("name", "connection 5");
+		JSONArray newNodes = new JSONArray();
+		JSONArray newEdges = new JSONArray();
+		JSONObject newModel = new JSONObject();
+		
+		// System inputs
+		JSONObject input15 = this.createNode(
+			"SystemInput", "In15", "Input AI_15", "InputGroup1", 50, 400
+		);
+		JSONObject input2 = this.createNode(
+			"SystemInput", "In2", "Input AI_2", "InputGroup1", 50, 500
+		);
+		JSONObject input18 = this.createNode(
+			"SystemInput", "In18", "Input AI_18", "InputGroup1", 50, 600
+		);
+		JSONObject input48 = this.createNode(
+			"SystemInput", "In48", "Input AI_48", "InputGroup2", 150, 150
+		);
+		JSONObject input22 = this.createNode(
+			"SystemInput", "In22", "Input AI_22", "InputGroup2", 350, 150
+		);
+		JSONObject input73 = this.createNode(
+			"SystemInput", "In73", "Input AI_73", "InputGroup2", 550, 150
+		);
+		
+		nodes.put(input15);
+		nodes.put(input2);
+		nodes.put(input18);
+		nodes.put(input48);
+		nodes.put(input22);
+		nodes.put(input73);
+		
+		// Subsystems
+		JSONObject subSystem08 = this.createNode(
+			"SubSystem", "SubSystem08", "SubSystem 08", "SubGroup1", 230, 300
+		);
+		JSONObject subSystem08_02 = this.createNode(
+			"SubSystem", "SubSystem08_02", "SubSystem 08_02", "SubGroup1", 400, 500
+		);
+		JSONObject subSystem08_02_11 = this.createNode(
+			"SubSystem", "SubSystem08_02_11", "SubSystem 08_02_11", "SubGroup1", 300, 650
+		);
+		JSONObject subSystem17 = this.createNode(
+			"SubSystem", "SubSystem17", "SubSystem 17", "SubGroup2", 650, 550
+		);
+		nodes.put(subSystem08);
+		nodes.put(subSystem08_02);
+		nodes.put(subSystem08_02_11);
+		nodes.put(subSystem17);
+		
+		// control units
+		JSONObject ctrlUnit007 = this.createNode(
+			"CtrlUnit", "CtrlUnit007", "CtrlUnit_007", "SubGroup1", 250, 450
+		);
+		JSONObject ctrlUnit18 = this.createNode(
+			"CtrlUnit", "CtrlUnit18", "CtrlUnit_18", "SubGroup1", 400, 250
+		);
+		JSONObject ctrlUnit22 = this.createNode(
+			"CtrlUnit", "CtrlUnit22", "CtrlUnit_22", "SubGroup1", 450, 300
+		);
+		JSONObject ctrlUnit404 = this.createNode(
+			"CtrlUnit", "CtrlUnit404", "CtrlUnit_404", "SubGroup1", 500, 350
+		);
+		JSONObject ctrlUnit04 = this.createNode(
+			"CtrlUnit", "CtrlUnit04", "CtrlUnit_04", "SubGroup1", 270, 550
+		);
+		JSONObject ctrlUnit05 = this.createNode(
+			"CtrlUnit", "CtrlUnit05", "CtrlUnit_05", "SubGroup1", 500, 550
+		);
+		JSONObject ctrlUnit15 = this.createNode(
+			"CtrlUnit", "CtrlUnit15", "CtrlUnit_15", "SubGroup1", 500, 650
+		);
+		nodes.put(ctrlUnit007);
+		nodes.put(ctrlUnit18);
+		nodes.put(ctrlUnit22);
+		nodes.put(ctrlUnit404);
+		nodes.put(ctrlUnit04);
+		nodes.put(ctrlUnit05);
+		nodes.put(ctrlUnit15);
+		
+		// System outputs
+		JSONObject output007 = this.createNode(
+			"SystemOutput", "Out007", "Output DO_007", "OutputGroup1", 650, 250
+		);
+		JSONObject output18 = this.createNode(
+			"SystemOutput", "Out18", "Output DO_18", "OutputGroup1", 650, 350
+		);
+		JSONObject output22 = this.createNode(
+			"SystemOutput", "Out22", "Output DO_22", "OutputGroup2", 630, 450
+		);
 
-		JSONObject edge3 = new JSONObject();
-		edge3.put("elementType", 2);
-		edge3.put("id", "edge_5");
-		edge3.put("from", "3");
-		edge3.put("to", "4");
-		edge3.put("name", "connection 6");
-
-		edges.put(edge);
+		nodes.put(output007);
+		nodes.put(output18);
+		nodes.put(output22);
+		
+		// System variables
+		JSONObject sysParam1 = this.createNode(
+			"SystemParam", "Param1", "Parameter 1", "ParamGroup1", 300, 700
+		);
+		JSONObject sysParam2 = this.createNode(
+			"SystemParam", "Param", "Parameter 2", "ParamGroup1", 450, 700
+		);
+		nodes.put(sysParam1);
+		nodes.put(sysParam2);
+		
+		// System variables
+		JSONObject sysVar1 = this.createNode(
+			"SystemVariable", "Var1", "Variable 1", "VarGroup1", 650, 700
+		);
+		JSONObject sysVar2 = this.createNode(
+			"SystemVariable", "Var2", "Variable 2", "VarGroup1", 750, 700
+		);
+		nodes.put(sysVar1);
+		nodes.put(sysVar2);
+		
+		// System faults
+		JSONObject sysFault1 = this.createNode(
+			"SystemFault", "Fault1", "Fault 1", "FaultGroup1", 500, 750
+		);
+		JSONObject sysFault2 = this.createNode(
+			"SystemFault", "Fault2", "Fault 2", "FaultGroup1", 600, 750
+		);
+		nodes.put(sysFault1);
+		nodes.put(sysFault2);
+		
+		JSONObject edge1 = this.createEdge(
+			"Contains", "Conn1", "SubSystem08", "CtrlUnit18", "Conn1", ""
+		);
+		JSONObject edge2 = this.createEdge(
+			"Contains", "Conn2", "SubSystem08", "CtrlUnit22", "Conn2", "SubGroup1"
+		);
+		JSONObject edge3 = this.createEdge(
+			"Contains", "Conn3", "SubSystem08", "CtrlUnit404", "Conn3", "SubGroup1"
+		);
+		JSONObject edge4 = this.createEdge(
+			"Contains", "Conn4", "SubSystem08", "SubSystem08_02", "Conn4", "SubGroup1"
+		);
+		JSONObject edge5 = this.createEdge(
+			"Contains", "Conn5", "SubSystem08_02", "CtrlUnit007", "Conn5", "SubGroup1"
+		);
+		JSONObject edge6 = this.createEdge(
+			"Contains", "Conn6", "SubSystem08_02", "CtrlUnit04", "Conn6", "SubGroup1"
+		);
+		JSONObject edge7 = this.createEdge(
+			"Contains", "Conn7", "SubSystem08_02", "CtrlUnit05", "Conn7", "SubGroup1"
+		);
+		JSONObject edge8 = this.createEdge(
+			"Contains", "Conn8", "SubSystem08_02", "SubSystem08_02_11", "Conn8", "SubGroup1"
+		);
+		JSONObject edge9 = this.createEdge(
+			"Contains", "Conn9", "SubSystem08_02_11", "CtrlUnit15", "Conn9", "SubGroup1"
+		);
+		edges.put(edge1);
 		edges.put(edge2);
 		edges.put(edge3);
-		model.put("nodes", nodes);
-		model.put("edges", edges);
+		edges.put(edge4);
+		edges.put(edge5);
+		edges.put(edge6);
+		edges.put(edge7);
+		edges.put(edge8);
+		edges.put(edge9);
+				
+		for(int i = 0; i < nodes.length(); i++) {
+			JSONObject node = nodes.getJSONObject(i);
+			node.put("elementType", 1);
+			newNodes.put(node);
+		}
 		
-		CollaborationServerApplication.model = model;
+		
+		for(int i = 0; i < edges.length(); i++) {
+			JSONObject edge = edges.getJSONObject(i);
+			edge.put("elementType", 2);
+			newEdges.put(edge);
+		}
+
+		newModel.put("nodes", newNodes);
+		newModel.put("edges", newEdges);
+
+		CollaborationServerApplication.model = newModel;
+	}
+	
+	private JSONObject createNode(String type, String id, String label, String group, int x, int y) throws JSONException {
+		JSONObject node = new JSONObject();
+		node.put("type", type);
+		node.put("id", id);
+		node.put("label", label);
+		node.put("group", group);
+		node.put("x", x);
+		node.put("y", y);
+		return node;
+	}
+	
+	private JSONObject createEdge(String type, String id, String from, String to, String name, String group) throws JSONException {
+		JSONObject edge = new JSONObject();
+		edge.put("type", type);
+		edge.put("id", id);
+		edge.put("from", from);
+		edge.put("to", to);
+		edge.put("name", name);
+		edge.put("group", group);
+		return edge;
 	}
 }

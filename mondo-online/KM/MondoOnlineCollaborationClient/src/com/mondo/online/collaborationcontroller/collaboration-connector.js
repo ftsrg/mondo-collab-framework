@@ -21,4 +21,4 @@ function() {
     	connector.deleteElement(jsonData);
     }
     this.loadModel();
-};
+}; 

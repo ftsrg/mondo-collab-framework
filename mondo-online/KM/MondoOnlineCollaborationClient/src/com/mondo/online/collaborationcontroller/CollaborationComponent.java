@@ -21,6 +21,7 @@ import com.vaadin.ui.JavaScriptFunction;
 @JavaScript({ 
 	"app://VAADIN/client/visjs/vis.js",
 	"app://VAADIN/client/jquery/jquery-2.1.0.min.js",
+	"app://VAADIN/client/GraphicalSyntaxHandler.js",
 	"collaboration-connector.js", "collaborationcomponent.js" 
 })
 @StyleSheet({ 
@@ -29,7 +30,7 @@ import com.vaadin.ui.JavaScriptFunction;
 })
 public class CollaborationComponent extends AbstractJavaScriptComponent {
 	private ModelController mc;
-	
+	 
 	public interface ValueChangeListener extends Serializable {
 		void valueChange();
 	}
@@ -65,7 +66,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 	private void initModelController(CollaborationComponent cc) {
 		this.mc = new ModelController();
 		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        String uri = "ws://192.168.1.105:8080/MondoOnlineCollaborationServer/mondoonlineserver";
+        String uri = "ws://localhost:8080/MondoOnlineCollaborationServer/mondoonlineserver";
 		this.mc.setCollaborationComponent(cc);
         try {
 			container.connectToServer(this.mc, URI.create(uri));
@@ -194,8 +195,9 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		addFunction("loadModel", new JavaScriptFunction() {
 			@Override
 			public void call(JSONArray arguments) throws JSONException {
-				// load dummy model
-				getState().setModel(getState().model);
+				if(getState().model != null) {
+					getState().setModel(getState().model);
+				}
 			}
 		});
 	}

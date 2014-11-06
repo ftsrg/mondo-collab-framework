@@ -1,8 +1,5 @@
 package com.mondo.online;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -23,7 +20,7 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		
 		Table sessionsTable = this.initSessionsTable();
 		addComponent(sessionsTable, "left: 10px; top: 40px;");
-		Button button = new Button("Join session");
+		Button button = new Button("Join session"); 
 		button.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				Object rowId = sessionsTable.getValue();

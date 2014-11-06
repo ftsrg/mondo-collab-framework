@@ -26,7 +26,7 @@ public class Application extends UI {
 	@Override
 	protected void init(VaadinRequest request) {
 		// Create a navigator to control the views
-		navigator = new Navigator(this, this);
+		navigator = new Navigator(this, this); 
 
 		// Create and register the views
 		navigator.addView(LoginPage.NAME, new LoginPage(navigator));
