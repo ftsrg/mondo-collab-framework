@@ -232,32 +232,41 @@ public interface OperationtracemodelPackage extends EPackage {
 	int STEP_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.DeteletedElementImpl <em>Deteleted Element</em>}' class.
+	 * The meta object id for the '{@link operationtracemodel.impl.DeletedElementImpl <em>Deleted Element</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.DeteletedElementImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeteletedElement()
+	 * @see operationtracemodel.impl.DeletedElementImpl
+	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeletedElement()
 	 * @generated
 	 */
-	int DETELETED_ELEMENT = 3;
+	int DELETED_ELEMENT = 3;
 
 	/**
-	 * The number of structural features of the '<em>Deteleted Element</em>' class.
+	 * The feature id for the '<em><b>Deleted Object</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DETELETED_ELEMENT_FEATURE_COUNT = 0;
+	int DELETED_ELEMENT__DELETED_OBJECT = 0;
 
 	/**
-	 * The number of operations of the '<em>Deteleted Element</em>' class.
+	 * The number of structural features of the '<em>Deleted Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DETELETED_ELEMENT_OPERATION_COUNT = 0;
+	int DELETED_ELEMENT_FEATURE_COUNT = 1;
+
+	/**
+	 * The number of operations of the '<em>Deleted Element</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETED_ELEMENT_OPERATION_COUNT = 0;
 
 	/**
 	 * The meta object id for the '{@link operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
@@ -407,22 +416,13 @@ public interface OperationtracemodelPackage extends EPackage {
 	int DELETE__FEATURE = STEP__FEATURE;
 
 	/**
-	 * The feature id for the '<em><b>Deleted</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DELETE__DELETED = STEP_FEATURE_COUNT + 0;
-
-	/**
 	 * The number of structural features of the '<em>Delete</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DELETE_FEATURE_COUNT = STEP_FEATURE_COUNT + 1;
+	int DELETE_FEATURE_COUNT = STEP_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Delete</em>' class.
@@ -755,13 +755,40 @@ public interface OperationtracemodelPackage extends EPackage {
 	int DELETE_ATTRIBUTE = 12;
 
 	/**
-	 * The feature id for the '<em><b>Old Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DELETE_ATTRIBUTE__OLD_VALUE = DETELETED_ELEMENT_FEATURE_COUNT + 0;
+	int DELETE_ATTRIBUTE__NEXT_STEP = DELETE__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_ATTRIBUTE__ELEMENT = DELETE__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_ATTRIBUTE__FEATURE = DELETE__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_ATTRIBUTE__OLD_VALUE = DELETE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Delete Attribute</em>' class.
@@ -770,7 +797,7 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DELETE_ATTRIBUTE_FEATURE_COUNT = DETELETED_ELEMENT_FEATURE_COUNT + 1;
+	int DELETE_ATTRIBUTE_FEATURE_COUNT = DELETE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Delete Attribute</em>' class.
@@ -779,7 +806,7 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DELETE_ATTRIBUTE_OPERATION_COUNT = DETELETED_ELEMENT_OPERATION_COUNT + 0;
+	int DELETE_ATTRIBUTE_OPERATION_COUNT = DELETE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link operationtracemodel.impl.DeleteReferenceImpl <em>Delete Reference</em>}' class.
@@ -792,13 +819,40 @@ public interface OperationtracemodelPackage extends EPackage {
 	int DELETE_REFERENCE = 13;
 
 	/**
-	 * The feature id for the '<em><b>Old Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DELETE_REFERENCE__OLD_VALUE = DETELETED_ELEMENT_FEATURE_COUNT + 0;
+	int DELETE_REFERENCE__NEXT_STEP = DELETE__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_REFERENCE__ELEMENT = DELETE__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_REFERENCE__FEATURE = DELETE__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DELETE_REFERENCE__OLD_VALUE = DELETE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Delete Reference</em>' class.
@@ -807,7 +861,7 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DELETE_REFERENCE_FEATURE_COUNT = DETELETED_ELEMENT_FEATURE_COUNT + 1;
+	int DELETE_REFERENCE_FEATURE_COUNT = DELETE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Delete Reference</em>' class.
@@ -816,7 +870,7 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DELETE_REFERENCE_OPERATION_COUNT = DETELETED_ELEMENT_OPERATION_COUNT + 0;
+	int DELETE_REFERENCE_OPERATION_COUNT = DELETE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '<em>EObject</em>' data type.
@@ -990,14 +1044,25 @@ public interface OperationtracemodelPackage extends EPackage {
 	EAttribute getStep_Feature();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.DeteletedElement <em>Deteleted Element</em>}'.
+	 * Returns the meta object for class '{@link operationtracemodel.DeletedElement <em>Deleted Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Deteleted Element</em>'.
-	 * @see operationtracemodel.DeteletedElement
+	 * @return the meta object for class '<em>Deleted Element</em>'.
+	 * @see operationtracemodel.DeletedElement
 	 * @generated
 	 */
-	EClass getDeteletedElement();
+	EClass getDeletedElement();
+
+	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.DeletedElement#getDeletedObject <em>Deleted Object</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Deleted Object</em>'.
+	 * @see operationtracemodel.DeletedElement#getDeletedObject()
+	 * @see #getDeletedElement()
+	 * @generated
+	 */
+	EAttribute getDeletedElement_DeletedObject();
 
 	/**
 	 * Returns the meta object for class '{@link operationtracemodel.Insert <em>Insert</em>}'.
@@ -1028,17 +1093,6 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getDelete();
-
-	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.Delete#getDeleted <em>Deleted</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Deleted</em>'.
-	 * @see operationtracemodel.Delete#getDeleted()
-	 * @see #getDelete()
-	 * @generated
-	 */
-	EReference getDelete_Deleted();
 
 	/**
 	 * Returns the meta object for class '{@link operationtracemodel.Cemetary <em>Cemetary</em>}'.
@@ -1178,15 +1232,15 @@ public interface OperationtracemodelPackage extends EPackage {
 	EClass getDeleteAttribute();
 
 	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.DeleteAttribute#getOldValue <em>Old Value</em>}'.
+	 * Returns the meta object for the reference '{@link operationtracemodel.DeleteAttribute#getOldValue <em>Old Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Old Value</em>'.
+	 * @return the meta object for the reference '<em>Old Value</em>'.
 	 * @see operationtracemodel.DeleteAttribute#getOldValue()
 	 * @see #getDeleteAttribute()
 	 * @generated
 	 */
-	EAttribute getDeleteAttribute_OldValue();
+	EReference getDeleteAttribute_OldValue();
 
 	/**
 	 * Returns the meta object for class '{@link operationtracemodel.DeleteReference <em>Delete Reference</em>}'.
@@ -1199,15 +1253,15 @@ public interface OperationtracemodelPackage extends EPackage {
 	EClass getDeleteReference();
 
 	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.DeleteReference#getOldValue <em>Old Value</em>}'.
+	 * Returns the meta object for the reference '{@link operationtracemodel.DeleteReference#getOldValue <em>Old Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Old Value</em>'.
+	 * @return the meta object for the reference '<em>Old Value</em>'.
 	 * @see operationtracemodel.DeleteReference#getOldValue()
 	 * @see #getDeleteReference()
 	 * @generated
 	 */
-	EAttribute getDeleteReference_OldValue();
+	EReference getDeleteReference_OldValue();
 
 	/**
 	 * Returns the meta object for data type '{@link org.eclipse.emf.ecore.EObject <em>EObject</em>}'.
@@ -1376,14 +1430,22 @@ public interface OperationtracemodelPackage extends EPackage {
 		EAttribute STEP__FEATURE = eINSTANCE.getStep_Feature();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.DeteletedElementImpl <em>Deteleted Element</em>}' class.
+		 * The meta object literal for the '{@link operationtracemodel.impl.DeletedElementImpl <em>Deleted Element</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.DeteletedElementImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeteletedElement()
+		 * @see operationtracemodel.impl.DeletedElementImpl
+		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getDeletedElement()
 		 * @generated
 		 */
-		EClass DETELETED_ELEMENT = eINSTANCE.getDeteletedElement();
+		EClass DELETED_ELEMENT = eINSTANCE.getDeletedElement();
+
+		/**
+		 * The meta object literal for the '<em><b>Deleted Object</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DELETED_ELEMENT__DELETED_OBJECT = eINSTANCE.getDeletedElement_DeletedObject();
 
 		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
@@ -1414,14 +1476,6 @@ public interface OperationtracemodelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass DELETE = eINSTANCE.getDelete();
-
-		/**
-		 * The meta object literal for the '<em><b>Deleted</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference DELETE__DELETED = eINSTANCE.getDelete_Deleted();
 
 		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
@@ -1540,12 +1594,12 @@ public interface OperationtracemodelPackage extends EPackage {
 		EClass DELETE_ATTRIBUTE = eINSTANCE.getDeleteAttribute();
 
 		/**
-		 * The meta object literal for the '<em><b>Old Value</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Old Value</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute DELETE_ATTRIBUTE__OLD_VALUE = eINSTANCE.getDeleteAttribute_OldValue();
+		EReference DELETE_ATTRIBUTE__OLD_VALUE = eINSTANCE.getDeleteAttribute_OldValue();
 
 		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.DeleteReferenceImpl <em>Delete Reference</em>}' class.
@@ -1558,12 +1612,12 @@ public interface OperationtracemodelPackage extends EPackage {
 		EClass DELETE_REFERENCE = eINSTANCE.getDeleteReference();
 
 		/**
-		 * The meta object literal for the '<em><b>Old Value</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Old Value</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute DELETE_REFERENCE__OLD_VALUE = eINSTANCE.getDeleteReference_OldValue();
+		EReference DELETE_REFERENCE__OLD_VALUE = eINSTANCE.getDeleteReference_OldValue();
 
 		/**
 		 * The meta object literal for the '<em>EObject</em>' data type.

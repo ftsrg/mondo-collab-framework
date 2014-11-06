@@ -3,20 +3,14 @@
 package operationtracemodel.impl;
 
 import java.util.Collection;
-
 import operationtracemodel.Cemetary;
-import operationtracemodel.DeteletedElement;
+import operationtracemodel.DeletedElement;
 import operationtracemodel.OperationtracemodelPackage;
-
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -42,7 +36,7 @@ public class CemetaryImpl extends MinimalEObjectImpl.Container implements Cemeta
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<DeteletedElement> deleted;
+	protected EList<DeletedElement> deleted;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -68,9 +62,9 @@ public class CemetaryImpl extends MinimalEObjectImpl.Container implements Cemeta
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<DeteletedElement> getDeleted() {
+	public EList<DeletedElement> getDeleted() {
 		if (deleted == null) {
-			deleted = new EObjectContainmentEList<DeteletedElement>(DeteletedElement.class, this, OperationtracemodelPackage.CEMETARY__DELETED);
+			deleted = new EObjectContainmentEList<DeletedElement>(DeletedElement.class, this, OperationtracemodelPackage.CEMETARY__DELETED);
 		}
 		return deleted;
 	}
@@ -114,7 +108,7 @@ public class CemetaryImpl extends MinimalEObjectImpl.Container implements Cemeta
 		switch (featureID) {
 			case OperationtracemodelPackage.CEMETARY__DELETED:
 				getDeleted().clear();
-				getDeleted().addAll((Collection<? extends DeteletedElement>)newValue);
+				getDeleted().addAll((Collection<? extends DeletedElement>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

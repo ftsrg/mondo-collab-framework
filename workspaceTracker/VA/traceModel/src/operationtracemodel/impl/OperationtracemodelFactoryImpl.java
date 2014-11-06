@@ -58,7 +58,7 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 		switch (eClass.getClassifierID()) {
 			case OperationtracemodelPackage.TRACE: return createTrace();
 			case OperationtracemodelPackage.COMMAND: return createCommand();
-			case OperationtracemodelPackage.DELETE: return createDelete();
+			case OperationtracemodelPackage.DELETED_ELEMENT: return createDeletedElement();
 			case OperationtracemodelPackage.CEMETARY: return createCemetary();
 			case OperationtracemodelPackage.INSERT_ATTRIBUTE: return createInsertAttribute();
 			case OperationtracemodelPackage.INSERT_REFERENCE: return createInsertReference();
@@ -134,9 +134,9 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Delete createDelete() {
-		DeleteImpl delete = new DeleteImpl();
-		return delete;
+	public DeletedElement createDeletedElement() {
+		DeletedElementImpl deletedElement = new DeletedElementImpl();
+		return deletedElement;
 	}
 
 	/**

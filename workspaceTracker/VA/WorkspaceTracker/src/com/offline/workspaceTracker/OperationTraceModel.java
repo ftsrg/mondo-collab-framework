@@ -5,10 +5,9 @@ import java.util.Collections;
 import java.util.Map;
 
 import operationtracemodel.Command;
-import operationtracemodel.Delete;
 import operationtracemodel.DeleteAttribute;
 import operationtracemodel.DeleteReference;
-import operationtracemodel.DeteletedElement;
+import operationtracemodel.DeletedElement;
 import operationtracemodel.InsertAttribute;
 import operationtracemodel.InsertReference;
 import operationtracemodel.OperationtracemodelFactory;
@@ -66,8 +65,10 @@ public class OperationTraceModel {
 			tmp = OperationtracemodelFactory.eINSTANCE.createUpdateAttribute();
 		} else if(type == 4 ) {
 			tmp = OperationtracemodelFactory.eINSTANCE.createInsertReference();
-		} else if (type == 5 || type ==6) {
-			tmp = OperationtracemodelFactory.eINSTANCE.createDelete();
+		} else if (type == 5) {
+			tmp = OperationtracemodelFactory.eINSTANCE.createDeleteAttribute();
+		} else if (type == 6) {
+			tmp = OperationtracemodelFactory.eINSTANCE.createDeleteReference();
 		}
 		if(command == null) {
 			command = OperationtracemodelFactory.eINSTANCE.createCommand();
@@ -119,17 +120,18 @@ public class OperationTraceModel {
 	}
 	
 	public void deleteStep(Notifier element, EStructuralFeature feature, Object oldValue, boolean isAttribute) {
-		newStep(element, feature, 5);
-		DeteletedElement e;
+		DeletedElement e = OperationtracemodelFactory.eINSTANCE.createDeletedElement();
 		if(isAttribute){
-			 e = OperationtracemodelFactory.eINSTANCE.createDeleteAttribute();
-			 ((DeleteAttribute)e).setOldValue(oldValue);
+			 newStep(element, feature, 5);
+			 e.setDeletedObject(oldValue);
+			 ((DeleteAttribute)step).setOldValue(e);
 		} else  {
-			e = OperationtracemodelFactory.eINSTANCE.createDeleteReference();
-			((DeleteReference)e).setOldValue((EObject)oldValue);
+			newStep(element, feature, 6);
+			e.setDeletedObject((EObject)oldValue);
+			((DeleteReference)step).setOldValue(e);
 		}
 		trace.getCementary().getDeleted().add(e);
-		((Delete)step).setDeleted(e);
+
 	}
 	
 	public void saveTrace() {

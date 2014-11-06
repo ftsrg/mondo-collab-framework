@@ -19,31 +19,31 @@ package operationtracemodel;
  * @model
  * @generated
  */
-public interface DeleteAttribute extends DeteletedElement {
+public interface DeleteAttribute extends Delete {
 	/**
-	 * Returns the value of the '<em><b>Old Value</b></em>' attribute.
+	 * Returns the value of the '<em><b>Old Value</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Old Value</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Old Value</em>' attribute.
-	 * @see #setOldValue(Object)
+	 * @return the value of the '<em>Old Value</em>' reference.
+	 * @see #setOldValue(DeletedElement)
 	 * @see operationtracemodel.OperationtracemodelPackage#getDeleteAttribute_OldValue()
 	 * @model required="true"
 	 * @generated
 	 */
-	Object getOldValue();
+	DeletedElement getOldValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.DeleteAttribute#getOldValue <em>Old Value</em>}' attribute.
+	 * Sets the value of the '{@link operationtracemodel.DeleteAttribute#getOldValue <em>Old Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Old Value</em>' attribute.
+	 * @param value the new value of the '<em>Old Value</em>' reference.
 	 * @see #getOldValue()
 	 * @generated
 	 */
-	void setOldValue(Object value);
+	void setOldValue(DeletedElement value);
 
 } // DeleteAttribute

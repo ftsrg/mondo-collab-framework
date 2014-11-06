@@ -65,6 +65,7 @@ public class MyContentAdapter2 extends EContentAdapter{
 				if(notification.getFeature() instanceof EAttribute){
 					operationTraceModel.insertStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), true);
 				} else if(notification.getFeature() instanceof EReference) {
+					((EReference)notification.getFeature()).isContainment();
 					operationTraceModel.insertStep((Notifier)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
 				}
 			} else if (notification.getNewValue() == null) {

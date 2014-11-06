@@ -84,9 +84,9 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OperationtracemodelPackage.DETELETED_ELEMENT: {
-				DeteletedElement deteletedElement = (DeteletedElement)theEObject;
-				T result = caseDeteletedElement(deteletedElement);
+			case OperationtracemodelPackage.DELETED_ELEMENT: {
+				DeletedElement deletedElement = (DeletedElement)theEObject;
+				T result = caseDeletedElement(deletedElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -152,14 +152,16 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 			case OperationtracemodelPackage.DELETE_ATTRIBUTE: {
 				DeleteAttribute deleteAttribute = (DeleteAttribute)theEObject;
 				T result = caseDeleteAttribute(deleteAttribute);
-				if (result == null) result = caseDeteletedElement(deleteAttribute);
+				if (result == null) result = caseDelete(deleteAttribute);
+				if (result == null) result = caseStep(deleteAttribute);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case OperationtracemodelPackage.DELETE_REFERENCE: {
 				DeleteReference deleteReference = (DeleteReference)theEObject;
 				T result = caseDeleteReference(deleteReference);
-				if (result == null) result = caseDeteletedElement(deleteReference);
+				if (result == null) result = caseDelete(deleteReference);
+				if (result == null) result = caseStep(deleteReference);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -213,17 +215,17 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Deteleted Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Deleted Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Deteleted Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Deleted Element</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDeteletedElement(DeteletedElement object) {
+	public T caseDeletedElement(DeletedElement object) {
 		return null;
 	}
 

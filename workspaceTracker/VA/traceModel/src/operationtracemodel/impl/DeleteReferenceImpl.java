@@ -3,13 +3,11 @@
 package operationtracemodel.impl;
 
 import operationtracemodel.DeleteReference;
+import operationtracemodel.DeletedElement;
 import operationtracemodel.OperationtracemodelPackage;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -25,26 +23,16 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class DeleteReferenceImpl extends DeteletedElementImpl implements DeleteReference {
+public class DeleteReferenceImpl extends DeleteImpl implements DeleteReference {
 	/**
-	 * The default value of the '{@link #getOldValue() <em>Old Value</em>}' attribute.
+	 * The cached value of the '{@link #getOldValue() <em>Old Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getOldValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final EObject OLD_VALUE_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getOldValue() <em>Old Value</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getOldValue()
-	 * @generated
-	 * @ordered
-	 */
-	protected EObject oldValue = OLD_VALUE_EDEFAULT;
+	protected DeletedElement oldValue;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -70,7 +58,15 @@ public class DeleteReferenceImpl extends DeteletedElementImpl implements DeleteR
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EObject getOldValue() {
+	public DeletedElement getOldValue() {
+		if (oldValue != null && oldValue.eIsProxy()) {
+			InternalEObject oldOldValue = (InternalEObject)oldValue;
+			oldValue = (DeletedElement)eResolveProxy(oldOldValue);
+			if (oldValue != oldOldValue) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OperationtracemodelPackage.DELETE_REFERENCE__OLD_VALUE, oldOldValue, oldValue));
+			}
+		}
 		return oldValue;
 	}
 
@@ -79,8 +75,17 @@ public class DeleteReferenceImpl extends DeteletedElementImpl implements DeleteR
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setOldValue(EObject newOldValue) {
-		EObject oldOldValue = oldValue;
+	public DeletedElement basicGetOldValue() {
+		return oldValue;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setOldValue(DeletedElement newOldValue) {
+		DeletedElement oldOldValue = oldValue;
 		oldValue = newOldValue;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.DELETE_REFERENCE__OLD_VALUE, oldOldValue, oldValue));
@@ -95,7 +100,8 @@ public class DeleteReferenceImpl extends DeteletedElementImpl implements DeleteR
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OperationtracemodelPackage.DELETE_REFERENCE__OLD_VALUE:
-				return getOldValue();
+				if (resolve) return getOldValue();
+				return basicGetOldValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -109,7 +115,7 @@ public class DeleteReferenceImpl extends DeteletedElementImpl implements DeleteR
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case OperationtracemodelPackage.DELETE_REFERENCE__OLD_VALUE:
-				setOldValue((EObject)newValue);
+				setOldValue((DeletedElement)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -124,7 +130,7 @@ public class DeleteReferenceImpl extends DeteletedElementImpl implements DeleteR
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case OperationtracemodelPackage.DELETE_REFERENCE__OLD_VALUE:
-				setOldValue(OLD_VALUE_EDEFAULT);
+				setOldValue((DeletedElement)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -139,25 +145,9 @@ public class DeleteReferenceImpl extends DeteletedElementImpl implements DeleteR
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case OperationtracemodelPackage.DELETE_REFERENCE__OLD_VALUE:
-				return OLD_VALUE_EDEFAULT == null ? oldValue != null : !OLD_VALUE_EDEFAULT.equals(oldValue);
+				return oldValue != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (oldValue: ");
-		result.append(oldValue);
-		result.append(')');
-		return result.toString();
 	}
 
 } //DeleteReferenceImpl

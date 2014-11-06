@@ -80,8 +80,8 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 				return createStepAdapter();
 			}
 			@Override
-			public Adapter caseDeteletedElement(DeteletedElement object) {
-				return createDeteletedElementAdapter();
+			public Adapter caseDeletedElement(DeletedElement object) {
+				return createDeletedElementAdapter();
 			}
 			@Override
 			public Adapter caseInsert(Insert object) {
@@ -186,16 +186,16 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.DeteletedElement <em>Deteleted Element</em>}'.
+	 * Creates a new adapter for an object of class '{@link operationtracemodel.DeletedElement <em>Deleted Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.DeteletedElement
+	 * @see operationtracemodel.DeletedElement
 	 * @generated
 	 */
-	public Adapter createDeteletedElementAdapter() {
+	public Adapter createDeletedElementAdapter() {
 		return null;
 	}
 

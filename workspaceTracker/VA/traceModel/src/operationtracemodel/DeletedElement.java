@@ -6,22 +6,21 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Deteleted Element</b></em>'.
+ * A representation of the model object '<em><b>Deleted Element</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link operationtracemodel.DeteletedElement#getDeletedObject <em>Deleted Object</em>}</li>
+ *   <li>{@link operationtracemodel.DeletedElement#getDeletedObject <em>Deleted Object</em>}</li>
  * </ul>
  * </p>
  *
- * @see operationtracemodel.OperationtracemodelPackage#getDeteletedElement()
+ * @see operationtracemodel.OperationtracemodelPackage#getDeletedElement()
  * @model
  * @generated
  */
-public interface DeteletedElement extends EObject {
-
+public interface DeletedElement extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Deleted Object</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -32,14 +31,14 @@ public interface DeteletedElement extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Deleted Object</em>' attribute.
 	 * @see #setDeletedObject(Object)
-	 * @see operationtracemodel.OperationtracemodelPackage#getDeteletedElement_DeletedObject()
+	 * @see operationtracemodel.OperationtracemodelPackage#getDeletedElement_DeletedObject()
 	 * @model required="true"
 	 * @generated
 	 */
 	Object getDeletedObject();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.DeteletedElement#getDeletedObject <em>Deleted Object</em>}' attribute.
+	 * Sets the value of the '{@link operationtracemodel.DeletedElement#getDeletedObject <em>Deleted Object</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Deleted Object</em>' attribute.
@@ -47,4 +46,5 @@ public interface DeteletedElement extends EObject {
 	 * @generated
 	 */
 	void setDeletedObject(Object value);
-} // DeteletedElement
+
+} // DeletedElement

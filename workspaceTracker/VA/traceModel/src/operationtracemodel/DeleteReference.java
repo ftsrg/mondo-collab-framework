@@ -2,7 +2,6 @@
  */
 package operationtracemodel;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -20,31 +19,31 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface DeleteReference extends DeteletedElement {
+public interface DeleteReference extends Delete {
 	/**
-	 * Returns the value of the '<em><b>Old Value</b></em>' attribute.
+	 * Returns the value of the '<em><b>Old Value</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Old Value</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Old Value</em>' attribute.
-	 * @see #setOldValue(EObject)
+	 * @return the value of the '<em>Old Value</em>' reference.
+	 * @see #setOldValue(DeletedElement)
 	 * @see operationtracemodel.OperationtracemodelPackage#getDeleteReference_OldValue()
-	 * @model dataType="operationtracemodel.EObject" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
-	EObject getOldValue();
+	DeletedElement getOldValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.DeleteReference#getOldValue <em>Old Value</em>}' attribute.
+	 * Sets the value of the '{@link operationtracemodel.DeleteReference#getOldValue <em>Old Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Old Value</em>' attribute.
+	 * @param value the new value of the '<em>Old Value</em>' reference.
 	 * @see #getOldValue()
 	 * @generated
 	 */
-	void setOldValue(EObject value);
+	void setOldValue(DeletedElement value);
 
 } // DeleteReference

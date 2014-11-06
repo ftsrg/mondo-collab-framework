@@ -40,13 +40,13 @@ public interface OperationtracemodelFactory extends EFactory {
 	Command createCommand();
 
 	/**
-	 * Returns a new object of class '<em>Delete</em>'.
+	 * Returns a new object of class '<em>Deleted Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Delete</em>'.
+	 * @return a new object of class '<em>Deleted Element</em>'.
 	 * @generated
 	 */
-	Delete createDelete();
+	DeletedElement createDeletedElement();
 
 	/**
 	 * Returns a new object of class '<em>Cemetary</em>'.
