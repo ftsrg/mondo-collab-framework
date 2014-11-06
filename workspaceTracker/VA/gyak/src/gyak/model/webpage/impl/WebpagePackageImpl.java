@@ -288,6 +288,15 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getCategory_Cattemp() {
+		return (EReference)categoryEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getArticles() {
 		return articlesEClass;
 	}
@@ -384,6 +393,7 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 		categoryEClass = createEClass(CATEGORY);
 		createEAttribute(categoryEClass, CATEGORY__NAME);
 		createEReference(categoryEClass, CATEGORY__ARTICLES);
+		createEReference(categoryEClass, CATEGORY__CATTEMP);
 
 		articlesEClass = createEClass(ARTICLES);
 		createEAttribute(articlesEClass, ARTICLES__NAME);
@@ -428,7 +438,7 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 		initEAttribute(getWebpage_Description(), ecorePackage.getEString(), "description", null, 0, 1, Webpage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getWebpage_Keywords(), ecorePackage.getEString(), "keywords", null, 0, 1, Webpage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getWebpage_Categories(), this.getCategory(), null, "categories", null, 0, 1, Webpage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getWebpage_Temp(), this.getTemp(), null, "temp", null, 1, 1, Webpage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getWebpage_Temp(), this.getTemp(), null, "temp", null, 1, -1, Webpage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(myWebEClass, MyWeb.class, "MyWeb", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMyWeb_Name(), ecorePackage.getEString(), "name", null, 0, 1, MyWeb.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -441,6 +451,7 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 		initEClass(categoryEClass, Category.class, "Category", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getCategory_Name(), ecorePackage.getEString(), "name", null, 0, 1, Category.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCategory_Articles(), this.getArticles(), null, "articles", null, 0, -1, Category.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCategory_Cattemp(), this.getTemp(), null, "cattemp", null, 0, -1, Category.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(articlesEClass, Articles.class, "Articles", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArticles_Name(), ecorePackage.getEString(), "name", null, 0, 1, Articles.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

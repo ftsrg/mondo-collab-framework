@@ -15,32 +15,35 @@ import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import com.offline.workspaceTracker.MyResourceSet;
+import com.offline.workspaceTracker.MyContentAdapter2;
 
 
-public class MyNotification {
+public class MyNotification2 {
 	
-
 	public static void main(String[] args) {
-		new MyNotification();
+		new MyNotification2();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public MyNotification(){
+	public MyNotification2(){
 		// Initialize the model
 	    WebpagePackage.eINSTANCE.eClass();
 		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 	    Map<String, Object> m = reg.getExtensionToFactoryMap();
 	    m.put("website", new XMIResourceFactoryImpl());
-	
+	    
 	    // Obtain a new resource set
-	    MyResourceSet resSet = new MyResourceSet();
-	
+	    ResourceSet resSet = new ResourceSetImpl();
+	    MyContentAdapter2 contentAdapter = new MyContentAdapter2(resSet, URI.createURI("models/trace.operationtracemodel", true));
 	    // Get the resource
-	    Resource resource = resSet.myGetResource(URI
-	        .createURI("models/my3.website", true),true, true);
+	    Resource resource = resSet.getResource(URI
+	        .createURI("models/my3.website", true), true);
+	    
+	    resource.eAdapters().add(contentAdapter);
 	    
 				    
 
@@ -64,11 +67,12 @@ public class MyNotification {
 	   ((Articles)((Webpage) myWeb.getPages().get(1)).getCategories().getArticles().get(0)).getIze().add(myWeb);
 	   //System.out.println(myWeb.getName());
 	   myWeb.setName("teszt3");
+	   myWeb.getPages().remove(0);
 	  // System.out.println(myWeb.getName());
 	   resource.getContents().remove(0);
 	   try {
 		   resource.save(Collections.EMPTY_MAP);
-		   resSet.saveTrace();
+		   contentAdapter.getTraceModel().save(Collections.EMPTY_MAP);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

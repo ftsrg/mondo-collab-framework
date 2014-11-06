@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link gyak.model.webpage.Category#getName <em>Name</em>}</li>
  *   <li>{@link gyak.model.webpage.Category#getArticles <em>Articles</em>}</li>
+ *   <li>{@link gyak.model.webpage.Category#getCattemp <em>Cattemp</em>}</li>
  * </ul>
  * </p>
  *
@@ -65,5 +66,21 @@ public interface Category extends EObject {
 	 * @generated
 	 */
 	EList getArticles();
+
+	/**
+	 * Returns the value of the '<em><b>Cattemp</b></em>' reference list.
+	 * The list contents are of type {@link gyak.model.webpage.Temp}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Cattemp</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Cattemp</em>' reference list.
+	 * @see gyak.model.webpage.WebpagePackage#getCategory_Cattemp()
+	 * @model type="gyak.model.webpage.Temp"
+	 * @generated
+	 */
+	EList getCattemp();
 
 } // Category

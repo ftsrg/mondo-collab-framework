@@ -112,7 +112,7 @@ public interface WebpagePackage extends EPackage {
 	int WEBPAGE__CATEGORIES = 4;
 
 	/**
-	 * The feature id for the '<em><b>Temp</b></em>' containment reference.
+	 * The feature id for the '<em><b>Temp</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -231,13 +231,22 @@ public interface WebpagePackage extends EPackage {
 	int CATEGORY__ARTICLES = 1;
 
 	/**
+	 * The feature id for the '<em><b>Cattemp</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY__CATTEMP = 2;
+
+	/**
 	 * The number of structural features of the '<em>Category</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CATEGORY_FEATURE_COUNT = 2;
+	int CATEGORY_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link gyak.model.webpage.impl.ArticlesImpl <em>Articles</em>}' class.
@@ -381,10 +390,10 @@ public interface WebpagePackage extends EPackage {
 	EReference getWebpage_Categories();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link gyak.model.webpage.Webpage#getTemp <em>Temp</em>}'.
+	 * Returns the meta object for the containment reference list '{@link gyak.model.webpage.Webpage#getTemp <em>Temp</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Temp</em>'.
+	 * @return the meta object for the containment reference list '<em>Temp</em>'.
 	 * @see gyak.model.webpage.Webpage#getTemp()
 	 * @see #getWebpage()
 	 * @generated
@@ -498,6 +507,17 @@ public interface WebpagePackage extends EPackage {
 	 * @generated
 	 */
 	EReference getCategory_Articles();
+
+	/**
+	 * Returns the meta object for the reference list '{@link gyak.model.webpage.Category#getCattemp <em>Cattemp</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Cattemp</em>'.
+	 * @see gyak.model.webpage.Category#getCattemp()
+	 * @see #getCategory()
+	 * @generated
+	 */
+	EReference getCategory_Cattemp();
 
 	/**
 	 * Returns the meta object for class '{@link gyak.model.webpage.Articles <em>Articles</em>}'.
@@ -636,7 +656,7 @@ public interface WebpagePackage extends EPackage {
 		EReference WEBPAGE__CATEGORIES = eINSTANCE.getWebpage_Categories();
 
 		/**
-		 * The meta object literal for the '<em><b>Temp</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Temp</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -726,6 +746,14 @@ public interface WebpagePackage extends EPackage {
 		 * @generated
 		 */
 		EReference CATEGORY__ARTICLES = eINSTANCE.getCategory_Articles();
+
+		/**
+		 * The meta object literal for the '<em><b>Cattemp</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CATEGORY__CATTEMP = eINSTANCE.getCategory_Cattemp();
 
 		/**
 		 * The meta object literal for the '{@link gyak.model.webpage.impl.ArticlesImpl <em>Articles</em>}' class.

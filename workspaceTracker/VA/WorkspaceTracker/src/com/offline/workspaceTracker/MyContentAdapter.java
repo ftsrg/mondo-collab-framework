@@ -19,6 +19,7 @@ public class MyContentAdapter extends EContentAdapter{
 	
 	@SuppressWarnings("unchecked")
 	public void notifyChanged(Notification notification) {
+		System.out.println(Notification.REMOVE_MANY);
 		System.out.println(notification.getNotifier().getClass() + ":" + notification.getFeature());
 		super.notifyChanged(notification);
 		switch(notification.getEventType()) {
@@ -69,11 +70,12 @@ public class MyContentAdapter extends EContentAdapter{
 			}
 			break;	
 		case 6 :
+			System.out.println("arrara");
 			myResourceSet.endCommand();
 			break;	
 		default: break;
 		}
-		if (notification.getNewValue() !=null)
-  	  System.out.println(notification.getEventType() + ": " + notification.getNewValue().getClass() + ": " +notification.getNotifier());
+		//if (notification.getNewValue() !=null)
+  	  System.out.println(notification.getEventType() + ": " + notification.getOldValue() + ": " +notification.getNotifier());
     }
 }

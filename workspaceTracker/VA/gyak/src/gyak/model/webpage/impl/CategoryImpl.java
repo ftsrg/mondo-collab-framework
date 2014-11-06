@@ -4,6 +4,7 @@ package gyak.model.webpage.impl;
 
 import gyak.model.webpage.Articles;
 import gyak.model.webpage.Category;
+import gyak.model.webpage.Temp;
 import gyak.model.webpage.WebpagePackage;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
@@ -14,6 +15,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -25,6 +27,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link gyak.model.webpage.impl.CategoryImpl#getName <em>Name</em>}</li>
  *   <li>{@link gyak.model.webpage.impl.CategoryImpl#getArticles <em>Articles</em>}</li>
+ *   <li>{@link gyak.model.webpage.impl.CategoryImpl#getCattemp <em>Cattemp</em>}</li>
  * </ul>
  * </p>
  *
@@ -60,6 +63,16 @@ public class CategoryImpl extends MinimalEObjectImpl.Container implements Catego
 	 * @ordered
 	 */
 	protected EList articles;
+
+	/**
+	 * The cached value of the '{@link #getCattemp() <em>Cattemp</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCattemp()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList cattemp;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -117,6 +130,18 @@ public class CategoryImpl extends MinimalEObjectImpl.Container implements Catego
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList getCattemp() {
+		if (cattemp == null) {
+			cattemp = new EObjectResolvingEList(Temp.class, this, WebpagePackage.CATEGORY__CATTEMP);
+		}
+		return cattemp;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case WebpagePackage.CATEGORY__ARTICLES:
@@ -136,6 +161,8 @@ public class CategoryImpl extends MinimalEObjectImpl.Container implements Catego
 				return getName();
 			case WebpagePackage.CATEGORY__ARTICLES:
 				return getArticles();
+			case WebpagePackage.CATEGORY__CATTEMP:
+				return getCattemp();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -154,6 +181,10 @@ public class CategoryImpl extends MinimalEObjectImpl.Container implements Catego
 				getArticles().clear();
 				getArticles().addAll((Collection)newValue);
 				return;
+			case WebpagePackage.CATEGORY__CATTEMP:
+				getCattemp().clear();
+				getCattemp().addAll((Collection)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -171,6 +202,9 @@ public class CategoryImpl extends MinimalEObjectImpl.Container implements Catego
 			case WebpagePackage.CATEGORY__ARTICLES:
 				getArticles().clear();
 				return;
+			case WebpagePackage.CATEGORY__CATTEMP:
+				getCattemp().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -186,6 +220,8 @@ public class CategoryImpl extends MinimalEObjectImpl.Container implements Catego
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case WebpagePackage.CATEGORY__ARTICLES:
 				return articles != null && !articles.isEmpty();
+			case WebpagePackage.CATEGORY__CATTEMP:
+				return cattemp != null && !cattemp.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

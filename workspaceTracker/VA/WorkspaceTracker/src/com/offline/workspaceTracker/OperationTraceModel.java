@@ -1,4 +1,5 @@
 package com.offline.workspaceTracker;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -11,7 +12,6 @@ import operationtracemodel.DeteletedElement;
 import operationtracemodel.InsertAttribute;
 import operationtracemodel.InsertReference;
 import operationtracemodel.OperationtracemodelFactory;
-import operationtracemodel.OperationtracemodelPackage;
 import operationtracemodel.Step;
 import operationtracemodel.Trace;
 import operationtracemodel.UpdateAttribute;
@@ -22,58 +22,33 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-
-
-public class MyResourceSet extends ResourceSetImpl{
-	
-	private Resource resource;
+public class OperationTraceModel {
+	private Resource traceModel;
 	private Trace trace;
 	private Command command;
 	private Step step;
-	private MyContentAdapter myContentAdapter;
 	
-	public MyResourceSet(){
-		super();
-		
-	    OperationtracemodelPackage.eINSTANCE.eClass();
-	    
-	    // Register the XMI resource factory for the .website extension
-	    myContentAdapter = new MyContentAdapter(this);
-	    Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+	public OperationTraceModel(ResourceSet resourceSet, URI uri, boolean isExsits){
+		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 	    Map<String, Object> m = reg.getExtensionToFactoryMap();
 	    m.put("operationtracemodel", new XMIResourceFactoryImpl());
-		command = null;
-		trace = OperationtracemodelFactory.eINSTANCE.createTrace();
-		//System.out.println(this.myCreateResource(URI.createURI("website/trace.operationtracemodel",true), false));
-		resource = this.myCreateResource(URI.createURI("models/trace.operationtracemodel", true), false);
-		resource.getContents().add(trace);
-		trace.setCementary(OperationtracemodelFactory.eINSTANCE.createCemetary());
-		
-	}
-	
-	public Resource createResource(URI uri) {
-		return myCreateResource(uri, true);
-		
-	}
-	
-	public Resource myCreateResource(URI uri, boolean hasNotification) {
-		Resource resource = super.createResource(uri);
-		if(hasNotification) {
-			resource.eAdapters().add(myContentAdapter);
+		if(isExsits) {
+			traceModel = resourceSet.getResource(uri, false);
+			trace = (Trace)traceModel.getContents().get(0);
+			command = ((Trace)traceModel.getContents().get(0)).getLastCommand();
+			step = command.getSteps().get(0);
+			while (step.getNextStep() != null) {
+				step = step.getNextStep();
+			}
+		} else {
+			traceModel = resourceSet.createResource(uri);
+			trace = OperationtracemodelFactory.eINSTANCE.createTrace();
+			traceModel.getContents().add(trace);
+			trace.setCementary(OperationtracemodelFactory.eINSTANCE.createCemetary());
 		}
-		return resource;
-		
-	}
-	
-	public Resource myGetResource(URI uri, boolean loadOnDemand, boolean hasNotification){
-		Resource resource = super.getResource(uri, loadOnDemand);
-		if(hasNotification) {
-			resource.eAdapters().add(myContentAdapter);
-		}
-		return resource;
 	}
 	
 	public void endCommand() {
@@ -159,13 +134,16 @@ public class MyResourceSet extends ResourceSetImpl{
 	
 	public void saveTrace() {
 		try {
-			resource.save(Collections.EMPTY_MAP);
+			traceModel.save(Collections.EMPTY_MAP);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	
 
+	public Resource getTraceModel() {
+		return traceModel;
+	}
+	
+	
 }

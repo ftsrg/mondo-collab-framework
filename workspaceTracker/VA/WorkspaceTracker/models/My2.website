@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="ASCII"?>
-<webpage:MyWeb xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:webpage="http://webpage/1.0" name="iz&#xe9; teszt">
-  <pages name="index" title="Eclipse EMFi" description="Main webpage" keywords="Eclipse, EMF"/>
-</webpage:MyWeb>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:webpage="http://webpage/1.0">
+  <webpage:MyWeb name="teszt3" title="tttt">
+    <keywords>test</keywords>
+    <pages/>
+    <pages name="new webpage">
+      <categories>
+        <articles/>
+      </categories>
+    </pages>
+    <pages/>
+    <pages/>
+  </webpage:MyWeb>
+  <webpage:MyWeb/>
+</xmi:XMI>

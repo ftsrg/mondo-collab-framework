@@ -120,7 +120,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_16iVIVkhEeSqH_VqfxhgmQ" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="OperationTraceModel.ecore#//Delete"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_16iVIlkhEeSqH_VqfxhgmQ" x="555" y="390"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_16iVIlkhEeSqH_VqfxhgmQ" x="555" y="370"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_qU98AFkoEeSqH_VqfxhgmQ" type="1004">
     <children xmi:type="notation:Node" xmi:id="_qU98A1koEeSqH_VqfxhgmQ" type="4008"/>

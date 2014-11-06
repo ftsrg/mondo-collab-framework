@@ -7,14 +7,18 @@ import gyak.model.webpage.Temp;
 import gyak.model.webpage.Webpage;
 import gyak.model.webpage.WebpagePackage;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -126,14 +130,14 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 	protected Category categories;
 
 	/**
-	 * The cached value of the '{@link #getTemp() <em>Temp</em>}' containment reference.
+	 * The cached value of the '{@link #getTemp() <em>Temp</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getTemp()
 	 * @generated
 	 * @ordered
 	 */
-	protected Temp temp;
+	protected EList temp;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -285,42 +289,11 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Temp getTemp() {
+	public EList getTemp() {
+		if (temp == null) {
+			temp = new EObjectContainmentEList(Temp.class, this, WebpagePackage.WEBPAGE__TEMP);
+		}
 		return temp;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetTemp(Temp newTemp, NotificationChain msgs) {
-		Temp oldTemp = temp;
-		temp = newTemp;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WebpagePackage.WEBPAGE__TEMP, oldTemp, newTemp);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setTemp(Temp newTemp) {
-		if (newTemp != temp) {
-			NotificationChain msgs = null;
-			if (temp != null)
-				msgs = ((InternalEObject)temp).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WebpagePackage.WEBPAGE__TEMP, null, msgs);
-			if (newTemp != null)
-				msgs = ((InternalEObject)newTemp).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WebpagePackage.WEBPAGE__TEMP, null, msgs);
-			msgs = basicSetTemp(newTemp, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WebpagePackage.WEBPAGE__TEMP, newTemp, newTemp));
 	}
 
 	/**
@@ -333,7 +306,7 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 			case WebpagePackage.WEBPAGE__CATEGORIES:
 				return basicSetCategories(null, msgs);
 			case WebpagePackage.WEBPAGE__TEMP:
-				return basicSetTemp(null, msgs);
+				return ((InternalEList)getTemp()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -384,7 +357,8 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 				setCategories((Category)newValue);
 				return;
 			case WebpagePackage.WEBPAGE__TEMP:
-				setTemp((Temp)newValue);
+				getTemp().clear();
+				getTemp().addAll((Collection)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -413,7 +387,7 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 				setCategories((Category)null);
 				return;
 			case WebpagePackage.WEBPAGE__TEMP:
-				setTemp((Temp)null);
+				getTemp().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -437,7 +411,7 @@ public class WebpageImpl extends MinimalEObjectImpl.Container implements Webpage
 			case WebpagePackage.WEBPAGE__CATEGORIES:
 				return categories != null;
 			case WebpagePackage.WEBPAGE__TEMP:
-				return temp != null;
+				return temp != null && !temp.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
