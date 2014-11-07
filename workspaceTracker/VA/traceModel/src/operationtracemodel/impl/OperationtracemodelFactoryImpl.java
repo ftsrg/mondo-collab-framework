@@ -3,13 +3,13 @@
 package operationtracemodel.impl;
 
 import operationtracemodel.*;
-import org.eclipse.emf.common.notify.Notifier;
+
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EStructuralFeature;
+
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
@@ -58,54 +58,16 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 		switch (eClass.getClassifierID()) {
 			case OperationtracemodelPackage.TRACE: return createTrace();
 			case OperationtracemodelPackage.COMMAND: return createCommand();
-			case OperationtracemodelPackage.DELETED_ELEMENT: return createDeletedElement();
+			case OperationtracemodelPackage.REMOVED_ELEMENT: return createRemovedElement();
 			case OperationtracemodelPackage.CEMETARY: return createCemetary();
 			case OperationtracemodelPackage.INSERT_ATTRIBUTE: return createInsertAttribute();
 			case OperationtracemodelPackage.INSERT_REFERENCE: return createInsertReference();
 			case OperationtracemodelPackage.UPDATE_ATTRIBUTE: return createUpdateAttribute();
 			case OperationtracemodelPackage.UPDATE_REFERENCE: return createUpdateReference();
-			case OperationtracemodelPackage.DELETE_ATTRIBUTE: return createDeleteAttribute();
-			case OperationtracemodelPackage.DELETE_REFERENCE: return createDeleteReference();
+			case OperationtracemodelPackage.REMOVE_ATTRIBUTE: return createRemoveAttribute();
+			case OperationtracemodelPackage.REMOVE_REFERENCE: return createRemoveReference();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Object createFromString(EDataType eDataType, String initialValue) {
-		switch (eDataType.getClassifierID()) {
-			case OperationtracemodelPackage.EOBJECT:
-				return createEObjectFromString(eDataType, initialValue);
-			case OperationtracemodelPackage.NOTIFIER:
-				return createNotifierFromString(eDataType, initialValue);
-			case OperationtracemodelPackage.ESTRUCTURAL_FEATURE:
-				return createEStructuralFeatureFromString(eDataType, initialValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue) {
-		switch (eDataType.getClassifierID()) {
-			case OperationtracemodelPackage.EOBJECT:
-				return convertEObjectToString(eDataType, instanceValue);
-			case OperationtracemodelPackage.NOTIFIER:
-				return convertNotifierToString(eDataType, instanceValue);
-			case OperationtracemodelPackage.ESTRUCTURAL_FEATURE:
-				return convertEStructuralFeatureToString(eDataType, instanceValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -134,9 +96,9 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DeletedElement createDeletedElement() {
-		DeletedElementImpl deletedElement = new DeletedElementImpl();
-		return deletedElement;
+	public RemovedElement createRemovedElement() {
+		RemovedElementImpl removedElement = new RemovedElementImpl();
+		return removedElement;
 	}
 
 	/**
@@ -194,9 +156,9 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DeleteAttribute createDeleteAttribute() {
-		DeleteAttributeImpl deleteAttribute = new DeleteAttributeImpl();
-		return deleteAttribute;
+	public RemoveAttribute createRemoveAttribute() {
+		RemoveAttributeImpl removeAttribute = new RemoveAttributeImpl();
+		return removeAttribute;
 	}
 
 	/**
@@ -204,63 +166,9 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DeleteReference createDeleteReference() {
-		DeleteReferenceImpl deleteReference = new DeleteReferenceImpl();
-		return deleteReference;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EObject createEObjectFromString(EDataType eDataType, String initialValue) {
-		return (EObject)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertEObjectToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Notifier createNotifierFromString(EDataType eDataType, String initialValue) {
-		return (Notifier)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertNotifierToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EStructuralFeature createEStructuralFeatureFromString(EDataType eDataType, String initialValue) {
-		return (EStructuralFeature)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertEStructuralFeatureToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
+	public RemoveReference createRemoveReference() {
+		RemoveReferenceImpl removeReference = new RemoveReferenceImpl();
+		return removeReference;
 	}
 
 	/**

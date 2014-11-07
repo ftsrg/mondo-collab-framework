@@ -3,7 +3,6 @@
 package operationtracemodel;
 
 
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Insert</b></em>'.

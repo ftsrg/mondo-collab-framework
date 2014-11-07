@@ -2,13 +2,16 @@
  */
 package operationtracemodel.impl;
 
+import ecore.EObject;
+import ecore.EStructuralFeature;
 import operationtracemodel.OperationtracemodelPackage;
 import operationtracemodel.Step;
+
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.Notifier;
+
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
@@ -39,44 +42,23 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 	protected Step nextStep;
 
 	/**
-	 * The default value of the '{@link #getElement() <em>Element</em>}' attribute.
+	 * The cached value of the '{@link #getElement() <em>Element</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getElement()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Notifier ELEMENT_EDEFAULT = null;
-
+	protected EObject element;
 	/**
-	 * The cached value of the '{@link #getElement() <em>Element</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getElement()
-	 * @generated
-	 * @ordered
-	 */
-	protected Notifier element = ELEMENT_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getFeature() <em>Feature</em>}' attribute.
+	 * The cached value of the '{@link #getFeature() <em>Feature</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getFeature()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final EStructuralFeature FEATURE_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getFeature() <em>Feature</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getFeature()
-	 * @generated
-	 * @ordered
-	 */
-	protected EStructuralFeature feature = FEATURE_EDEFAULT;
+	protected EStructuralFeature feature;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -140,7 +122,15 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Notifier getElement() {
+	public org.eclipse.emf.ecore.EObject getElement() {
+		if (element != null && element.eIsProxy()) {
+			InternalEObject oldElement = (InternalEObject)element;
+			element = eResolveProxy(oldElement);
+			if (element != oldElement) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OperationtracemodelPackage.STEP__ELEMENT, oldElement, element));
+			}
+		}
 		return element;
 	}
 
@@ -149,8 +139,17 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElement(Notifier newElement) {
-		Notifier oldElement = element;
+	public org.eclipse.emf.ecore.EObject basicGetElement() {
+		return element;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setElement(org.eclipse.emf.ecore.EObject newElement) {
+		org.eclipse.emf.ecore.EObject oldElement = element;
 		element = newElement;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.STEP__ELEMENT, oldElement, element));
@@ -162,6 +161,23 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 	 * @generated
 	 */
 	public EStructuralFeature getFeature() {
+		if (feature != null && feature.eIsProxy()) {
+			InternalEObject oldFeature = (InternalEObject)feature;
+			feature = (EStructuralFeature)eResolveProxy(oldFeature);
+			if (feature != oldFeature) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OperationtracemodelPackage.STEP__FEATURE, oldFeature, feature));
+			}
+		}
+		return feature;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EStructuralFeature basicGetFeature() {
 		return feature;
 	}
 
@@ -189,9 +205,11 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 				if (resolve) return getNextStep();
 				return basicGetNextStep();
 			case OperationtracemodelPackage.STEP__ELEMENT:
-				return getElement();
+				if (resolve) return getElement();
+				return basicGetElement();
 			case OperationtracemodelPackage.STEP__FEATURE:
-				return getFeature();
+				if (resolve) return getFeature();
+				return basicGetFeature();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -208,7 +226,7 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 				setNextStep((Step)newValue);
 				return;
 			case OperationtracemodelPackage.STEP__ELEMENT:
-				setElement((Notifier)newValue);
+				setElement((org.eclipse.emf.ecore.EObject)newValue);
 				return;
 			case OperationtracemodelPackage.STEP__FEATURE:
 				setFeature((EStructuralFeature)newValue);
@@ -229,10 +247,10 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 				setNextStep((Step)null);
 				return;
 			case OperationtracemodelPackage.STEP__ELEMENT:
-				setElement(ELEMENT_EDEFAULT);
+				setElement((org.eclipse.emf.ecore.EObject)null);
 				return;
 			case OperationtracemodelPackage.STEP__FEATURE:
-				setFeature(FEATURE_EDEFAULT);
+				setFeature((EStructuralFeature)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -249,29 +267,11 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 			case OperationtracemodelPackage.STEP__NEXT_STEP:
 				return nextStep != null;
 			case OperationtracemodelPackage.STEP__ELEMENT:
-				return ELEMENT_EDEFAULT == null ? element != null : !ELEMENT_EDEFAULT.equals(element);
+				return element != null;
 			case OperationtracemodelPackage.STEP__FEATURE:
-				return FEATURE_EDEFAULT == null ? feature != null : !FEATURE_EDEFAULT.equals(feature);
+				return feature != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (element: ");
-		result.append(element);
-		result.append(", feature: ");
-		result.append(feature);
-		result.append(')');
-		return result.toString();
 	}
 
 } //StepImpl

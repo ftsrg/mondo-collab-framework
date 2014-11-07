@@ -2,6 +2,7 @@
  */
 package gyak.model.webpage.impl;
 
+import ecore.EObject;
 import gyak.model.webpage.Articles;
 import gyak.model.webpage.MyWeb;
 import gyak.model.webpage.WebpagePackage;
@@ -14,6 +15,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
@@ -28,6 +30,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link gyak.model.webpage.impl.ArticlesImpl#getName <em>Name</em>}</li>
  *   <li>{@link gyak.model.webpage.impl.ArticlesImpl#getCreated <em>Created</em>}</li>
  *   <li>{@link gyak.model.webpage.impl.ArticlesImpl#getIze <em>Ize</em>}</li>
+ *   <li>{@link gyak.model.webpage.impl.ArticlesImpl#getEReference0 <em>EReference0</em>}</li>
  * </ul>
  * </p>
  *
@@ -83,6 +86,16 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 	 * @ordered
 	 */
 	protected EList ize;
+
+	/**
+	 * The cached value of the '{@link #getEReference0() <em>EReference0</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getEReference0()
+	 * @generated
+	 * @ordered
+	 */
+	protected EObject eReference0;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -161,6 +174,44 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public org.eclipse.emf.ecore.EObject getEReference0() {
+		if (eReference0 != null && eReference0.eIsProxy()) {
+			InternalEObject oldEReference0 = (InternalEObject)eReference0;
+			eReference0 = eResolveProxy(oldEReference0);
+			if (eReference0 != oldEReference0) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, WebpagePackage.ARTICLES__EREFERENCE0, oldEReference0, eReference0));
+			}
+		}
+		return eReference0;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public org.eclipse.emf.ecore.EObject basicGetEReference0() {
+		return eReference0;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setEReference0(org.eclipse.emf.ecore.EObject newEReference0) {
+		org.eclipse.emf.ecore.EObject oldEReference0 = eReference0;
+		eReference0 = newEReference0;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, WebpagePackage.ARTICLES__EREFERENCE0, oldEReference0, eReference0));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case WebpagePackage.ARTICLES__NAME:
@@ -169,6 +220,9 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 				return getCreated();
 			case WebpagePackage.ARTICLES__IZE:
 				return getIze();
+			case WebpagePackage.ARTICLES__EREFERENCE0:
+				if (resolve) return getEReference0();
+				return basicGetEReference0();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -190,6 +244,9 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 				getIze().clear();
 				getIze().addAll((Collection)newValue);
 				return;
+			case WebpagePackage.ARTICLES__EREFERENCE0:
+				setEReference0((org.eclipse.emf.ecore.EObject)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -210,6 +267,9 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 			case WebpagePackage.ARTICLES__IZE:
 				getIze().clear();
 				return;
+			case WebpagePackage.ARTICLES__EREFERENCE0:
+				setEReference0((org.eclipse.emf.ecore.EObject)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -227,6 +287,8 @@ public class ArticlesImpl extends MinimalEObjectImpl.Container implements Articl
 				return CREATED_EDEFAULT == null ? created != null : !CREATED_EDEFAULT.equals(created);
 			case WebpagePackage.ARTICLES__IZE:
 				return ize != null && !ize.isEmpty();
+			case WebpagePackage.ARTICLES__EREFERENCE0:
+				return eReference0 != null;
 		}
 		return super.eIsSet(featureID);
 	}

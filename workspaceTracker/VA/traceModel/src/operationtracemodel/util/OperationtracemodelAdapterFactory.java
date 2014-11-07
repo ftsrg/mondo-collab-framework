@@ -80,8 +80,8 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 				return createStepAdapter();
 			}
 			@Override
-			public Adapter caseDeletedElement(DeletedElement object) {
-				return createDeletedElementAdapter();
+			public Adapter caseRemovedElement(RemovedElement object) {
+				return createRemovedElementAdapter();
 			}
 			@Override
 			public Adapter caseInsert(Insert object) {
@@ -92,8 +92,8 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 				return createUpdateAdapter();
 			}
 			@Override
-			public Adapter caseDelete(Delete object) {
-				return createDeleteAdapter();
+			public Adapter caseRemove(Remove object) {
+				return createRemoveAdapter();
 			}
 			@Override
 			public Adapter caseCemetary(Cemetary object) {
@@ -116,12 +116,12 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 				return createUpdateReferenceAdapter();
 			}
 			@Override
-			public Adapter caseDeleteAttribute(DeleteAttribute object) {
-				return createDeleteAttributeAdapter();
+			public Adapter caseRemoveAttribute(RemoveAttribute object) {
+				return createRemoveAttributeAdapter();
 			}
 			@Override
-			public Adapter caseDeleteReference(DeleteReference object) {
-				return createDeleteReferenceAdapter();
+			public Adapter caseRemoveReference(RemoveReference object) {
+				return createRemoveReferenceAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -186,16 +186,16 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.DeletedElement <em>Deleted Element</em>}'.
+	 * Creates a new adapter for an object of class '{@link operationtracemodel.RemovedElement <em>Removed Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.DeletedElement
+	 * @see operationtracemodel.RemovedElement
 	 * @generated
 	 */
-	public Adapter createDeletedElementAdapter() {
+	public Adapter createRemovedElementAdapter() {
 		return null;
 	}
 
@@ -228,16 +228,16 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.Delete <em>Delete</em>}'.
+	 * Creates a new adapter for an object of class '{@link operationtracemodel.Remove <em>Remove</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.Delete
+	 * @see operationtracemodel.Remove
 	 * @generated
 	 */
-	public Adapter createDeleteAdapter() {
+	public Adapter createRemoveAdapter() {
 		return null;
 	}
 
@@ -312,30 +312,30 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.DeleteAttribute <em>Delete Attribute</em>}'.
+	 * Creates a new adapter for an object of class '{@link operationtracemodel.RemoveAttribute <em>Remove Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.DeleteAttribute
+	 * @see operationtracemodel.RemoveAttribute
 	 * @generated
 	 */
-	public Adapter createDeleteAttributeAdapter() {
+	public Adapter createRemoveAttributeAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.DeleteReference <em>Delete Reference</em>}'.
+	 * Creates a new adapter for an object of class '{@link operationtracemodel.RemoveReference <em>Remove Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.DeleteReference
+	 * @see operationtracemodel.RemoveReference
 	 * @generated
 	 */
-	public Adapter createDeleteReferenceAdapter() {
+	public Adapter createRemoveReferenceAdapter() {
 		return null;
 	}
 

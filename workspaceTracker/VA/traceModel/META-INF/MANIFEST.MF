@@ -7,7 +7,10 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: operationtracemodel,
+Export-Package: ecore,
+ ecore.impl,
+ ecore.util,
+ operationtracemodel,
  operationtracemodel.impl,
  operationtracemodel.util
 Require-Bundle: org.eclipse.core.runtime,

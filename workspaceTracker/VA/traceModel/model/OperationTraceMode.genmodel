@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/traceModel/src" modelPluginID="traceModel" modelName="OperationTraceMode"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="5.0" copyrightFields="false" operationReflection="true" importOrganizing="true">
+  <foreignModel>OperationTraceModel.ecore</foreignModel>
+  <genPackages prefix="Operationtracemodel" disposableProviderFactory="true" ecorePackage="OperationTraceModel.ecore#/">
+    <genClasses ecoreClass="OperationTraceModel.ecore#//Trace">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OperationTraceModel.ecore#//Trace/Commands"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OperationTraceModel.ecore#//Trace/firstCommand"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OperationTraceModel.ecore#//Trace/cementary"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OperationTraceModel.ecore#//Trace/lastCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//Command">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OperationTraceModel.ecore#//Command/Steps"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OperationTraceModel.ecore#//Command/nextCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OperationTraceModel.ecore#//Command/firstStep"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="OperationTraceModel.ecore#//Step">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OperationTraceModel.ecore#//Step/nextStep"/>
+    </genClasses>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//RemovedElement"/>
+    <genClasses image="false" ecoreClass="OperationTraceModel.ecore#//Insert"/>
+    <genClasses image="false" ecoreClass="OperationTraceModel.ecore#//Update"/>
+    <genClasses image="false" ecoreClass="OperationTraceModel.ecore#//Remove"/>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//Cemetary"/>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//InsertAttribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OperationTraceModel.ecore#//InsertAttribute/newValue"/>
+    </genClasses>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//InsertReference"/>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//UpdateAttribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OperationTraceModel.ecore#//UpdateAttribute/newValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OperationTraceModel.ecore#//UpdateAttribute/oldValue"/>
+    </genClasses>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//UpdateReference"/>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//RemoveAttribute"/>
+    <genClasses ecoreClass="OperationTraceModel.ecore#//RemoveReference"/>
+  </genPackages>
+</genmodel:GenModel>

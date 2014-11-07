@@ -84,9 +84,9 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OperationtracemodelPackage.DELETED_ELEMENT: {
-				DeletedElement deletedElement = (DeletedElement)theEObject;
-				T result = caseDeletedElement(deletedElement);
+			case OperationtracemodelPackage.REMOVED_ELEMENT: {
+				RemovedElement removedElement = (RemovedElement)theEObject;
+				T result = caseRemovedElement(removedElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -104,10 +104,10 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OperationtracemodelPackage.DELETE: {
-				Delete delete = (Delete)theEObject;
-				T result = caseDelete(delete);
-				if (result == null) result = caseStep(delete);
+			case OperationtracemodelPackage.REMOVE: {
+				Remove remove = (Remove)theEObject;
+				T result = caseRemove(remove);
+				if (result == null) result = caseStep(remove);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -149,19 +149,19 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OperationtracemodelPackage.DELETE_ATTRIBUTE: {
-				DeleteAttribute deleteAttribute = (DeleteAttribute)theEObject;
-				T result = caseDeleteAttribute(deleteAttribute);
-				if (result == null) result = caseDelete(deleteAttribute);
-				if (result == null) result = caseStep(deleteAttribute);
+			case OperationtracemodelPackage.REMOVE_ATTRIBUTE: {
+				RemoveAttribute removeAttribute = (RemoveAttribute)theEObject;
+				T result = caseRemoveAttribute(removeAttribute);
+				if (result == null) result = caseRemove(removeAttribute);
+				if (result == null) result = caseStep(removeAttribute);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OperationtracemodelPackage.DELETE_REFERENCE: {
-				DeleteReference deleteReference = (DeleteReference)theEObject;
-				T result = caseDeleteReference(deleteReference);
-				if (result == null) result = caseDelete(deleteReference);
-				if (result == null) result = caseStep(deleteReference);
+			case OperationtracemodelPackage.REMOVE_REFERENCE: {
+				RemoveReference removeReference = (RemoveReference)theEObject;
+				T result = caseRemoveReference(removeReference);
+				if (result == null) result = caseRemove(removeReference);
+				if (result == null) result = caseStep(removeReference);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -215,17 +215,17 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Deleted Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Removed Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Deleted Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Removed Element</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDeletedElement(DeletedElement object) {
+	public T caseRemovedElement(RemovedElement object) {
 		return null;
 	}
 
@@ -260,17 +260,17 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Delete</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Remove</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Delete</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Remove</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDelete(Delete object) {
+	public T caseRemove(Remove object) {
 		return null;
 	}
 
@@ -350,32 +350,32 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Delete Attribute</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Remove Attribute</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Delete Attribute</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Remove Attribute</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDeleteAttribute(DeleteAttribute object) {
+	public T caseRemoveAttribute(RemoveAttribute object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Delete Reference</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Remove Reference</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Delete Reference</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Remove Reference</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDeleteReference(DeleteReference object) {
+	public T caseRemoveReference(RemoveReference object) {
 		return null;
 	}
 

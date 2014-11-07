@@ -286,13 +286,22 @@ public interface WebpagePackage extends EPackage {
 	int ARTICLES__IZE = 2;
 
 	/**
+	 * The feature id for the '<em><b>EReference0</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARTICLES__EREFERENCE0 = 3;
+
+	/**
 	 * The number of structural features of the '<em>Articles</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARTICLES_FEATURE_COUNT = 3;
+	int ARTICLES_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link gyak.model.webpage.impl.TempImpl <em>Temp</em>}' class.
@@ -563,6 +572,17 @@ public interface WebpagePackage extends EPackage {
 	EReference getArticles_Ize();
 
 	/**
+	 * Returns the meta object for the reference '{@link gyak.model.webpage.Articles#getEReference0 <em>EReference0</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>EReference0</em>'.
+	 * @see gyak.model.webpage.Articles#getEReference0()
+	 * @see #getArticles()
+	 * @generated
+	 */
+	EReference getArticles_EReference0();
+
+	/**
 	 * Returns the meta object for class '{@link gyak.model.webpage.Temp <em>Temp</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -788,6 +808,14 @@ public interface WebpagePackage extends EPackage {
 		 * @generated
 		 */
 		EReference ARTICLES__IZE = eINSTANCE.getArticles_Ize();
+
+		/**
+		 * The meta object literal for the '<em><b>EReference0</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ARTICLES__EREFERENCE0 = eINSTANCE.getArticles_EReference0();
 
 		/**
 		 * The meta object literal for the '{@link gyak.model.webpage.impl.TempImpl <em>Temp</em>}' class.

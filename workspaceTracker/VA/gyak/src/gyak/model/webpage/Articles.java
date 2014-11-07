@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link gyak.model.webpage.Articles#getName <em>Name</em>}</li>
  *   <li>{@link gyak.model.webpage.Articles#getCreated <em>Created</em>}</li>
  *   <li>{@link gyak.model.webpage.Articles#getIze <em>Ize</em>}</li>
+ *   <li>{@link gyak.model.webpage.Articles#getEReference0 <em>EReference0</em>}</li>
  * </ul>
  * </p>
  *
@@ -93,5 +94,31 @@ public interface Articles extends EObject {
 	 * @generated
 	 */
 	EList getIze();
+
+	/**
+	 * Returns the value of the '<em><b>EReference0</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>EReference0</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>EReference0</em>' reference.
+	 * @see #setEReference0(EObject)
+	 * @see gyak.model.webpage.WebpagePackage#getArticles_EReference0()
+	 * @model
+	 * @generated
+	 */
+	EObject getEReference0();
+
+	/**
+	 * Sets the value of the '{@link gyak.model.webpage.Articles#getEReference0 <em>EReference0</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>EReference0</em>' reference.
+	 * @see #getEReference0()
+	 * @generated
+	 */
+	void setEReference0(EObject value);
 
 } // Articles

@@ -2,30 +2,30 @@
  */
 package operationtracemodel.impl;
 
+import ecore.EcorePackage;
+import ecore.impl.EcorePackageImpl;
 import operationtracemodel.Cemetary;
 import operationtracemodel.Command;
-import operationtracemodel.Delete;
-import operationtracemodel.DeleteAttribute;
-import operationtracemodel.DeleteReference;
-import operationtracemodel.DeletedElement;
 import operationtracemodel.Insert;
 import operationtracemodel.InsertAttribute;
 import operationtracemodel.InsertReference;
 import operationtracemodel.OperationtracemodelFactory;
 import operationtracemodel.OperationtracemodelPackage;
+import operationtracemodel.Remove;
+import operationtracemodel.RemoveAttribute;
+import operationtracemodel.RemoveReference;
+import operationtracemodel.RemovedElement;
 import operationtracemodel.Step;
 import operationtracemodel.Trace;
 import operationtracemodel.Update;
 import operationtracemodel.UpdateAttribute;
 import operationtracemodel.UpdateReference;
-import org.eclipse.emf.common.notify.Notifier;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
+
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
@@ -61,7 +61,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass deletedElementEClass = null;
+	private EClass removedElementEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -82,7 +82,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass deleteEClass = null;
+	private EClass removeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -124,35 +124,14 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass deleteAttributeEClass = null;
+	private EClass removeAttributeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass deleteReferenceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType eObjectEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType notifierEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType eStructuralFeatureEDataType = null;
+	private EClass removeReferenceEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -200,11 +179,16 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 
 		isInited = true;
 
+		// Obtain or create and register interdependencies
+		EcorePackageImpl theEcorePackage = (EcorePackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) instanceof EcorePackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) : EcorePackage.eINSTANCE);
+
 		// Create package meta-data objects
 		theOperationtracemodelPackage.createPackageContents();
+		theEcorePackage.createPackageContents();
 
 		// Initialize created meta-data
 		theOperationtracemodelPackage.initializePackageContents();
+		theEcorePackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theOperationtracemodelPackage.freeze();
@@ -319,8 +303,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStep_Element() {
-		return (EAttribute)stepEClass.getEStructuralFeatures().get(1);
+	public EReference getStep_Element() {
+		return (EReference)stepEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -328,8 +312,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStep_Feature() {
-		return (EAttribute)stepEClass.getEStructuralFeatures().get(2);
+	public EReference getStep_Feature() {
+		return (EReference)stepEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -337,17 +321,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDeletedElement() {
-		return deletedElementEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getDeletedElement_DeletedObject() {
-		return (EAttribute)deletedElementEClass.getEStructuralFeatures().get(0);
+	public EClass getRemovedElement() {
+		return removedElementEClass;
 	}
 
 	/**
@@ -373,8 +348,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDelete() {
-		return deleteEClass;
+	public EClass getRemove() {
+		return removeEClass;
 	}
 
 	/**
@@ -384,15 +359,6 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 */
 	public EClass getCemetary() {
 		return cemetaryEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getCemetary_Deleted() {
-		return (EReference)cemetaryEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -420,15 +386,6 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 */
 	public EClass getInsertReference() {
 		return insertReferenceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getInsertReference_NewValue() {
-		return (EAttribute)insertReferenceEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -472,8 +429,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getUpdateReference_NewValue() {
-		return (EAttribute)updateReferenceEClass.getEStructuralFeatures().get(0);
+	public EClass getRemoveAttribute() {
+		return removeAttributeEClass;
 	}
 
 	/**
@@ -481,71 +438,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getUpdateReference_OldValue() {
-		return (EAttribute)updateReferenceEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getDeleteAttribute() {
-		return deleteAttributeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getDeleteAttribute_OldValue() {
-		return (EReference)deleteAttributeEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getDeleteReference() {
-		return deleteReferenceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getDeleteReference_OldValue() {
-		return (EReference)deleteReferenceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getEObject() {
-		return eObjectEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getNotifier() {
-		return notifierEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getEStructuralFeature() {
-		return eStructuralFeatureEDataType;
+	public EClass getRemoveReference() {
+		return removeReferenceEClass;
 	}
 
 	/**
@@ -589,45 +483,33 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 
 		stepEClass = createEClass(STEP);
 		createEReference(stepEClass, STEP__NEXT_STEP);
-		createEAttribute(stepEClass, STEP__ELEMENT);
-		createEAttribute(stepEClass, STEP__FEATURE);
+		createEReference(stepEClass, STEP__ELEMENT);
+		createEReference(stepEClass, STEP__FEATURE);
 
-		deletedElementEClass = createEClass(DELETED_ELEMENT);
-		createEAttribute(deletedElementEClass, DELETED_ELEMENT__DELETED_OBJECT);
+		removedElementEClass = createEClass(REMOVED_ELEMENT);
 
 		insertEClass = createEClass(INSERT);
 
 		updateEClass = createEClass(UPDATE);
 
-		deleteEClass = createEClass(DELETE);
+		removeEClass = createEClass(REMOVE);
 
 		cemetaryEClass = createEClass(CEMETARY);
-		createEReference(cemetaryEClass, CEMETARY__DELETED);
 
 		insertAttributeEClass = createEClass(INSERT_ATTRIBUTE);
 		createEAttribute(insertAttributeEClass, INSERT_ATTRIBUTE__NEW_VALUE);
 
 		insertReferenceEClass = createEClass(INSERT_REFERENCE);
-		createEAttribute(insertReferenceEClass, INSERT_REFERENCE__NEW_VALUE);
 
 		updateAttributeEClass = createEClass(UPDATE_ATTRIBUTE);
 		createEAttribute(updateAttributeEClass, UPDATE_ATTRIBUTE__NEW_VALUE);
 		createEAttribute(updateAttributeEClass, UPDATE_ATTRIBUTE__OLD_VALUE);
 
 		updateReferenceEClass = createEClass(UPDATE_REFERENCE);
-		createEAttribute(updateReferenceEClass, UPDATE_REFERENCE__NEW_VALUE);
-		createEAttribute(updateReferenceEClass, UPDATE_REFERENCE__OLD_VALUE);
 
-		deleteAttributeEClass = createEClass(DELETE_ATTRIBUTE);
-		createEReference(deleteAttributeEClass, DELETE_ATTRIBUTE__OLD_VALUE);
+		removeAttributeEClass = createEClass(REMOVE_ATTRIBUTE);
 
-		deleteReferenceEClass = createEClass(DELETE_REFERENCE);
-		createEReference(deleteReferenceEClass, DELETE_REFERENCE__OLD_VALUE);
-
-		// Create data types
-		eObjectEDataType = createEDataType(EOBJECT);
-		notifierEDataType = createEDataType(NOTIFIER);
-		eStructuralFeatureEDataType = createEDataType(ESTRUCTURAL_FEATURE);
+		removeReferenceEClass = createEClass(REMOVE_REFERENCE);
 	}
 
 	/**
@@ -653,6 +535,9 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 		setNsPrefix(eNS_PREFIX);
 		setNsURI(eNS_URI);
 
+		// Obtain other dependent packages
+		EcorePackage theEcorePackage = (EcorePackage)EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI);
+
 		// Create type parameters
 
 		// Set bounds for type parameters
@@ -660,13 +545,13 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 		// Add supertypes to classes
 		insertEClass.getESuperTypes().add(this.getStep());
 		updateEClass.getESuperTypes().add(this.getStep());
-		deleteEClass.getESuperTypes().add(this.getStep());
+		removeEClass.getESuperTypes().add(this.getStep());
 		insertAttributeEClass.getESuperTypes().add(this.getInsert());
 		insertReferenceEClass.getESuperTypes().add(this.getInsert());
 		updateAttributeEClass.getESuperTypes().add(this.getUpdate());
 		updateReferenceEClass.getESuperTypes().add(this.getUpdate());
-		deleteAttributeEClass.getESuperTypes().add(this.getDelete());
-		deleteReferenceEClass.getESuperTypes().add(this.getDelete());
+		removeAttributeEClass.getESuperTypes().add(this.getRemove());
+		removeReferenceEClass.getESuperTypes().add(this.getRemove());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(traceEClass, Trace.class, "Trace", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -682,45 +567,33 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 
 		initEClass(stepEClass, Step.class, "Step", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getStep_NextStep(), this.getStep(), null, "nextStep", null, 0, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getStep_Element(), this.getNotifier(), "element", null, 1, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getStep_Feature(), this.getEStructuralFeature(), "feature", null, 1, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStep_Element(), theEcorePackage.getEObject(), null, "element", null, 1, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStep_Feature(), theEcorePackage.getEStructuralFeature(), null, "feature", null, 1, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(deletedElementEClass, DeletedElement.class, "DeletedElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDeletedElement_DeletedObject(), ecorePackage.getEJavaObject(), "deletedObject", null, 1, 1, DeletedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(removedElementEClass, RemovedElement.class, "RemovedElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(insertEClass, Insert.class, "Insert", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(updateEClass, Update.class, "Update", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(deleteEClass, Delete.class, "Delete", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(removeEClass, Remove.class, "Remove", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(cemetaryEClass, Cemetary.class, "Cemetary", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getCemetary_Deleted(), this.getDeletedElement(), null, "deleted", null, 0, -1, Cemetary.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(insertAttributeEClass, InsertAttribute.class, "InsertAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getInsertAttribute_NewValue(), ecorePackage.getEJavaObject(), "newValue", null, 1, 1, InsertAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(insertReferenceEClass, InsertReference.class, "InsertReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getInsertReference_NewValue(), this.getEObject(), "newValue", null, 1, 1, InsertReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(updateAttributeEClass, UpdateAttribute.class, "UpdateAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getUpdateAttribute_NewValue(), ecorePackage.getEJavaObject(), "newValue", null, 1, 1, UpdateAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getUpdateAttribute_OldValue(), ecorePackage.getEJavaObject(), "oldValue", null, 1, 1, UpdateAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(updateReferenceEClass, UpdateReference.class, "UpdateReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getUpdateReference_NewValue(), this.getEObject(), "newValue", null, 1, 1, UpdateReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getUpdateReference_OldValue(), this.getEObject(), "oldValue", null, 1, 1, UpdateReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(deleteAttributeEClass, DeleteAttribute.class, "DeleteAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDeleteAttribute_OldValue(), this.getDeletedElement(), null, "oldValue", null, 1, 1, DeleteAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(removeAttributeEClass, RemoveAttribute.class, "RemoveAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(deleteReferenceEClass, DeleteReference.class, "DeleteReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDeleteReference_OldValue(), this.getDeletedElement(), null, "oldValue", null, 1, 1, DeleteReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		// Initialize data types
-		initEDataType(eObjectEDataType, EObject.class, "EObject", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(notifierEDataType, Notifier.class, "Notifier", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(eStructuralFeatureEDataType, EStructuralFeature.class, "EStructuralFeature", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEClass(removeReferenceEClass, RemoveReference.class, "RemoveReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

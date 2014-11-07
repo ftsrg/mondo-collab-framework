@@ -4,6 +4,7 @@ package operationtracemodel.impl;
 
 import operationtracemodel.OperationtracemodelPackage;
 import operationtracemodel.Update;
+
 import org.eclipse.emf.ecore.EClass;
 
 /**

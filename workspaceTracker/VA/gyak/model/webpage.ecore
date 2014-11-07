@@ -32,6 +32,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="created" eType="#//calendar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ize" upperBound="-1" eType="#//MyWeb"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="EReference0" eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="calendar" instanceClassName="java.util.Calendar"/>
   <eClassifiers xsi:type="ecore:EClass" name="Temp"/>

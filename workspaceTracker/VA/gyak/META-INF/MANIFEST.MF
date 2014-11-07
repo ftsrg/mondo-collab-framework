@@ -6,7 +6,10 @@ Bundle-Version: 0.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: gyak.model.webpage,
+Export-Package: ecore,
+ ecore.impl,
+ ecore.util,
+ gyak.model.webpage,
  gyak.model.webpage.impl,
  gyak.model.webpage.util
 Require-Bundle: org.eclipse.core.runtime,

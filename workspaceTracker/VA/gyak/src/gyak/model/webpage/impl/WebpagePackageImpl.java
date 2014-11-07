@@ -2,6 +2,8 @@
  */
 package gyak.model.webpage.impl;
 
+import ecore.EcorePackage;
+import ecore.impl.EcorePackageImpl;
 import gyak.model.webpage.Articles;
 import gyak.model.webpage.Category;
 import gyak.model.webpage.MyWeb;
@@ -115,11 +117,16 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 
 		isInited = true;
 
+		// Obtain or create and register interdependencies
+		EcorePackageImpl theEcorePackage = (EcorePackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) instanceof EcorePackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) : EcorePackage.eINSTANCE);
+
 		// Create package meta-data objects
 		theWebpagePackage.createPackageContents();
+		theEcorePackage.createPackageContents();
 
 		// Initialize created meta-data
 		theWebpagePackage.initializePackageContents();
+		theEcorePackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theWebpagePackage.freeze();
@@ -333,6 +340,15 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getArticles_EReference0() {
+		return (EReference)articlesEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getTemp() {
 		return tempEClass;
 	}
@@ -399,6 +415,7 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 		createEAttribute(articlesEClass, ARTICLES__NAME);
 		createEAttribute(articlesEClass, ARTICLES__CREATED);
 		createEReference(articlesEClass, ARTICLES__IZE);
+		createEReference(articlesEClass, ARTICLES__EREFERENCE0);
 
 		tempEClass = createEClass(TEMP);
 
@@ -429,6 +446,9 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 		setNsPrefix(eNS_PREFIX);
 		setNsURI(eNS_URI);
 
+		// Obtain other dependent packages
+		EcorePackage theEcorePackage = (EcorePackage)EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI);
+
 		// Add supertypes to classes
 
 		// Initialize classes and features; add operations and parameters
@@ -457,6 +477,7 @@ public class WebpagePackageImpl extends EPackageImpl implements WebpagePackage {
 		initEAttribute(getArticles_Name(), ecorePackage.getEString(), "name", null, 0, 1, Articles.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getArticles_Created(), this.getcalendar(), "created", null, 0, 1, Articles.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getArticles_Ize(), this.getMyWeb(), null, "ize", null, 0, -1, Articles.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArticles_EReference0(), theEcorePackage.getEObject(), null, "EReference0", null, 0, 1, Articles.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(tempEClass, Temp.class, "Temp", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

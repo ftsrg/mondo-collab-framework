@@ -3,7 +3,6 @@
 package operationtracemodel;
 
 
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Update</b></em>'.
@@ -15,5 +14,4 @@ package operationtracemodel;
  * @generated
  */
 public interface Update extends Step {
-
 } // Update

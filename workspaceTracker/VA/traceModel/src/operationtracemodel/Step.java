@@ -2,9 +2,8 @@
  */
 package operationtracemodel;
 
-import org.eclipse.emf.common.notify.Notifier;
+import ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * <!-- begin-user-doc -->
@@ -52,52 +51,52 @@ public interface Step extends EObject {
 	void setNextStep(Step value);
 
 	/**
-	 * Returns the value of the '<em><b>Element</b></em>' attribute.
+	 * Returns the value of the '<em><b>Element</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Element</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Element</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Element</em>' attribute.
-	 * @see #setElement(Notifier)
+	 * @return the value of the '<em>Element</em>' reference.
+	 * @see #setElement(EObject)
 	 * @see operationtracemodel.OperationtracemodelPackage#getStep_Element()
-	 * @model dataType="operationtracemodel.Notifier" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
-	Notifier getElement();
+	EObject getElement();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.Step#getElement <em>Element</em>}' attribute.
+	 * Sets the value of the '{@link operationtracemodel.Step#getElement <em>Element</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Element</em>' attribute.
+	 * @param value the new value of the '<em>Element</em>' reference.
 	 * @see #getElement()
 	 * @generated
 	 */
-	void setElement(Notifier value);
+	void setElement(EObject value);
 
 	/**
-	 * Returns the value of the '<em><b>Feature</b></em>' attribute.
+	 * Returns the value of the '<em><b>Feature</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Feature</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Feature</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Feature</em>' attribute.
+	 * @return the value of the '<em>Feature</em>' reference.
 	 * @see #setFeature(EStructuralFeature)
 	 * @see operationtracemodel.OperationtracemodelPackage#getStep_Feature()
-	 * @model dataType="operationtracemodel.EStructuralFeature" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
 	EStructuralFeature getFeature();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.Step#getFeature <em>Feature</em>}' attribute.
+	 * Sets the value of the '{@link operationtracemodel.Step#getFeature <em>Feature</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Feature</em>' attribute.
+	 * @param value the new value of the '<em>Feature</em>' reference.
 	 * @see #getFeature()
 	 * @generated
 	 */

@@ -14,4 +14,12 @@
             genModel="model/OperationTraceModel.genmodel"/>
    </extension>
 
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated OperationTraceModel -->
+      <package
+            uri="http://www.eclipse.org/emf/2002/Ecore"
+            class="ecore.EcorePackage"
+            genModel="model/OperationTraceModel.genmodel"/>
+   </extension>
+
 </plugin>

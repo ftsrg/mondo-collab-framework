@@ -18,51 +18,28 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Step" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nextStep" eType="#//Step"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="element" lowerBound="1"
-        eType="#//Notifier"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="feature" lowerBound="1"
-        eType="#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="element" lowerBound="1"
+        eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1"
+        eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EStructuralFeature"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeletedElement">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deletedObject" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RemovedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="Insert" abstract="true" eSuperTypes="#//Step"/>
   <eClassifiers xsi:type="ecore:EClass" name="Update" abstract="true" eSuperTypes="#//Step"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Delete" abstract="true" eSuperTypes="#//Step"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="EObject" instanceClassName="org.eclipse.emf.ecore.EObject"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Cemetary">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="deleted" upperBound="-1"
-        eType="#//DeletedElement" containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Remove" abstract="true" eSuperTypes="#//Step"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Cemetary"/>
   <eClassifiers xsi:type="ecore:EClass" name="InsertAttribute" eSuperTypes="#//Insert">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="newValue" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InsertReference" eSuperTypes="#//Insert">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="newValue" lowerBound="1"
-        eType="#//EObject"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InsertReference" eSuperTypes="#//Insert"/>
   <eClassifiers xsi:type="ecore:EClass" name="UpdateAttribute" eSuperTypes="#//Update">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="newValue" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="oldValue" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="UpdateReference" eSuperTypes="#//Update">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="newValue" lowerBound="1"
-        eType="#//EObject"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="oldValue" lowerBound="1"
-        eType="#//EObject"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeleteAttribute" eSuperTypes="#//Delete">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="oldValue" lowerBound="1"
-        eType="#//DeletedElement"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeleteReference" eSuperTypes="#//Delete">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="oldValue" lowerBound="1"
-        eType="#//DeletedElement"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="Notifier" instanceClassName="org.eclipse.emf.common.notify.Notifier"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="EStructuralFeature" instanceClassName="org.eclipse.emf.ecore.EStructuralFeature"/>
+  <eClassifiers xsi:type="ecore:EClass" name="UpdateReference" eSuperTypes="#//Update"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RemoveAttribute" eSuperTypes="#//Remove"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RemoveReference" eSuperTypes="#//Remove"/>
 </ecore:EPackage>

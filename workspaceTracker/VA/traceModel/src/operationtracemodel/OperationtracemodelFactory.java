@@ -40,13 +40,13 @@ public interface OperationtracemodelFactory extends EFactory {
 	Command createCommand();
 
 	/**
-	 * Returns a new object of class '<em>Deleted Element</em>'.
+	 * Returns a new object of class '<em>Removed Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Deleted Element</em>'.
+	 * @return a new object of class '<em>Removed Element</em>'.
 	 * @generated
 	 */
-	DeletedElement createDeletedElement();
+	RemovedElement createRemovedElement();
 
 	/**
 	 * Returns a new object of class '<em>Cemetary</em>'.
@@ -94,22 +94,22 @@ public interface OperationtracemodelFactory extends EFactory {
 	UpdateReference createUpdateReference();
 
 	/**
-	 * Returns a new object of class '<em>Delete Attribute</em>'.
+	 * Returns a new object of class '<em>Remove Attribute</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Delete Attribute</em>'.
+	 * @return a new object of class '<em>Remove Attribute</em>'.
 	 * @generated
 	 */
-	DeleteAttribute createDeleteAttribute();
+	RemoveAttribute createRemoveAttribute();
 
 	/**
-	 * Returns a new object of class '<em>Delete Reference</em>'.
+	 * Returns a new object of class '<em>Remove Reference</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Delete Reference</em>'.
+	 * @return a new object of class '<em>Remove Reference</em>'.
 	 * @generated
 	 */
-	DeleteReference createDeleteReference();
+	RemoveReference createRemoveReference();
 
 	/**
 	 * Returns the package supported by this factory.
