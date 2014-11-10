@@ -2,8 +2,8 @@
  */
 package operationtracemodel;
 
-import ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * <!-- begin-user-doc -->

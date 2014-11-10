@@ -241,13 +241,22 @@ public interface OperationtracemodelPackage extends EPackage {
 	int REMOVED_ELEMENT = 3;
 
 	/**
+	 * The feature id for the '<em><b>Removed Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REMOVED_ELEMENT__REMOVED_ELEMENT = 0;
+
+	/**
 	 * The number of structural features of the '<em>Removed Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REMOVED_ELEMENT_FEATURE_COUNT = 0;
+	int REMOVED_ELEMENT_FEATURE_COUNT = 1;
 
 	/**
 	 * The number of operations of the '<em>Removed Element</em>' class.
@@ -434,13 +443,22 @@ public interface OperationtracemodelPackage extends EPackage {
 	int CEMETARY = 7;
 
 	/**
+	 * The feature id for the '<em><b>Removed Element</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CEMETARY__REMOVED_ELEMENT = 0;
+
+	/**
 	 * The number of structural features of the '<em>Cemetary</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CEMETARY_FEATURE_COUNT = 0;
+	int CEMETARY_FEATURE_COUNT = 1;
 
 	/**
 	 * The number of operations of the '<em>Cemetary</em>' class.
@@ -553,13 +571,22 @@ public interface OperationtracemodelPackage extends EPackage {
 	int INSERT_REFERENCE__FEATURE = INSERT__FEATURE;
 
 	/**
+	 * The feature id for the '<em><b>New Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_REFERENCE__NEW_VALUE = INSERT_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>Insert Reference</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSERT_REFERENCE_FEATURE_COUNT = INSERT_FEATURE_COUNT + 0;
+	int INSERT_REFERENCE_FEATURE_COUNT = INSERT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Insert Reference</em>' class.
@@ -681,13 +708,31 @@ public interface OperationtracemodelPackage extends EPackage {
 	int UPDATE_REFERENCE__FEATURE = UPDATE__FEATURE;
 
 	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE__OLD_VALUE = UPDATE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>New Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UPDATE_REFERENCE__NEW_VALUE = UPDATE_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Update Reference</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int UPDATE_REFERENCE_FEATURE_COUNT = UPDATE_FEATURE_COUNT + 0;
+	int UPDATE_REFERENCE_FEATURE_COUNT = UPDATE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Update Reference</em>' class.
@@ -736,13 +781,22 @@ public interface OperationtracemodelPackage extends EPackage {
 	int REMOVE_ATTRIBUTE__FEATURE = REMOVE__FEATURE;
 
 	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REMOVE_ATTRIBUTE__OLD_VALUE = REMOVE_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>Remove Attribute</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REMOVE_ATTRIBUTE_FEATURE_COUNT = REMOVE_FEATURE_COUNT + 0;
+	int REMOVE_ATTRIBUTE_FEATURE_COUNT = REMOVE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Remove Attribute</em>' class.
@@ -791,13 +845,22 @@ public interface OperationtracemodelPackage extends EPackage {
 	int REMOVE_REFERENCE__FEATURE = REMOVE__FEATURE;
 
 	/**
+	 * The feature id for the '<em><b>Old Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REMOVE_REFERENCE__OLD_VALUE = REMOVE_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>Remove Reference</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REMOVE_REFERENCE_FEATURE_COUNT = REMOVE_FEATURE_COUNT + 0;
+	int REMOVE_REFERENCE_FEATURE_COUNT = REMOVE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Remove Reference</em>' class.
@@ -960,6 +1023,17 @@ public interface OperationtracemodelPackage extends EPackage {
 	EClass getRemovedElement();
 
 	/**
+	 * Returns the meta object for the reference '{@link operationtracemodel.RemovedElement#getRemovedElement <em>Removed Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Removed Element</em>'.
+	 * @see operationtracemodel.RemovedElement#getRemovedElement()
+	 * @see #getRemovedElement()
+	 * @generated
+	 */
+	EReference getRemovedElement_RemovedElement();
+
+	/**
 	 * Returns the meta object for class '{@link operationtracemodel.Insert <em>Insert</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1000,6 +1074,17 @@ public interface OperationtracemodelPackage extends EPackage {
 	EClass getCemetary();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link operationtracemodel.Cemetary#getRemovedElement <em>Removed Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Removed Element</em>'.
+	 * @see operationtracemodel.Cemetary#getRemovedElement()
+	 * @see #getCemetary()
+	 * @generated
+	 */
+	EReference getCemetary_RemovedElement();
+
+	/**
 	 * Returns the meta object for class '{@link operationtracemodel.InsertAttribute <em>Insert Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1029,6 +1114,17 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getInsertReference();
+
+	/**
+	 * Returns the meta object for the reference '{@link operationtracemodel.InsertReference#getNewValue <em>New Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>New Value</em>'.
+	 * @see operationtracemodel.InsertReference#getNewValue()
+	 * @see #getInsertReference()
+	 * @generated
+	 */
+	EReference getInsertReference_NewValue();
 
 	/**
 	 * Returns the meta object for class '{@link operationtracemodel.UpdateAttribute <em>Update Attribute</em>}'.
@@ -1073,6 +1169,28 @@ public interface OperationtracemodelPackage extends EPackage {
 	EClass getUpdateReference();
 
 	/**
+	 * Returns the meta object for the reference '{@link operationtracemodel.UpdateReference#getOldValue <em>Old Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Old Value</em>'.
+	 * @see operationtracemodel.UpdateReference#getOldValue()
+	 * @see #getUpdateReference()
+	 * @generated
+	 */
+	EReference getUpdateReference_OldValue();
+
+	/**
+	 * Returns the meta object for the reference '{@link operationtracemodel.UpdateReference#getNewValue <em>New Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>New Value</em>'.
+	 * @see operationtracemodel.UpdateReference#getNewValue()
+	 * @see #getUpdateReference()
+	 * @generated
+	 */
+	EReference getUpdateReference_NewValue();
+
+	/**
 	 * Returns the meta object for class '{@link operationtracemodel.RemoveAttribute <em>Remove Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1083,6 +1201,17 @@ public interface OperationtracemodelPackage extends EPackage {
 	EClass getRemoveAttribute();
 
 	/**
+	 * Returns the meta object for the attribute '{@link operationtracemodel.RemoveAttribute#getOldValue <em>Old Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Old Value</em>'.
+	 * @see operationtracemodel.RemoveAttribute#getOldValue()
+	 * @see #getRemoveAttribute()
+	 * @generated
+	 */
+	EAttribute getRemoveAttribute_OldValue();
+
+	/**
 	 * Returns the meta object for class '{@link operationtracemodel.RemoveReference <em>Remove Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1091,6 +1220,17 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getRemoveReference();
+
+	/**
+	 * Returns the meta object for the reference '{@link operationtracemodel.RemoveReference#getOldValue <em>Old Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Old Value</em>'.
+	 * @see operationtracemodel.RemoveReference#getOldValue()
+	 * @see #getRemoveReference()
+	 * @generated
+	 */
+	EReference getRemoveReference_OldValue();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -1236,6 +1376,14 @@ public interface OperationtracemodelPackage extends EPackage {
 		EClass REMOVED_ELEMENT = eINSTANCE.getRemovedElement();
 
 		/**
+		 * The meta object literal for the '<em><b>Removed Element</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference REMOVED_ELEMENT__REMOVED_ELEMENT = eINSTANCE.getRemovedElement_RemovedElement();
+
+		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1276,6 +1424,14 @@ public interface OperationtracemodelPackage extends EPackage {
 		EClass CEMETARY = eINSTANCE.getCemetary();
 
 		/**
+		 * The meta object literal for the '<em><b>Removed Element</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CEMETARY__REMOVED_ELEMENT = eINSTANCE.getCemetary_RemovedElement();
+
+		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1302,6 +1458,14 @@ public interface OperationtracemodelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass INSERT_REFERENCE = eINSTANCE.getInsertReference();
+
+		/**
+		 * The meta object literal for the '<em><b>New Value</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INSERT_REFERENCE__NEW_VALUE = eINSTANCE.getInsertReference_NewValue();
 
 		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
@@ -1340,6 +1504,22 @@ public interface OperationtracemodelPackage extends EPackage {
 		EClass UPDATE_REFERENCE = eINSTANCE.getUpdateReference();
 
 		/**
+		 * The meta object literal for the '<em><b>Old Value</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference UPDATE_REFERENCE__OLD_VALUE = eINSTANCE.getUpdateReference_OldValue();
+
+		/**
+		 * The meta object literal for the '<em><b>New Value</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference UPDATE_REFERENCE__NEW_VALUE = eINSTANCE.getUpdateReference_NewValue();
+
+		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.RemoveAttributeImpl <em>Remove Attribute</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1350,6 +1530,14 @@ public interface OperationtracemodelPackage extends EPackage {
 		EClass REMOVE_ATTRIBUTE = eINSTANCE.getRemoveAttribute();
 
 		/**
+		 * The meta object literal for the '<em><b>Old Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REMOVE_ATTRIBUTE__OLD_VALUE = eINSTANCE.getRemoveAttribute_OldValue();
+
+		/**
 		 * The meta object literal for the '{@link operationtracemodel.impl.RemoveReferenceImpl <em>Remove Reference</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1358,6 +1546,14 @@ public interface OperationtracemodelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass REMOVE_REFERENCE = eINSTANCE.getRemoveReference();
+
+		/**
+		 * The meta object literal for the '<em><b>Old Value</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference REMOVE_REFERENCE__OLD_VALUE = eINSTANCE.getRemoveReference_OldValue();
 
 	}
 

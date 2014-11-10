@@ -2,14 +2,14 @@
  */
 package operationtracemodel.impl;
 
-import ecore.EObject;
-import ecore.EStructuralFeature;
 import operationtracemodel.OperationtracemodelPackage;
 import operationtracemodel.Step;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -50,6 +50,7 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 	 * @ordered
 	 */
 	protected EObject element;
+
 	/**
 	 * The cached value of the '{@link #getFeature() <em>Feature</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -122,7 +123,7 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public org.eclipse.emf.ecore.EObject getElement() {
+	public EObject getElement() {
 		if (element != null && element.eIsProxy()) {
 			InternalEObject oldElement = (InternalEObject)element;
 			element = eResolveProxy(oldElement);
@@ -139,7 +140,7 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public org.eclipse.emf.ecore.EObject basicGetElement() {
+	public EObject basicGetElement() {
 		return element;
 	}
 
@@ -148,8 +149,8 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElement(org.eclipse.emf.ecore.EObject newElement) {
-		org.eclipse.emf.ecore.EObject oldElement = element;
+	public void setElement(EObject newElement) {
+		EObject oldElement = element;
 		element = newElement;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.STEP__ELEMENT, oldElement, element));
@@ -226,7 +227,7 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 				setNextStep((Step)newValue);
 				return;
 			case OperationtracemodelPackage.STEP__ELEMENT:
-				setElement((org.eclipse.emf.ecore.EObject)newValue);
+				setElement((EObject)newValue);
 				return;
 			case OperationtracemodelPackage.STEP__FEATURE:
 				setFeature((EStructuralFeature)newValue);
@@ -247,7 +248,7 @@ public abstract class StepImpl extends MinimalEObjectImpl.Container implements S
 				setNextStep((Step)null);
 				return;
 			case OperationtracemodelPackage.STEP__ELEMENT:
-				setElement((org.eclipse.emf.ecore.EObject)null);
+				setElement((EObject)null);
 				return;
 			case OperationtracemodelPackage.STEP__FEATURE:
 				setFeature((EStructuralFeature)null);
