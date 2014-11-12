@@ -3,19 +3,27 @@ package com.mondo.online;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 public class CollaborationSession {
+
+	public static final int STATE_CLOSED = 1;
+	public static final int STATE_OPEN = 2;
+	public static final int STATE_FINISHED = 3;
+	
 	private String id;
 	private String title;
+	private int state;
+	
+	private JSONObject model;
 	
 	private List<User> users;
 	
-	private boolean isOpen;
-	
-	public CollaborationSession(String id, String title) {
+	public CollaborationSession(String id, String title, int state) {
 		this.id = id;
 		this.title = title;
 		this.users = new ArrayList<User>();
-		this.isOpen = false;
+		this.state = state;
 	}
 	
 	public String getId() {
@@ -44,17 +52,46 @@ public class CollaborationSession {
 		}
 	}
 
-	public boolean isOpen() {
-		return this.isOpen;
+	public int getState() {
+		return this.state;
 	}
 	
 	public void startSession() {
-		this.isOpen = true;
+		this.state = CollaborationSession.STATE_OPEN;
 	}
 	
 	public void finishSession() {
-		this.isOpen = false;
-		// TODO persist new model
+		this.state = CollaborationSession.STATE_FINISHED;
+	}
+	
+	public static String getSessionStateString(int state) {
+		if(state == CollaborationSession.STATE_CLOSED) {
+			return "CLOSED";
+		} else if(state == CollaborationSession.STATE_OPEN) {
+			return "OPEN";
+		} else if(state == CollaborationSession.STATE_FINISHED) {
+			return "FINISHED";
+		}
+		return "";
+	}
+	
+	public static int getSessionStateByString(String state) {
+		if(state == "CLOSED") {
+			return CollaborationSession.STATE_CLOSED;
+		} else if(state == "OPEN") {
+			return CollaborationSession.STATE_OPEN;
+		} else if(state == "FINISHED") {
+			return CollaborationSession.STATE_FINISHED;
+		}
+		return 0;
+	}
+	
+	public JSONObject getModel() {
+		return this.model;
+	}
+	
+	public void setModel(JSONObject newModel) {
+		this.model = newModel;
 	}
 }
 

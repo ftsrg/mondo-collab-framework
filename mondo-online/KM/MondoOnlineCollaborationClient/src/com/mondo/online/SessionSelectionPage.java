@@ -67,7 +67,8 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 			for(int i = 0; i < jsonSessions.length(); i++) {
 				CollaborationSession newSession = new CollaborationSession(
 					jsonSessions.getJSONObject(i).getString("id"),
-					jsonSessions.getJSONObject(i).getString("title")
+					jsonSessions.getJSONObject(i).getString("title"),
+					jsonSessions.getJSONObject(i).getInt("state")
 				);
 				this.sessions.add(newSession);
 			}
@@ -89,21 +90,20 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		addComponent(panel, "left: 20px; top: 20px;");
 
 		CustomLayout custom = new CustomLayout("sessionSelectionPage");
-		// custom.addStyleName("customlayoutexample");
 		
 		Table sessionsTable = new Table();
 		sessionsTable.setSizeFull();
 		sessionsTable.setHeight("300px");
-		sessionsTable.addContainerProperty("ID",  Integer.class, null);
+		sessionsTable.addContainerProperty("ID",  String.class, null);
 		sessionsTable.addContainerProperty("Name", String.class, null);
 		sessionsTable.addContainerProperty("State", String.class, null);
 		sessionsTable.setSelectable(true);
 		
 		int rowNum = 2;
 		for(CollaborationSession s: this.sessions) {
-			String state = s.isOpen() ? "Open" : "Closed";
+			String state = CollaborationSession.getSessionStateString(s.getState());
 			sessionsTable.addItem(new Object[]{
-				Integer.parseInt(s.getId()), 
+				s.getId(), 
 				s.getTitle(), 
 				state
 				}, rowNum
@@ -114,11 +114,9 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		custom.addComponent(sessionsTable, "sessionsTable");
 		Button buttonLogout = new Button("Log out"); 
 		Button buttonJoinSession = new Button("Join session");
-		Button buttonOpenSession = new Button("Open session");
+		Button buttonStartSession = new Button("Start session");
 		Button buttonFinishSession = new Button("Finish session");
 		
-		Navigator navigator = this.navigator;
-		Application app = this.application;
 		buttonLogout.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				logout();
@@ -128,11 +126,12 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 			public void buttonClick(ClickEvent event) {
 				Object rowId = sessionsTable.getValue();
 				if(rowId != null) {
-					int sessionId = ((Integer)sessionsTable.getContainerProperty(rowId,"ID").getValue()).intValue();
-					boolean isOpen = sessionsTable.getContainerProperty(rowId,"State")
-						.getValue() == "Open" ? true : false;
-					if(isOpen) {
-						navigator.navigateTo(CollaborationPage.NAME);
+					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
+					int state = CollaborationSession.getSessionStateByString(
+						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
+					);
+					if(state == CollaborationSession.STATE_OPEN) {
+						joinSession(sessionId);
 					} else {
 						Notification.show("Selected session is closed.");
 					}
@@ -141,16 +140,72 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 				}
 			}
 		});
-		
+		buttonStartSession.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				Object rowId = sessionsTable.getValue();
+				if(rowId != null) {
+					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
+					int state = CollaborationSession.getSessionStateByString(
+						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
+					);
+					if(state == CollaborationSession.STATE_CLOSED) {
+						startSession(sessionId);
+					} else {
+						Notification.show("Selected session is not in closed state.");
+					}
+				} else {
+					Notification.show("Please select a session");
+				}
+			}
+		});
+		buttonFinishSession.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				Object rowId = sessionsTable.getValue();
+				if(rowId != null) {
+					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
+					int state = CollaborationSession.getSessionStateByString(
+						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
+					);
+					if(state == CollaborationSession.STATE_OPEN) {
+						finishSession(sessionId);
+					} else {
+						Notification.show("Selected session is not in open state.");
+					}
+				} else {
+					Notification.show("Please select a session");
+				}
+			}
+		});
 		custom.addComponent(buttonLogout, "buttonLogout");
 		custom.addComponent(buttonJoinSession, "buttonJoinSession");
-		custom.addComponent(buttonOpenSession, "buttonOpenSession");
+		custom.addComponent(buttonStartSession, "buttonStartSession");
 		custom.addComponent(buttonFinishSession, "buttonFinishSession");
 
 		panel.setContent(custom);	
 		return panel;
 	}
 	
+	protected void finishSession(String sessionId) {
+		this.application.getWebsocketClient().finishSession(
+			sessionId
+		);
+	}
+
+	protected void startSession(String sessionId) {
+		this.application.getWebsocketClient().startSession(
+			sessionId
+		);
+	}
+
+	protected void joinSession(String sessionId) {
+		this.application.getWebsocketClient().joinSession(
+			this.application.getUser(), 
+			sessionId
+		);
+		this.application.getCollaborationPage().setSessionId(sessionId);
+		this.navigator.navigateTo(CollaborationPage.NAME);
+	}
+
 	private void logout() {
 		this.application.unbindUser();
 		this.navigator.navigateTo(LoginPage.NAME);

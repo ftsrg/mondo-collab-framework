@@ -2,7 +2,9 @@ package com.mondo.online.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,30 +22,45 @@ import org.json.JSONObject;
 
 @ServerEndpoint("/mondoonlineserver")
 public class CollaborationServerApplication {
-	static private JSONObject model = null;
-	
 	private static Set<Session> connections = 
 	    Collections.synchronizedSet(new HashSet<Session>());
 	
-	private List<CollaborationSession> sessions;
+	private static List<CollaborationSession> sessions;
+	
+	// assign connections to collaboration session IDs once they join it
+	private static HashMap<String, List<Session>> sessionsConnections;
 	
 	public CollaborationServerApplication() {
-		try {
-			if(CollaborationServerApplication.model == null) {
-				this.loadModel();
-				System.out.println("Model loadeddd.");
-			} else {
-				System.out.println("No init required.");
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		System.out.println("Initialize server...");
+		if(sessions == null) {
+			System.out.println("Load models...");
+			this.initSessions();
 		}
 	}
 	
+	private void initSessions() {
+		sessionsConnections = new HashMap<String, List<Session>>();
+		sessions = new ArrayList<CollaborationSession>();
+		String pathToResFolder = "D:\\Eclipse\\Eclipse_EE\\workspace_EE\\MondoOnlineCollaborationServer\\res";
+		final File folder = new File(pathToResFolder);
+		Integer id = 0;
+		for (final File fileEntry : folder.listFiles()) {
+	        if (!fileEntry.isDirectory()) {
+	        	String modelPath = pathToResFolder + fileEntry.getName(); 
+	        	CollaborationSession newSession = new CollaborationSession(
+	        		id.toString(), 
+	        		fileEntry.getName(),
+	        		CollaborationSession.STATE_CLOSED
+	        	);
+	        	sessions.add(newSession);
+	        	sessionsConnections.put(id.toString(), new ArrayList<Session>());
+	        	id++;
+	        }
+		}
+	}
+
 	@OnOpen
 	public void onOpen(Session connection) {
-		// Add session to the connected sessions set
 		connections.add(connection);
 	    System.out.println("num of clients: " + connections.size());
 	}
@@ -56,16 +73,45 @@ public class CollaborationServerApplication {
 			String operation = request.getString("operation");
 
 			System.out.println("Process request: " + operation);
-			if(operation.equals("publishModel")) {
-				System.out.println("publishModel...");
-				String newModel = request.getString("model");
-				this.publishModel(newModel);
-			} else if(operation.equals("getOpenSessions")) {
-				System.out.println("sendOpenSessions...");
-				this.sendOpenSessions(connection);
+			if(operation.equals("getSessions")) {
+				System.out.println("sendSessions...");
+				this.sendSessions(connection);
+			} else if(operation.equals("startSession")) {
+				System.out.println("startSession...");
+				String sessionId = request.getString("sessionId");
+				if(this.startSession(sessionId)) {
+					this.publishSessions();
+				}
+			} else if(operation.equals("finishSession")) {
+				System.out.println("finishSession...");
+				String sessionId = request.getString("sessionId");
+				if(this.finishSession(sessionId)) {
+					this.publishSessions();
+				}
+			} else if(operation.equals("joinSession")) {
+				System.out.println("joinSession...");
+				JSONObject user = request.getJSONObject("user");
+				User newUser = new User(
+					user.getString("name"),
+					user.getString("password")
+				);
+				String sessionId = request.getString("sessionId");
+				if(this.addUserToSession(newUser, sessionId)) {
+					List<Session> conns = sessionsConnections.get(sessionId);
+					conns.add(connection);
+					sessionsConnections.put(sessionId, conns);
+					this.sendModel(sessionId, connection);
+					this.publishUsers(sessionId);
+				}
 			} else if(operation.equals("getModel")) {
 				System.out.println("getModel...");
-				this.sendModel(connection);
+				String sessionId = request.getString("sessionId");
+				this.sendModel(sessionId, connection);
+			} else if(operation.equals("publishModel")) {
+				System.out.println("publishModel...");
+				String sessionId = request.getString("sessionId");
+				String newModel = request.getString("model");
+				this.publishModel(sessionId, newModel);
 			}
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
@@ -73,12 +119,122 @@ public class CollaborationServerApplication {
 		}   
 	}
 	  
-	private void sendModel(Session connection) {
+	private void publishUsers(String sessionId) {
 		try {
+			JSONObject request = new JSONObject();
+			JSONArray users = this.getJsonUsersOfSession(sessionId);
+			request.put("operation", "updateUsers");
+			request.put("users", users);
+			List<Session> conns = sessionsConnections.get(sessionId);
+			synchronized(conns){
+				System.out.println("Publishing users: " + users.toString());
+				for(Session connection : conns){
+					System.out.println("Send sessions to: " + connection.getId());
+					connection.getBasicRemote().sendText(request.toString());
+				}
+		    } 
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private JSONArray getJsonUsersOfSession(String sessionId) {
+		try {
+			JSONArray jsonUsers = new JSONArray();
+			for(CollaborationSession s: sessions) {
+				if(s.getId().equals(sessionId)) {
+					for(User u: s.getUsers()) {
+						JSONObject jsonUser = new JSONObject();
+						jsonUser.put("name", u.getUserName());
+						jsonUser.put("password", u.getPassword());
+						jsonUsers.put(jsonUser);
+					}
+				}
+			}
+			return jsonUsers;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private boolean addUserToSession(User newUser, String sessionId) {
+		for(CollaborationSession s: sessions) {
+			s.addUser(newUser);
+			return true;
+		}
+		return false;
+	}
+
+	private void publishSessions() {
+		try {
+			JSONObject request = new JSONObject();
+			JSONArray jsonSessions = this.prepareSessionsToSend();
+			request.put("operation", "updateSessions");
+			request.put("sessions", jsonSessions);
+			synchronized(connections){
+				System.out.println("Publishing sessions: " + jsonSessions.toString());
+				for(Session connection : connections){
+					System.out.println("Send sessions to: " + connection.getId());
+					connection.getBasicRemote().sendText(request.toString());
+				}
+		    } 
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	private boolean startSession(String sessionId) {
+		System.out.println("Sessions before :" + this.prepareSessionsToSend().toString());
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				try {
+					s.setModel(this.initializeModel());
+					s.startSession();
+					return true;
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		System.out.println("Sessions after: " + this.prepareSessionsToSend().toString());
+		return false;
+	}
+
+	private boolean finishSession(String sessionId) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				s.finishSession();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void sendModel(String sessionId, Session connection) {
+		try {
+			JSONObject model = null;
+			for(CollaborationSession s: sessions) {
+				if(s.getId().equals(sessionId)) {
+					model = s.getModel();
+					break;
+				}
+			}
 			System.out.println("Send model to: " + connection.getId());
 			JSONObject request = new JSONObject();
 			request.put("operation", "updateModel");
-			request.put("model", CollaborationServerApplication.model);
+			request.put("model", model);
 			connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
@@ -90,30 +246,14 @@ public class CollaborationServerApplication {
 		
 	}
 
-	// TODO body should be for initializing available sessions
-	private void sendOpenSessions(Session connection) {
-		String pathToResFolder = "D:\\Eclipse\\Eclipse_EE\\workspace_EE\\MondoOnlineCollaborationServer\\res";
-		final File folder = new File(pathToResFolder);
+	private void sendSessions(Session connection) {
 		try {
 			// prepare data for CollaborationSession s
-			JSONArray sessions = new JSONArray();
-			
-			int id = 0;
-			for (final File fileEntry : folder.listFiles()) {
-		        if (!fileEntry.isDirectory()) {
-		        	String modelPath = pathToResFolder + fileEntry.getName(); 
-		        	JSONObject session = new JSONObject();
-		        	session.put("id", id);
-		        	session.put("title", fileEntry.getName());
-		        	session.put("title", fileEntry.getName());
-		        	sessions.put(session);
-		        	id++;
-		        }
-		    }
+			JSONArray jsonSessions = this.prepareSessionsToSend();
 			System.out.println("Send open sessions list to: " + connection.getId());
 			JSONObject request = new JSONObject();
-			request.put("operation", "updateOpenSessions");
-			request.put("sessions", sessions);
+			request.put("operation", "updateSessions");
+			request.put("sessions", jsonSessions);
 			connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -124,23 +264,53 @@ public class CollaborationServerApplication {
 		}
 	}
 
-	private void publishModel(String newModel) {
+	private JSONArray prepareSessionsToSend() {
 		try {
-			CollaborationServerApplication.model = new JSONObject(newModel);
+			JSONArray jsonSessions = new JSONArray();
+			for (CollaborationSession s: sessions) {
+	        	JSONObject session = new JSONObject();
+	        	
+				session.put("id", s.getId());
+	        	session.put("title", s.getTitle());
+	        	session.put("state", s.getState());
+	        	jsonSessions.put(session);
+		    }
+			return jsonSessions;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private void publishModel(String sessionId, String newModel) {
+		try {
+			this.setModel(sessionId, new JSONObject(newModel));
+			// publish model only for those who are in the same collaboration session
+			List<Session> relevantConnections = sessionsConnections.get(sessionId);
 	        // Iterate over the connected sessions
-			synchronized(connections){
+			synchronized(relevantConnections){
 				System.out.println("Publishing model: " + newModel);
 		    	// and broadcast the received message
-				for(Session connection : connections){
-					if (!connections.equals(connection)){
-						this.sendModel(connection);
-					}
+				for(Session conn : relevantConnections){
+					this.sendModel(sessionId, conn);
 				}
 		    } 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 	    }
+	}
+
+	private void setModel(String sessionId, JSONObject newModel) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				s.setModel(newModel);
+				return;
+			}
+			
+		}
+		
 	}
 
 	@OnClose
@@ -160,7 +330,7 @@ public class CollaborationServerApplication {
 	}
 	*/
 	
-	private void loadModel() throws JSONException {
+	private JSONObject initializeModel() throws JSONException {
 		// load dummy model
 		JSONArray nodes = new JSONArray();
 		JSONArray edges = new JSONArray();
@@ -341,7 +511,7 @@ public class CollaborationServerApplication {
 		newModel.put("nodes", newNodes);
 		newModel.put("edges", newEdges);
 
-		CollaborationServerApplication.model = newModel;
+		return newModel;
 	}
 	
 	private JSONObject createNode(String type, String id, String label, String group, int x, int y) throws JSONException {

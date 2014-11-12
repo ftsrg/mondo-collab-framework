@@ -1,5 +1,10 @@
 package com.mondo.online;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mondo.online.collaborationcontroller.CollaborationComponent;
@@ -13,15 +18,22 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 
 	public static final String NAME = "Collaboration";
 	
-	Navigator navigator;
+	private Navigator navigator;
 	private Application application;
 	
 	private CollaborationComponent cc;
 	
+	// TODO delete?
+	private String sessionId; 
+	
+	private List<User> users;
+	
 	public CollaborationPage(final Navigator navigator, Application application) {
 		System.out.println("Construct CollaborationPage");
 		this.navigator = navigator;
-		this.application = application; 
+		this.application = application;
+		this.sessionId = null;
+		this.users = new ArrayList<User>();
 		setSizeFull();
 		
 		CollaborationComponent collabComponent = new CollaborationComponent(this);
@@ -47,7 +59,7 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 	}
 
 	private void loadModel() {
-		this.application.getWebsocketClient().getModel();
+		this.application.getWebsocketClient().getModel(this.sessionId);
 	}
 
 	public CollaborationComponent getCollaborationComponent() {
@@ -59,6 +71,38 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 	}
 
 	public void publishModel(JSONObject newModel) {
-		this.application.getWebsocketClient().pushModel(newModel);
+		this.application.getWebsocketClient().publishModel(
+			this.sessionId,
+			newModel
+		);
+	}
+	
+	public void setSessionId(String newSessionId) {
+		this.sessionId = newSessionId;
+	}
+	
+	public String getSessionId() {
+		return this.sessionId;
+	}
+
+	public void setUsersList(JSONArray jsonUsers) {
+		try {
+			List<User> newUsers = new ArrayList<User>();
+			for(int i = 0; i < jsonUsers.length(); i++) {
+				JSONObject jsonUser;
+				jsonUser = jsonUsers.getJSONObject(i);
+				User u = new User(jsonUser.getString("name"), "");
+				newUsers.add(u);
+			}
+			this.users = newUsers;
+			this.updateUsersList();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void updateUsersList() {
+		System.out.println("TODO: implement update users list!");
 	}
 }
