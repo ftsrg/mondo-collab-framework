@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mondo.online.CollaborationPage;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.AbstractJavaScriptComponent;
@@ -31,6 +32,8 @@ import com.vaadin.ui.JavaScriptFunction;
 public class CollaborationComponent extends AbstractJavaScriptComponent {
 	private ModelController mc;
 	 
+	private final CollaborationPage ownerPage;
+	
 	public interface ValueChangeListener extends Serializable {
 		void valueChange();
 	}
@@ -62,30 +65,19 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 	protected SharedState getState() {
 		return (SharedState) super.getState();
 	}
-
+	
+	/*
 	private void initModelController(CollaborationComponent cc) {
-		this.mc = new ModelController();
-		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        String uri = "ws://localhost:8080/MondoOnlineCollaborationServer/mondoonlineserver";
-		this.mc.setCollaborationComponent(cc);
-        try {
-			container.connectToServer(this.mc, URI.create(uri));
-			System.out.println("connection established!");
-		} catch (DeploymentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	}
+	*/
+	
+	private void updateModel(JSONObject newModel) {
+		this.ownerPage.publishModel(newModel);
 	}
 	
-	private void updateModel(String model) {
-		this.mc.updateModel(model);
-	}
-	
-	public CollaborationComponent() {
-		initModelController(this);
+	public CollaborationComponent(CollaborationPage page) {
+		// initModelController(this);
+		this.ownerPage = page;
 		
 		addFunction("addElement", new JavaScriptFunction() {
 			@Override
@@ -102,7 +94,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				JSONObject newModel = getState().model;
 				newModel.getJSONArray(type).put(element);
 				getState().setModel(newModel);
-				updateModel(newModel.toString());
+				updateModel(newModel);
 				// System.out.println("Model after add new: " + newModel.toString());
 			}
 		});
@@ -139,7 +131,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 						newElements.put(i, edited);
 						newModel.put(type, newElements);
 						getState().setModel(newModel);
-						updateModel(newModel.toString());
+						updateModel(newModel);
 						// System.out.println("Model after edit: " + newModel.toString());
 						break;
 					}
@@ -188,7 +180,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				newModel.put("edges", newEdges);
 				// System.out.println("Model after delete: " + newModel.toString());
 				getState().setModel(newModel);
-				updateModel(newModel.toString());
+				updateModel(newModel);
 			}
 		});
 		

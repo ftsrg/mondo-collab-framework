@@ -1,32 +1,22 @@
 package com.mondo.online.collaborationcontroller;
 
-import java.io.IOException;
 
-import javax.websocket.ClientEndpoint;
-import javax.websocket.CloseReason;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-@ClientEndpoint
+//@ClientEndpoint
 public class ModelController {
 	
-	private Session session;
+	//private Session session;
 	
 	private CollaborationComponent cc;
 	
+	/*
 	@OnOpen
     public void onOpen(Session session) {
 		this.session = session;
         System.out.println("Connected to endpoint: " + session.getBasicRemote());
         System.out.println("Max message length: "  + session.getMaxTextMessageBufferSize());
     }
-    
+    */
+	/*
     @OnMessage
     public void processMessage(String message) {
     	try {
@@ -62,5 +52,5 @@ public class ModelController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
+    }*/
 }

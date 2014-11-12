@@ -1,5 +1,7 @@
 package com.mondo.online;
 
+import org.json.JSONObject;
+
 import com.mondo.online.collaborationcontroller.CollaborationComponent;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -12,29 +14,51 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 	public static final String NAME = "Collaboration";
 	
 	Navigator navigator;
+	private Application application;
 	
-	public CollaborationPage(final Navigator navigator) {
+	private CollaborationComponent cc;
+	
+	public CollaborationPage(final Navigator navigator, Application application) {
+		System.out.println("Construct CollaborationPage");
 		this.navigator = navigator;
+		this.application = application; 
 		setSizeFull();
 		
-		final CollaborationComponent cc = new CollaborationComponent();
+		CollaborationComponent collabComponent = new CollaborationComponent(this);
 
 		// Set the value from server- side
-		cc.setValue("Server-side value");
+		collabComponent.setValue("Server-side value");
 
 		// Process a value input by the user from the client-side
-		cc.addValueChangeListener(
+		collabComponent.addValueChangeListener(
 		        new CollaborationComponent.ValueChangeListener() {
 		    @Override
 		    public void valueChange() {
-		        Notification.show("Value: " + cc.getValue());
+		        Notification.show("Value: " + collabComponent.getValue());
 		    }
 		});
-		addComponent(cc);
+		this.cc = collabComponent;
+		addComponent(this.cc);
 	}
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		
+		this.loadModel();
+	}
+
+	private void loadModel() {
+		this.application.getWebsocketClient().getModel();
+	}
+
+	public CollaborationComponent getCollaborationComponent() {
+		return this.cc;
+	}
+
+	public void setModel(JSONObject jsonModel) {
+		this.cc.setModel(jsonModel);
+	}
+
+	public void publishModel(JSONObject newModel) {
+		this.application.getWebsocketClient().pushModel(newModel);
 	}
 }
