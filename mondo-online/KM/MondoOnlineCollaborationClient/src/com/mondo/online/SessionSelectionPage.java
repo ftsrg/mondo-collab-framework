@@ -131,7 +131,8 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
 					);
 					if(state == CollaborationSession.STATE_OPEN) {
-						joinSession(sessionId);
+						String title = (String) sessionsTable.getContainerProperty(rowId, "Name").getValue();
+						joinSession(sessionId, title);
 					} else {
 						Notification.show("Selected session is closed.");
 					}
@@ -197,12 +198,13 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		);
 	}
 
-	protected void joinSession(String sessionId) {
+	protected void joinSession(String sessionId, String title) {
 		this.application.getWebsocketClient().joinSession(
 			this.application.getUser(), 
 			sessionId
 		);
 		this.application.getCollaborationPage().setSessionId(sessionId);
+		this.application.getCollaborationPage().setTitle(title);
 		this.navigator.navigateTo(CollaborationPage.NAME);
 	}
 

@@ -12,6 +12,7 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 
 public class CollaborationPage extends AbsoluteLayout implements View {
@@ -23,8 +24,7 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 	
 	private CollaborationComponent cc;
 	
-	// TODO delete?
-	private String sessionId; 
+	private String sessionId;
 	
 	private List<User> users;
 	
@@ -104,5 +104,11 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 
 	private void updateUsersList() {
 		System.out.println("TODO: implement update users list!");
+	}
+
+	public void setTitle(String title) {
+		Label titleLabel = new Label(title);
+		titleLabel.setDebugId("title");
+		addComponent(titleLabel, "left: 40px; top: 5px;");
 	}
 }

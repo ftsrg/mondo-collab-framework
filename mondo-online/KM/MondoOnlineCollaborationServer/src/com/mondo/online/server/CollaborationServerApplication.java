@@ -19,7 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 @ServerEndpoint("/mondoonlineserver")
 public class CollaborationServerApplication {
 	private static Set<Session> connections = 
@@ -31,6 +30,7 @@ public class CollaborationServerApplication {
 	private static HashMap<String, List<Session>> sessionsConnections;
 	
 	public CollaborationServerApplication() {
+		// this.newLoadModel();
 		System.out.println("Initialize server...");
 		if(sessions == null) {
 			System.out.println("Load models...");
@@ -215,6 +215,21 @@ public class CollaborationServerApplication {
 	private boolean finishSession(String sessionId) {
 		for(CollaborationSession s: sessions) {
 			if(s.getId().equals(sessionId)) {
+				// kick users
+				List<Session> relevantConnections = sessionsConnections.get(sessionId);
+				synchronized(relevantConnections){
+					try {
+						JSONObject request = new JSONObject();
+						request.put("operation", "leaveSession");
+						for(Session conn: relevantConnections){
+							conn.getBasicRemote().sendText(request.toString());
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			    } 
 				s.finishSession();
 				return true;
 			}
@@ -321,12 +336,13 @@ public class CollaborationServerApplication {
 	}
 	/*
 	private void newLoadModel() {
+	    System.out.println("Try resourcey stuff...");
 		ResourceSet resSet = new ResourceSetImpl();
 
 	    // Get the resource
 	    Resource resource = resSet.getResource(URI
 	        .createURI("res/WTSpec2.0.ecore"), true);
-	    System.out.println(resource.toString());
+	    System.out.println("done");
 	}
 	*/
 	

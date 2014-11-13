@@ -61,6 +61,7 @@ public class CollaborationSession {
 	}
 	
 	public void finishSession() {
+		this.users.clear();
 		this.state = CollaborationSession.STATE_FINISHED;
 	}
 	

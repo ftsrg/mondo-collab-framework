@@ -2,7 +2,8 @@
 	position: absolute;
 	width: 1000px; 
 	height: 800px;
-	margin: 20px; 
+	margin: 20px;
+	margin-top: 30px;
 	border: 3px solid #5394ED;
 	border-radius: 10px;
 	padding: 10px;
@@ -43,3 +44,7 @@
 #editDialog .label {	    	
 	padding-right: 5px;
 }  
+
+#title {
+	color: #5394ED;
+}

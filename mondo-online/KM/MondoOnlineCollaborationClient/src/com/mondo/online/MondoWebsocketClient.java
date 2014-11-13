@@ -53,6 +53,9 @@ public class MondoWebsocketClient {
 				this.application.getCollaborationPage().setUsersList(
 					message.getJSONArray("users")
 				);
+    		} else if(operation.equals("leaveSession")) {
+        		System.out.println("leaveSession...");
+				this.application.leaveSession();
     		}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

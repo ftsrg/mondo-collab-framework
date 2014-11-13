@@ -60,7 +60,6 @@ public class Application extends UI {
 			navigator.addView(LoginPage.NAME, loginPage);
 			navigator.addView(SessionSelectionPage.NAME, sessionSelectionPage);
 			navigator.addView(CollaborationPage.NAME, collaborationPage);
-
 			System.out.println("Init Done!");
 			navigator.navigateTo(LoginPage.NAME);
 	        setPollInterval(1000);
@@ -103,5 +102,12 @@ public class Application extends UI {
 
 	public SessionSelectionPage getSessionSelectionPage() {
 		return this.sessionSelectionPage;
+	}
+
+	public void leaveSession() {
+		navigator.navigateTo(SessionSelectionPage.NAME);
+		navigator.removeView(CollaborationPage.NAME);
+		this.collaborationPage = new CollaborationPage(navigator, this);
+		navigator.addView(CollaborationPage.NAME, this.collaborationPage);
 	}
 }
