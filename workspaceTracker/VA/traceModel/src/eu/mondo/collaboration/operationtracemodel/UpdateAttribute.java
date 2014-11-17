@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 
 /**
@@ -11,12 +11,12 @@ package operationtracemodel;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link operationtracemodel.UpdateAttribute#getNewValue <em>New Value</em>}</li>
- *   <li>{@link operationtracemodel.UpdateAttribute#getOldValue <em>Old Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.UpdateAttribute#getNewValue <em>New Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.UpdateAttribute#getOldValue <em>Old Value</em>}</li>
  * </ul>
  * </p>
  *
- * @see operationtracemodel.OperationtracemodelPackage#getUpdateAttribute()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getUpdateAttribute()
  * @model
  * @generated
  */
@@ -31,14 +31,14 @@ public interface UpdateAttribute extends Update {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>New Value</em>' attribute.
 	 * @see #setNewValue(Object)
-	 * @see operationtracemodel.OperationtracemodelPackage#getUpdateAttribute_NewValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getUpdateAttribute_NewValue()
 	 * @model required="true"
 	 * @generated
 	 */
 	Object getNewValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.UpdateAttribute#getNewValue <em>New Value</em>}' attribute.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.UpdateAttribute#getNewValue <em>New Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>New Value</em>' attribute.
@@ -57,14 +57,14 @@ public interface UpdateAttribute extends Update {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Old Value</em>' attribute.
 	 * @see #setOldValue(Object)
-	 * @see operationtracemodel.OperationtracemodelPackage#getUpdateAttribute_OldValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getUpdateAttribute_OldValue()
 	 * @model required="true"
 	 * @generated
 	 */
 	Object getOldValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.UpdateAttribute#getOldValue <em>Old Value</em>}' attribute.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.UpdateAttribute#getOldValue <em>Old Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Old Value</em>' attribute.

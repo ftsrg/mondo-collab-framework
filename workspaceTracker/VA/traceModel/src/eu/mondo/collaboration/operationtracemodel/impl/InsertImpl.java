@@ -1,11 +1,11 @@
 /**
  */
-package operationtracemodel.impl;
-
-import operationtracemodel.Insert;
-import operationtracemodel.OperationtracemodelPackage;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
 import org.eclipse.emf.ecore.EClass;
+
+import eu.mondo.collaboration.operationtracemodel.Insert;
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
 
 /**
  * <!-- begin-user-doc -->

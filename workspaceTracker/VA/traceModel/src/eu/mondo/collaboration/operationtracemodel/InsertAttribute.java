@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 
 /**
@@ -11,11 +11,11 @@ package operationtracemodel;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link operationtracemodel.InsertAttribute#getNewValue <em>New Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.InsertAttribute#getNewValue <em>New Value</em>}</li>
  * </ul>
  * </p>
  *
- * @see operationtracemodel.OperationtracemodelPackage#getInsertAttribute()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getInsertAttribute()
  * @model
  * @generated
  */
@@ -30,14 +30,14 @@ public interface InsertAttribute extends Insert {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>New Value</em>' attribute.
 	 * @see #setNewValue(Object)
-	 * @see operationtracemodel.OperationtracemodelPackage#getInsertAttribute_NewValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getInsertAttribute_NewValue()
 	 * @model required="true"
 	 * @generated
 	 */
 	Object getNewValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.InsertAttribute#getNewValue <em>New Value</em>}' attribute.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.InsertAttribute#getNewValue <em>New Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>New Value</em>' attribute.

@@ -1,26 +1,22 @@
 /**
  */
-package operationtracemodel.impl;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
 import java.util.Collection;
 
-import operationtracemodel.Command;
-import operationtracemodel.OperationtracemodelPackage;
-import operationtracemodel.Step;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import eu.mondo.collaboration.operationtracemodel.Command;
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
+import eu.mondo.collaboration.operationtracemodel.Step;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,9 +25,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link operationtracemodel.impl.CommandImpl#getSteps <em>Steps</em>}</li>
- *   <li>{@link operationtracemodel.impl.CommandImpl#getNextCommand <em>Next Command</em>}</li>
- *   <li>{@link operationtracemodel.impl.CommandImpl#getFirstStep <em>First Step</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.CommandImpl#getSteps <em>Steps</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.CommandImpl#getNextCommand <em>Next Command</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.CommandImpl#getFirstStep <em>First Step</em>}</li>
  * </ul>
  * </p>
  *

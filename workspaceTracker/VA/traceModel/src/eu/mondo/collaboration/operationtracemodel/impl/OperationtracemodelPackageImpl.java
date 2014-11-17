@@ -1,31 +1,29 @@
 /**
  */
-package operationtracemodel.impl;
-
-import operationtracemodel.Cemetary;
-import operationtracemodel.Command;
-import operationtracemodel.Insert;
-import operationtracemodel.InsertAttribute;
-import operationtracemodel.InsertReference;
-import operationtracemodel.OperationtracemodelFactory;
-import operationtracemodel.OperationtracemodelPackage;
-import operationtracemodel.Remove;
-import operationtracemodel.RemoveAttribute;
-import operationtracemodel.RemoveReference;
-import operationtracemodel.RemovedElement;
-import operationtracemodel.Step;
-import operationtracemodel.Trace;
-import operationtracemodel.Update;
-import operationtracemodel.UpdateAttribute;
-import operationtracemodel.UpdateReference;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcorePackage;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+
+import eu.mondo.collaboration.operationtracemodel.Cemetary;
+import eu.mondo.collaboration.operationtracemodel.Command;
+import eu.mondo.collaboration.operationtracemodel.Insert;
+import eu.mondo.collaboration.operationtracemodel.InsertAttribute;
+import eu.mondo.collaboration.operationtracemodel.InsertReference;
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelFactory;
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
+import eu.mondo.collaboration.operationtracemodel.Remove;
+import eu.mondo.collaboration.operationtracemodel.RemoveAttribute;
+import eu.mondo.collaboration.operationtracemodel.RemoveReference;
+import eu.mondo.collaboration.operationtracemodel.Step;
+import eu.mondo.collaboration.operationtracemodel.Trace;
+import eu.mondo.collaboration.operationtracemodel.Update;
+import eu.mondo.collaboration.operationtracemodel.UpdateAttribute;
+import eu.mondo.collaboration.operationtracemodel.UpdateReference;
 
 /**
  * <!-- begin-user-doc -->
@@ -54,13 +52,6 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * @generated
 	 */
 	private EClass stepEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass removedElementEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -143,7 +134,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
-	 * @see operationtracemodel.OperationtracemodelPackage#eNS_URI
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
@@ -318,24 +309,6 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getRemovedElement() {
-		return removedElementEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getRemovedElement_RemovedElement() {
-		return (EReference)removedElementEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getInsert() {
 		return insertEClass;
 	}
@@ -372,7 +345,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getCemetary_RemovedElement() {
+	public EReference getCemetary_RemovedElements() {
 		return (EReference)cemetaryEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -546,9 +519,6 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 		createEReference(stepEClass, STEP__ELEMENT);
 		createEReference(stepEClass, STEP__FEATURE);
 
-		removedElementEClass = createEClass(REMOVED_ELEMENT);
-		createEReference(removedElementEClass, REMOVED_ELEMENT__REMOVED_ELEMENT);
-
 		insertEClass = createEClass(INSERT);
 
 		updateEClass = createEClass(UPDATE);
@@ -556,7 +526,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 		removeEClass = createEClass(REMOVE);
 
 		cemetaryEClass = createEClass(CEMETARY);
-		createEReference(cemetaryEClass, CEMETARY__REMOVED_ELEMENT);
+		createEReference(cemetaryEClass, CEMETARY__REMOVED_ELEMENTS);
 
 		insertAttributeEClass = createEClass(INSERT_ATTRIBUTE);
 		createEAttribute(insertAttributeEClass, INSERT_ATTRIBUTE__NEW_VALUE);
@@ -637,9 +607,6 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 		initEReference(getStep_Element(), ecorePackage.getEObject(), null, "element", null, 1, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getStep_Feature(), theEcorePackage.getEStructuralFeature(), null, "feature", null, 1, 1, Step.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(removedElementEClass, RemovedElement.class, "RemovedElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getRemovedElement_RemovedElement(), ecorePackage.getEObject(), null, "removedElement", null, 1, 1, RemovedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(insertEClass, Insert.class, "Insert", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(updateEClass, Update.class, "Update", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -647,7 +614,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 		initEClass(removeEClass, Remove.class, "Remove", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(cemetaryEClass, Cemetary.class, "Cemetary", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getCemetary_RemovedElement(), this.getRemovedElement(), null, "removedElement", null, 0, -1, Cemetary.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCemetary_RemovedElements(), ecorePackage.getEObject(), null, "removedElements", null, 0, -1, Cemetary.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(insertAttributeEClass, InsertAttribute.class, "InsertAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getInsertAttribute_NewValue(), ecorePackage.getEJavaObject(), "newValue", null, 1, 1, InsertAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -667,7 +634,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 		initEAttribute(getRemoveAttribute_OldValue(), ecorePackage.getEJavaObject(), "oldValue", null, 1, 1, RemoveAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(removeReferenceEClass, RemoveReference.class, "RemoveReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getRemoveReference_OldValue(), this.getRemovedElement(), null, "oldValue", null, 1, 1, RemoveReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getRemoveReference_OldValue(), ecorePackage.getEObject(), null, "oldValue", null, 1, 1, RemoveReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

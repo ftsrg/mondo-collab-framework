@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -13,12 +13,12 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link operationtracemodel.UpdateReference#getOldValue <em>Old Value</em>}</li>
- *   <li>{@link operationtracemodel.UpdateReference#getNewValue <em>New Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.UpdateReference#getOldValue <em>Old Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.UpdateReference#getNewValue <em>New Value</em>}</li>
  * </ul>
  * </p>
  *
- * @see operationtracemodel.OperationtracemodelPackage#getUpdateReference()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getUpdateReference()
  * @model
  * @generated
  */
@@ -34,14 +34,14 @@ public interface UpdateReference extends Update {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Old Value</em>' reference.
 	 * @see #setOldValue(EObject)
-	 * @see operationtracemodel.OperationtracemodelPackage#getUpdateReference_OldValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getUpdateReference_OldValue()
 	 * @model required="true"
 	 * @generated
 	 */
 	EObject getOldValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.UpdateReference#getOldValue <em>Old Value</em>}' reference.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.UpdateReference#getOldValue <em>Old Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Old Value</em>' reference.
@@ -60,14 +60,14 @@ public interface UpdateReference extends Update {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>New Value</em>' reference.
 	 * @see #setNewValue(EObject)
-	 * @see operationtracemodel.OperationtracemodelPackage#getUpdateReference_NewValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getUpdateReference_NewValue()
 	 * @model required="true"
 	 * @generated
 	 */
 	EObject getNewValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.UpdateReference#getNewValue <em>New Value</em>}' reference.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.UpdateReference#getNewValue <em>New Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>New Value</em>' reference.

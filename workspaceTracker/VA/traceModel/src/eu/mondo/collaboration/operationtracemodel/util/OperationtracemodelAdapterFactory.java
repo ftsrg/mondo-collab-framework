@@ -1,22 +1,20 @@
 /**
  */
-package operationtracemodel.util;
-
-import operationtracemodel.*;
+package eu.mondo.collaboration.operationtracemodel.util;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
+
+import eu.mondo.collaboration.operationtracemodel.*;
 
 /**
  * <!-- begin-user-doc -->
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see operationtracemodel.OperationtracemodelPackage
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage
  * @generated
  */
 public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
@@ -80,10 +78,6 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 				return createStepAdapter();
 			}
 			@Override
-			public Adapter caseRemovedElement(RemovedElement object) {
-				return createRemovedElementAdapter();
-			}
-			@Override
 			public Adapter caseInsert(Insert object) {
 				return createInsertAdapter();
 			}
@@ -144,13 +138,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.Trace <em>Trace</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Trace <em>Trace</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.Trace
+	 * @see eu.mondo.collaboration.operationtracemodel.Trace
 	 * @generated
 	 */
 	public Adapter createTraceAdapter() {
@@ -158,13 +152,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.Command <em>Command</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Command <em>Command</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.Command
+	 * @see eu.mondo.collaboration.operationtracemodel.Command
 	 * @generated
 	 */
 	public Adapter createCommandAdapter() {
@@ -172,13 +166,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.Step <em>Step</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Step <em>Step</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.Step
+	 * @see eu.mondo.collaboration.operationtracemodel.Step
 	 * @generated
 	 */
 	public Adapter createStepAdapter() {
@@ -186,27 +180,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.RemovedElement <em>Removed Element</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Insert <em>Insert</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.RemovedElement
-	 * @generated
-	 */
-	public Adapter createRemovedElementAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.Insert <em>Insert</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see operationtracemodel.Insert
+	 * @see eu.mondo.collaboration.operationtracemodel.Insert
 	 * @generated
 	 */
 	public Adapter createInsertAdapter() {
@@ -214,13 +194,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.Update <em>Update</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Update <em>Update</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.Update
+	 * @see eu.mondo.collaboration.operationtracemodel.Update
 	 * @generated
 	 */
 	public Adapter createUpdateAdapter() {
@@ -228,13 +208,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.Remove <em>Remove</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Remove <em>Remove</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.Remove
+	 * @see eu.mondo.collaboration.operationtracemodel.Remove
 	 * @generated
 	 */
 	public Adapter createRemoveAdapter() {
@@ -242,13 +222,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.Cemetary <em>Cemetary</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Cemetary <em>Cemetary</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.Cemetary
+	 * @see eu.mondo.collaboration.operationtracemodel.Cemetary
 	 * @generated
 	 */
 	public Adapter createCemetaryAdapter() {
@@ -256,13 +236,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.InsertAttribute <em>Insert Attribute</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.InsertAttribute <em>Insert Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.InsertAttribute
+	 * @see eu.mondo.collaboration.operationtracemodel.InsertAttribute
 	 * @generated
 	 */
 	public Adapter createInsertAttributeAdapter() {
@@ -270,13 +250,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.InsertReference <em>Insert Reference</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.InsertReference <em>Insert Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.InsertReference
+	 * @see eu.mondo.collaboration.operationtracemodel.InsertReference
 	 * @generated
 	 */
 	public Adapter createInsertReferenceAdapter() {
@@ -284,13 +264,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.UpdateAttribute <em>Update Attribute</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.UpdateAttribute <em>Update Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.UpdateAttribute
+	 * @see eu.mondo.collaboration.operationtracemodel.UpdateAttribute
 	 * @generated
 	 */
 	public Adapter createUpdateAttributeAdapter() {
@@ -298,13 +278,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.UpdateReference <em>Update Reference</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.UpdateReference <em>Update Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.UpdateReference
+	 * @see eu.mondo.collaboration.operationtracemodel.UpdateReference
 	 * @generated
 	 */
 	public Adapter createUpdateReferenceAdapter() {
@@ -312,13 +292,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.RemoveAttribute <em>Remove Attribute</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.RemoveAttribute <em>Remove Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.RemoveAttribute
+	 * @see eu.mondo.collaboration.operationtracemodel.RemoveAttribute
 	 * @generated
 	 */
 	public Adapter createRemoveAttributeAdapter() {
@@ -326,13 +306,13 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link operationtracemodel.RemoveReference <em>Remove Reference</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.RemoveReference <em>Remove Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see operationtracemodel.RemoveReference
+	 * @see eu.mondo.collaboration.operationtracemodel.RemoveReference
 	 * @generated
 	 */
 	public Adapter createRemoveReferenceAdapter() {

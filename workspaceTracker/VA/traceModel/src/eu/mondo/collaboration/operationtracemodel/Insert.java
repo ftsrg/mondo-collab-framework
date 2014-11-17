@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 
 /**
@@ -9,7 +9,7 @@ package operationtracemodel;
  * <!-- end-user-doc -->
  *
  *
- * @see operationtracemodel.OperationtracemodelPackage#getInsert()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getInsert()
  * @model abstract="true"
  * @generated
  */

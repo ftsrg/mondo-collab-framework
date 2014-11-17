@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 import org.eclipse.emf.ecore.EFactory;
 
@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EFactory;
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
  * <!-- end-user-doc -->
- * @see operationtracemodel.OperationtracemodelPackage
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage
  * @generated
  */
 public interface OperationtracemodelFactory extends EFactory {
@@ -19,7 +19,7 @@ public interface OperationtracemodelFactory extends EFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	OperationtracemodelFactory eINSTANCE = operationtracemodel.impl.OperationtracemodelFactoryImpl.init();
+	OperationtracemodelFactory eINSTANCE = eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelFactoryImpl.init();
 
 	/**
 	 * Returns a new object of class '<em>Trace</em>'.
@@ -38,15 +38,6 @@ public interface OperationtracemodelFactory extends EFactory {
 	 * @generated
 	 */
 	Command createCommand();
-
-	/**
-	 * Returns a new object of class '<em>Removed Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Removed Element</em>'.
-	 * @generated
-	 */
-	RemovedElement createRemovedElement();
 
 	/**
 	 * Returns a new object of class '<em>Cemetary</em>'.

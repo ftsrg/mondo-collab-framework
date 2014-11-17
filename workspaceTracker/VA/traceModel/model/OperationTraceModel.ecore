@@ -21,18 +21,14 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="element" lowerBound="1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1"
-        eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EStructuralFeature"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RemovedElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="removedElement" lowerBound="1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EStructuralFeature"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Insert" abstract="true" eSuperTypes="#//Step"/>
   <eClassifiers xsi:type="ecore:EClass" name="Update" abstract="true" eSuperTypes="#//Step"/>
   <eClassifiers xsi:type="ecore:EClass" name="Remove" abstract="true" eSuperTypes="#//Step"/>
   <eClassifiers xsi:type="ecore:EClass" name="Cemetary">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="removedElement" upperBound="-1"
-        eType="#//RemovedElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="removedElements" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InsertAttribute" eSuperTypes="#//Insert">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="newValue" lowerBound="1"
@@ -60,6 +56,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RemoveReference" eSuperTypes="#//Remove">
     <eStructuralFeatures xsi:type="ecore:EReference" name="oldValue" lowerBound="1"
-        eType="#//RemovedElement"/>
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -14,21 +14,21 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link operationtracemodel.Trace#getCommands <em>Commands</em>}</li>
- *   <li>{@link operationtracemodel.Trace#getFirstCommand <em>First Command</em>}</li>
- *   <li>{@link operationtracemodel.Trace#getCementary <em>Cementary</em>}</li>
- *   <li>{@link operationtracemodel.Trace#getLastCommand <em>Last Command</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getCommands <em>Commands</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getFirstCommand <em>First Command</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getCementary <em>Cementary</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getLastCommand <em>Last Command</em>}</li>
  * </ul>
  * </p>
  *
- * @see operationtracemodel.OperationtracemodelPackage#getTrace()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getTrace()
  * @model
  * @generated
  */
 public interface Trace extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Commands</b></em>' containment reference list.
-	 * The list contents are of type {@link operationtracemodel.Command}.
+	 * The list contents are of type {@link eu.mondo.collaboration.operationtracemodel.Command}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Commands</em>' containment reference list isn't clear,
@@ -36,7 +36,7 @@ public interface Trace extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Commands</em>' containment reference list.
-	 * @see operationtracemodel.OperationtracemodelPackage#getTrace_Commands()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getTrace_Commands()
 	 * @model containment="true"
 	 * @generated
 	 */
@@ -52,14 +52,14 @@ public interface Trace extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>First Command</em>' reference.
 	 * @see #setFirstCommand(Command)
-	 * @see operationtracemodel.OperationtracemodelPackage#getTrace_FirstCommand()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getTrace_FirstCommand()
 	 * @model
 	 * @generated
 	 */
 	Command getFirstCommand();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.Trace#getFirstCommand <em>First Command</em>}' reference.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.Trace#getFirstCommand <em>First Command</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>First Command</em>' reference.
@@ -78,14 +78,14 @@ public interface Trace extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Cementary</em>' containment reference.
 	 * @see #setCementary(Cemetary)
-	 * @see operationtracemodel.OperationtracemodelPackage#getTrace_Cementary()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getTrace_Cementary()
 	 * @model containment="true" required="true"
 	 * @generated
 	 */
 	Cemetary getCementary();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.Trace#getCementary <em>Cementary</em>}' containment reference.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCementary <em>Cementary</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Cementary</em>' containment reference.
@@ -104,14 +104,14 @@ public interface Trace extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Last Command</em>' reference.
 	 * @see #setLastCommand(Command)
-	 * @see operationtracemodel.OperationtracemodelPackage#getTrace_LastCommand()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getTrace_LastCommand()
 	 * @model
 	 * @generated
 	 */
 	Command getLastCommand();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.Trace#getLastCommand <em>Last Command</em>}' reference.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.Trace#getLastCommand <em>Last Command</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Last Command</em>' reference.

@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * @see operationtracemodel.OperationtracemodelFactory
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelFactory
  * @model kind="package"
  * @generated
  */
@@ -54,14 +54,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	OperationtracemodelPackage eINSTANCE = operationtracemodel.impl.OperationtracemodelPackageImpl.init();
+	OperationtracemodelPackage eINSTANCE = eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.TraceImpl <em>Trace</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl <em>Trace</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.TraceImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getTrace()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.TraceImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getTrace()
 	 * @generated
 	 */
 	int TRACE = 0;
@@ -121,11 +121,11 @@ public interface OperationtracemodelPackage extends EPackage {
 	int TRACE_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.CommandImpl <em>Command</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.CommandImpl <em>Command</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.CommandImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getCommand()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.CommandImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getCommand()
 	 * @generated
 	 */
 	int COMMAND = 1;
@@ -176,11 +176,11 @@ public interface OperationtracemodelPackage extends EPackage {
 	int COMMAND_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.StepImpl <em>Step</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.StepImpl <em>Step</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.StepImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getStep()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.StepImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getStep()
 	 * @generated
 	 */
 	int STEP = 2;
@@ -231,51 +231,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int STEP_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.RemovedElementImpl <em>Removed Element</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.RemovedElementImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getRemovedElement()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.InsertImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getInsert()
 	 * @generated
 	 */
-	int REMOVED_ELEMENT = 3;
-
-	/**
-	 * The feature id for the '<em><b>Removed Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REMOVED_ELEMENT__REMOVED_ELEMENT = 0;
-
-	/**
-	 * The number of structural features of the '<em>Removed Element</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REMOVED_ELEMENT_FEATURE_COUNT = 1;
-
-	/**
-	 * The number of operations of the '<em>Removed Element</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REMOVED_ELEMENT_OPERATION_COUNT = 0;
-
-	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.InsertImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsert()
-	 * @generated
-	 */
-	int INSERT = 4;
+	int INSERT = 3;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -323,14 +286,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int INSERT_OPERATION_COUNT = STEP_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.UpdateImpl <em>Update</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.UpdateImpl <em>Update</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.UpdateImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdate()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.UpdateImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdate()
 	 * @generated
 	 */
-	int UPDATE = 5;
+	int UPDATE = 4;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -378,14 +341,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int UPDATE_OPERATION_COUNT = STEP_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.RemoveImpl <em>Remove</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.RemoveImpl <em>Remove</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.RemoveImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getRemove()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.RemoveImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getRemove()
 	 * @generated
 	 */
-	int REMOVE = 6;
+	int REMOVE = 5;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -433,23 +396,23 @@ public interface OperationtracemodelPackage extends EPackage {
 	int REMOVE_OPERATION_COUNT = STEP_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.CemetaryImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetary()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.CemetaryImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetary()
 	 * @generated
 	 */
-	int CEMETARY = 7;
+	int CEMETARY = 6;
 
 	/**
-	 * The feature id for the '<em><b>Removed Element</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Removed Elements</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CEMETARY__REMOVED_ELEMENT = 0;
+	int CEMETARY__REMOVED_ELEMENTS = 0;
 
 	/**
 	 * The number of structural features of the '<em>Cemetary</em>' class.
@@ -470,14 +433,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int CEMETARY_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.InsertAttributeImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertAttribute()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.InsertAttributeImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertAttribute()
 	 * @generated
 	 */
-	int INSERT_ATTRIBUTE = 8;
+	int INSERT_ATTRIBUTE = 7;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -534,14 +497,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int INSERT_ATTRIBUTE_OPERATION_COUNT = INSERT_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.InsertReferenceImpl <em>Insert Reference</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.InsertReferenceImpl <em>Insert Reference</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.InsertReferenceImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertReference()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.InsertReferenceImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertReference()
 	 * @generated
 	 */
-	int INSERT_REFERENCE = 9;
+	int INSERT_REFERENCE = 8;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -598,14 +561,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int INSERT_REFERENCE_OPERATION_COUNT = INSERT_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.UpdateAttributeImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateAttribute()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.UpdateAttributeImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateAttribute()
 	 * @generated
 	 */
-	int UPDATE_ATTRIBUTE = 10;
+	int UPDATE_ATTRIBUTE = 9;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -671,14 +634,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int UPDATE_ATTRIBUTE_OPERATION_COUNT = UPDATE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.UpdateReferenceImpl <em>Update Reference</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.UpdateReferenceImpl <em>Update Reference</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.UpdateReferenceImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateReference()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.UpdateReferenceImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateReference()
 	 * @generated
 	 */
-	int UPDATE_REFERENCE = 11;
+	int UPDATE_REFERENCE = 10;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -744,14 +707,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int UPDATE_REFERENCE_OPERATION_COUNT = UPDATE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.RemoveAttributeImpl <em>Remove Attribute</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.RemoveAttributeImpl <em>Remove Attribute</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.RemoveAttributeImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getRemoveAttribute()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.RemoveAttributeImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getRemoveAttribute()
 	 * @generated
 	 */
-	int REMOVE_ATTRIBUTE = 12;
+	int REMOVE_ATTRIBUTE = 11;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -808,14 +771,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int REMOVE_ATTRIBUTE_OPERATION_COUNT = REMOVE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link operationtracemodel.impl.RemoveReferenceImpl <em>Remove Reference</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.RemoveReferenceImpl <em>Remove Reference</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see operationtracemodel.impl.RemoveReferenceImpl
-	 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getRemoveReference()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.RemoveReferenceImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getRemoveReference()
 	 * @generated
 	 */
-	int REMOVE_REFERENCE = 13;
+	int REMOVE_REFERENCE = 12;
 
 	/**
 	 * The feature id for the '<em><b>Next Step</b></em>' reference.
@@ -873,360 +836,339 @@ public interface OperationtracemodelPackage extends EPackage {
 
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Trace <em>Trace</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Trace <em>Trace</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Trace</em>'.
-	 * @see operationtracemodel.Trace
+	 * @see eu.mondo.collaboration.operationtracemodel.Trace
 	 * @generated
 	 */
 	EClass getTrace();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link operationtracemodel.Trace#getCommands <em>Commands</em>}'.
+	 * Returns the meta object for the containment reference list '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCommands <em>Commands</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Commands</em>'.
-	 * @see operationtracemodel.Trace#getCommands()
+	 * @see eu.mondo.collaboration.operationtracemodel.Trace#getCommands()
 	 * @see #getTrace()
 	 * @generated
 	 */
 	EReference getTrace_Commands();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.Trace#getFirstCommand <em>First Command</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getFirstCommand <em>First Command</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>First Command</em>'.
-	 * @see operationtracemodel.Trace#getFirstCommand()
+	 * @see eu.mondo.collaboration.operationtracemodel.Trace#getFirstCommand()
 	 * @see #getTrace()
 	 * @generated
 	 */
 	EReference getTrace_FirstCommand();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link operationtracemodel.Trace#getCementary <em>Cementary</em>}'.
+	 * Returns the meta object for the containment reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCementary <em>Cementary</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>Cementary</em>'.
-	 * @see operationtracemodel.Trace#getCementary()
+	 * @see eu.mondo.collaboration.operationtracemodel.Trace#getCementary()
 	 * @see #getTrace()
 	 * @generated
 	 */
 	EReference getTrace_Cementary();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.Trace#getLastCommand <em>Last Command</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getLastCommand <em>Last Command</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Last Command</em>'.
-	 * @see operationtracemodel.Trace#getLastCommand()
+	 * @see eu.mondo.collaboration.operationtracemodel.Trace#getLastCommand()
 	 * @see #getTrace()
 	 * @generated
 	 */
 	EReference getTrace_LastCommand();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Command <em>Command</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Command <em>Command</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Command</em>'.
-	 * @see operationtracemodel.Command
+	 * @see eu.mondo.collaboration.operationtracemodel.Command
 	 * @generated
 	 */
 	EClass getCommand();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link operationtracemodel.Command#getSteps <em>Steps</em>}'.
+	 * Returns the meta object for the containment reference list '{@link eu.mondo.collaboration.operationtracemodel.Command#getSteps <em>Steps</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Steps</em>'.
-	 * @see operationtracemodel.Command#getSteps()
+	 * @see eu.mondo.collaboration.operationtracemodel.Command#getSteps()
 	 * @see #getCommand()
 	 * @generated
 	 */
 	EReference getCommand_Steps();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.Command#getNextCommand <em>Next Command</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Command#getNextCommand <em>Next Command</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Next Command</em>'.
-	 * @see operationtracemodel.Command#getNextCommand()
+	 * @see eu.mondo.collaboration.operationtracemodel.Command#getNextCommand()
 	 * @see #getCommand()
 	 * @generated
 	 */
 	EReference getCommand_NextCommand();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.Command#getFirstStep <em>First Step</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Command#getFirstStep <em>First Step</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>First Step</em>'.
-	 * @see operationtracemodel.Command#getFirstStep()
+	 * @see eu.mondo.collaboration.operationtracemodel.Command#getFirstStep()
 	 * @see #getCommand()
 	 * @generated
 	 */
 	EReference getCommand_FirstStep();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Step <em>Step</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Step <em>Step</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Step</em>'.
-	 * @see operationtracemodel.Step
+	 * @see eu.mondo.collaboration.operationtracemodel.Step
 	 * @generated
 	 */
 	EClass getStep();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.Step#getNextStep <em>Next Step</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Step#getNextStep <em>Next Step</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Next Step</em>'.
-	 * @see operationtracemodel.Step#getNextStep()
+	 * @see eu.mondo.collaboration.operationtracemodel.Step#getNextStep()
 	 * @see #getStep()
 	 * @generated
 	 */
 	EReference getStep_NextStep();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.Step#getElement <em>Element</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Step#getElement <em>Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Element</em>'.
-	 * @see operationtracemodel.Step#getElement()
+	 * @see eu.mondo.collaboration.operationtracemodel.Step#getElement()
 	 * @see #getStep()
 	 * @generated
 	 */
 	EReference getStep_Element();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.Step#getFeature <em>Feature</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Step#getFeature <em>Feature</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Feature</em>'.
-	 * @see operationtracemodel.Step#getFeature()
+	 * @see eu.mondo.collaboration.operationtracemodel.Step#getFeature()
 	 * @see #getStep()
 	 * @generated
 	 */
 	EReference getStep_Feature();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.RemovedElement <em>Removed Element</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Removed Element</em>'.
-	 * @see operationtracemodel.RemovedElement
-	 * @generated
-	 */
-	EClass getRemovedElement();
-
-	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.RemovedElement#getRemovedElement <em>Removed Element</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Removed Element</em>'.
-	 * @see operationtracemodel.RemovedElement#getRemovedElement()
-	 * @see #getRemovedElement()
-	 * @generated
-	 */
-	EReference getRemovedElement_RemovedElement();
-
-	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Insert <em>Insert</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Insert <em>Insert</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Insert</em>'.
-	 * @see operationtracemodel.Insert
+	 * @see eu.mondo.collaboration.operationtracemodel.Insert
 	 * @generated
 	 */
 	EClass getInsert();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Update <em>Update</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Update <em>Update</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Update</em>'.
-	 * @see operationtracemodel.Update
+	 * @see eu.mondo.collaboration.operationtracemodel.Update
 	 * @generated
 	 */
 	EClass getUpdate();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Remove <em>Remove</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Remove <em>Remove</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Remove</em>'.
-	 * @see operationtracemodel.Remove
+	 * @see eu.mondo.collaboration.operationtracemodel.Remove
 	 * @generated
 	 */
 	EClass getRemove();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.Cemetary <em>Cemetary</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Cemetary <em>Cemetary</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Cemetary</em>'.
-	 * @see operationtracemodel.Cemetary
+	 * @see eu.mondo.collaboration.operationtracemodel.Cemetary
 	 * @generated
 	 */
 	EClass getCemetary();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link operationtracemodel.Cemetary#getRemovedElement <em>Removed Element</em>}'.
+	 * Returns the meta object for the containment reference list '{@link eu.mondo.collaboration.operationtracemodel.Cemetary#getRemovedElements <em>Removed Elements</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Removed Element</em>'.
-	 * @see operationtracemodel.Cemetary#getRemovedElement()
+	 * @return the meta object for the containment reference list '<em>Removed Elements</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.Cemetary#getRemovedElements()
 	 * @see #getCemetary()
 	 * @generated
 	 */
-	EReference getCemetary_RemovedElement();
+	EReference getCemetary_RemovedElements();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.InsertAttribute <em>Insert Attribute</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.InsertAttribute <em>Insert Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Insert Attribute</em>'.
-	 * @see operationtracemodel.InsertAttribute
+	 * @see eu.mondo.collaboration.operationtracemodel.InsertAttribute
 	 * @generated
 	 */
 	EClass getInsertAttribute();
 
 	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.InsertAttribute#getNewValue <em>New Value</em>}'.
+	 * Returns the meta object for the attribute '{@link eu.mondo.collaboration.operationtracemodel.InsertAttribute#getNewValue <em>New Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>New Value</em>'.
-	 * @see operationtracemodel.InsertAttribute#getNewValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.InsertAttribute#getNewValue()
 	 * @see #getInsertAttribute()
 	 * @generated
 	 */
 	EAttribute getInsertAttribute_NewValue();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.InsertReference <em>Insert Reference</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.InsertReference <em>Insert Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Insert Reference</em>'.
-	 * @see operationtracemodel.InsertReference
+	 * @see eu.mondo.collaboration.operationtracemodel.InsertReference
 	 * @generated
 	 */
 	EClass getInsertReference();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.InsertReference#getNewValue <em>New Value</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.InsertReference#getNewValue <em>New Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>New Value</em>'.
-	 * @see operationtracemodel.InsertReference#getNewValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.InsertReference#getNewValue()
 	 * @see #getInsertReference()
 	 * @generated
 	 */
 	EReference getInsertReference_NewValue();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.UpdateAttribute <em>Update Attribute</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.UpdateAttribute <em>Update Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Update Attribute</em>'.
-	 * @see operationtracemodel.UpdateAttribute
+	 * @see eu.mondo.collaboration.operationtracemodel.UpdateAttribute
 	 * @generated
 	 */
 	EClass getUpdateAttribute();
 
 	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.UpdateAttribute#getNewValue <em>New Value</em>}'.
+	 * Returns the meta object for the attribute '{@link eu.mondo.collaboration.operationtracemodel.UpdateAttribute#getNewValue <em>New Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>New Value</em>'.
-	 * @see operationtracemodel.UpdateAttribute#getNewValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.UpdateAttribute#getNewValue()
 	 * @see #getUpdateAttribute()
 	 * @generated
 	 */
 	EAttribute getUpdateAttribute_NewValue();
 
 	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.UpdateAttribute#getOldValue <em>Old Value</em>}'.
+	 * Returns the meta object for the attribute '{@link eu.mondo.collaboration.operationtracemodel.UpdateAttribute#getOldValue <em>Old Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Old Value</em>'.
-	 * @see operationtracemodel.UpdateAttribute#getOldValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.UpdateAttribute#getOldValue()
 	 * @see #getUpdateAttribute()
 	 * @generated
 	 */
 	EAttribute getUpdateAttribute_OldValue();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.UpdateReference <em>Update Reference</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.UpdateReference <em>Update Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Update Reference</em>'.
-	 * @see operationtracemodel.UpdateReference
+	 * @see eu.mondo.collaboration.operationtracemodel.UpdateReference
 	 * @generated
 	 */
 	EClass getUpdateReference();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.UpdateReference#getOldValue <em>Old Value</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.UpdateReference#getOldValue <em>Old Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Old Value</em>'.
-	 * @see operationtracemodel.UpdateReference#getOldValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.UpdateReference#getOldValue()
 	 * @see #getUpdateReference()
 	 * @generated
 	 */
 	EReference getUpdateReference_OldValue();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.UpdateReference#getNewValue <em>New Value</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.UpdateReference#getNewValue <em>New Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>New Value</em>'.
-	 * @see operationtracemodel.UpdateReference#getNewValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.UpdateReference#getNewValue()
 	 * @see #getUpdateReference()
 	 * @generated
 	 */
 	EReference getUpdateReference_NewValue();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.RemoveAttribute <em>Remove Attribute</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.RemoveAttribute <em>Remove Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Remove Attribute</em>'.
-	 * @see operationtracemodel.RemoveAttribute
+	 * @see eu.mondo.collaboration.operationtracemodel.RemoveAttribute
 	 * @generated
 	 */
 	EClass getRemoveAttribute();
 
 	/**
-	 * Returns the meta object for the attribute '{@link operationtracemodel.RemoveAttribute#getOldValue <em>Old Value</em>}'.
+	 * Returns the meta object for the attribute '{@link eu.mondo.collaboration.operationtracemodel.RemoveAttribute#getOldValue <em>Old Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Old Value</em>'.
-	 * @see operationtracemodel.RemoveAttribute#getOldValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.RemoveAttribute#getOldValue()
 	 * @see #getRemoveAttribute()
 	 * @generated
 	 */
 	EAttribute getRemoveAttribute_OldValue();
 
 	/**
-	 * Returns the meta object for class '{@link operationtracemodel.RemoveReference <em>Remove Reference</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.RemoveReference <em>Remove Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Remove Reference</em>'.
-	 * @see operationtracemodel.RemoveReference
+	 * @see eu.mondo.collaboration.operationtracemodel.RemoveReference
 	 * @generated
 	 */
 	EClass getRemoveReference();
 
 	/**
-	 * Returns the meta object for the reference '{@link operationtracemodel.RemoveReference#getOldValue <em>Old Value</em>}'.
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.RemoveReference#getOldValue <em>Old Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Old Value</em>'.
-	 * @see operationtracemodel.RemoveReference#getOldValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.RemoveReference#getOldValue()
 	 * @see #getRemoveReference()
 	 * @generated
 	 */
@@ -1256,11 +1198,11 @@ public interface OperationtracemodelPackage extends EPackage {
 	 */
 	interface Literals {
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.TraceImpl <em>Trace</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl <em>Trace</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.TraceImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getTrace()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.TraceImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getTrace()
 		 * @generated
 		 */
 		EClass TRACE = eINSTANCE.getTrace();
@@ -1298,11 +1240,11 @@ public interface OperationtracemodelPackage extends EPackage {
 		EReference TRACE__LAST_COMMAND = eINSTANCE.getTrace_LastCommand();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.CommandImpl <em>Command</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.CommandImpl <em>Command</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.CommandImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getCommand()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.CommandImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getCommand()
 		 * @generated
 		 */
 		EClass COMMAND = eINSTANCE.getCommand();
@@ -1332,11 +1274,11 @@ public interface OperationtracemodelPackage extends EPackage {
 		EReference COMMAND__FIRST_STEP = eINSTANCE.getCommand_FirstStep();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.StepImpl <em>Step</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.StepImpl <em>Step</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.StepImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getStep()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.StepImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getStep()
 		 * @generated
 		 */
 		EClass STEP = eINSTANCE.getStep();
@@ -1366,77 +1308,59 @@ public interface OperationtracemodelPackage extends EPackage {
 		EReference STEP__FEATURE = eINSTANCE.getStep_Feature();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.RemovedElementImpl <em>Removed Element</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.RemovedElementImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getRemovedElement()
-		 * @generated
-		 */
-		EClass REMOVED_ELEMENT = eINSTANCE.getRemovedElement();
-
-		/**
-		 * The meta object literal for the '<em><b>Removed Element</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference REMOVED_ELEMENT__REMOVED_ELEMENT = eINSTANCE.getRemovedElement_RemovedElement();
-
-		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.InsertImpl <em>Insert</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.InsertImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsert()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.InsertImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getInsert()
 		 * @generated
 		 */
 		EClass INSERT = eINSTANCE.getInsert();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.UpdateImpl <em>Update</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.UpdateImpl <em>Update</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.UpdateImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdate()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.UpdateImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdate()
 		 * @generated
 		 */
 		EClass UPDATE = eINSTANCE.getUpdate();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.RemoveImpl <em>Remove</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.RemoveImpl <em>Remove</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.RemoveImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getRemove()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.RemoveImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getRemove()
 		 * @generated
 		 */
 		EClass REMOVE = eINSTANCE.getRemove();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.CemetaryImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetary()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.CemetaryImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetary()
 		 * @generated
 		 */
 		EClass CEMETARY = eINSTANCE.getCemetary();
 
 		/**
-		 * The meta object literal for the '<em><b>Removed Element</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Removed Elements</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CEMETARY__REMOVED_ELEMENT = eINSTANCE.getCemetary_RemovedElement();
+		EReference CEMETARY__REMOVED_ELEMENTS = eINSTANCE.getCemetary_RemovedElements();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.InsertAttributeImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertAttribute()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.InsertAttributeImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertAttribute()
 		 * @generated
 		 */
 		EClass INSERT_ATTRIBUTE = eINSTANCE.getInsertAttribute();
@@ -1450,11 +1374,11 @@ public interface OperationtracemodelPackage extends EPackage {
 		EAttribute INSERT_ATTRIBUTE__NEW_VALUE = eINSTANCE.getInsertAttribute_NewValue();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.InsertReferenceImpl <em>Insert Reference</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.InsertReferenceImpl <em>Insert Reference</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.InsertReferenceImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertReference()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.InsertReferenceImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getInsertReference()
 		 * @generated
 		 */
 		EClass INSERT_REFERENCE = eINSTANCE.getInsertReference();
@@ -1468,11 +1392,11 @@ public interface OperationtracemodelPackage extends EPackage {
 		EReference INSERT_REFERENCE__NEW_VALUE = eINSTANCE.getInsertReference_NewValue();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.UpdateAttributeImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateAttribute()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.UpdateAttributeImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateAttribute()
 		 * @generated
 		 */
 		EClass UPDATE_ATTRIBUTE = eINSTANCE.getUpdateAttribute();
@@ -1494,11 +1418,11 @@ public interface OperationtracemodelPackage extends EPackage {
 		EAttribute UPDATE_ATTRIBUTE__OLD_VALUE = eINSTANCE.getUpdateAttribute_OldValue();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.UpdateReferenceImpl <em>Update Reference</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.UpdateReferenceImpl <em>Update Reference</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.UpdateReferenceImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateReference()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.UpdateReferenceImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getUpdateReference()
 		 * @generated
 		 */
 		EClass UPDATE_REFERENCE = eINSTANCE.getUpdateReference();
@@ -1520,11 +1444,11 @@ public interface OperationtracemodelPackage extends EPackage {
 		EReference UPDATE_REFERENCE__NEW_VALUE = eINSTANCE.getUpdateReference_NewValue();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.RemoveAttributeImpl <em>Remove Attribute</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.RemoveAttributeImpl <em>Remove Attribute</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.RemoveAttributeImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getRemoveAttribute()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.RemoveAttributeImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getRemoveAttribute()
 		 * @generated
 		 */
 		EClass REMOVE_ATTRIBUTE = eINSTANCE.getRemoveAttribute();
@@ -1538,11 +1462,11 @@ public interface OperationtracemodelPackage extends EPackage {
 		EAttribute REMOVE_ATTRIBUTE__OLD_VALUE = eINSTANCE.getRemoveAttribute_OldValue();
 
 		/**
-		 * The meta object literal for the '{@link operationtracemodel.impl.RemoveReferenceImpl <em>Remove Reference</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.RemoveReferenceImpl <em>Remove Reference</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see operationtracemodel.impl.RemoveReferenceImpl
-		 * @see operationtracemodel.impl.OperationtracemodelPackageImpl#getRemoveReference()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.RemoveReferenceImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getRemoveReference()
 		 * @generated
 		 */
 		EClass REMOVE_REFERENCE = eINSTANCE.getRemoveReference();

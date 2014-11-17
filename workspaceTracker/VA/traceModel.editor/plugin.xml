@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated OperationTraceModel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="operationtracemodel.presentation.OperationtracemodelModelWizardID"
+            name="%_UI_OperationtracemodelModelWizard_label"
+            class="operationtracemodel.presentation.OperationtracemodelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/OperationtracemodelModelFile.gif">
+         <description>%_UI_OperationtracemodelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated OperationTraceModel -->
+      <editor
+            id="operationtracemodel.presentation.OperationtracemodelEditorID"
+            name="%_UI_OperationtracemodelEditor_label"
+            icon="icons/full/obj16/OperationtracemodelModelFile.gif"
+            extensions="operationtracemodel"
+            class="operationtracemodel.presentation.OperationtracemodelEditor"
+            contributorClass="operationtracemodel.presentation.OperationtracemodelActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

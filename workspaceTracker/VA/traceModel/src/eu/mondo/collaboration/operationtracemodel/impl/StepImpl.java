@@ -1,19 +1,17 @@
 /**
  */
-package operationtracemodel.impl;
-
-import operationtracemodel.OperationtracemodelPackage;
-import operationtracemodel.Step;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
+import eu.mondo.collaboration.operationtracemodel.Step;
 
 /**
  * <!-- begin-user-doc -->
@@ -22,9 +20,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link operationtracemodel.impl.StepImpl#getNextStep <em>Next Step</em>}</li>
- *   <li>{@link operationtracemodel.impl.StepImpl#getElement <em>Element</em>}</li>
- *   <li>{@link operationtracemodel.impl.StepImpl#getFeature <em>Feature</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.StepImpl#getNextStep <em>Next Step</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.StepImpl#getElement <em>Element</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.StepImpl#getFeature <em>Feature</em>}</li>
  * </ul>
  * </p>
  *

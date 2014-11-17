@@ -1,15 +1,13 @@
 /**
  */
-package operationtracemodel.impl;
-
-import operationtracemodel.OperationtracemodelPackage;
-import operationtracemodel.UpdateAttribute;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
+import eu.mondo.collaboration.operationtracemodel.UpdateAttribute;
 
 /**
  * <!-- begin-user-doc -->
@@ -18,8 +16,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link operationtracemodel.impl.UpdateAttributeImpl#getNewValue <em>New Value</em>}</li>
- *   <li>{@link operationtracemodel.impl.UpdateAttributeImpl#getOldValue <em>Old Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.UpdateAttributeImpl#getNewValue <em>New Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.UpdateAttributeImpl#getOldValue <em>Old Value</em>}</li>
  * </ul>
  * </p>
  *

@@ -10,7 +10,7 @@
       <!-- @generated OperationTraceModel -->
       <package
             uri="http://operationtracemodel/1.0"
-            class="operationtracemodel.OperationtracemodelPackage"
+            class="eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage"
             genModel="model/OperationTraceModel.genmodel"/>
    </extension>
 

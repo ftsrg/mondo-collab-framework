@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 
 /**
@@ -11,11 +11,11 @@ package operationtracemodel;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link operationtracemodel.RemoveAttribute#getOldValue <em>Old Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.RemoveAttribute#getOldValue <em>Old Value</em>}</li>
  * </ul>
  * </p>
  *
- * @see operationtracemodel.OperationtracemodelPackage#getRemoveAttribute()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getRemoveAttribute()
  * @model
  * @generated
  */
@@ -31,14 +31,14 @@ public interface RemoveAttribute extends Remove {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Old Value</em>' attribute.
 	 * @see #setOldValue(Object)
-	 * @see operationtracemodel.OperationtracemodelPackage#getRemoveAttribute_OldValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getRemoveAttribute_OldValue()
 	 * @model required="true"
 	 * @generated
 	 */
 	Object getOldValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.RemoveAttribute#getOldValue <em>Old Value</em>}' attribute.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.RemoveAttribute#getOldValue <em>Old Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Old Value</em>' attribute.

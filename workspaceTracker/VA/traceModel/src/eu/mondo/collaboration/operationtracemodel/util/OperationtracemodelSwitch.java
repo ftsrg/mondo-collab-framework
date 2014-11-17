@@ -1,13 +1,12 @@
 /**
  */
-package operationtracemodel.util;
-
-import operationtracemodel.*;
+package eu.mondo.collaboration.operationtracemodel.util;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.util.Switch;
+
+import eu.mondo.collaboration.operationtracemodel.*;
 
 /**
  * <!-- begin-user-doc -->
@@ -19,7 +18,7 @@ import org.eclipse.emf.ecore.util.Switch;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see operationtracemodel.OperationtracemodelPackage
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage
  * @generated
  */
 public class OperationtracemodelSwitch<T> extends Switch<T> {
@@ -81,12 +80,6 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 			case OperationtracemodelPackage.STEP: {
 				Step step = (Step)theEObject;
 				T result = caseStep(step);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OperationtracemodelPackage.REMOVED_ELEMENT: {
-				RemovedElement removedElement = (RemovedElement)theEObject;
-				T result = caseRemovedElement(removedElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -211,21 +204,6 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseStep(Step object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Removed Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Removed Element</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseRemovedElement(RemovedElement object) {
 		return null;
 	}
 

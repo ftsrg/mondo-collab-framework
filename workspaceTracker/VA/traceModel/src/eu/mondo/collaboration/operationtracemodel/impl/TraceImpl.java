@@ -1,27 +1,23 @@
 /**
  */
-package operationtracemodel.impl;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
 import java.util.Collection;
 
-import operationtracemodel.Cemetary;
-import operationtracemodel.Command;
-import operationtracemodel.OperationtracemodelPackage;
-import operationtracemodel.Trace;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import eu.mondo.collaboration.operationtracemodel.Cemetary;
+import eu.mondo.collaboration.operationtracemodel.Command;
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
+import eu.mondo.collaboration.operationtracemodel.Trace;
 
 /**
  * <!-- begin-user-doc -->
@@ -30,10 +26,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link operationtracemodel.impl.TraceImpl#getCommands <em>Commands</em>}</li>
- *   <li>{@link operationtracemodel.impl.TraceImpl#getFirstCommand <em>First Command</em>}</li>
- *   <li>{@link operationtracemodel.impl.TraceImpl#getCementary <em>Cementary</em>}</li>
- *   <li>{@link operationtracemodel.impl.TraceImpl#getLastCommand <em>Last Command</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getCommands <em>Commands</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getFirstCommand <em>First Command</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getCementary <em>Cementary</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getLastCommand <em>Last Command</em>}</li>
  * </ul>
  * </p>
  *

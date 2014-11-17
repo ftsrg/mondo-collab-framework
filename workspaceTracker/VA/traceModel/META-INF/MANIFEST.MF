@@ -7,9 +7,11 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: operationtracemodel,
- operationtracemodel.impl,
- operationtracemodel.util
+Export-Package: eu.mondo.collaboration.operationtracemodel,
+ eu.mondo.collaboration.operationtracemodel.impl,
+ eu.mondo.collaboration.operationtracemodel.util,
+ eu.mondo.collaboration.operationtracemodel.workspacetracker
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.emf.ecore.xmi.impl

@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: traceModel.edit;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: .
+Bundle-Activator: operationtracemodel.provider.OperationTraceModelEditPlugin$Implementation
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: operationtracemodel.provider
+Require-Bundle: org.eclipse.core.runtime,
+ traceModel;visibility:=reexport,
+ org.eclipse.emf.edit;visibility:=reexport,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.emf.ecore.edit;visibility:=reexport
+Bundle-ActivationPolicy: lazy

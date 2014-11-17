@@ -1,15 +1,15 @@
 /**
  */
-package operationtracemodel.impl;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
-import operationtracemodel.OperationtracemodelPackage;
-import operationtracemodel.RemoveReference;
-
-import operationtracemodel.RemovedElement;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
+import eu.mondo.collaboration.operationtracemodel.RemoveReference;
 
 /**
  * <!-- begin-user-doc -->
@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link operationtracemodel.impl.RemoveReferenceImpl#getOldValue <em>Old Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.RemoveReferenceImpl#getOldValue <em>Old Value</em>}</li>
  * </ul>
  * </p>
  *
@@ -33,7 +33,7 @@ public class RemoveReferenceImpl extends RemoveImpl implements RemoveReference {
 	 * @generated
 	 * @ordered
 	 */
-	protected RemovedElement oldValue;
+	protected EObject oldValue;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -59,10 +59,10 @@ public class RemoveReferenceImpl extends RemoveImpl implements RemoveReference {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public RemovedElement getOldValue() {
+	public EObject getOldValue() {
 		if (oldValue != null && oldValue.eIsProxy()) {
 			InternalEObject oldOldValue = (InternalEObject)oldValue;
-			oldValue = (RemovedElement)eResolveProxy(oldOldValue);
+			oldValue = eResolveProxy(oldOldValue);
 			if (oldValue != oldOldValue) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OperationtracemodelPackage.REMOVE_REFERENCE__OLD_VALUE, oldOldValue, oldValue));
@@ -76,7 +76,7 @@ public class RemoveReferenceImpl extends RemoveImpl implements RemoveReference {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public RemovedElement basicGetOldValue() {
+	public EObject basicGetOldValue() {
 		return oldValue;
 	}
 
@@ -85,8 +85,8 @@ public class RemoveReferenceImpl extends RemoveImpl implements RemoveReference {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setOldValue(RemovedElement newOldValue) {
-		RemovedElement oldOldValue = oldValue;
+	public void setOldValue(EObject newOldValue) {
+		EObject oldOldValue = oldValue;
 		oldValue = newOldValue;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.REMOVE_REFERENCE__OLD_VALUE, oldOldValue, oldValue));
@@ -116,7 +116,7 @@ public class RemoveReferenceImpl extends RemoveImpl implements RemoveReference {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case OperationtracemodelPackage.REMOVE_REFERENCE__OLD_VALUE:
-				setOldValue((RemovedElement)newValue);
+				setOldValue((EObject)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -131,7 +131,7 @@ public class RemoveReferenceImpl extends RemoveImpl implements RemoveReference {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case OperationtracemodelPackage.REMOVE_REFERENCE__OLD_VALUE:
-				setOldValue((RemovedElement)null);
+				setOldValue((EObject)null);
 				return;
 		}
 		super.eUnset(featureID);

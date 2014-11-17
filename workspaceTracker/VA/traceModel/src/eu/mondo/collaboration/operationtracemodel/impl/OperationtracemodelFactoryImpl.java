@@ -1,16 +1,14 @@
 /**
  */
-package operationtracemodel.impl;
-
-import operationtracemodel.*;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+
+import eu.mondo.collaboration.operationtracemodel.*;
 
 /**
  * <!-- begin-user-doc -->
@@ -58,7 +56,6 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 		switch (eClass.getClassifierID()) {
 			case OperationtracemodelPackage.TRACE: return createTrace();
 			case OperationtracemodelPackage.COMMAND: return createCommand();
-			case OperationtracemodelPackage.REMOVED_ELEMENT: return createRemovedElement();
 			case OperationtracemodelPackage.CEMETARY: return createCemetary();
 			case OperationtracemodelPackage.INSERT_ATTRIBUTE: return createInsertAttribute();
 			case OperationtracemodelPackage.INSERT_REFERENCE: return createInsertReference();
@@ -89,16 +86,6 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	public Command createCommand() {
 		CommandImpl command = new CommandImpl();
 		return command;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public RemovedElement createRemovedElement() {
-		RemovedElementImpl removedElement = new RemovedElementImpl();
-		return removedElement;
 	}
 
 	/**

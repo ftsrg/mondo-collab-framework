@@ -1,6 +1,8 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
+
+import org.eclipse.emf.ecore.EObject;
 
 
 /**
@@ -11,11 +13,11 @@ package operationtracemodel;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link operationtracemodel.RemoveReference#getOldValue <em>Old Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.RemoveReference#getOldValue <em>Old Value</em>}</li>
  * </ul>
  * </p>
  *
- * @see operationtracemodel.OperationtracemodelPackage#getRemoveReference()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getRemoveReference()
  * @model
  * @generated
  */
@@ -30,20 +32,20 @@ public interface RemoveReference extends Remove {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Old Value</em>' reference.
-	 * @see #setOldValue(RemovedElement)
-	 * @see operationtracemodel.OperationtracemodelPackage#getRemoveReference_OldValue()
+	 * @see #setOldValue(EObject)
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getRemoveReference_OldValue()
 	 * @model required="true"
 	 * @generated
 	 */
-	RemovedElement getOldValue();
+	EObject getOldValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.RemoveReference#getOldValue <em>Old Value</em>}' reference.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.RemoveReference#getOldValue <em>Old Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Old Value</em>' reference.
 	 * @see #getOldValue()
 	 * @generated
 	 */
-	void setOldValue(RemovedElement value);
+	void setOldValue(EObject value);
 } // RemoveReference

@@ -1,15 +1,15 @@
 /**
  */
-package operationtracemodel.impl;
-
-import operationtracemodel.InsertReference;
-import operationtracemodel.OperationtracemodelPackage;
+package eu.mondo.collaboration.operationtracemodel.impl;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
+import eu.mondo.collaboration.operationtracemodel.InsertReference;
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link operationtracemodel.impl.InsertReferenceImpl#getNewValue <em>New Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.InsertReferenceImpl#getNewValue <em>New Value</em>}</li>
  * </ul>
  * </p>
  *

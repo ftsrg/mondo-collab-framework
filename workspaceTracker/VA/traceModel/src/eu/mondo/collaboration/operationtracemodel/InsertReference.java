@@ -1,6 +1,6 @@
 /**
  */
-package operationtracemodel;
+package eu.mondo.collaboration.operationtracemodel;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -13,11 +13,11 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link operationtracemodel.InsertReference#getNewValue <em>New Value</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.InsertReference#getNewValue <em>New Value</em>}</li>
  * </ul>
  * </p>
  *
- * @see operationtracemodel.OperationtracemodelPackage#getInsertReference()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getInsertReference()
  * @model
  * @generated
  */
@@ -33,14 +33,14 @@ public interface InsertReference extends Insert {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>New Value</em>' reference.
 	 * @see #setNewValue(EObject)
-	 * @see operationtracemodel.OperationtracemodelPackage#getInsertReference_NewValue()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getInsertReference_NewValue()
 	 * @model required="true"
 	 * @generated
 	 */
 	EObject getNewValue();
 
 	/**
-	 * Sets the value of the '{@link operationtracemodel.InsertReference#getNewValue <em>New Value</em>}' reference.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.InsertReference#getNewValue <em>New Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>New Value</em>' reference.
