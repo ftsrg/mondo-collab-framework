@@ -1,13 +1,22 @@
 package com.mondo.online;
 
-import javax.servlet.annotation.WebServlet;
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
 
+import javax.servlet.annotation.WebServlet;
+import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
+import javax.websocket.WebSocketContainer;
+
+import com.mondo.online.collaborationcontroller.CollaborationComponent;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
@@ -17,6 +26,13 @@ public class Application extends UI {
 
 	Navigator navigator;
 
+	private User user; 
+	private MondoWebsocketClient websocketClient;
+	
+	private LoginPage loginPage;
+	private SessionSelectionPage sessionSelectionPage;
+	private CollaborationPage collaborationPage;
+	
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = Application.class)
 	public static class Servlet extends VaadinServlet {
@@ -25,17 +41,73 @@ public class Application extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
-		// Create a navigator to control the views
-		navigator = new Navigator(this, this); 
+		try {
+			System.out.println("Init Application...");
+			// initialize connection with the websocket server
+			// Create a navigator to control the views
+			navigator = new Navigator(this, this); 
+			this.websocketClient = new MondoWebsocketClient(this);
+			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+	        String uri = "ws://localhost:8080/MondoOnlineCollaborationServer/mondoonlineserver";
+			container.connectToServer(this.websocketClient, URI.create(uri));
+			System.out.println("Connection established!");
+		
+			this.loginPage = new LoginPage(navigator, this);
+			this.sessionSelectionPage = new SessionSelectionPage(navigator, this);
+			this.collaborationPage = new CollaborationPage(navigator, this);
+	
+			// Create and register the views
+			navigator.addView(LoginPage.NAME, loginPage);
+			navigator.addView(SessionSelectionPage.NAME, sessionSelectionPage);
+			navigator.addView(CollaborationPage.NAME, collaborationPage);
+			System.out.println("Init Done!");
+			navigator.navigateTo(LoginPage.NAME);
+	        setPollInterval(1000);
+		} catch (DeploymentException e) {
+			Notification.show(
+				"Failed to connect to server.",
+	            "<DeploymentException>",
+	            Notification.Type.WARNING_MESSAGE
+	        );
+			e.printStackTrace();
+		} catch (IOException e) {
+			Notification.show(
+				"Failed to connect to server.",
+	            "<IOException>",
+	            Notification.Type.WARNING_MESSAGE
+	        );
+			e.printStackTrace();
+		}
+	}
+	
+	public void bindUser(String name, String password) {
+		this.user = new User(name, password);
+	}
+	
+	public User getUser() {
+		return this.user;
+	}
+	
+	public void unbindUser() {
+		this.user = null;
+	}
+	
+	public MondoWebsocketClient getWebsocketClient() {
+		return this.websocketClient;
+	}
+	
+	public CollaborationPage getCollaborationPage() {
+		return this.collaborationPage;
+	}
 
-		// Create and register the views
-		navigator.addView(LoginPage.NAME, new LoginPage(navigator));
-		navigator.addView(SessionSelectionPage.NAME, new SessionSelectionPage(
-				navigator));
-		navigator.addView(CollaborationPage.NAME, new CollaborationPage(
-				navigator));
+	public SessionSelectionPage getSessionSelectionPage() {
+		return this.sessionSelectionPage;
+	}
 
-		navigator.navigateTo(CollaborationPage.NAME);
-        setPollInterval(1000);
+	public void leaveSession() {
+		navigator.navigateTo(SessionSelectionPage.NAME);
+		navigator.removeView(CollaborationPage.NAME);
+		this.collaborationPage = new CollaborationPage(navigator, this);
+		navigator.addView(CollaborationPage.NAME, this.collaborationPage);
 	}
 }

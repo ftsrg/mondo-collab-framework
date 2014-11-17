@@ -1,68 +1,220 @@
 package com.mondo.online;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import com.vaadin.annotations.StyleSheet;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 
+@StyleSheet({ 
+	"app://VAADIN/client/MondoOnline.css" 
+})
 public class SessionSelectionPage extends AbsoluteLayout implements View {
 	
     public static final String NAME = "SessionSelection";
     
-	Navigator navigator;
+	private Navigator navigator;
 
-	public SessionSelectionPage(final Navigator navigator) {
+	private Application application;
+
+	private List<CollaborationSession> sessions;
+	
+	public SessionSelectionPage(final Navigator navigator, Application application) {
+		System.out.println("Construct SessionSelectionPage");
+		this.application = application;
+		this.sessions = new ArrayList<CollaborationSession>();
+		this.navigator = navigator;
 		setSizeFull();
+	}
+	
+	/*
+	private List<CollaborationSession> getSessions() {
+		String pathToResFolder = "D:\\Eclipse\\Eclipse_EE\\workspace_EE\\MondoOnlineCollaborationClient\\res";
+		final File folder = new File(pathToResFolder);
+		List<CollaborationSession> sessions = new ArrayList<CollaborationSession>();
+		int id = 0;
+		for (final File fileEntry : folder.listFiles()) {
+	        if (!fileEntry.isDirectory()) {
+	        	String modelPath = pathToResFolder + fileEntry.getName(); 
+	        	sessions.add(new CollaborationSession(id, fileEntry.getName(), modelPath));
+	        	id++;
+	        }
+	    }
+		return sessions;
+	}
+	*/
+	
+	private void loadOpenSessions() {
+		this.application.getWebsocketClient().loadOpenSessions();
+	}
+
+	public void setSessionsList(JSONArray jsonSessions) {
+		this.sessions.clear();
+		try {
+			for(int i = 0; i < jsonSessions.length(); i++) {
+				CollaborationSession newSession = new CollaborationSession(
+					jsonSessions.getJSONObject(i).getString("id"),
+					jsonSessions.getJSONObject(i).getString("title"),
+					jsonSessions.getJSONObject(i).getInt("state")
+				);
+				this.sessions.add(newSession);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.updateSessionsView();
+	}
+
+	private void updateSessionsView() {
+		Panel sessionSelection = this.initSessionsView();
+		addComponent(sessionSelection); //, "left: 10px; top: 40px;");
 		
-		Table sessionsTable = this.initSessionsTable();
-		addComponent(sessionsTable, "left: 10px; top: 40px;");
-		Button button = new Button("Join session"); 
-		button.addClickListener(new Button.ClickListener() {
+	}
+	private Panel initSessionsView() {
+		Panel panel = new Panel();
+		panel.setSizeFull();
+		addComponent(panel, "left: 20px; top: 20px;");
+
+		CustomLayout custom = new CustomLayout("sessionSelectionPage");
+		
+		Table sessionsTable = new Table();
+		sessionsTable.setSizeFull();
+		sessionsTable.setHeight("300px");
+		sessionsTable.addContainerProperty("ID",  String.class, null);
+		sessionsTable.addContainerProperty("Name", String.class, null);
+		sessionsTable.addContainerProperty("State", String.class, null);
+		sessionsTable.setSelectable(true);
+		
+		int rowNum = 2;
+		for(CollaborationSession s: this.sessions) {
+			String state = CollaborationSession.getSessionStateString(s.getState());
+			sessionsTable.addItem(new Object[]{
+				s.getId(), 
+				s.getTitle(), 
+				state
+				}, rowNum
+			);
+			rowNum++;
+		}
+
+		custom.addComponent(sessionsTable, "sessionsTable");
+		Button buttonLogout = new Button("Log out"); 
+		Button buttonJoinSession = new Button("Join session");
+		Button buttonStartSession = new Button("Start session");
+		Button buttonFinishSession = new Button("Finish session");
+		
+		buttonLogout.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				logout();
+			}
+		});
+		buttonJoinSession.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				Object rowId = sessionsTable.getValue();
 				if(rowId != null) {
-					int sessionId = ((Integer)sessionsTable.getContainerProperty(rowId,"ID").getValue()).intValue();
-					navigator.navigateTo(CollaborationPage.NAME);
+					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
+					int state = CollaborationSession.getSessionStateByString(
+						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
+					);
+					if(state == CollaborationSession.STATE_OPEN) {
+						String title = (String) sessionsTable.getContainerProperty(rowId, "Name").getValue();
+						joinSession(sessionId, title);
+					} else {
+						Notification.show("Selected session is closed.");
+					}
 				} else {
 					Notification.show("Please select a session");
 				}
 			}
 		});
-		
-		addComponent(button, "left: 20px; top: 350px");
+		buttonStartSession.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				Object rowId = sessionsTable.getValue();
+				if(rowId != null) {
+					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
+					int state = CollaborationSession.getSessionStateByString(
+						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
+					);
+					if(state == CollaborationSession.STATE_CLOSED) {
+						startSession(sessionId);
+					} else {
+						Notification.show("Selected session is not in closed state.");
+					}
+				} else {
+					Notification.show("Please select a session");
+				}
+			}
+		});
+		buttonFinishSession.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				Object rowId = sessionsTable.getValue();
+				if(rowId != null) {
+					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
+					int state = CollaborationSession.getSessionStateByString(
+						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
+					);
+					if(state == CollaborationSession.STATE_OPEN) {
+						finishSession(sessionId);
+					} else {
+						Notification.show("Selected session is not in open state.");
+					}
+				} else {
+					Notification.show("Please select a session");
+				}
+			}
+		});
+		custom.addComponent(buttonLogout, "buttonLogout");
+		custom.addComponent(buttonJoinSession, "buttonJoinSession");
+		custom.addComponent(buttonStartSession, "buttonStartSession");
+		custom.addComponent(buttonFinishSession, "buttonFinishSession");
+
+		panel.setContent(custom);	
+		return panel;
+	}
+	
+	protected void finishSession(String sessionId) {
+		this.application.getWebsocketClient().finishSession(
+			sessionId
+		);
 	}
 
-	private Table initSessionsTable() {
-		Table sessionsTable = new Table("Available sessions:");
-		sessionsTable.setWidth("200px");
-		sessionsTable.setHeight("300px");
-		sessionsTable.addContainerProperty("Name", String.class, null);
-		sessionsTable.addContainerProperty("ID",  Integer.class, null);
-		sessionsTable.setSelectable(true);
-		Session[] sessions = this.getSessions();
-		int rowNum = 2;
-		for(Session s: sessions) {
-			sessionsTable.addItem(new Object[]{s.title, s.id}, rowNum);
-			rowNum++;
-		}
-		return sessionsTable;
+	protected void startSession(String sessionId) {
+		this.application.getWebsocketClient().startSession(
+			sessionId
+		);
 	}
 
-	private Session[] getSessions() {
-		Session[] sessions = new Session[400];
-		for(int i = 0; i < 400; i++) {
-			sessions[i] = new Session(i, "Session " + i);
-		}
-		return sessions;
+	protected void joinSession(String sessionId, String title) {
+		this.application.getWebsocketClient().joinSession(
+			this.application.getUser(), 
+			sessionId
+		);
+		this.application.getCollaborationPage().setSessionId(sessionId);
+		this.application.getCollaborationPage().setTitle(title);
+		this.navigator.navigateTo(CollaborationPage.NAME);
+	}
+
+	private void logout() {
+		this.application.unbindUser();
+		this.navigator.navigateTo(LoginPage.NAME);
 	}
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// TODO Auto-generated method stub
-		
+		this.loadOpenSessions();
 	}
 }
