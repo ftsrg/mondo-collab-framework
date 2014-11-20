@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="RestApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="eu.mondo.collaboration.online.emfhandler.rest.RestApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="eu.mondo.collaboration.online.emfhandler.rest.RestApplication"
+            name="Rest Product">
+         <property
+               name="appName"
+               value="Rest Product">
+         </property>
+      </product>
+   </extension>
+</plugin>

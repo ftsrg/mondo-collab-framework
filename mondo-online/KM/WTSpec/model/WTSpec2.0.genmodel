@@ -1,0 +1,1141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/WTSpec/src" modelPluginID="WTSpec" modelName="WTSpec2"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="5.0" copyrightFields="false" operationReflection="true" importOrganizing="true">
+  <foreignModel>file:/C:/Users/Kamrás/Desktop/IKERLAN/WTSpec2.0.ecore</foreignModel>
+  <genPackages prefix="WTSpec" disposableProviderFactory="true" loadInitialization="true"
+      literalsInterface="false" ecorePackage="WTSpec2.0.ecore#/">
+    <genClasses ecoreClass="WTSpec2.0.ecore#//WT">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//WT/sysId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//WT/model"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//WT/version"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//WT/itsSubsystems"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//WT/itsInputs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//WT/itsOutputs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//WT/itsParams"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//WT/itsTimers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//WT/itsFaults"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//WT/itsVariables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//WT/itsErrorReactions"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//SystemInput">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemInput/sysId"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//SystemOutput">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemOutput/sysId"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//SystemFault">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemFault/sysId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemFault/value"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//SystemParam">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemParam/sysId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemParam/value"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//SystemTimer">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemTimer/sysId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemTimer/value"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//SystemVariable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemVariable/sysId"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//SystemErrorReaction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//SystemErrorReaction/sysId"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="WTSpec2.0.ecore#//WTCInput"/>
+    <genClasses image="false" ecoreClass="WTSpec2.0.ecore#//WTCOutput"/>
+    <genClasses image="false" ecoreClass="WTSpec2.0.ecore#//WTCParam"/>
+    <genClasses image="false" ecoreClass="WTSpec2.0.ecore#//WTCTimer"/>
+    <genClasses image="false" ecoreClass="WTSpec2.0.ecore#//WTCFault"/>
+    <genClasses image="false" ecoreClass="WTSpec2.0.ecore#//WTCErrorReaction"/>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//Subsystem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//Subsystem/sysId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//Subsystem/description"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//Subsystem/itsWTCs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//Subsystem/itsSubsystems"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="WTSpec2.0.ecore#//wtc">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//wtc/sysId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//wtc/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//wtc/cycle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//wtc/priority"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit1">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit1/Input__iTwistAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit1/Output__oNacelleDirection"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit2">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit2/Input__iTwistAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit2/Output__oNorthDirection"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit2/Parameter__pNorthOffset"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit3">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit3/Input__iAccessStateNC2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit3/Input__iAccessStateTC"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit3/Output__oAccessState"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit4">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit4/Input__iStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit4/Input__iOverloadAlarm"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit4/Input__iAlarmCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit4/Output__oAlarmCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit4/Parameter__pAlarmCountLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit4/Parameter__pTimePeriod"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit4/Fault__fOverload"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit4/Timer__tSyncDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit5">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit5/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit5/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit5/Output__oResult"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit6">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit6/Input__iStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit6/Input__iOverloadAlarm"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit6/Input__iAlarmCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit6/Output__oAlarmCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit6/Parameter__pTimePeriod"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit6/Parameter__pOverloadTimeLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit6/Fault__fOverload"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit6/Timer__tSyncDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit7">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit7/Input__iAnalogInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit7/Output__oAnalogCompensated"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit8">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit8/Input__i1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit8/Output__o1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit8/Parameter__pDelay"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit8/BhvParam__bpFilter"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit9">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit9/Input__iValueToCheck"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit9/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit9/Input__iLimitValue"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit9/Input__iLimitReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit9/Output__oLimitReached"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit9/Parameter__pLimitValue"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit9/Parameter__pLimitReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit9/Timer__tDelay"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit9/BhvParam__bpMode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit9/BhvParam__bpLimitsType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit10">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit10/Input__iAnalogInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit10/Output__oAnalogScaled"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit10/Parameter__pFactor"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit10/Parameter__pOffset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit10/Parameter__pUpLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit10/Parameter__pUpValue"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit10/Parameter__pDownLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit10/Parameter__pDownValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit10/BhvParam__bpOperation"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit11">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit11/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit11/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit11/Output__oOutput"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit12">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Input__iPinPosition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Input__iInductive"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Input__iFlInPosition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Input__iLockingOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Input__iLockingSet"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Output__oPinAutoCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Parameter__pPinNoBackPos"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Parameter__pPinExtendedPos"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Parameter__pPinRetractedPos"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit12/Parameter__pPinHysteresis"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit13">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit13/Input__iSelect"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit13/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit13/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit13/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit13/Parameter__pParam1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit13/Parameter__pParam2"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit13/BhvParam__bpType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit13/BhvParam__bpInputType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit14">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit14/Output__oBit"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit15">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit15/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit15/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit15/Parameter__pMask"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit16">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit16/Input__iVarInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit16/Output__oVarOutput"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit17">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit17/Parameter__pParam"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit17/Fault__fWarning"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit17/Fault__fFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit17/Timer__tTimer"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit18">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Input__iOrderCw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Input__iOrderCcw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Input__iFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Input__iCmdDisable"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Input__iCmdReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Input__iStaReadyToOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Output__oControlWord"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Parameter__pCmdDisabled"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Parameter__pCmdEnabled"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Parameter__pCmdCw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Parameter__pCmdCcw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Parameter__pCmdReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Parameter__pCmdSwitchOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Parameter__pCmdBraking"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit18/Timer__tDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit19">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit19/Input__iPitchTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit19/Output__oPitchRms"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit19/Parameter__pDivisor"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit20">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit20/Input__iMasterOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit20/Input__iInverterOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit20/Input__iChangeOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit20/Input__iManualStop"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit20/Output__oMasterSelected"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit20/Output__oInverterEnabled"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit20/Output__oForceInvOff"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit21">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit21/Input__iWindDirection"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit21/Input__iFlagBrakes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit21/Input__iFlagIntoWind"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit21/Output__oBackWindDetected"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit21/Parameter__pMaxAbsoluteAngle"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit22">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit22/Input__iYawStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit22/Input__iTwistAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit22/Input__iMaxTwistCW"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit22/Input__iMaxTwistCCW"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit22/Output__oMaxTwistPreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit22/Parameter__pMaxTwistHysteresis"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit22/Fault__fTwistExcessiveCW"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit22/Fault__fTwistExcessiveCCW"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit23">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit23/Input__iWindSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit23/Input__iInverterPower"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit23/Output__oRelationError"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit23/Parameter__pWindSpeedLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit23/Parameter__pInverterPowerLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit23/Timer__tWindMinimumTime"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit23/Timer__tPowerAndWindMinimumTime"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit24">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit24/Input__iInverterReady"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit24/Input__iInverterPower"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit24/Input__iAlgorithmCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit24/Parameter__pPowerLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit24/Fault__fYawProblem"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit24/Timer__tDelayProblemNotify"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit24/DecisionSequence__dsDecisionTree"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit25">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit25/Input__iStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit25/Input__iOverloadAlarm"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit25/Input__iAlarmCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit25/Output__oAlarmCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit25/Fault__fOverload"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit25/Timer__tTimer"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit25/Timer__tSyncDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit26">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit26/Input__iCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit26/Input__iActivator"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit26/Output__oCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit26/Output__oLimitReached"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit26/Parameter__pLimit"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit27">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit27/Input__iOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit27/Input__iFailure"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit27/Output__oOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit27/Output__oCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit27/Parameter__pMaxCount"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit28">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit28/Input__iDigitalInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit28/Output__oAlarmHasBeenReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit28/Fault__fFault"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit29">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit29/Input__iDigitalInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit29/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit29/Fault__fFault"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit29/BhvParam__bpResetMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit30">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit30/Input__iDigitalInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit30/Input__iOffOrder"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit31">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit31/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit31/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit31/Parameter__pMask"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit32">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit32/Output__oChangeCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit32/Output__oPersistentHour"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit32/Parameter__pDayChangeHour"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit33">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit33/Input__iResetOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit33/Output__oIsLastError"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit33/Fault__fFault"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit34">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit34/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit34/Input__iFeedback"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit34/Output__oFaultOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit34/Output__oFaultOff"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit34/Timer__tDelayOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit34/Timer__tDelayOff"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit34/BhvParam__bpLogicType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit35">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit35/Input__iFeedback"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit35/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit35/Fault__fFaultOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit35/Fault__fFaultOff"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit35/Timer__tDelayOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit35/Timer__tDelayOff"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit35/BhvParam__bpLogicType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit36">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit36/Input__i1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit36/Output__o1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit36/Parameter__pDelayOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit36/Parameter__pDelayOff"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit37">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit37/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit37/Input__iBadInputQuality"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit37/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit37/Output__oSendReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit37/Fault__fFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit37/Timer__tCheckInputDelay"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit37/BhvParam__bpLogicType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit38">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit38/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit38/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit38/Parameter__pDelay"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit38/Fault__fFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit38/Timer__tDelay"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit38/BhvParam__bpLogicType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit39">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit39/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit39/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit39/Fault__fFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit39/Timer__tDelay"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit39/BhvParam__bpLogicType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit40">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit40/Input__iOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit40/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit40/Timer__tTimer"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit41">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Input__iInput3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Parameter__pParam1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Parameter__pParam2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Parameter__pParam3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Fault__fFault1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Fault__fFault2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/Fault__fFault3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/ErrorReaction__eReaction1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit41/ErrorReaction__eReaction2"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit41/Guard__gGuardToMain"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit41/Guard__gGuardFromMain"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit41/Guard__gGuardToOn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit41/Guard__gGuardToOff"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit42">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit42/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit42/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit42/Output__oActive"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit42/Output__oPulsing"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit42/Timer__tDelay"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit42/Timer__tActive"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit43">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Output__oOutDiv"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Output__oOutMod"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Parameter__pDiv"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Parameter__pParam1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit43/Parameter__pParam2"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit43/BhvParam__bpType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit44">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit44/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit44/Output__oOutput"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit45">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit45/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit45/Output__oOutput"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit45/BhvParam__bpType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit46">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit46/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit46/ErrorReaction__erErrorReaction"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit47">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit47/Input__iResetOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit47/Fault__fResetFault"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit48">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/Input__iTemp1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/Input__iTemp2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/Input__iTemp3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/Output__oFan"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/Parameter__pTempLimit1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/Parameter__pTempLimit2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/Parameter__pTempLimit3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/Fault__fFault1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/ErrorReaction__erReaction1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit48/ErrorReaction__erReaction2"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit49">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Input__iInput3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Input__iInput4"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Output__oOutputFan1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Output__oOutputFan2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Parameter__pParam1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Parameter__pParam2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Parameter__pParam3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Parameter__pParam4"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Fault__fFault1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/Timer__tTimer1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/ErrorReaction__eReaction1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit49/ErrorReaction__eReaction2"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit49/Guard__gGuardErrors"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit49/Guard__gGuardNoErrors"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit49/Guard__gGuardOffToHi"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit49/Guard__gGuardHiToOff"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit49/Guard__gGuardOffToLow"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit49/Guard__gGuardLowToOff"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit49/Guard__gGuardLowToHi"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit49/Guard__gGuardHiToLow"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit50">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit50/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit50/Fault__fFault"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit51">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit51/Parameter__pHour"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit51/Fault__fFault"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit52">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit52/Input__iVarInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit52/Output__oVarOutput"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit53">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Input__iMachineStatusIndicator"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Input__iStopConditionIndicator"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Input__iManualByPass"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Input__iMotorizing"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Input__iFlagIntoWind"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Input__iProtectionCondition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Input__iEmergencyCondition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Input__iDeenergizeCondition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Output__oAutoStopCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Fault__fRunFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Timer__tStartDelay"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/Timer__tCheckRunFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit53/ErrorReaction__erMotorizing"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit54">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit54/Input__iSafety"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit54/Input__iLockingOrderSelected"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit54/Input__iMachineStateL"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit54/Input__iMachineStateU"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit54/Input__iMachineStateS"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit54/Input__iInitialConditions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit54/Input__iPinState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit54/Output__oLockingOrder"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit55">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit55/Output__oSignal"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit56">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit56/Input__iInternalFailure"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit56/Output__oInhibit"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit57">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit57/Input__iUp"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit57/Input__iDown"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit57/Output__oAnalogOut"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit57/Parameter__pParam"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit57/Parameter__pMax"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit57/Parameter__pMin"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit58">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit58/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit58/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit58/Parameter__pParam"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit58/BhvParam__bpLogicType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit59">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit59/Input__iVarInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit59/Output__oVarOutput"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit60">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iDisconnect"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iStopCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iPitchBraked"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iInverterRpm"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iReadyForOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iReadyForRun"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iReadyForRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iResetOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iForceInvOff"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Input__iSafetyInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Output__oInverterRun"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Output__oInverterToOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Parameter__pInverterConnSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Parameter__pInverterConnSpeedHysteresis"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Fault__fReconnectWarning"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Fault__fReadyRefWarning"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Timer__tConnection"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit60/Timer__tRunningDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit61">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Input__iInverterToOnOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Input__iInverterReadyRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Input__iRemoteResetOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Input__iInverterTorqueReg"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Input__iInverterHwState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Input__iResetOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Input__iMotorizing"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Output__oInverterToOn"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Output__oInverterResetCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Output__oInverterTorqueRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Output__oInverterResetAlarms"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Fault__fEtherCAT"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Timer__tResetTime"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/Timer__tDelayBetweenResets"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit61/ErrorReaction__erStop"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit62">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit62/Input__iInverterTorqueRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit62/Input__iInverterTorqueRefLocking"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit62/Input__iMotorizing"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit62/Output__oInverterTorqueRefFinal"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit62/Output__oInverterMotorizeCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit63">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Input__iAzimuth"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Input__iOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Input__iTargetHole"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Input__iInvReadyRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Input__iEncoderSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Input__iInductiveSensor1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Input__iInductiveSensor2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oMotorTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oMotorSense"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oFlIntoPosition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oStatusFromDll"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oPositionSetpoint"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oTorqueAve"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oErrorAve"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oSpeedAve"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oWref"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oTargetPosition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oKeepState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oSeekState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oMotorize"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oRealObjetive"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Output__oControlMode"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pOffset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pEncoderOffset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pNextHoleDegrees"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pPosRate1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pPosRate2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pMaxSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pSampleTime"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pMaxTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pAverageTime"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pSpeedAverageTime"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pMaxAcceleration"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pKpp"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pKps"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pKis"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pFilterOK"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pFilterFreq"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pFilterDamp"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pKp2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pKp1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pKi1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pKi2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit63/Parameter__pPosBand"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit63/BhvParam__bpControlMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit64">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit64/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit64/ErrorReaction__erErrorReaction"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit65">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit65/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit65/Fault__fFault"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit66">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit66/Input__iMaintenancePreventiveButton"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit66/Input__iMaintenanceCorrectiveButton"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit66/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit66/Output__oMaintenanceStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit66/Fault__fMaintenancePreventive"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit66/Fault__fMaintenanceCorrective"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit67">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit67/Input__iHMIOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit67/Input__iElementStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit67/Input__iMasterPos"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit67/Output__oElementRol"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit67/Parameter__pMaxElements"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit67/BhvParam__bpMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit68">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit68/Input__iValue1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit68/Input__iValue2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit68/Output__oResult"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit68/BhvParam__bpOperationType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit69">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit69/Input__iLocalMaxPower"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit69/Input__iRemoteMaxPower"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit69/Input__iTorqueControlMaxPower"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit69/Output__oMaxPower"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit69/Parameter__pMaxPower"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit70">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit70/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit70/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit70/Input__iInput3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit70/Output__oResult"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit71">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit71/Input__iSelect1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit71/Input__iSelect2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit71/Input__iSelect3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit71/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit71/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit71/Input__iInput3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit71/Output__oOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit71/Output__oOutputWrongStatus"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit72">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit72/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit72/Timer__tDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit73">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit73/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit73/Output__oOutput"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit74">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit74/Input__iConverterTripped"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit74/Input__iConverterRunning"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit74/Output__oOpcCnvOperationMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit75">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iMaintenanceStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iFlBrakes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iWTGStopped"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iGridError"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iReTwisting"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iHiWind"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iHiGust"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iLowWind"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iBackWind"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Input__iEnEstela"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit75/Output__oOpcTurbineStatus"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit76">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit76/Input__iCtrlYawBrakeStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit76/Output__oOpcYawBrakeStatus"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit77">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit77/Input__iYawInhibited"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit77/Input__iYawCwOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit77/Input__iYawCcwOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit77/Input__iFlagIntoWind"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit77/Output__oOpcYawStatus"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit78">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit78/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit78/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit78/Output__oOutput"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit79">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit79/Input__iOverPressureCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit79/Output__oYawBrakeHighPressureCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit79/Fault__fYawBrakeBlock"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit79/Fault__fYawBrakeLoose"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit79/Fault__fYawBrakeActive"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit79/Fault__fWarning"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit79/Fault__fFault"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit79/DecisionSequence__dsCommands"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit80">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit80/Input__iAccessState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit80/Input__iMaintenanceStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit80/Input__iButtonStateNC2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit80/Input__iButtonStateTC"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit80/Input__iButtonStateRemote"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit80/Output__oButtonState"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit81">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit81/Input__iInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit81/Output__oPercentVal"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit81/Parameter__pPercent"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit81/Parameter__pInput"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit81/BhvParam__bpMode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit81/BhvParam__bpSelect"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit82">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit82/Input__iVarInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit82/Input__iWriteTwistAngleRequest"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit82/Input__iNewTwistAngleValue"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit82/Output__oVarOutput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit82/Parameter__pMinDifferenceToConsider"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit82/Timer__tSyncDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit83">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Input__iPinSafetyCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Input__iPinAutoCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Input__iPinManualCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Input__iLockingSet"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Input__iManualMode"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Input__iSafetyBlock"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Output__oPinEnable"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Output__oPinExtend"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit83/Output__oPinRetract"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit84">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Input__iAngleGH1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Input__iAngleGH2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Input__iAngleGH3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Input__iStopCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Input__iFlBrakes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Output__oAngleReference1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Output__oAngleReference2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Output__oAngleReference3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Output__oSpeedReference"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Output__oAccelerationReference"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Parameter__pPitchBrakeAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Parameter__pPitchStdSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Parameter__pPitchStdAcceleration"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Parameter__pPitchRegulationSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/Parameter__pPitchRegulationAcceleration"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit84/ErrorReaction__erEmergency"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit85">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit85/Input__iPitchAngle1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit85/Input__iPitchAngle2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit85/Input__iPitchAngle3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit85/Output__oPitchBrakePosition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit85/Parameter__pPitchMaxBrakeAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit85/Parameter__pPitchMinBrakeAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit85/Parameter__pPitchBrakeAngleHysteresis"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit86">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/Input__iPitchHwStandby"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/Input__iPitchHwFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/Input__iPitchStopCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/Input__iPitchBrakePosition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/Output__oBrakes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/Output__oPitchNormalOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/Output__oPitchEmergencyOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/Output__oPitchTestUCapOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/ErrorReaction__erEmergency"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit86/ErrorReaction__erSecurityLine"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit87">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit87/Input__iExternalOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit87/Input__iExternalFailure"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit87/Output__oLubricationOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit87/Timer__tDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit88">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit88/Input__iPthResetCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit88/Input__iPthResetOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit88/Output__oPthResetCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit88/Output__oPthResetOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit88/Output__oPthReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit88/Timer__tResetTimer"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit88/Timer__tTimeBetweenResets"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit89">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iAngleReference1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iAngleReference2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iAngleReference3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iSpeedReference"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iAccelerationReference"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iPitchManualControl"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iPitchManualAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iMaintenanceStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iGeneratorSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Input__iPitchBraked"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Output__oPitchAngleRef1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Output__oPitchAngleRef2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Output__oPitchAngleRef3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Output__oPitchSpeedRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Output__oPitchAccelerationRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Output__oPitchStopCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Parameter__pGeneratorSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Parameter__pPitchBrakeAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Parameter__pPitchStdSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Parameter__pPitchStdAcceleration"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Fault__fManualStop"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/Timer__tMaxStopOperationLength"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit89/ErrorReaction__erStop"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit90">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Input__iStatusR"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Input__iStatusS"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Input__iStatusT"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Input__iValueR"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Input__iValueS"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Input__iValueT"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oCosinePhi"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oFrequency"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oControlR"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oControlS"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oControlT"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oApparentPower"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oVoltageR"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oVoltageS"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oVoltageT"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oCurrentR"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oCurrentS"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Output__oCurrentT"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Parameter__pCurrentFactor"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit90/Parameter__pVoltageFactor"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit91">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit91/Input__iTemp"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit91/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit91/Input__iLimitError"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit91/Parameter__pLimitReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit91/Fault__fError"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit91/Timer__tDelay"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit91/BhvParam__bpMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit92">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit92/Input__iTemp"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit92/Input__iDontCheckInput"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit92/Parameter__pLimitError"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit92/Parameter__pLimitReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit92/Fault__fError"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit92/BhvParam__bpMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit93">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit93/Input__iActualVal"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit93/Output__oLastVal"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit93/Parameter__pRateLimiter"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit94">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit94/Input__iResetOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit94/Output__oValueToReset"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit95">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit95/Input__iTwistAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit95/Input__iAccessState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit95/Output__oTwistAngleLeftLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit95/Output__oTwistAngleRightLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit95/Output__oRetwistPreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit95/Fault__fTwistExcessiveCW"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit95/Fault__fTwistExcessiveCCW"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit96">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit96/Input__iHMIDisableOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit96/Input__iElementStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit96/Output__oElementRol"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit96/Parameter__pMaxElements"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit97">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit97/Input__iSafetyLineGeneralStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit97/Output__oDontCheckEmergency"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit97/Fault__fSecLoopOff"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit98">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit98/Input__iSafetyLineStopped"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit98/Output__oEmergencyRearmCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit99">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit99/Input__iSafetyLineGeneralStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit99/Output__oSafetyLineStartCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit100">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit100/Input__iPinPosition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit100/Output__oPinSafetyCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit100/Parameter__pPinNoBackPos"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit100/Parameter__pPinExtendedPos"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit100/Parameter__pPinRetractedPos"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit100/Parameter__pPinHysteresis"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit100/BhvParam__bpMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit101">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit101/Input__iSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit101/Input__iPosition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit101/Output__oSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit101/Output__oSpeedMonitoring"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit101/Parameter__pOffset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit101/Parameter__pConversionFactor"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit102">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit102/Input__iOriginalStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit102/Input__iResetRequest"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit102/Output__oFilteredStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit102/Fault__fFault"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit103">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit103/Input__iInput1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit103/Input__iInput2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit103/Output__oResult"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit104">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit104/Input__iOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit104/Output__oOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit104/Timer__tTimer"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit104/Timer__tDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit105">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit105/Input__iEntryToCount"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit105/Input__iResetPartial"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit105/Output__oSecondsOnTotal"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit105/Output__oSecondsOnPartial"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit106">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit106/Input__i1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit106/Output__o1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit106/Timer__t1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit106/Timer__t2"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit106/BhvParam__bpMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit107">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit107/Fault__fDLLWarning"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit107/Fault__fDLLError"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit108">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit108/Input__iVoltageDrop"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit108/Fault__fVoltageDrop"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit108/Timer__tAutoReset"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit109">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit109/Input__iInvHwRun"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit109/Input__iVoltageDrop"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit109/Input__iTorqueDemand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit109/Input__iInvStopOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit109/Output__oTorqueReference"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit109/ErrorReaction__erStop"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit110">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit110/Input__iManualStopRequest"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit110/Input__iRemoteStopRequest"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit110/Input__iManualStartRequest"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit110/Input__iRemoteStartRequest"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit110/Input__iStopped"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit110/Output__oMachineStopOrder"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit111">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit111/Input__iOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit111/Timer__tTimer"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit111/BhvParam__bpMode"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit112">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit112/Output__oChangeCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit112/Output__oPersistentDay"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit112/Parameter__pDayChange"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit113">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit113/Input__iWindSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit113/Input__iWindSpeedAverage"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit113/Output__oExcessiveWindAcceleration"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit113/Parameter__pConsideredTime"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit113/Parameter__pWindAccelerationLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit113/Parameter__pHiWindLimitReset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit113/Parameter__pMaxAbsoluteWindSpeed"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit114">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit114/Input__iWindDirectionRaw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit114/Input__iNacelleDirection"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit114/Output__oWindDirection"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit114/Output__oWindDirectionAverage"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit114/Output__oWindDirectionDispAbsolute"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit114/Output__oWindDirectionDispRelative"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit114/Parameter__pVaneOffset"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit115">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit115/Input__iWindSpeedRaw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit115/Output__oWindSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit115/Output__oWindSpeedAverage"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit115/Parameter__pNacelleSlope"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit115/Parameter__pNacelleOffset"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit115/Parameter__pWindSpeedAveragePeriod"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit116">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit116/Input__iInhibitAutoYawCondition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit116/Input__iInhibitYawCondition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit116/Output__oInhibitAutoYaw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit116/Output__oInhibitYaw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit116/Output__oYawStatus"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit117">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Input__iYawBrakeCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Input__iYawElectrobrakeStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Input__iYawHydraulicbrakeStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Input__iInhibitYaw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Output__oYawBrakeStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Output__oYawElectrobrakeOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Output__oYawHydraulicbrakeOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Output__oBrakesSetProblem"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Output__oBrakesLiftedProblem"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit117/Timer__tYawBrakeActionsDelay"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit118">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit118/Input__iYawBrakeStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit118/Input__iRetwistPreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit118/Input__iYawBrakeCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit118/Output__oYawHydraulicbrake2Order"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit119">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit119/Input__iManualYawBrakePreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit119/Input__iAutoYawBrakePreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit119/Output__oYawBrakeCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit120">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit120/Input__iYawCwFinalButton"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit120/Input__iYawCcwFinalButton"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit120/Output__oManualYawPreCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit121">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit121/Input__iManualYawPreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit121/Input__iMaxTwistPreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit121/Input__iRetwistPreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit121/Input__iRelWindPreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit121/Output__oYawCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit122">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Input__iYawCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Input__iYawBrakeStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Input__iInhibitYaw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Output__oYawStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Output__oYawBrakeCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Output__oYawCwOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Output__oYawCcwOrder"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Timer__tDelayYawingControl"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit122/Timer__tDelayYawingToStop"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit123">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit123/Input__iUpperStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit123/Input__iLowerStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit123/Output__oBrakeStatus"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit124">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit124/Input__iTorqueVal"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit124/Input__iRolConverter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit124/Output__oTorqueRef"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit125">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit125/Input__iInvRol"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit125/Output__oSpeedRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit125/Parameter__pSpeed"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit125/Parameter__pOffset"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit126">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit126/Input__iTorqueVal"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit126/Input__iInvRol"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit126/Output__oMaxTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit126/Output__oMinTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit126/Parameter__pMaxTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit126/Parameter__pMinTorque"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit127">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Input__iLowWindActive"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Input__iWindDirectionRelAvg"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Input__iTwistAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Input__iInhibitAutoYaw"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Output__oRelWindPreCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Output__oFlagIntoWind"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Output__oExcessiveYawingTime"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Parameter__pWindDirectionTolerance"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Parameter__pYawFilterTime"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Parameter__pYawStopAngleLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit127/Timer__tMaximumTimeYawing"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit128">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit128/Input__iYawStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit128/Input__iTwistAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit128/Output__oYawMotionProblem"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit128/Parameter__pDegreesPerSecond"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit128/Timer__tCheckFrequency"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit129">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Input__iYawStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Input__iYawCurrent1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Input__iYawCurrent2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Input__iYawCurrent3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Input__iYawCurrent4"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Parameter__pMinimumTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Parameter__pTorqueDifferenceLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Fault__fYawMotor"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit129/Timer__tTimer"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit130">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit130/Output__oYawBrakeHighPressureCmd"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit130/Fault__fOverpressure"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit131">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit131/Input__iExcessivePressure"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit131/Input__iBrakeCommand"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit131/Fault__fCommError"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit131/Fault__fFault"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec2.0.ecore#//CtrlUnit131/BhvParam__bpLogicType"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit132">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit132/Input__iTeeth1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit132/Input__iTeeth2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit132/Input__iTwistAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit132/Output__oTwistAngle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit132/Parameter__pDegreesPerPulse"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec2.0.ecore#//CtrlUnit133">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Input__iYawStatus"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Input__iYawCurrent1"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Input__iYawCurrent2"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Input__iYawCurrent3"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Input__iYawCurrent4"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Input__iOverloadAlarmCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Output__oOverloadAlarmCounter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Parameter__pMaximumTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Parameter__pMinimumTorque"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Parameter__pTorqueDifferenceLimit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Fault__fFault"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec2.0.ecore#//CtrlUnit133/Timer__tTimer"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

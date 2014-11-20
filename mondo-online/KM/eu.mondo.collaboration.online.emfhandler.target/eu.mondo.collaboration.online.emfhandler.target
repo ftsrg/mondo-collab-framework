@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="EMF Handler - OSGi Target" sequenceNumber="31">
+<locations>
+<location path="${eclipse_home}" type="Profile"/>
+<location path="${project_loc:eu.mondo.collaboration.online.emfhandler.target}/derby" type="Directory"/>
+<location path="${project_loc:eu.mondo.collaboration.online.emfhandler.target}/eclipselink" type="Directory"/>
+<location path="${project_loc:eu.mondo.collaboration.online.emfhandler.target}/jaxrs.connector" type="Directory"/>
+<location path="${project_loc:eu.mondo.collaboration.online.emfhandler.target}/jersey" type="Directory"/>
+</locations>
+<environment>
+<os>win32</os>
+<ws>win32</ws>
+<arch>x86</arch>
+<nl>hu_HU</nl>
+</environment>
+</target>
