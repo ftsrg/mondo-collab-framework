@@ -118,6 +118,18 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 				return createRemoveReferenceAdapter();
 			}
 			@Override
+			public Adapter caseMove(Move object) {
+				return createMoveAdapter();
+			}
+			@Override
+			public Adapter caseMoveAttribute(MoveAttribute object) {
+				return createMoveAttributeAdapter();
+			}
+			@Override
+			public Adapter caseMoveReference(MoveReference object) {
+				return createMoveReferenceAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -316,6 +328,48 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createRemoveReferenceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Move <em>Move</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eu.mondo.collaboration.operationtracemodel.Move
+	 * @generated
+	 */
+	public Adapter createMoveAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.MoveAttribute <em>Move Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eu.mondo.collaboration.operationtracemodel.MoveAttribute
+	 * @generated
+	 */
+	public Adapter createMoveAttributeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.MoveReference <em>Move Reference</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eu.mondo.collaboration.operationtracemodel.MoveReference
+	 * @generated
+	 */
+	public Adapter createMoveReferenceAdapter() {
 		return null;
 	}
 

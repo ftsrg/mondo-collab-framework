@@ -63,6 +63,8 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 			case OperationtracemodelPackage.UPDATE_REFERENCE: return createUpdateReference();
 			case OperationtracemodelPackage.REMOVE_ATTRIBUTE: return createRemoveAttribute();
 			case OperationtracemodelPackage.REMOVE_REFERENCE: return createRemoveReference();
+			case OperationtracemodelPackage.MOVE_ATTRIBUTE: return createMoveAttribute();
+			case OperationtracemodelPackage.MOVE_REFERENCE: return createMoveReference();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -156,6 +158,26 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	public RemoveReference createRemoveReference() {
 		RemoveReferenceImpl removeReference = new RemoveReferenceImpl();
 		return removeReference;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MoveAttribute createMoveAttribute() {
+		MoveAttributeImpl moveAttribute = new MoveAttributeImpl();
+		return moveAttribute;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MoveReference createMoveReference() {
+		MoveReferenceImpl moveReference = new MoveReferenceImpl();
+		return moveReference;
 	}
 
 	/**

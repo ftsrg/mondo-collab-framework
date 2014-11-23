@@ -6,7 +6,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="Commands" upperBound="-1"
         eType="#//Command" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="firstCommand" eType="#//Command"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cementary" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cemetary" lowerBound="1"
         eType="#//Cemetary" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastCommand" eType="#//Command"/>
   </eClassifiers>
@@ -19,7 +19,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Step" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nextStep" eType="#//Step"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="element" lowerBound="1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1"
         eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EStructuralFeature"/>
   </eClassifiers>
@@ -28,7 +28,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Remove" abstract="true" eSuperTypes="#//Step"/>
   <eClassifiers xsi:type="ecore:EClass" name="Cemetary">
     <eStructuralFeatures xsi:type="ecore:EReference" name="removedElements" upperBound="-1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InsertAttribute" eSuperTypes="#//Insert">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="newValue" lowerBound="1"
@@ -36,7 +37,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InsertReference" eSuperTypes="#//Insert">
     <eStructuralFeatures xsi:type="ecore:EReference" name="newValue" lowerBound="1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UpdateAttribute" eSuperTypes="#//Update">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="newValue" lowerBound="1"
@@ -46,9 +47,9 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UpdateReference" eSuperTypes="#//Update">
     <eStructuralFeatures xsi:type="ecore:EReference" name="oldValue" lowerBound="1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="newValue" lowerBound="1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RemoveAttribute" eSuperTypes="#//Remove">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="oldValue" lowerBound="1"
@@ -56,6 +57,20 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RemoveReference" eSuperTypes="#//Remove">
     <eStructuralFeatures xsi:type="ecore:EReference" name="oldValue" lowerBound="1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Move" abstract="true" eSuperTypes="#//Step">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="oldIndex" lowerBound="1"
+        eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="newIndex" lowerBound="1"
+        eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MoveAttribute" eSuperTypes="#//Move">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="movedElement" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MoveReference" eSuperTypes="#//Move">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="movedElement" lowerBound="1"
+        eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"/>
   </eClassifiers>
 </ecore:EPackage>

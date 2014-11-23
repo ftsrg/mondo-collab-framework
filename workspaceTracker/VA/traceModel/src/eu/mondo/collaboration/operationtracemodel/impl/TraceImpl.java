@@ -28,7 +28,7 @@ import eu.mondo.collaboration.operationtracemodel.Trace;
  * <ul>
  *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getCommands <em>Commands</em>}</li>
  *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getFirstCommand <em>First Command</em>}</li>
- *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getCementary <em>Cementary</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getCemetary <em>Cemetary</em>}</li>
  *   <li>{@link eu.mondo.collaboration.operationtracemodel.impl.TraceImpl#getLastCommand <em>Last Command</em>}</li>
  * </ul>
  * </p>
@@ -57,14 +57,14 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 	protected Command firstCommand;
 
 	/**
-	 * The cached value of the '{@link #getCementary() <em>Cementary</em>}' containment reference.
+	 * The cached value of the '{@link #getCemetary() <em>Cemetary</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getCementary()
+	 * @see #getCemetary()
 	 * @generated
 	 * @ordered
 	 */
-	protected Cemetary cementary;
+	protected Cemetary cemetary;
 
 	/**
 	 * The cached value of the '{@link #getLastCommand() <em>Last Command</em>}' reference.
@@ -150,8 +150,8 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Cemetary getCementary() {
-		return cementary;
+	public Cemetary getCemetary() {
+		return cemetary;
 	}
 
 	/**
@@ -159,11 +159,11 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetCementary(Cemetary newCementary, NotificationChain msgs) {
-		Cemetary oldCementary = cementary;
-		cementary = newCementary;
+	public NotificationChain basicSetCemetary(Cemetary newCemetary, NotificationChain msgs) {
+		Cemetary oldCemetary = cemetary;
+		cemetary = newCemetary;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.TRACE__CEMENTARY, oldCementary, newCementary);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.TRACE__CEMETARY, oldCemetary, newCemetary);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -174,18 +174,18 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCementary(Cemetary newCementary) {
-		if (newCementary != cementary) {
+	public void setCemetary(Cemetary newCemetary) {
+		if (newCemetary != cemetary) {
 			NotificationChain msgs = null;
-			if (cementary != null)
-				msgs = ((InternalEObject)cementary).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - OperationtracemodelPackage.TRACE__CEMENTARY, null, msgs);
-			if (newCementary != null)
-				msgs = ((InternalEObject)newCementary).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - OperationtracemodelPackage.TRACE__CEMENTARY, null, msgs);
-			msgs = basicSetCementary(newCementary, msgs);
+			if (cemetary != null)
+				msgs = ((InternalEObject)cemetary).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - OperationtracemodelPackage.TRACE__CEMETARY, null, msgs);
+			if (newCemetary != null)
+				msgs = ((InternalEObject)newCemetary).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - OperationtracemodelPackage.TRACE__CEMETARY, null, msgs);
+			msgs = basicSetCemetary(newCemetary, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.TRACE__CEMENTARY, newCementary, newCementary));
+			eNotify(new ENotificationImpl(this, Notification.SET, OperationtracemodelPackage.TRACE__CEMETARY, newCemetary, newCemetary));
 	}
 
 	/**
@@ -236,8 +236,8 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 		switch (featureID) {
 			case OperationtracemodelPackage.TRACE__COMMANDS:
 				return ((InternalEList<?>)getCommands()).basicRemove(otherEnd, msgs);
-			case OperationtracemodelPackage.TRACE__CEMENTARY:
-				return basicSetCementary(null, msgs);
+			case OperationtracemodelPackage.TRACE__CEMETARY:
+				return basicSetCemetary(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -255,8 +255,8 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 			case OperationtracemodelPackage.TRACE__FIRST_COMMAND:
 				if (resolve) return getFirstCommand();
 				return basicGetFirstCommand();
-			case OperationtracemodelPackage.TRACE__CEMENTARY:
-				return getCementary();
+			case OperationtracemodelPackage.TRACE__CEMETARY:
+				return getCemetary();
 			case OperationtracemodelPackage.TRACE__LAST_COMMAND:
 				if (resolve) return getLastCommand();
 				return basicGetLastCommand();
@@ -280,8 +280,8 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 			case OperationtracemodelPackage.TRACE__FIRST_COMMAND:
 				setFirstCommand((Command)newValue);
 				return;
-			case OperationtracemodelPackage.TRACE__CEMENTARY:
-				setCementary((Cemetary)newValue);
+			case OperationtracemodelPackage.TRACE__CEMETARY:
+				setCemetary((Cemetary)newValue);
 				return;
 			case OperationtracemodelPackage.TRACE__LAST_COMMAND:
 				setLastCommand((Command)newValue);
@@ -304,8 +304,8 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 			case OperationtracemodelPackage.TRACE__FIRST_COMMAND:
 				setFirstCommand((Command)null);
 				return;
-			case OperationtracemodelPackage.TRACE__CEMENTARY:
-				setCementary((Cemetary)null);
+			case OperationtracemodelPackage.TRACE__CEMETARY:
+				setCemetary((Cemetary)null);
 				return;
 			case OperationtracemodelPackage.TRACE__LAST_COMMAND:
 				setLastCommand((Command)null);
@@ -326,8 +326,8 @@ public class TraceImpl extends MinimalEObjectImpl.Container implements Trace {
 				return commands != null && !commands.isEmpty();
 			case OperationtracemodelPackage.TRACE__FIRST_COMMAND:
 				return firstCommand != null;
-			case OperationtracemodelPackage.TRACE__CEMENTARY:
-				return cementary != null;
+			case OperationtracemodelPackage.TRACE__CEMETARY:
+				return cemetary != null;
 			case OperationtracemodelPackage.TRACE__LAST_COMMAND:
 				return lastCommand != null;
 		}

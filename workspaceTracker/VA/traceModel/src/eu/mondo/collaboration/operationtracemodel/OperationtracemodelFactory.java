@@ -103,6 +103,24 @@ public interface OperationtracemodelFactory extends EFactory {
 	RemoveReference createRemoveReference();
 
 	/**
+	 * Returns a new object of class '<em>Move Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Move Attribute</em>'.
+	 * @generated
+	 */
+	MoveAttribute createMoveAttribute();
+
+	/**
+	 * Returns a new object of class '<em>Move Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Move Reference</em>'.
+	 * @generated
+	 */
+	MoveReference createMoveReference();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

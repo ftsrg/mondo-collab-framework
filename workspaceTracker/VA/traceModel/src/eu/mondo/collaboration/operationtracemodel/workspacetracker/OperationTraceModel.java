@@ -15,6 +15,9 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import eu.mondo.collaboration.operationtracemodel.Command;
 import eu.mondo.collaboration.operationtracemodel.InsertAttribute;
 import eu.mondo.collaboration.operationtracemodel.InsertReference;
+import eu.mondo.collaboration.operationtracemodel.Move;
+import eu.mondo.collaboration.operationtracemodel.MoveAttribute;
+import eu.mondo.collaboration.operationtracemodel.MoveReference;
 import eu.mondo.collaboration.operationtracemodel.OperationtracemodelFactory;
 import eu.mondo.collaboration.operationtracemodel.RemoveAttribute;
 import eu.mondo.collaboration.operationtracemodel.RemoveReference;
@@ -45,7 +48,7 @@ public class OperationTraceModel {
 			traceModel = resourceSet.createResource(uri);
 			trace = OperationtracemodelFactory.eINSTANCE.createTrace();
 			traceModel.getContents().add(trace);
-			trace.setCementary(OperationtracemodelFactory.eINSTANCE.createCemetary());
+			trace.setCemetary(OperationtracemodelFactory.eINSTANCE.createCemetary());
 		}
 	}
 	
@@ -68,6 +71,10 @@ public class OperationTraceModel {
 			tmp = OperationtracemodelFactory.eINSTANCE.createRemoveAttribute();
 		} else if (type == 6) {
 			tmp = OperationtracemodelFactory.eINSTANCE.createRemoveReference();
+		} else if (type == 7) {
+			tmp = OperationtracemodelFactory.eINSTANCE.createMoveAttribute();
+		} else if (type == 8) {
+			tmp = OperationtracemodelFactory.eINSTANCE.createMoveReference();
 		}
 		if(command == null) {
 			command = OperationtracemodelFactory.eINSTANCE.createCommand();
@@ -125,10 +132,23 @@ public class OperationTraceModel {
 		} else  {
 			newStep(element, feature, 6);
 			if(((EReference)feature).isContainment()){			
-				trace.getCementary().getRemovedElements().add((EObject)oldValue);
+				trace.getCemetary().getRemovedElements().add((EObject)oldValue);
 			}
 			((RemoveReference)step).setOldValue((EObject)oldValue);
 		}
+	}
+	
+	public void moveStep(EObject element, EStructuralFeature feature, Object movedElement, int oldIndex, int newIndex, boolean isAttribute){
+		if(isAttribute){
+			 newStep(element, feature, 7);
+			 ((MoveAttribute)step).setMovedElement(movedElement);
+		} else  {
+			 newStep(element, feature, 8);
+			((MoveReference)step).setMovedElement((EObject)movedElement);
+		}
+		((Move)step).setOldIndex(oldIndex);
+		((Move)step).setNewIndex(newIndex);
+		
 	}
 	
 	public void saveTrace() {

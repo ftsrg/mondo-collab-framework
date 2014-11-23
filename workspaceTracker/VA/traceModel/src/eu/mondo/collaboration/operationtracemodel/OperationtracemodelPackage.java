@@ -85,13 +85,13 @@ public interface OperationtracemodelPackage extends EPackage {
 	int TRACE__FIRST_COMMAND = 1;
 
 	/**
-	 * The feature id for the '<em><b>Cementary</b></em>' containment reference.
+	 * The feature id for the '<em><b>Cemetary</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TRACE__CEMENTARY = 2;
+	int TRACE__CEMETARY = 2;
 
 	/**
 	 * The feature id for the '<em><b>Last Command</b></em>' reference.
@@ -836,6 +836,244 @@ public interface OperationtracemodelPackage extends EPackage {
 
 
 	/**
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.MoveImpl <em>Move</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.MoveImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getMove()
+	 * @generated
+	 */
+	int MOVE = 13;
+
+	/**
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE__NEXT_STEP = STEP__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE__ELEMENT = STEP__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE__FEATURE = STEP__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>Old Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE__OLD_INDEX = STEP_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>New Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE__NEW_INDEX = STEP_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Move</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_FEATURE_COUNT = STEP_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>Move</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_OPERATION_COUNT = STEP_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.MoveAttributeImpl <em>Move Attribute</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.MoveAttributeImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getMoveAttribute()
+	 * @generated
+	 */
+	int MOVE_ATTRIBUTE = 14;
+
+	/**
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_ATTRIBUTE__NEXT_STEP = MOVE__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_ATTRIBUTE__ELEMENT = MOVE__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_ATTRIBUTE__FEATURE = MOVE__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>Old Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_ATTRIBUTE__OLD_INDEX = MOVE__OLD_INDEX;
+
+	/**
+	 * The feature id for the '<em><b>New Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_ATTRIBUTE__NEW_INDEX = MOVE__NEW_INDEX;
+
+	/**
+	 * The feature id for the '<em><b>Moved Element</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_ATTRIBUTE__MOVED_ELEMENT = MOVE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Move Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_ATTRIBUTE_FEATURE_COUNT = MOVE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Move Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_ATTRIBUTE_OPERATION_COUNT = MOVE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.MoveReferenceImpl <em>Move Reference</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.MoveReferenceImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getMoveReference()
+	 * @generated
+	 */
+	int MOVE_REFERENCE = 15;
+
+	/**
+	 * The feature id for the '<em><b>Next Step</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_REFERENCE__NEXT_STEP = MOVE__NEXT_STEP;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_REFERENCE__ELEMENT = MOVE__ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_REFERENCE__FEATURE = MOVE__FEATURE;
+
+	/**
+	 * The feature id for the '<em><b>Old Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_REFERENCE__OLD_INDEX = MOVE__OLD_INDEX;
+
+	/**
+	 * The feature id for the '<em><b>New Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_REFERENCE__NEW_INDEX = MOVE__NEW_INDEX;
+
+	/**
+	 * The feature id for the '<em><b>Moved Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_REFERENCE__MOVED_ELEMENT = MOVE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Move Reference</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_REFERENCE_FEATURE_COUNT = MOVE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Move Reference</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MOVE_REFERENCE_OPERATION_COUNT = MOVE_OPERATION_COUNT + 0;
+
+
+	/**
 	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Trace <em>Trace</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -868,15 +1106,15 @@ public interface OperationtracemodelPackage extends EPackage {
 	EReference getTrace_FirstCommand();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCementary <em>Cementary</em>}'.
+	 * Returns the meta object for the containment reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCemetary <em>Cemetary</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Cementary</em>'.
-	 * @see eu.mondo.collaboration.operationtracemodel.Trace#getCementary()
+	 * @return the meta object for the containment reference '<em>Cemetary</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.Trace#getCemetary()
 	 * @see #getTrace()
 	 * @generated
 	 */
-	EReference getTrace_Cementary();
+	EReference getTrace_Cemetary();
 
 	/**
 	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getLastCommand <em>Last Command</em>}'.
@@ -1175,6 +1413,80 @@ public interface OperationtracemodelPackage extends EPackage {
 	EReference getRemoveReference_OldValue();
 
 	/**
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Move <em>Move</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Move</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.Move
+	 * @generated
+	 */
+	EClass getMove();
+
+	/**
+	 * Returns the meta object for the attribute '{@link eu.mondo.collaboration.operationtracemodel.Move#getOldIndex <em>Old Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Old Index</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.Move#getOldIndex()
+	 * @see #getMove()
+	 * @generated
+	 */
+	EAttribute getMove_OldIndex();
+
+	/**
+	 * Returns the meta object for the attribute '{@link eu.mondo.collaboration.operationtracemodel.Move#getNewIndex <em>New Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>New Index</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.Move#getNewIndex()
+	 * @see #getMove()
+	 * @generated
+	 */
+	EAttribute getMove_NewIndex();
+
+	/**
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.MoveAttribute <em>Move Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Move Attribute</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.MoveAttribute
+	 * @generated
+	 */
+	EClass getMoveAttribute();
+
+	/**
+	 * Returns the meta object for the attribute '{@link eu.mondo.collaboration.operationtracemodel.MoveAttribute#getMovedElement <em>Moved Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Moved Element</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.MoveAttribute#getMovedElement()
+	 * @see #getMoveAttribute()
+	 * @generated
+	 */
+	EAttribute getMoveAttribute_MovedElement();
+
+	/**
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.MoveReference <em>Move Reference</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Move Reference</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.MoveReference
+	 * @generated
+	 */
+	EClass getMoveReference();
+
+	/**
+	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.MoveReference#getMovedElement <em>Moved Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Moved Element</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.MoveReference#getMovedElement()
+	 * @see #getMoveReference()
+	 * @generated
+	 */
+	EReference getMoveReference_MovedElement();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1224,12 +1536,12 @@ public interface OperationtracemodelPackage extends EPackage {
 		EReference TRACE__FIRST_COMMAND = eINSTANCE.getTrace_FirstCommand();
 
 		/**
-		 * The meta object literal for the '<em><b>Cementary</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Cemetary</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference TRACE__CEMENTARY = eINSTANCE.getTrace_Cementary();
+		EReference TRACE__CEMETARY = eINSTANCE.getTrace_Cemetary();
 
 		/**
 		 * The meta object literal for the '<em><b>Last Command</b></em>' reference feature.
@@ -1478,6 +1790,68 @@ public interface OperationtracemodelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference REMOVE_REFERENCE__OLD_VALUE = eINSTANCE.getRemoveReference_OldValue();
+
+		/**
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.MoveImpl <em>Move</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.MoveImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getMove()
+		 * @generated
+		 */
+		EClass MOVE = eINSTANCE.getMove();
+
+		/**
+		 * The meta object literal for the '<em><b>Old Index</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MOVE__OLD_INDEX = eINSTANCE.getMove_OldIndex();
+
+		/**
+		 * The meta object literal for the '<em><b>New Index</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MOVE__NEW_INDEX = eINSTANCE.getMove_NewIndex();
+
+		/**
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.MoveAttributeImpl <em>Move Attribute</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.MoveAttributeImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getMoveAttribute()
+		 * @generated
+		 */
+		EClass MOVE_ATTRIBUTE = eINSTANCE.getMoveAttribute();
+
+		/**
+		 * The meta object literal for the '<em><b>Moved Element</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MOVE_ATTRIBUTE__MOVED_ELEMENT = eINSTANCE.getMoveAttribute_MovedElement();
+
+		/**
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.MoveReferenceImpl <em>Move Reference</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.MoveReferenceImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getMoveReference()
+		 * @generated
+		 */
+		EClass MOVE_REFERENCE = eINSTANCE.getMoveReference();
+
+		/**
+		 * The meta object literal for the '<em><b>Moved Element</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MOVE_REFERENCE__MOVED_ELEMENT = eINSTANCE.getMoveReference_MovedElement();
 
 	}
 

@@ -158,6 +158,29 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case OperationtracemodelPackage.MOVE: {
+				Move move = (Move)theEObject;
+				T result = caseMove(move);
+				if (result == null) result = caseStep(move);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OperationtracemodelPackage.MOVE_ATTRIBUTE: {
+				MoveAttribute moveAttribute = (MoveAttribute)theEObject;
+				T result = caseMoveAttribute(moveAttribute);
+				if (result == null) result = caseMove(moveAttribute);
+				if (result == null) result = caseStep(moveAttribute);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OperationtracemodelPackage.MOVE_REFERENCE: {
+				MoveReference moveReference = (MoveReference)theEObject;
+				T result = caseMoveReference(moveReference);
+				if (result == null) result = caseMove(moveReference);
+				if (result == null) result = caseStep(moveReference);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -354,6 +377,51 @@ public class OperationtracemodelSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseRemoveReference(RemoveReference object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Move</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Move</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMove(Move object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Move Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Move Attribute</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMoveAttribute(MoveAttribute object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Move Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Move Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMoveReference(MoveReference object) {
 		return null;
 	}
 
