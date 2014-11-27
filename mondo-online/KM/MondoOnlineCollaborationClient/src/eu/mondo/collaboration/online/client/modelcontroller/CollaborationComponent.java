@@ -1,9 +1,8 @@
 package eu.mondo.collaboration.online.client.modelcontroller;
 
-import eu.mondo.collaboration.online.client.application.CollaborationPage;
-
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +12,8 @@ import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import com.vaadin.ui.JavaScriptFunction;
+
+import eu.mondo.collaboration.online.client.application.CollaborationPage;
 
 
 @JavaScript({ 
@@ -71,6 +72,170 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		this.ownerPage.publishModel(newModel);
 	}
 	
+	private List<String> getSubtreeIdentifiers(JSONObject object) {
+		List<String> subtreeIdentifiers = new ArrayList<String>();
+		String[] names = JSONObject.getNames(object);
+		for(String name: names) {
+			Object property;
+			try {
+				property = object.get(name);
+				if(property instanceof JSONArray) {
+					subtreeIdentifiers.add(name);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return subtreeIdentifiers;
+	}
+	
+	private JSONObject connectElementToRootNode(JSONObject node, JSONObject element) {
+		try {
+			String type = element.getString("type");
+			String typeSetName = "its" + element.getString("type") + "s";
+			JSONObject newElement =  new JSONObject();
+			// TODO set additional EMF properties
+			newElement.put("sysId", element.getString("sysId"));
+			if(type.equals("WTC")) {
+				type = "CtrlUnit10";
+			}
+			String eClass = "http://WTSpec/2.0#//" + type;
+			newElement.put("eClass", eClass);
+			if(!node.has(typeSetName)) {
+				JSONArray newType = new JSONArray();
+				newType.put(newElement);
+				node.put(typeSetName, newType);
+			} else {
+				node.getJSONArray(typeSetName).put(newElement);
+			}
+			return node;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private JSONObject tryToInsertIntoSubtree(JSONObject node, JSONObject element) {
+		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
+		for(String identifier: subtreeIdentifiers) {
+			try {
+				JSONArray subtree = node.getJSONArray(identifier);
+				for(int i = 0; i < subtree.length(); i++) {
+					JSONObject currentNode = subtree.getJSONObject(i);
+					boolean success = false;
+					if(currentNode.getString("sysId").equals(element.getString("parentSysId"))) {
+						currentNode = connectElementToRootNode(currentNode, element);
+						node.getJSONArray(identifier).put(i, currentNode);
+						success = true;
+					} else {
+						currentNode = tryToInsertIntoSubtree(currentNode, element);
+						if(currentNode != null) {
+							success = true;
+						}
+					}
+					if(success) {
+						return node;
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private JSONObject tryToUpdateSubtree(JSONObject node, JSONObject original, JSONObject edited) {
+		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
+		for(String identifier: subtreeIdentifiers) {
+			try {
+				JSONArray subtree = node.getJSONArray(identifier);
+				for(int i = 0; i < subtree.length(); i++) {
+					JSONObject currentNode = subtree.getJSONObject(i);
+					boolean success = false;
+					if(currentNode.getString("sysId").equals(original.getString("sysId"))) {
+						currentNode = updateNode(currentNode, edited);
+						node.getJSONArray(identifier).put(i, currentNode);
+						success = true;
+					} else {
+						currentNode = tryToUpdateSubtree(currentNode, original, edited);
+						if(currentNode != null) {
+							success = true;
+						}
+					}
+					if(success) {
+						return node;
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private JSONObject updateNode(JSONObject original, JSONObject edited) {
+		String[] props = JSONObject.getNames(edited);
+		try {
+			for(String prop: props) {
+				original.put(prop, edited.get(prop));
+			} 
+			return original;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private JSONObject tryToDeleteInSubtree(JSONObject node, JSONObject nodeToDelete) {
+		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
+		for(String identifier: subtreeIdentifiers) {
+			try {
+				JSONArray subtree = node.getJSONArray(identifier);
+				for(int i = 0; i < subtree.length(); i++) {
+					JSONObject currentNode = subtree.getJSONObject(i);
+					boolean success = false;
+					if(currentNode.getString("sysId").equals(nodeToDelete.getString("sysId"))) {
+						JSONArray newSubtree = removeItemFromJsonArray(subtree, i);
+						node.put(identifier, newSubtree);
+						success = true;
+					} else {
+						currentNode = tryToDeleteInSubtree(currentNode, nodeToDelete);
+						if(currentNode != null) {
+							success = true;
+						}
+					}
+					if(success) {
+						return node;
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private JSONArray removeItemFromJsonArray(JSONArray array, int index) {
+		JSONArray newArray = new JSONArray();
+		try {
+			for(int i = 0; i < array.length(); i++) {
+				if(i != index) {
+					newArray.put(array.get(i));
+				} 
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return newArray;
+	}
+	
 	public CollaborationComponent(CollaborationPage page) {
 		// initModelController(this);
 		this.ownerPage = page;
@@ -79,19 +244,18 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			@Override
 			public void call(JSONArray arguments) throws JSONException {
 				JSONObject element = arguments.getJSONObject(0);
-				// System.out.println("add: " + element.toString());
-				String type = null; 
-				if((int) element.get("elementType") == 1) {
-					type = "nodes"; 
-				} else if((int) element.get("elementType") == 2) {
-					type = "edges";
-				}
-				// TODO validate action
 				JSONObject newModel = getState().model;
-				newModel.getJSONArray(type).put(element);
+				System.out.println("add: " + element.toString());
+				System.out.println("Model: " + newModel);
+				// if root's child
+				if(element.getString("parentSysId").equals("")) {
+					// if no children with this type
+					newModel = connectElementToRootNode(newModel, element);
+				} else {
+					newModel = tryToInsertIntoSubtree(newModel, element);
+				}
 				getState().setModel(newModel);
 				updateModel(newModel);
-				// System.out.println("Model after add new: " + newModel.toString());
 			}
 		});
 		
@@ -100,52 +264,29 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			public void call(JSONArray arguments) throws JSONException {
 				JSONObject elements = arguments.getJSONObject(0);
 				JSONObject original = elements.getJSONObject("original");
-				String type = null; 
-				// System.out.println("Original: " + original.toString());
-				if((int) original.get("elementType") == 1) {
-					type = "nodes"; 
-				} else if((int) original.get("elementType") == 2) {
-					type = "edges";
-				}
-				
-				if(type == null) {
-					System.out.println("Invalid element type (editELement).");
-					return;
-				}
-				
 				JSONObject edited = elements.getJSONObject("edited");
-				// System.out.println("Edited: " + edited.toString());
 				
-				// TODO validate action
 				JSONObject newModel = getState().model;
-				// System.out.println("Model before edit: " + newModel.toString());
-				JSONArray originalElements = getState().model.getJSONArray(type);
-				for(int i = 0; i < originalElements.length(); i++) {
-					JSONObject currentElement = originalElements.getJSONObject(i);
-					if(currentElement.get("id").equals(original.get("id"))) {
-						JSONArray newElements = originalElements;
-						newElements.put(i, edited);
-						newModel.put(type, newElements);
-						getState().setModel(newModel);
-						updateModel(newModel);
-						// System.out.println("Model after edit: " + newModel.toString());
-						break;
-					}
-				}
+				newModel = tryToUpdateSubtree(newModel, original, edited);
+				
+				getState().setModel(newModel);
+				updateModel(newModel);
 			}
 		});
 		
-		// deletes nodes and edges
+		// deletes nodes and subnodes
 		addFunction("deleteElement", new JavaScriptFunction() {
 			@Override
 			public void call(JSONArray arguments) throws JSONException {
 				JSONObject data = arguments.getJSONObject(0);
-				String nodeId = data.getString("nodeId");
-				JSONArray edgeIds = data.getJSONArray("edgeIds");
-				// System.out.println("delete: " + data.toString());
+				JSONObject nodeToDelete = data.getJSONObject("node");
+				
 				// TODO validate action
 				JSONObject newModel = getState().model;
-				
+				newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
+				getState().setModel(newModel);
+				updateModel(newModel);
+				/*
 				// delete node
 				JSONArray nodesInSharedModel = getState().model.getJSONArray("nodes");
 				JSONArray newNodes = new JSONArray();
@@ -177,6 +318,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				// System.out.println("Model after delete: " + newModel.toString());
 				getState().setModel(newModel);
 				updateModel(newModel);
+				*/
 			}
 		});
 		

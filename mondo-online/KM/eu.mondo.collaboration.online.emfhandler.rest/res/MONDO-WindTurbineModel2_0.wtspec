@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ASCII"?>
+<wtc:WT xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wtc="http://WTSpec/2.0">
+  <itsSubsystems sysId="Subsystem_01" description="Subsystem 01 for Wind Turbine">
+    <itsWTCs xsi:type="wtc:CtrlUnit10" sysId="CtrlUnit_1" description="Description for ctrlunit" cycle="1" priority="1" Output__oAnalogScaled="//@itsVariables.0" Parameter__pFactor="//@itsParams.0" Parameter__pOffset="//@itsParams.1" BhvParam__bpOperation="MULTIPLY"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit10" sysId="CtrlUnit_2" description="Description for ctrlunit" cycle="1" priority="1" Input__iAnalogInput="//@itsInputs.0" Output__oAnalogScaled="//@itsVariables.1" Parameter__pFactor="//@itsParams.2" Parameter__pOffset="//@itsParams.1" BhvParam__bpOperation="MULTIPLY"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit10" sysId="CtrlUnit_3" description="Description for ctrlunit" cycle="3" priority="1" Output__oAnalogScaled="//@itsVariables.2" Parameter__pOffset="//@itsParams.3" BhvParam__bpOperation="MULTIPLY"/>
+  </itsSubsystems>
+  <itsSubsystems sysId="Subsystem_04" description="Subsystem 04 for Wind Turbine"/>
+  <itsSubsystems sysId="Subsystem 07" description="Subsystem 07 for Wind Turbine">
+    <itsWTCs xsi:type="wtc:CtrlUnit44" sysId="CtrlUnit_58" description="Description for ctrlunit" cycle="1" priority="5"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit44" sysId="CtrlUnit_59" description="Description for ctrlunit" cycle="1" priority="5"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit44" sysId="CtrlUnit_60" description="Description for ctrlunit" cycle="1" priority="5"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit44" sysId="CtrlUnit_61" description="Description for ctrlunit" cycle="1" priority="5"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit44" sysId="CtrlUnit_62" description="Description for ctrlunit" cycle="1" priority="5" Output__oOutput="//@itsOutputs.1"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit44" sysId="CtrlUnit_63" description="Description for ctrlunit" cycle="1" priority="5"/>
+    <itsSubsystems sysId="Subsystem 08" description="Subsystem 08 for Wind Turbine">
+      <itsWTCs xsi:type="wtc:CtrlUnit9" sysId="CtrlUnit_257" description="Description for ctrlunit" cycle="3" priority="1" Input__iValueToCheck="//@itsVariables.0" BhvParam__bpMode="UPPER" BhvParam__bpLimitsType="PARAMETER"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit73" sysId="CtrlUnit_258" description="Description for ctrlunit" cycle="3" priority="2"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit11" sysId="CtrlUnit_259" description="Description for ctrlunit" cycle="3" priority="3"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit11" sysId="CtrlUnit_261" description="Description for ctrlunit" cycle="3" priority="4"/>
+    </itsSubsystems>
+    <itsSubsystems sysId="Subsystem_08_01" description="First subsystem inside Subsystem 08">
+      <itsWTCs xsi:type="wtc:CtrlUnit13" sysId="CtrlUnit_262" description="Description for ctrlunit" cycle="3" priority="10" BhvParam__bpType="DEFAULT" BhvParam__bpInputType="VARIABLE"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit13" sysId="CtrlUnit_264" description="Description for ctrlunit" cycle="3" priority="10" BhvParam__bpType="DEFAULT" BhvParam__bpInputType="VARIABLE"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit44" sysId="CtrlUnit_265" description="Description for ctrlunit" cycle="3" priority="10"/>
+    </itsSubsystems>
+    <itsSubsystems sysId="Subsystem_08_02" description="Second subsystem inside Subsystem 08">
+      <itsWTCs xsi:type="wtc:CtrlUnit19" sysId="CtrlUnit_266" description="Description for ctrlunit" cycle="3" priority="1"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit19" sysId="CtrlUnit_267" description="Description for ctrlunit" cycle="3" priority="1" Input__iPitchTorque="//@itsInputs.3"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit19" sysId="CtrlUnit_268" description="Description for ctrlunit" cycle="3" priority="1"/>
+    </itsSubsystems>
+    <itsSubsystems sysId="Subsystem_08_03" description="Third subsystem inside Subsystem 08"/>
+  </itsSubsystems>
+  <itsSubsystems sysId="Subsystem_16" description="Subsystem 16 for Wind Turbine">
+    <itsWTCs xsi:type="wtc:CtrlUnit36" sysId="CtrlUnit_1529" description="Description for ctrlunit" cycle="4" priority="8"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit100" sysId="CtrlUnit_1533" description="Description for ctrlunit" cycle="3" priority="10" BhvParam__bpMode="RETRACT"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit36" sysId="CtrlUnit_1534" description="Description for ctrlunit" cycle="4" priority="8"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit12" sysId="CtrlUnit_1535" description="Description for ctrlunit" cycle="3" priority="14"/>
+    <itsWTCs xsi:type="wtc:CtrlUnit29" sysId="CtrlUnit_1537" description="Description for ctrlunit" cycle="4" priority="1" BhvParam__bpResetMode="AUTORESET"/>
+    <itsSubsystems sysId="Subsystem_16_01" description="First subsystem inside Subsystem 16">
+      <itsWTCs xsi:type="wtc:CtrlUnit9" sysId="CtrlUnit_1538" description="Description for ctrlunit" cycle="3" priority="5" BhvParam__bpMode="UPPER"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit9" sysId="CtrlUnit_1539" description="Description for ctrlunit" cycle="3" priority="5" BhvParam__bpMode="LOWER"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit38" sysId="CtrlUnit_1547" description="Description for ctrlunit" cycle="3" priority="7" BhvParam__bpLogicType="NEGATIVE"/>
+    </itsSubsystems>
+    <itsSubsystems sysId="Subsystem_16_02" description="Second subsystem inside Subsystem 16">
+      <itsWTCs xsi:type="wtc:CtrlUnit11" sysId="CtrlUnit_1548" description="Description for ctrlunit" cycle="4" priority="1"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit13" sysId="CtrlUnit_1549" description="Description for ctrlunit" cycle="4" priority="2" BhvParam__bpType="DEFAULT"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit39" sysId="CtrlUnit_1550" description="Description for ctrlunit" cycle="4" priority="3" BhvParam__bpLogicType="NEGATIVE"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit11" sysId="CtrlUnit_1557" description="Description for ctrlunit" cycle="4" priority="8"/>
+    </itsSubsystems>
+    <itsSubsystems sysId="Subsystem_16_03" description="Third subsystem inside Subsystem 16">
+      <itsWTCs xsi:type="wtc:CtrlUnit15" sysId="CtrlUnit_1558" description="Description for ctrlunit" cycle="4" priority="7"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit45" sysId="CtrlUnit_1559" description="Description for ctrlunit" cycle="4" priority="11" BhvParam__bpType="FALLING"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit13" sysId="CtrlUnit_1561" description="Description for ctrlunit" cycle="4" priority="13" BhvParam__bpType="DEFAULT"/>
+    </itsSubsystems>
+    <itsSubsystems sysId="Subsystem_16_04" description="Fourth subsystem inside Subsystem 16">
+      <itsWTCs xsi:type="wtc:CtrlUnit9" sysId="CtrlUnit_1562" description="Description for ctrlunit" cycle="4" priority="7" BhvParam__bpMode="UPPER"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit11" sysId="CtrlUnit_1563" description="Description for ctrlunit" cycle="4" priority="8"/>
+    </itsSubsystems>
+    <itsSubsystems sysId="Subsystem_16_05" description="Subsystem 5 inside Subsystem 16">
+      <itsWTCs xsi:type="wtc:CtrlUnit73" sysId="CtrlUnit_1564" description="Description for ctrlunit" cycle="4" priority="7"/>
+    </itsSubsystems>
+    <itsSubsystems sysId="Subsystem_16_06" description="Subsystem 6 inside Subsystem 16">
+      <itsWTCs xsi:type="wtc:CtrlUnit73" sysId="CtrlUnit_1566" description="Description for ctrlunit" cycle="4" priority="5"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit9" sysId="CtrlUnit_1567" description="Description for ctrlunit" cycle="4" priority="5" BhvParam__bpMode="UPPER"/>
+      <itsWTCs xsi:type="wtc:CtrlUnit73" sysId="CtrlUnit_1576" description="Description for ctrlunit" cycle="4" priority="8"/>
+    </itsSubsystems>
+  </itsSubsystems>
+  <itsInputs sysId="AI_2"/>
+  <itsInputs sysId="AI_4"/>
+  <itsInputs sysId="DI_9"/>
+  <itsInputs sysId="AI_13"/>
+  <itsInputs sysId="DI_30"/>
+  <itsInputs sysId="DI_232"/>
+  <itsOutputs sysId="DO_1"/>
+  <itsOutputs sysId="AO_8"/>
+  <itsOutputs sysId="AO_12"/>
+  <itsOutputs sysId="AO_13"/>
+  <itsOutputs sysId="DO_13"/>
+  <itsOutputs sysId="DO_17"/>
+  <itsOutputs sysId="AO_25"/>
+  <itsOutputs sysId="AO_30"/>
+  <itsParams sysId="PA_1"/>
+  <itsParams sysId="PA_2"/>
+  <itsParams sysId="PA_3"/>
+  <itsParams sysId="PA_5"/>
+  <itsParams sysId="PA_6"/>
+  <itsParams sysId="PA_7"/>
+  <itsTimers sysId="TM_1"/>
+  <itsTimers sysId="TM_7"/>
+  <itsTimers sysId="TM_14"/>
+  <itsFaults sysId="FL_2"/>
+  <itsFaults sysId="FL_1"/>
+  <itsFaults sysId="FL_3"/>
+  <itsFaults sysId="FL_4"/>
+  <itsFaults sysId="FL_5"/>
+  <itsFaults sysId="FL_9"/>
+  <itsVariables sysId="VA_59"/>
+  <itsVariables sysId="VA_63"/>
+  <itsVariables sysId="VA_454"/>
+</wtc:WT>

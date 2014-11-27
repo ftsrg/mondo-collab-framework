@@ -4,4 +4,5 @@ public interface ICPSRestServices {
 
 	String getModels() throws Exception;
 	
+	String persistModel(String modelData) throws Exception; 
 }

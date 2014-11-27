@@ -14,7 +14,7 @@ public class SharedState extends JavaScriptComponentState {
 	}
 	
 	public void setModel(JSONObject newModel) {
-		System.out.println("shared state setmodel to: " + newModel.toString());
+		System.out.println("shared state setmodel - " + newModel.toString());
 		this.model = newModel;
 	}
 } 

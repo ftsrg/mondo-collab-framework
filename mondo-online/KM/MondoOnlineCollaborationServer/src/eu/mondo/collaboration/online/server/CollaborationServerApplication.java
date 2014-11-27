@@ -1,7 +1,10 @@
 package eu.mondo.collaboration.online.server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -35,15 +38,15 @@ public class CollaborationServerApplication {
 	// assign connections to collaboration session IDs once they join it
 	private static HashMap<String, List<Session>> sessionsConnections;
 	
+	private JSONObject modelHeyhey;
+	
 	public CollaborationServerApplication() {
-		// this.newLoadModel();
 		System.out.println("Initialize server...");
 		if(sessions == null) {
 			System.out.println("Load models...");
 			try {
 				this.initSessions();
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -53,9 +56,10 @@ public class CollaborationServerApplication {
 		System.out.println("Initalizing sessions...");
 		sessionsConnections = new HashMap<String, List<Session>>();
 		sessions = new ArrayList<CollaborationSession>();
+		Integer id = 0;
+		/*
 		String pathToResFolder = "D:\\Eclipse\\Eclipse_EE\\workspace_EE\\MondoOnlineCollaborationServer\\res";
 		final File folder = new File(pathToResFolder);
-		Integer id = 0;
 		for (final File fileEntry : folder.listFiles()) {
 	        if (!fileEntry.isDirectory()) {
 	        	String modelPath = pathToResFolder + fileEntry.getName(); 
@@ -69,7 +73,7 @@ public class CollaborationServerApplication {
 	        	id++;
 	        }
 		}
-		
+		*/
 		try {
 			URL url = new URL("http://localhost:8070/modelHandler/getModels");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -80,19 +84,27 @@ public class CollaborationServerApplication {
 			String line;
 			line = br.readLine();
 			JSONArray modelz = new JSONArray(line);
-			JSONObject model1 = modelz.getJSONObject(1);
-			System.out.println(model1.get("name"));
+			System.out.println("modelz size: " + modelz.length());
+			for(int i = 0; i < modelz.length(); i++) {
+				JSONObject currModel = modelz.getJSONObject(i);
+				System.out.println(currModel.toString());
+				CollaborationSession newSession = new CollaborationSession(
+	        		id.toString(), 
+	        		(String) currModel.get("name"),
+	        		CollaborationSession.STATE_CLOSED
+	        	);
+				newSession.setModel(currModel.getJSONObject("model"));
+	        	sessions.add(newSession);
+	        	sessionsConnections.put(id.toString(), new ArrayList<Session>());
+	        	id++;
+			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("try now 6");
 		System.out.println("Sessions initialized.");
 	}
 
@@ -152,7 +164,6 @@ public class CollaborationServerApplication {
 				this.publishModel(sessionId, newModel);
 			}
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}   
 	}
@@ -168,16 +179,13 @@ public class CollaborationServerApplication {
 				System.out.println("Publishing users: " + users.toString());
 				for(Session connection : conns){
 					System.out.println("Send sessions to: " + connection.getId());
-					connection.getBasicRemote().sendText(request.toString());
+					this.sendRequestInParts(request, connection);
+					// connection.getBasicRemote().sendText(request.toString());
 				}
 		    } 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 	}
 
 	private JSONArray getJsonUsersOfSession(String sessionId) {
@@ -195,7 +203,6 @@ public class CollaborationServerApplication {
 			}
 			return jsonUsers;
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -219,14 +226,11 @@ public class CollaborationServerApplication {
 				System.out.println("Publishing sessions: " + jsonSessions.toString());
 				for(Session connection : connections){
 					System.out.println("Send sessions to: " + connection.getId());
-					connection.getBasicRemote().sendText(request.toString());
+					this.sendRequestInParts(request, connection);
+					// connection.getBasicRemote().sendText(request.toString());
 				}
 		    } 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -236,18 +240,17 @@ public class CollaborationServerApplication {
 		System.out.println("Sessions before :" + this.prepareSessionsToSend().toString());
 		for(CollaborationSession s: sessions) {
 			if(s.getId().equals(sessionId)) {
-				try {
-					s.setModel(this.initializeModel());
-					s.startSession();
-					return true;
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				s.startSession();
+				return true;
 			}
 		}
 		System.out.println("Sessions after: " + this.prepareSessionsToSend().toString());
 		return false;
+	}
+
+	private JSONObject getModelHeyhey() {
+		
+		return this.modelHeyhey;
 	}
 
 	private boolean finishSession(String sessionId) {
@@ -260,19 +263,62 @@ public class CollaborationServerApplication {
 						JSONObject request = new JSONObject();
 						request.put("operation", "leaveSession");
 						for(Session conn: relevantConnections){
-							conn.getBasicRemote().sendText(request.toString());
+							this.sendRequestInParts(request, conn);
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					} 
 			    } 
+				persistModel(sessionId, s.getTitle(), s.getModel());
 				s.finishSession();
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private void persistModel(String sessionId, String title, JSONObject model) {
+		System.out.println("Persisting model...");
+		try {
+			JSONObject postData = new JSONObject();
+			postData.put("id", sessionId);
+			postData.put("title", title);
+			postData.put("model", model);
+
+			String postDataString = postData.toString();
+			
+			URL url = new URL("http://localhost:8070/modelHandler/persistModel");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.addRequestProperty("id", sessionId);
+			conn.addRequestProperty("title", title);
+			conn.addRequestProperty("model", model.toString());
+			conn.setRequestMethod("POST");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Length", "" + Integer.toString(postDataString.getBytes().length));
+			
+			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			wr.writeBytes(postDataString);
+			wr.flush();
+			wr.close();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line;
+			line = br.readLine();
+			br.close();
+			System.out.println("Service response: " + line);
+			conn.disconnect();
+
+			System.out.println("Model saved.");
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void sendModel(String sessionId, Session connection) {
@@ -285,36 +331,95 @@ public class CollaborationServerApplication {
 				}
 			}
 			System.out.println("Send model to: " + connection.getId());
+			
 			JSONObject request = new JSONObject();
 			request.put("operation", "updateModel");
 			request.put("model", model);
-			connection.getBasicRemote().sendText(request.toString());
+			this.sendRequestInParts(request, connection);
+			// connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} 	
+	} 
+ 
+	private void sendRequestInParts(JSONObject request, Session connection) {
+		String messageToSend = request.toString();
+		connection.getAsyncRemote().sendText(messageToSend);
+		/*
+		int maxLengthOfParts = 2000;
+		List<String> messageParts = splitString(messageToSend, maxLengthOfParts);
+		try
+		{
+			for(int partIndex = 0; partIndex < messageParts.size(); partIndex++) {
+				String part = messageParts.get(partIndex);
+				boolean isLast = false;
+				if(partIndex + 1 == messageParts.size()) {
+					isLast = true;
+				}
+				connection.getBasicRemote().sendText(part, isLast);
+			}
 		}
-		
+		catch (IOException e)
+		{
+		    e.printStackTrace(System.err);
+		}
+		*/
 	}
 
+	private List<String> splitString(String text, int maxLengthOfPart) {
+		List<String> parts = new ArrayList<String>(); 
+		int currentIndex = 0;
+		int maxIndex = text.length() - 1;
+		while(currentIndex < maxIndex) {
+			int newIndex = currentIndex + maxLengthOfPart;
+			String part = null;
+			if(newIndex >= maxIndex) {
+				part = text.substring(currentIndex);
+				currentIndex = maxIndex;
+			} else {
+				part = text.substring(currentIndex, newIndex);
+				currentIndex = newIndex;
+			}
+			parts.add(part);
+		}
+		return parts;
+	}
+	
+	private void writeTextIntoFile(String text) {
+		BufferedWriter writer = null;
+        try {
+            //create a temporary file
+            File logFile = new File("someTextFile.txt");
+
+            // This will output the full path where the file will be written to...
+            System.out.println(logFile.getCanonicalPath());
+
+            writer = new BufferedWriter(new FileWriter(logFile));
+            writer.write(text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                // Close the writer regardless of what happens...
+                writer.close();
+            } catch (Exception e) {
+            }
+        }
+	}
+	
 	private void sendSessions(Session connection) {
 		try {
-			// prepare data for CollaborationSession s
+			// prepare data for CollaborationSessions
 			JSONArray jsonSessions = this.prepareSessionsToSend();
 			System.out.println("Send open sessions list to: " + connection.getId());
 			JSONObject request = new JSONObject();
 			request.put("operation", "updateSessions");
 			request.put("sessions", jsonSessions);
-			connection.getBasicRemote().sendText(request.toString());
+			this.sendRequestInParts(request, connection);
+			// connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 	}
 
 	private JSONArray prepareSessionsToSend() {
@@ -330,7 +435,6 @@ public class CollaborationServerApplication {
 		    }
 			return jsonSessions;
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -350,7 +454,6 @@ public class CollaborationServerApplication {
 				}
 		    } 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 	    }
 	}
@@ -361,9 +464,7 @@ public class CollaborationServerApplication {
 				s.setModel(newModel);
 				return;
 			}
-			
 		}
-		
 	}
 
 	@OnClose
@@ -372,17 +473,6 @@ public class CollaborationServerApplication {
 		System.out.println("removing connection from websocket...");
 		connections.remove(connection);
 	}
-	/*
-	private void newLoadModel() {
-	    System.out.println("Try resourcey stuff...");
-		ResourceSet resSet = new ResourceSetImpl();
-
-	    // Get the resource
-	    Resource resource = resSet.getResource(URI
-	        .createURI("res/WTSpec2.0.ecore"), true);
-	    System.out.println("done");
-	}
-	*/
 	
 	private JSONObject initializeModel() throws JSONException {
 		// load dummy model

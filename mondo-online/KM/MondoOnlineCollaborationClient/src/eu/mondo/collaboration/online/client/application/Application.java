@@ -18,8 +18,6 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
-import eu.mondo.collaboration.online.client.modelcontroller.CollaborationComponent;
-
 @SuppressWarnings("serial")
 @Title("MONDO")
 @Theme("mondoonlinecollaborationclient")

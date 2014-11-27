@@ -18,9 +18,12 @@ public class MondoWebsocketClient {
 	private Session connection;
 	
 	private Application application;
+
+	private String incomingMessage;
 	
 	public MondoWebsocketClient(Application application) {
 		this.application = application;
+		this.incomingMessage = "";
 	}
 	
 	@OnOpen
@@ -30,18 +33,30 @@ public class MondoWebsocketClient {
         System.out.println("Max message length: "  + conn.getMaxTextMessageBufferSize());
     }
 	
-	@OnMessage
+	@OnMessage 
     public void processMessage(String rawMessage) {
+		/*
+		if(this.incomingMessage.equals("")) {
+			this.application.setPollInterval(-1);
+		}
+		System.out.println("OnMessage - partial");
+		this.incomingMessage += rawMessage;
+		if(!isLast) {
+			return;
+		}
+		this.application.setPollInterval(1000);
+		*/
+		System.out.println("OnMessage - finished transmission");
     	try {
     		JSONObject message = new JSONObject(rawMessage);
-    		System.out.println("Recieved message: " + message.toString());
+    		this.incomingMessage = "";
     		String operation = message.getString("operation");
+    		System.out.println("Operation: " + operation);
     		if(operation.equals("updateModel")) {
         		System.out.println("updateModel...");
 				this.application.getCollaborationPage().setModel(
 					message.getJSONObject("model")
 				);
-	    		System.out.println("recieved model: " + message);
 	    		System.out.println("Model length: " + message.length());
     		} else if(operation.equals("updateSessions")) {
         		System.out.println("updateSessions...");
@@ -74,14 +89,13 @@ public class MondoWebsocketClient {
         this.connection = null;
     }
 
-    
 	public void publishModel(String sessionId, JSONObject newModel) {
 		try {
 			JSONObject request = new JSONObject();
 			request.put("operation", "publishModel");
 			request.put("model", newModel);
 			request.put("sessionId", sessionId);
-			System.out.println("Sending message to endpoint: " + request.toString());
+			System.out.println("Sending new model to endpoint.");
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
@@ -104,10 +118,11 @@ public class MondoWebsocketClient {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	public void getModel(String sessionId) {
+		System.out.println("sessionId -- " + sessionId);
 		try {
 			JSONObject request = new JSONObject();
 			request.put("operation", "getModel");
@@ -115,12 +130,11 @@ public class MondoWebsocketClient {
 			System.out.println("Sending message to server: " + request.toString());
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	public void joinSession(User user, String sessionId) {
@@ -140,7 +154,7 @@ public class MondoWebsocketClient {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	public void startSession(String sessionId) {
@@ -156,7 +170,7 @@ public class MondoWebsocketClient {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	public void finishSession(String sessionId) {
@@ -167,11 +181,10 @@ public class MondoWebsocketClient {
 			System.out.println("Sending message to server: " + request.toString());
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 }

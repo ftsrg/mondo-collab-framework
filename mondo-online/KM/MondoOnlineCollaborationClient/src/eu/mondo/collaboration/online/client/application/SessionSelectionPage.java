@@ -81,8 +81,10 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 	}
 
 	private void updateSessionsView() {
-		Panel sessionSelection = this.initSessionsView();
-		addComponent(sessionSelection); //, "left: 10px; top: 40px;");
+		this.removeAllComponents();
+		// Panel sessionSelection = this.initSessionsView();
+		this.initSessionsView();
+		//addComponent(sessionSelection); //, "left: 10px; top: 40px;");
 		
 	}
 	private Panel initSessionsView() {

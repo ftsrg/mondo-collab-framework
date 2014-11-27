@@ -5,6 +5,7 @@ Bundle-SymbolicName: eu.mondo.collaboration.online.emfhandler.rest;singleton:=tr
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: 
+ WTSpec.impl,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.resource,
@@ -21,5 +22,6 @@ Require-Bundle:
  com.fasterxml.jackson.core.jackson-core;bundle-version="2.3.1",
  org.eclipselabs.emfjson;bundle-version="0.8.0",
  com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.3.0",
- com.fasterxml.jackson.core.jackson-databind;bundle-version="2.3.1"
+ com.fasterxml.jackson.core.jackson-databind;bundle-version="2.3.1",
+ WTSpec
 Bundle-ActivationPolicy: lazy
