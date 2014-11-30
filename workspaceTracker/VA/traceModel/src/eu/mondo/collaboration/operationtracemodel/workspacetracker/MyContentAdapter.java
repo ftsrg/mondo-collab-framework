@@ -72,37 +72,41 @@ public class MyContentAdapter extends EContentAdapter{
 					if(notification.getFeature() instanceof EAttribute){
 						operationTraceModel.insertStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), true);
 					} else if(notification.getFeature() instanceof EReference) {
-						operationTraceModel.insertStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
+						if(((EReference)notification.getFeature()).isContainment()) {
+							operationTraceModel.insertStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
+						} else {
+							operationTraceModel.updateStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), notification.getNewValue(), false);
+						}
 					}
 				} else if (notification.getNewValue() == null) {
 					if(notification.getFeature() instanceof EAttribute){
-						operationTraceModel.deleteStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), true);
+						operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), true);
 					} else if(notification.getFeature() instanceof EReference) {
-						operationTraceModel.deleteStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
+						operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
 					}
 				}
 				break;	
 			case Notification.REMOVE :
 				if(notification.getFeature() instanceof EAttribute){
-					operationTraceModel.deleteStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), true);
+					operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), true);
 				} else if(notification.getFeature() instanceof EReference) {
-					operationTraceModel.deleteStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), false);
+					operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), false);
 				}
 				break;	
 			case Notification.REMOVE_MANY :
 				for(Object o : (Collection<Object>)(notification.getNewValue())){
 					if(notification.getFeature() instanceof EAttribute){
-						operationTraceModel.deleteStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), o, true);
+						operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), o, true);
 					} else if(notification.getFeature() instanceof EReference) {
-						operationTraceModel.deleteStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), o, false);
+						operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), o, false);
 					}
 				}
 				break;
 			case Notification.UNSET:
 				if(notification.getFeature() instanceof EAttribute){
-					operationTraceModel.deleteStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), true);
+					operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), true);
 				} else if(notification.getFeature() instanceof EReference) {
-					operationTraceModel.deleteStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), false);
+					operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), false);
 				}
 				break;	
 			case Notification.MOVE:
@@ -113,6 +117,7 @@ public class MyContentAdapter extends EContentAdapter{
 				} else if(notification.getFeature() instanceof EReference) {
 					operationTraceModel.moveStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), (Integer)notification.getOldValue(), notification.getPosition(), false);
 				}
+				break;
 			default: break;
 			}
 		}

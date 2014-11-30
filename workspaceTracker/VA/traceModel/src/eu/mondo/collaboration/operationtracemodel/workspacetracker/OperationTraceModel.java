@@ -125,7 +125,7 @@ public class OperationTraceModel {
 		
 	}
 	
-	public void deleteStep(EObject element, EStructuralFeature feature, Object oldValue, boolean isAttribute) {
+	public void removeStep(EObject element, EStructuralFeature feature, Object oldValue, boolean isAttribute) {
 		if(isAttribute){
 			 newStep(element, feature, 5);
 			 ((RemoveAttribute)step).setOldValue(oldValue);

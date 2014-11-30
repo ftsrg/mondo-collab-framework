@@ -924,7 +924,6 @@ public class WTSpecEditor
 			exception = e;
 			resource = editingDomain.getResourceSet().getResource(resourceURI, false);
 		}
-		resource.eAdapters().add(new MyContentAdapter(resource.getResourceSet(), URI.createURI("models/trace.operationtracemodel", true), false));
 		Diagnostic diagnostic = analyzeResourceProblems(resource, exception);
 		if (diagnostic.getSeverity() != Diagnostic.OK) {
 			resourceToDiagnosticMap.put(resource,  analyzeResourceProblems(resource, exception));

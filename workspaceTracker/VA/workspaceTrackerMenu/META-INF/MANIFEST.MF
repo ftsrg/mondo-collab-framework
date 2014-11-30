@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Testelek
+Bundle-SymbolicName: workspaceTrackerMenu;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: eu.mondo.collaboration.workspaceTrackerMenu.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Import-Package: eu.mondo.collaboration.operationtracemodel.workspacetracker,
+ org.eclipse.emf.common.notify,
+ org.eclipse.emf.common.util,
+ org.eclipse.emf.ecore.resource,
+ org.eclipse.emf.edit.domain

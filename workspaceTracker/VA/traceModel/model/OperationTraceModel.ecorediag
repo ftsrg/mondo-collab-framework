@@ -598,7 +598,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_Xoil-XCREeSGZfMcYBOd4g" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_Xoil-nCREeSGZfMcYBOd4g" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="OperationTraceModel.ecore#//UpdateReference/newValue"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Xoil-3CREeSGZfMcYBOd4g" points="[36, 21, -484, -121]$[120, 68, -400, -74]$[470, 132, -50, -10]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Xoil-3CREeSGZfMcYBOd4g" points="[60, 17, -460, -125]$[150, 43, -370, -99]$[150, 43, -370, -99]$[470, 128, -50, -14]"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_XosW4HCREeSGZfMcYBOd4g" type="3002" source="_mnL7sGM5EeSg3OJlN7iYlQ" target="_Xn8wAHCREeSGZfMcYBOd4g">
     <children xmi:type="notation:Node" xmi:id="_XosW5HCREeSGZfMcYBOd4g" type="4011">
