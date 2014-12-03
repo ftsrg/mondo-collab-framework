@@ -16,17 +16,17 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 public class MyContentAdapter extends EContentAdapter{
 
 	private ResourceSet resourceSet2;
-	private OperationTraceModel operationTraceModel;
+	private WorkspaceTracker operationTraceModel;
 	public MyContentAdapter(ResourceSet resourceSet, URI traceUri){
 		super();
 		this.resourceSet2 = resourceSet;
-		operationTraceModel = new OperationTraceModel(this.resourceSet2, traceUri, false);
+		operationTraceModel = new WorkspaceTracker(this.resourceSet2, traceUri, false);
 	}
 	
 	public MyContentAdapter(ResourceSet resourceSet, URI traceUri, boolean isExisitTrace){
 		super();
 		this.resourceSet2 = resourceSet;
-		operationTraceModel = new OperationTraceModel(this.resourceSet2, traceUri, isExisitTrace);
+		operationTraceModel = new WorkspaceTracker(this.resourceSet2, traceUri, isExisitTrace);
 	}
 	
 	@SuppressWarnings("unchecked")

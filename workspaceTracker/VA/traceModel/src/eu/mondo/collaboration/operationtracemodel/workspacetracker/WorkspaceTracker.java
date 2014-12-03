@@ -26,13 +26,13 @@ import eu.mondo.collaboration.operationtracemodel.Trace;
 import eu.mondo.collaboration.operationtracemodel.UpdateAttribute;
 import eu.mondo.collaboration.operationtracemodel.UpdateReference;
 
-public class OperationTraceModel {
+public class WorkspaceTracker {
 	private Resource traceModel;
 	private Trace trace;
 	private Command command;
 	private Step step;
 	
-	public OperationTraceModel(ResourceSet resourceSet, URI uri, boolean isExsits){
+	public WorkspaceTracker(ResourceSet resourceSet, URI uri, boolean isExsits){
 		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 	    Map<String, Object> m = reg.getExtensionToFactoryMap();
 	    m.put("operationtracemodel", new XMIResourceFactoryImpl());

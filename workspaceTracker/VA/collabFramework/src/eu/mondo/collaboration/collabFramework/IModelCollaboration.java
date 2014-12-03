@@ -17,7 +17,7 @@ public interface IModelCollaboration<T> {
 	public T update(ILoginData loginData, IVersion version, String query,
 			T rootModel, T modelA, T modelB);
 
-	public void commit(ILoginData loginData, T editedModeol, String commitMessage);
+	public int commit(ILoginData loginData, T editedModeol, String commitMessage);
 
 	public int lock(ILoginData loginData, ILockQuery lockQuery);
 
@@ -27,7 +27,7 @@ public interface IModelCollaboration<T> {
 
 	public Set<String> log();
 
-	public int setPermission(String loginData, String permissionRule);
+	public int setPermission(String loginData, IPermissionRule permissionRule);
 
 	public int removePermission(String loginData, int permissionID);
 
