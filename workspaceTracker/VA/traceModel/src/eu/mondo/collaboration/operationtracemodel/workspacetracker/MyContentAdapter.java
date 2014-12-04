@@ -109,9 +109,7 @@ public class MyContentAdapter extends EContentAdapter{
 					operationTraceModel.removeStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), false);
 				}
 				break;	
-			case Notification.MOVE:
-				//System.out.println(notification.getOldValue());
-				
+			case Notification.MOVE:				
 				if(notification.getFeature() instanceof EAttribute){
 					operationTraceModel.moveStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), (Integer)notification.getOldValue(), notification.getPosition(), true);
 				} else if(notification.getFeature() instanceof EReference) {

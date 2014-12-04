@@ -1,16 +1,17 @@
 package eu.mondo.collaboration.workspaceTrackerMenu.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -26,7 +27,43 @@ public class SampleHandler extends AbstractHandler {
 	/**
 	 * The constructor.
 	 */
+	IPartListener partListener;
+	IWorkbenchPage page;
 	public SampleHandler() {
+		IWorkbench wb = PlatformUI.getWorkbench();
+		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+		page = win.getActivePage();
+		partListener  = new IPartListener() {
+			
+			
+			public void partActivated(IWorkbenchPart part) {
+				// TODO Auto-generated method stub
+				
+			}
+			public void partBroughtToTop(IWorkbenchPart part) {
+				// TODO Auto-generated method stub
+				
+			}
+			public void partClosed(IWorkbenchPart part) {
+				// TODO Auto-generated method stub
+				
+			}
+			public void partDeactivated(IWorkbenchPart part) {
+				// TODO Auto-generated method stub
+				
+			}
+			public void partOpened(IWorkbenchPart part) {
+				if (part instanceof IEditingDomainProvider) {
+		              IEditingDomainProvider editingDomainProvider = (IEditingDomainProvider) part;
+		              ResourceSet resourceSet;
+		              resourceSet = editingDomainProvider.getEditingDomain().getResourceSet();
+		              Resource resource = resourceSet.getResources().get(0);
+		              String path = resource.getURI().toString().replaceAll(resource.getURI().lastSegment(), resource.getURI().lastSegment().replaceAll("\\.", "_")) + ".operationtracemodel";
+		              resource.eAdapters().add(new MyContentAdapter(resource.getResourceSet(), URI.createURI(path, true), true));
+				 }						
+			}
+		
+		};
 	}
 
 	/**
@@ -34,10 +71,18 @@ public class SampleHandler extends AbstractHandler {
 	 * from the application context.
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbench wb = PlatformUI.getWorkbench();
-		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-		IWorkbenchPage page = win.getActivePage();
-		IEditorPart editorPart = page.getActiveEditor();
+		Command command = event.getCommand();
+		System.out.println("commandstate: " + HandlerUtil.toggleCommandState(command));
+		boolean oldValue = HandlerUtil.toggleCommandState(command);
+		
+		
+		
+		if(oldValue)
+			page.removePartListener(partListener);
+		else {			
+			page.addPartListener(partListener);
+		}
+		/*IEditorPart editorPart = page.getActiveEditor();
 		  if (editorPart instanceof IEditingDomainProvider) {
               IEditingDomainProvider editingDomainProvider = (IEditingDomainProvider) editorPart;
               ResourceSet result;
@@ -47,12 +92,7 @@ public class SampleHandler extends AbstractHandler {
               resource.eAdapters().add(new MyContentAdapter(resource.getResourceSet(), URI.createURI("models/trace.operationtracemodel", true), false));
 
           }
-		
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		MessageDialog.openInformation(
-				window.getShell(),
-				"Testelek",
-				"Hello, Eclipse world");
+*/
 		return null;
 	}
 }

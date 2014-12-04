@@ -1,16 +1,22 @@
 /**
  */
-package operationtracemodel.provider;
+package eu.mondo.collaboration.operationtracemodel.provider;
 
+
+import eu.mondo.collaboration.operationtracemodel.Cemetary;
+import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.common.util.ResourceLocator;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
+import org.eclipse.emf.ecore.EcoreFactory;
+
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -20,17 +26,13 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
-import eu.mondo.collaboration.operationtracemodel.OperationtracemodelFactory;
-import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
-import eu.mondo.collaboration.operationtracemodel.Trace;
-
 /**
- * This is the item provider adapter for a {@link eu.mondo.collaboration.operationtracemodel.Trace} object.
+ * This is the item provider adapter for a {@link eu.mondo.collaboration.operationtracemodel.Cemetary} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class TraceItemProvider
+public class CemetaryItemProvider
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -44,7 +46,7 @@ public class TraceItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TraceItemProvider(AdapterFactory adapterFactory) {
+	public CemetaryItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -59,54 +61,8 @@ public class TraceItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addFirstCommandPropertyDescriptor(object);
-			addLastCommandPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the First Command feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addFirstCommandPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Trace_firstCommand_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Trace_firstCommand_feature", "_UI_Trace_type"),
-				 OperationtracemodelPackage.Literals.TRACE__FIRST_COMMAND,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Last Command feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addLastCommandPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Trace_lastCommand_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Trace_lastCommand_feature", "_UI_Trace_type"),
-				 OperationtracemodelPackage.Literals.TRACE__LAST_COMMAND,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
 	}
 
 	/**
@@ -121,8 +77,7 @@ public class TraceItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(OperationtracemodelPackage.Literals.TRACE__COMMANDS);
-			childrenFeatures.add(OperationtracemodelPackage.Literals.TRACE__CEMETARY);
+			childrenFeatures.add(OperationtracemodelPackage.Literals.CEMETARY__REMOVED_ELEMENTS);
 		}
 		return childrenFeatures;
 	}
@@ -141,14 +96,14 @@ public class TraceItemProvider
 	}
 
 	/**
-	 * This returns Trace.gif.
+	 * This returns Cemetary.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Trace"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Cemetary"));
 	}
 
 	/**
@@ -159,7 +114,7 @@ public class TraceItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_Trace_type");
+		return getString("_UI_Cemetary_type");
 	}
 
 	/**
@@ -173,9 +128,8 @@ public class TraceItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Trace.class)) {
-			case OperationtracemodelPackage.TRACE__COMMANDS:
-			case OperationtracemodelPackage.TRACE__CEMETARY:
+		switch (notification.getFeatureID(Cemetary.class)) {
+			case OperationtracemodelPackage.CEMETARY__REMOVED_ELEMENTS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -195,13 +149,8 @@ public class TraceItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(OperationtracemodelPackage.Literals.TRACE__COMMANDS,
-				 OperationtracemodelFactory.eINSTANCE.createCommand()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(OperationtracemodelPackage.Literals.TRACE__CEMETARY,
-				 OperationtracemodelFactory.eINSTANCE.createCemetary()));
+				(OperationtracemodelPackage.Literals.CEMETARY__REMOVED_ELEMENTS,
+				 EcoreFactory.eINSTANCE.createEObject()));
 	}
 
 	/**

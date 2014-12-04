@@ -10,7 +10,7 @@
       <!-- @generated OperationTraceModel -->
       <factory
             uri="http://operationtracemodel/1.0"
-            class="operationtracemodel.provider.OperationtracemodelItemProviderAdapterFactory"
+            class="eu.mondo.collaboration.operationtracemodel.provider.OperationtracemodelItemProviderAdapterFactory"
             supportedTypes=
               "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
                org.eclipse.emf.edit.provider.IStructuredItemContentProvider

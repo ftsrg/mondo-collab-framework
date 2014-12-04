@@ -14,4 +14,5 @@ Export-Package: eu.mondo.collaboration.operationtracemodel,
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.emf.ecore.xmi.impl
+Import-Package: org.eclipse.core.resources,
+ org.eclipse.emf.ecore.xmi.impl

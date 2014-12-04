@@ -12,9 +12,9 @@
             id="org.eclipse.emf.ecore.Wizard.category.ID"
             name="%_UI_Wizard_category"/>
       <wizard
-            id="operationtracemodel.presentation.OperationtracemodelModelWizardID"
+            id="eu.mondo.collaboration.operationtracemodel.presentation.OperationtracemodelModelWizardID"
             name="%_UI_OperationtracemodelModelWizard_label"
-            class="operationtracemodel.presentation.OperationtracemodelModelWizard"
+            class="eu.mondo.collaboration.operationtracemodel.presentation.OperationtracemodelModelWizard"
             category="org.eclipse.emf.ecore.Wizard.category.ID"
             icon="icons/full/obj16/OperationtracemodelModelFile.gif">
          <description>%_UI_OperationtracemodelModelWizard_description</description>
@@ -25,12 +25,12 @@
    <extension point="org.eclipse.ui.editors">
       <!-- @generated OperationTraceModel -->
       <editor
-            id="operationtracemodel.presentation.OperationtracemodelEditorID"
+            id="eu.mondo.collaboration.operationtracemodel.presentation.OperationtracemodelEditorID"
             name="%_UI_OperationtracemodelEditor_label"
             icon="icons/full/obj16/OperationtracemodelModelFile.gif"
             extensions="operationtracemodel"
-            class="operationtracemodel.presentation.OperationtracemodelEditor"
-            contributorClass="operationtracemodel.presentation.OperationtracemodelActionBarContributor">
+            class="eu.mondo.collaboration.operationtracemodel.presentation.OperationtracemodelEditor"
+            contributorClass="eu.mondo.collaboration.operationtracemodel.presentation.OperationtracemodelActionBarContributor">
       </editor>
    </extension>
 
