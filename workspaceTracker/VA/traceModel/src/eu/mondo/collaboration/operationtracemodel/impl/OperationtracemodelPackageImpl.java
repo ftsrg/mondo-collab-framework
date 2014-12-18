@@ -2,14 +2,12 @@
  */
 package eu.mondo.collaboration.operationtracemodel.impl;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
-import eu.mondo.collaboration.operationtracemodel.Cemetary;
+import eu.mondo.collaboration.operationtracemodel.Cemetery;
 import eu.mondo.collaboration.operationtracemodel.Command;
 import eu.mondo.collaboration.operationtracemodel.Insert;
 import eu.mondo.collaboration.operationtracemodel.InsertAttribute;
@@ -27,6 +25,7 @@ import eu.mondo.collaboration.operationtracemodel.Trace;
 import eu.mondo.collaboration.operationtracemodel.Update;
 import eu.mondo.collaboration.operationtracemodel.UpdateAttribute;
 import eu.mondo.collaboration.operationtracemodel.UpdateReference;
+import org.eclipse.emf.ecore.EAttribute;
 
 /**
  * <!-- begin-user-doc -->
@@ -82,7 +81,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass cemetaryEClass = null;
+	private EClass cemeteryEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -243,7 +242,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getTrace_Cemetary() {
+	public EReference getTrace_Cemetery() {
 		return (EReference)traceEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -360,8 +359,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getCemetary() {
-		return cemetaryEClass;
+	public EClass getCemetery() {
+		return cemeteryEClass;
 	}
 
 	/**
@@ -369,8 +368,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getCemetary_RemovedElements() {
-		return (EReference)cemetaryEClass.getEStructuralFeatures().get(0);
+	public EReference getCemetery_RemovedElements() {
+		return (EReference)cemeteryEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -593,7 +592,7 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 		traceEClass = createEClass(TRACE);
 		createEReference(traceEClass, TRACE__COMMANDS);
 		createEReference(traceEClass, TRACE__FIRST_COMMAND);
-		createEReference(traceEClass, TRACE__CEMETARY);
+		createEReference(traceEClass, TRACE__CEMETERY);
 		createEReference(traceEClass, TRACE__LAST_COMMAND);
 
 		commandEClass = createEClass(COMMAND);
@@ -612,8 +611,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 
 		removeEClass = createEClass(REMOVE);
 
-		cemetaryEClass = createEClass(CEMETARY);
-		createEReference(cemetaryEClass, CEMETARY__REMOVED_ELEMENTS);
+		cemeteryEClass = createEClass(CEMETERY);
+		createEReference(cemeteryEClass, CEMETERY__REMOVED_ELEMENTS);
 
 		insertAttributeEClass = createEClass(INSERT_ATTRIBUTE);
 		createEAttribute(insertAttributeEClass, INSERT_ATTRIBUTE__NEW_VALUE);
@@ -692,9 +691,9 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(traceEClass, Trace.class, "Trace", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getTrace_Commands(), this.getCommand(), null, "Commands", null, 0, -1, Trace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTrace_Commands(), this.getCommand(), null, "commands", null, 0, -1, Trace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTrace_FirstCommand(), this.getCommand(), null, "firstCommand", null, 0, 1, Trace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getTrace_Cemetary(), this.getCemetary(), null, "cemetary", null, 1, 1, Trace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTrace_Cemetery(), this.getCemetery(), null, "cemetery", null, 1, 1, Trace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTrace_LastCommand(), this.getCommand(), null, "lastCommand", null, 0, 1, Trace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(commandEClass, Command.class, "Command", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -713,8 +712,8 @@ public class OperationtracemodelPackageImpl extends EPackageImpl implements Oper
 
 		initEClass(removeEClass, Remove.class, "Remove", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(cemetaryEClass, Cemetary.class, "Cemetary", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getCemetary_RemovedElements(), theEcorePackage.getEObject(), null, "removedElements", null, 0, -1, Cemetary.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(cemeteryEClass, Cemetery.class, "Cemetery", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getCemetery_RemovedElements(), theEcorePackage.getEObject(), null, "removedElements", null, 0, -1, Cemetery.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(insertAttributeEClass, InsertAttribute.class, "InsertAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getInsertAttribute_NewValue(), ecorePackage.getEJavaObject(), "newValue", null, 1, 1, InsertAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

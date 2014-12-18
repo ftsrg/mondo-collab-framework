@@ -20,6 +20,7 @@ package eu.mondo.collaboration.operationtracemodel;
  * @generated
  */
 public interface MoveAttribute extends Move {
+
 	/**
 	 * Returns the value of the '<em><b>Moved Element</b></em>' attribute.
 	 * <!-- begin-user-doc -->

@@ -118,26 +118,26 @@ public class OperationtracemodelItemProviderAdapterFactory extends Operationtrac
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link eu.mondo.collaboration.operationtracemodel.Cemetary} instances.
+	 * This keeps track of the one adapter used for all {@link eu.mondo.collaboration.operationtracemodel.Cemetery} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected CemetaryItemProvider cemetaryItemProvider;
+	protected CemeteryItemProvider cemeteryItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link eu.mondo.collaboration.operationtracemodel.Cemetary}.
+	 * This creates an adapter for a {@link eu.mondo.collaboration.operationtracemodel.Cemetery}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createCemetaryAdapter() {
-		if (cemetaryItemProvider == null) {
-			cemetaryItemProvider = new CemetaryItemProvider(this);
+	public Adapter createCemeteryAdapter() {
+		if (cemeteryItemProvider == null) {
+			cemeteryItemProvider = new CemeteryItemProvider(this);
 		}
 
-		return cemetaryItemProvider;
+		return cemeteryItemProvider;
 	}
 
 	/**
@@ -425,7 +425,7 @@ public class OperationtracemodelItemProviderAdapterFactory extends Operationtrac
 	public void dispose() {
 		if (traceItemProvider != null) traceItemProvider.dispose();
 		if (commandItemProvider != null) commandItemProvider.dispose();
-		if (cemetaryItemProvider != null) cemetaryItemProvider.dispose();
+		if (cemeteryItemProvider != null) cemeteryItemProvider.dispose();
 		if (insertAttributeItemProvider != null) insertAttributeItemProvider.dispose();
 		if (insertReferenceItemProvider != null) insertReferenceItemProvider.dispose();
 		if (updateAttributeItemProvider != null) updateAttributeItemProvider.dispose();

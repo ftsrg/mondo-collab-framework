@@ -13,20 +13,20 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-public class MyContentAdapter extends EContentAdapter{
+public class WTContentAdapter extends EContentAdapter{
 
 	private ResourceSet resourceSet2;
-	private WorkspaceTracker operationTraceModel;
-	public MyContentAdapter(ResourceSet resourceSet, URI traceUri){
+	private ModelCreator operationTraceModel;
+	public WTContentAdapter(ResourceSet resourceSet, URI traceUri){
 		super();
 		this.resourceSet2 = resourceSet;
-		operationTraceModel = new WorkspaceTracker(this.resourceSet2, traceUri, false);
+		operationTraceModel = new ModelCreator(this.resourceSet2, traceUri, false);
 	}
 	
-	public MyContentAdapter(ResourceSet resourceSet, URI traceUri, boolean isExisitTrace){
+	public WTContentAdapter(ResourceSet resourceSet, URI traceUri, boolean isExisitTrace){
 		super();
 		this.resourceSet2 = resourceSet;
-		operationTraceModel = new WorkspaceTracker(this.resourceSet2, traceUri, isExisitTrace);
+		operationTraceModel = new ModelCreator(this.resourceSet2, traceUri, isExisitTrace);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -38,7 +38,6 @@ public class MyContentAdapter extends EContentAdapter{
 				try {
 					this.getTraceModel().save(Collections.EMPTY_MAP);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -72,11 +71,7 @@ public class MyContentAdapter extends EContentAdapter{
 					if(notification.getFeature() instanceof EAttribute){
 						operationTraceModel.insertStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), true);
 					} else if(notification.getFeature() instanceof EReference) {
-						if(((EReference)notification.getFeature()).isContainment()) {
-							operationTraceModel.insertStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
-						} else {
-							operationTraceModel.updateStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getOldValue(), notification.getNewValue(), false);
-						}
+						operationTraceModel.insertStep((EObject)notification.getNotifier(), (EStructuralFeature)notification.getFeature(), notification.getNewValue(), false);
 					}
 				} else if (notification.getNewValue() == null) {
 					if(notification.getFeature() instanceof EAttribute){

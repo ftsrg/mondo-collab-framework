@@ -4,10 +4,12 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -16,7 +18,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import eu.mondo.collaboration.operationtracemodel.workspacetracker.MyContentAdapter;
+import eu.mondo.collaboration.operationtracemodel.workspacetracker.WTContentAdapter;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -59,7 +61,7 @@ public class SampleHandler extends AbstractHandler {
 		              resourceSet = editingDomainProvider.getEditingDomain().getResourceSet();
 		              Resource resource = resourceSet.getResources().get(0);
 		              String path = resource.getURI().toString().replaceAll(resource.getURI().lastSegment(), resource.getURI().lastSegment().replaceAll("\\.", "_")) + ".operationtracemodel";
-		              resource.eAdapters().add(new MyContentAdapter(resource.getResourceSet(), URI.createURI(path, true), true));
+		              resource.eAdapters().add(new WTContentAdapter(resource.getResourceSet(), URI.createURI(path, true), true));
 				 }						
 			}
 		
@@ -71,28 +73,45 @@ public class SampleHandler extends AbstractHandler {
 	 * from the application context.
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+		
 		Command command = event.getCommand();
-		System.out.println("commandstate: " + HandlerUtil.toggleCommandState(command));
 		boolean oldValue = HandlerUtil.toggleCommandState(command);
 		
 		
-		
-		if(oldValue)
+		if(oldValue) {
+			@SuppressWarnings("deprecation")
+			IEditorPart[] editors = page.getEditors();
+			for (IEditorPart editor : editors) {
+				if (editor instanceof IEditingDomainProvider) {
+		              IEditingDomainProvider editingDomainProvider = (IEditingDomainProvider) editor;
+		              ResourceSet resourceSet;
+		              resourceSet = editingDomainProvider.getEditingDomain().getResourceSet();
+		              Resource resource = resourceSet.getResources().get(0);
+		              for (Adapter adapter : resource.eAdapters()) {
+		            	  if( adapter instanceof WTContentAdapter) {
+		            		  resource.eAdapters().remove(adapter);
+		            	  }
+		              }
+				 }	
+			}
 			page.removePartListener(partListener);
-		else {			
+		} else {
+			@SuppressWarnings("deprecation")
+			IEditorPart[] editors = page.getEditors();
+			for (IEditorPart editor : editors) {
+				if (editor instanceof IEditingDomainProvider) {
+		              IEditingDomainProvider editingDomainProvider = (IEditingDomainProvider) editor;
+		              ResourceSet resourceSet;
+		              resourceSet = editingDomainProvider.getEditingDomain().getResourceSet();
+		              Resource resource = resourceSet.getResources().get(0);
+		              String path = resource.getURI().toString().replaceAll(resource.getURI().lastSegment(), resource.getURI().lastSegment().replaceAll("\\.", "_")) + ".operationtracemodel";
+		              resource.eAdapters().add(new WTContentAdapter(resource.getResourceSet(), URI.createURI(path, true), true));
+				 }	
+			}
 			page.addPartListener(partListener);
 		}
-		/*IEditorPart editorPart = page.getActiveEditor();
-		  if (editorPart instanceof IEditingDomainProvider) {
-              IEditingDomainProvider editingDomainProvider = (IEditingDomainProvider) editorPart;
-              ResourceSet result;
-              result = editingDomainProvider.getEditingDomain().getResourceSet();
-              System.out.println(result.getResources().get(0));
-              Resource resource = result.getResources().get(0);
-              resource.eAdapters().add(new MyContentAdapter(resource.getResourceSet(), URI.createURI("models/trace.operationtracemodel", true), false));
 
-          }
-*/
 		return null;
 	}
 }

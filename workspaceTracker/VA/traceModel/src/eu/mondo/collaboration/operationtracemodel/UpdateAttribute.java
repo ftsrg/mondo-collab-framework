@@ -21,6 +21,7 @@ package eu.mondo.collaboration.operationtracemodel;
  * @generated
  */
 public interface UpdateAttribute extends Update {
+
 	/**
 	 * Returns the value of the '<em><b>New Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->

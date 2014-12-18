@@ -28,13 +28,13 @@ import eu.mondo.collaboration.operationtracemodel.Trace;
 import eu.mondo.collaboration.operationtracemodel.UpdateAttribute;
 import eu.mondo.collaboration.operationtracemodel.UpdateReference;
 
-public class WorkspaceTracker {
+public class ModelCreator {
 	private Resource traceModel;
 	private Trace trace;
 	private Command command;
 	private Step step;
 
-	public WorkspaceTracker(ResourceSet resourceSet, URI uri, boolean isExsits) {
+	public ModelCreator(ResourceSet resourceSet, URI uri, boolean isExsits) {
 		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 		Map<String, Object> m = reg.getExtensionToFactoryMap();
 		m.put("operationtracemodel", new XMIResourceFactoryImpl());
@@ -48,8 +48,8 @@ public class WorkspaceTracker {
 				traceModel = resourceSet.createResource(uri);
 				trace = OperationtracemodelFactory.eINSTANCE.createTrace();
 				traceModel.getContents().add(trace);
-				trace.setCemetary(OperationtracemodelFactory.eINSTANCE
-						.createCemetary());
+				trace.setCemetery(OperationtracemodelFactory.eINSTANCE
+						.createCemetery());
 			} else {
 				traceModel = resourceSet.getResource(uri, true);
 				trace = (Trace) traceModel.getContents().get(0);
@@ -64,19 +64,19 @@ public class WorkspaceTracker {
 			traceModel = resourceSet.createResource(uri);
 			trace = OperationtracemodelFactory.eINSTANCE.createTrace();
 			traceModel.getContents().add(trace);
-			trace.setCemetary(OperationtracemodelFactory.eINSTANCE
-					.createCemetary());
+			trace.setCemetery(OperationtracemodelFactory.eINSTANCE
+					.createCemetery());
 		}
 	}
 
-	public WorkspaceTracker(ResourceSet resourceSet, URI uri) {
+	public ModelCreator(ResourceSet resourceSet, URI uri) {
 		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 		Map<String, Object> m = reg.getExtensionToFactoryMap();
 		m.put("operationtracemodel", new XMIResourceFactoryImpl());
 		traceModel = resourceSet.createResource(uri);
 		trace = OperationtracemodelFactory.eINSTANCE.createTrace();
 		traceModel.getContents().add(trace);
-		trace.setCemetary(OperationtracemodelFactory.eINSTANCE.createCemetary());
+		trace.setCemetery(OperationtracemodelFactory.eINSTANCE.createCemetery());
 	}
 
 	public void endCommand() {
@@ -156,7 +156,7 @@ public class WorkspaceTracker {
 					.createRemoveReference();
 			newStep(element, feature, step);
 			if (((EReference) feature).isContainment()) {
-				trace.getCemetary().getRemovedElements()
+				trace.getCemetery().getRemovedElements()
 						.add((EObject) oldValue);
 			}
 			((RemoveReference) step).setOldValue((EObject) oldValue);

@@ -2,12 +2,11 @@
  */
 package eu.mondo.collaboration.operationtracemodel.impl;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
 import eu.mondo.collaboration.operationtracemodel.RemoveAttribute;
+import org.eclipse.emf.common.notify.Notification;
 
 /**
  * <!-- begin-user-doc -->

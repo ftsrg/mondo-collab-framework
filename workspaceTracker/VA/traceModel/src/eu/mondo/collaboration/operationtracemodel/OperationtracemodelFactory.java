@@ -40,13 +40,13 @@ public interface OperationtracemodelFactory extends EFactory {
 	Command createCommand();
 
 	/**
-	 * Returns a new object of class '<em>Cemetary</em>'.
+	 * Returns a new object of class '<em>Cemetery</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Cemetary</em>'.
+	 * @return a new object of class '<em>Cemetery</em>'.
 	 * @generated
 	 */
-	Cemetary createCemetary();
+	Cemetery createCemetery();
 
 	/**
 	 * Returns a new object of class '<em>Insert Attribute</em>'.

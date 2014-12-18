@@ -90,8 +90,8 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 				return createRemoveAdapter();
 			}
 			@Override
-			public Adapter caseCemetary(Cemetary object) {
-				return createCemetaryAdapter();
+			public Adapter caseCemetery(Cemetery object) {
+				return createCemeteryAdapter();
 			}
 			@Override
 			public Adapter caseInsertAttribute(InsertAttribute object) {
@@ -234,16 +234,16 @@ public class OperationtracemodelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Cemetary <em>Cemetary</em>}'.
+	 * Creates a new adapter for an object of class '{@link eu.mondo.collaboration.operationtracemodel.Cemetery <em>Cemetery</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see eu.mondo.collaboration.operationtracemodel.Cemetary
+	 * @see eu.mondo.collaboration.operationtracemodel.Cemetery
 	 * @generated
 	 */
-	public Adapter createCemetaryAdapter() {
+	public Adapter createCemeteryAdapter() {
 		return null;
 	}
 

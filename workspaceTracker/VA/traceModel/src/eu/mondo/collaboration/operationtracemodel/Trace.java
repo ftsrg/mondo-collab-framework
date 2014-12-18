@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getCommands <em>Commands</em>}</li>
  *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getFirstCommand <em>First Command</em>}</li>
- *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getCemetary <em>Cemetary</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getCemetery <em>Cemetery</em>}</li>
  *   <li>{@link eu.mondo.collaboration.operationtracemodel.Trace#getLastCommand <em>Last Command</em>}</li>
  * </ul>
  * </p>
@@ -69,30 +69,30 @@ public interface Trace extends EObject {
 	void setFirstCommand(Command value);
 
 	/**
-	 * Returns the value of the '<em><b>Cemetary</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Cemetery</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Cemetary</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Cemetery</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Cemetary</em>' containment reference.
-	 * @see #setCemetary(Cemetary)
-	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getTrace_Cemetary()
+	 * @return the value of the '<em>Cemetery</em>' containment reference.
+	 * @see #setCemetery(Cemetery)
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getTrace_Cemetery()
 	 * @model containment="true" required="true"
 	 * @generated
 	 */
-	Cemetary getCemetary();
+	Cemetery getCemetery();
 
 	/**
-	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCemetary <em>Cemetary</em>}' containment reference.
+	 * Sets the value of the '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCemetery <em>Cemetery</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Cemetary</em>' containment reference.
-	 * @see #getCemetary()
+	 * @param value the new value of the '<em>Cemetery</em>' containment reference.
+	 * @see #getCemetery()
 	 * @generated
 	 */
-	void setCemetary(Cemetary value);
+	void setCemetery(Cemetery value);
 
 	/**
 	 * Returns the value of the '<em><b>Last Command</b></em>' reference.

@@ -4,11 +4,8 @@ package eu.mondo.collaboration.operationtracemodel.impl;
 
 import eu.mondo.collaboration.operationtracemodel.Move;
 import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -35,7 +32,6 @@ public abstract class MoveImpl extends StepImpl implements Move {
 	 * @ordered
 	 */
 	protected static final int OLD_INDEX_EDEFAULT = 0;
-
 	/**
 	 * The cached value of the '{@link #getOldIndex() <em>Old Index</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -45,7 +41,6 @@ public abstract class MoveImpl extends StepImpl implements Move {
 	 * @ordered
 	 */
 	protected int oldIndex = OLD_INDEX_EDEFAULT;
-
 	/**
 	 * The default value of the '{@link #getNewIndex() <em>New Index</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -55,7 +50,6 @@ public abstract class MoveImpl extends StepImpl implements Move {
 	 * @ordered
 	 */
 	protected static final int NEW_INDEX_EDEFAULT = 0;
-
 	/**
 	 * The cached value of the '{@link #getNewIndex() <em>New Index</em>}' attribute.
 	 * <!-- begin-user-doc -->

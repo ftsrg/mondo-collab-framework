@@ -20,6 +20,7 @@ package eu.mondo.collaboration.operationtracemodel;
  * @generated
  */
 public interface InsertAttribute extends Insert {
+
 	/**
 	 * Returns the value of the '<em><b>New Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->

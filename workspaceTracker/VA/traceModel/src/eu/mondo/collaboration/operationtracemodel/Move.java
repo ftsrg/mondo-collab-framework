@@ -21,6 +21,7 @@ package eu.mondo.collaboration.operationtracemodel;
  * @generated
  */
 public interface Move extends Step {
+
 	/**
 	 * Returns the value of the '<em><b>Old Index</b></em>' attribute.
 	 * <!-- begin-user-doc -->

@@ -14,10 +14,10 @@ public interface IModelCollaboration<T> {
 
 	public T merge(T rootModel, T modelA, T modelB);
 
-	public T update(ILoginData loginData, IVersion version, String query,
+	public T update(ILoginData loginData, IVersion version, Query query,
 			T rootModel, T modelA, T modelB);
 
-	public int commit(ILoginData loginData, T editedModeol, String commitMessage);
+	public int commit(ILoginData loginData, T editedModel, String commitMessage);
 
 	public int lock(ILoginData loginData, ILockQuery lockQuery);
 
@@ -27,9 +27,9 @@ public interface IModelCollaboration<T> {
 
 	public Set<String> log();
 
-	public int setPermission(String loginData, IPermissionRule permissionRule);
+	public int setPermission(ILoginData loginData, IPermissionRule permissionRule);
 
-	public int removePermission(String loginData, int permissionID);
+	public int removePermission(ILoginData loginData, int permissionID);
 
-	public Set<Integer> listPermissions(String loginData);
+	public Set<Integer> listPermissions(ILoginData loginData);
 }

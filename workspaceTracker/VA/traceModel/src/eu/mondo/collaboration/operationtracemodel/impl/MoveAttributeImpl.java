@@ -4,11 +4,8 @@ package eu.mondo.collaboration.operationtracemodel.impl;
 
 import eu.mondo.collaboration.operationtracemodel.MoveAttribute;
 import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -34,7 +31,6 @@ public class MoveAttributeImpl extends MoveImpl implements MoveAttribute {
 	 * @ordered
 	 */
 	protected static final Object MOVED_ELEMENT_EDEFAULT = null;
-
 	/**
 	 * The cached value of the '{@link #getMovedElement() <em>Moved Element</em>}' attribute.
 	 * <!-- begin-user-doc -->

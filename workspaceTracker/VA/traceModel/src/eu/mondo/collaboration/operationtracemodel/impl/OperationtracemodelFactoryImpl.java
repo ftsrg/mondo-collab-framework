@@ -56,7 +56,7 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 		switch (eClass.getClassifierID()) {
 			case OperationtracemodelPackage.TRACE: return createTrace();
 			case OperationtracemodelPackage.COMMAND: return createCommand();
-			case OperationtracemodelPackage.CEMETARY: return createCemetary();
+			case OperationtracemodelPackage.CEMETERY: return createCemetery();
 			case OperationtracemodelPackage.INSERT_ATTRIBUTE: return createInsertAttribute();
 			case OperationtracemodelPackage.INSERT_REFERENCE: return createInsertReference();
 			case OperationtracemodelPackage.UPDATE_ATTRIBUTE: return createUpdateAttribute();
@@ -95,9 +95,9 @@ public class OperationtracemodelFactoryImpl extends EFactoryImpl implements Oper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Cemetary createCemetary() {
-		CemetaryImpl cemetary = new CemetaryImpl();
-		return cemetary;
+	public Cemetery createCemetery() {
+		CemeteryImpl cemetery = new CemeteryImpl();
+		return cemetery;
 	}
 
 	/**

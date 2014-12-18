@@ -119,7 +119,7 @@ import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
 import eu.mondo.collaboration.operationtracemodel.example.WTSpec.provider.WTSpecItemProviderAdapterFactory;
-import eu.mondo.collaboration.operationtracemodel.workspacetracker.MyContentAdapter;
+import eu.mondo.collaboration.operationtracemodel.workspacetracker.WTContentAdapter;
 
 
 /**

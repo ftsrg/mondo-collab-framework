@@ -10,11 +10,10 @@
       </category>
       <command
             categoryId="workspaceTrackerMenu.commands.category"
-            defaultHandler="eu.mondo.collaboration.workspaceTrackerMenu.handlers.SampleHandler"
             id="workspaceTrackerMenu.commands.sampleCommand"
-            name="Workspace Tracker">
+            name="Add adapter">
          <state
-               class="org.eclipse.ui.handlers.RegistryToggleState:false"
+               class="org.eclipse.ui.handlers.RegistryToggleState:true"
                id="org.eclipse.ui.commands.toggleState">
          </state>
       </command>
@@ -31,7 +30,7 @@
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
-               label="Workspace Tracker Menu"
+               label="Workspace Tracker"
                id="workspaceTrackerMenu.menus.sampleMenu">
             <command
                   commandId="workspaceTrackerMenu.commands.sampleCommand"

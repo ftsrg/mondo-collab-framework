@@ -2,12 +2,11 @@
  */
 package eu.mondo.collaboration.operationtracemodel.impl;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import eu.mondo.collaboration.operationtracemodel.InsertAttribute;
 import eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage;
+import org.eclipse.emf.common.notify.Notification;
 
 /**
  * <!-- begin-user-doc -->
@@ -32,7 +31,6 @@ public class InsertAttributeImpl extends InsertImpl implements InsertAttribute {
 	 * @ordered
 	 */
 	protected static final Object NEW_VALUE_EDEFAULT = null;
-
 	/**
 	 * The cached value of the '{@link #getNewValue() <em>New Value</em>}' attribute.
 	 * <!-- begin-user-doc -->

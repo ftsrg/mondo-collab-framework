@@ -3,26 +3,26 @@
 package eu.mondo.collaboration.operationtracemodel;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Cemetary</b></em>'.
+ * A representation of the model object '<em><b>Cemetery</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link eu.mondo.collaboration.operationtracemodel.Cemetary#getRemovedElements <em>Removed Elements</em>}</li>
+ *   <li>{@link eu.mondo.collaboration.operationtracemodel.Cemetery#getRemovedElements <em>Removed Elements</em>}</li>
  * </ul>
  * </p>
  *
- * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getCemetary()
+ * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getCemetery()
  * @model
  * @generated
  */
-public interface Cemetary extends EObject {
-
+public interface Cemetery extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Removed Elements</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.emf.ecore.EObject}.
@@ -33,9 +33,10 @@ public interface Cemetary extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Removed Elements</em>' containment reference list.
-	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getCemetary_RemovedElements()
+	 * @see eu.mondo.collaboration.operationtracemodel.OperationtracemodelPackage#getCemetery_RemovedElements()
 	 * @model containment="true"
 	 * @generated
 	 */
 	EList<EObject> getRemovedElements();
-} // Cemetary
+
+} // Cemetery

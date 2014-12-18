@@ -125,7 +125,7 @@ public class TraceItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(OperationtracemodelPackage.Literals.TRACE__COMMANDS);
-			childrenFeatures.add(OperationtracemodelPackage.Literals.TRACE__CEMETARY);
+			childrenFeatures.add(OperationtracemodelPackage.Literals.TRACE__CEMETERY);
 		}
 		return childrenFeatures;
 	}
@@ -178,7 +178,7 @@ public class TraceItemProvider
 
 		switch (notification.getFeatureID(Trace.class)) {
 			case OperationtracemodelPackage.TRACE__COMMANDS:
-			case OperationtracemodelPackage.TRACE__CEMETARY:
+			case OperationtracemodelPackage.TRACE__CEMETERY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -203,8 +203,8 @@ public class TraceItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(OperationtracemodelPackage.Literals.TRACE__CEMETARY,
-				 OperationtracemodelFactory.eINSTANCE.createCemetary()));
+				(OperationtracemodelPackage.Literals.TRACE__CEMETERY,
+				 OperationtracemodelFactory.eINSTANCE.createCemetery()));
 	}
 
 	/**

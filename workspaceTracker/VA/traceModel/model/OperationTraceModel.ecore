@@ -3,11 +3,11 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="operationtracemodel" nsURI="http://operationtracemodel/1.0"
     nsPrefix="operationtracemodel">
   <eClassifiers xsi:type="ecore:EClass" name="Trace">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="Commands" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="commands" upperBound="-1"
         eType="#//Command" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="firstCommand" eType="#//Command"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cemetary" lowerBound="1"
-        eType="#//Cemetary" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cemetery" lowerBound="1"
+        eType="#//Cemetery" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastCommand" eType="#//Command"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Command">
@@ -26,7 +26,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Insert" abstract="true" eSuperTypes="#//Step"/>
   <eClassifiers xsi:type="ecore:EClass" name="Update" abstract="true" eSuperTypes="#//Step"/>
   <eClassifiers xsi:type="ecore:EClass" name="Remove" abstract="true" eSuperTypes="#//Step"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Cemetary">
+  <eClassifiers xsi:type="ecore:EClass" name="Cemetery">
     <eStructuralFeatures xsi:type="ecore:EReference" name="removedElements" upperBound="-1"
         eType="ecore:EClass ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EObject"
         containment="true"/>

@@ -8,8 +8,7 @@ Bundle-Activator: operationtracemodel.provider.OperationTraceModelEditPlugin$Imp
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: operationtracemodel.provider,
- eu.mondo.collaboration.operationtracemodel.provider
+Export-Package: eu.mondo.collaboration.operationtracemodel.provider
 Require-Bundle: org.eclipse.core.runtime,
  traceModel;visibility:=reexport,
  org.eclipse.emf.edit;visibility:=reexport,

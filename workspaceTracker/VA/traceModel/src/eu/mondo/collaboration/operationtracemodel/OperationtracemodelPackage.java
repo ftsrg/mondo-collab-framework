@@ -85,13 +85,13 @@ public interface OperationtracemodelPackage extends EPackage {
 	int TRACE__FIRST_COMMAND = 1;
 
 	/**
-	 * The feature id for the '<em><b>Cemetary</b></em>' containment reference.
+	 * The feature id for the '<em><b>Cemetery</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TRACE__CEMETARY = 2;
+	int TRACE__CEMETERY = 2;
 
 	/**
 	 * The feature id for the '<em><b>Last Command</b></em>' reference.
@@ -396,14 +396,14 @@ public interface OperationtracemodelPackage extends EPackage {
 	int REMOVE_OPERATION_COUNT = STEP_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
+	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.CemeteryImpl <em>Cemetery</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see eu.mondo.collaboration.operationtracemodel.impl.CemetaryImpl
-	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetary()
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.CemeteryImpl
+	 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetery()
 	 * @generated
 	 */
-	int CEMETARY = 6;
+	int CEMETERY = 6;
 
 	/**
 	 * The feature id for the '<em><b>Removed Elements</b></em>' containment reference list.
@@ -412,25 +412,25 @@ public interface OperationtracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CEMETARY__REMOVED_ELEMENTS = 0;
+	int CEMETERY__REMOVED_ELEMENTS = 0;
 
 	/**
-	 * The number of structural features of the '<em>Cemetary</em>' class.
+	 * The number of structural features of the '<em>Cemetery</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CEMETARY_FEATURE_COUNT = 1;
+	int CEMETERY_FEATURE_COUNT = 1;
 
 	/**
-	 * The number of operations of the '<em>Cemetary</em>' class.
+	 * The number of operations of the '<em>Cemetery</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CEMETARY_OPERATION_COUNT = 0;
+	int CEMETERY_OPERATION_COUNT = 0;
 
 	/**
 	 * The meta object id for the '{@link eu.mondo.collaboration.operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.
@@ -1106,15 +1106,15 @@ public interface OperationtracemodelPackage extends EPackage {
 	EReference getTrace_FirstCommand();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCemetary <em>Cemetary</em>}'.
+	 * Returns the meta object for the containment reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getCemetery <em>Cemetery</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Cemetary</em>'.
-	 * @see eu.mondo.collaboration.operationtracemodel.Trace#getCemetary()
+	 * @return the meta object for the containment reference '<em>Cemetery</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.Trace#getCemetery()
 	 * @see #getTrace()
 	 * @generated
 	 */
-	EReference getTrace_Cemetary();
+	EReference getTrace_Cemetery();
 
 	/**
 	 * Returns the meta object for the reference '{@link eu.mondo.collaboration.operationtracemodel.Trace#getLastCommand <em>Last Command</em>}'.
@@ -1244,25 +1244,25 @@ public interface OperationtracemodelPackage extends EPackage {
 	EClass getRemove();
 
 	/**
-	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Cemetary <em>Cemetary</em>}'.
+	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.Cemetery <em>Cemetery</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Cemetary</em>'.
-	 * @see eu.mondo.collaboration.operationtracemodel.Cemetary
+	 * @return the meta object for class '<em>Cemetery</em>'.
+	 * @see eu.mondo.collaboration.operationtracemodel.Cemetery
 	 * @generated
 	 */
-	EClass getCemetary();
+	EClass getCemetery();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link eu.mondo.collaboration.operationtracemodel.Cemetary#getRemovedElements <em>Removed Elements</em>}'.
+	 * Returns the meta object for the containment reference list '{@link eu.mondo.collaboration.operationtracemodel.Cemetery#getRemovedElements <em>Removed Elements</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Removed Elements</em>'.
-	 * @see eu.mondo.collaboration.operationtracemodel.Cemetary#getRemovedElements()
-	 * @see #getCemetary()
+	 * @see eu.mondo.collaboration.operationtracemodel.Cemetery#getRemovedElements()
+	 * @see #getCemetery()
 	 * @generated
 	 */
-	EReference getCemetary_RemovedElements();
+	EReference getCemetery_RemovedElements();
 
 	/**
 	 * Returns the meta object for class '{@link eu.mondo.collaboration.operationtracemodel.InsertAttribute <em>Insert Attribute</em>}'.
@@ -1536,12 +1536,12 @@ public interface OperationtracemodelPackage extends EPackage {
 		EReference TRACE__FIRST_COMMAND = eINSTANCE.getTrace_FirstCommand();
 
 		/**
-		 * The meta object literal for the '<em><b>Cemetary</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Cemetery</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference TRACE__CEMETARY = eINSTANCE.getTrace_Cemetary();
+		EReference TRACE__CEMETERY = eINSTANCE.getTrace_Cemetery();
 
 		/**
 		 * The meta object literal for the '<em><b>Last Command</b></em>' reference feature.
@@ -1650,14 +1650,14 @@ public interface OperationtracemodelPackage extends EPackage {
 		EClass REMOVE = eINSTANCE.getRemove();
 
 		/**
-		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.CemetaryImpl <em>Cemetary</em>}' class.
+		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.CemeteryImpl <em>Cemetery</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see eu.mondo.collaboration.operationtracemodel.impl.CemetaryImpl
-		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetary()
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.CemeteryImpl
+		 * @see eu.mondo.collaboration.operationtracemodel.impl.OperationtracemodelPackageImpl#getCemetery()
 		 * @generated
 		 */
-		EClass CEMETARY = eINSTANCE.getCemetary();
+		EClass CEMETERY = eINSTANCE.getCemetery();
 
 		/**
 		 * The meta object literal for the '<em><b>Removed Elements</b></em>' containment reference list feature.
@@ -1665,7 +1665,7 @@ public interface OperationtracemodelPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CEMETARY__REMOVED_ELEMENTS = eINSTANCE.getCemetary_RemovedElements();
+		EReference CEMETERY__REMOVED_ELEMENTS = eINSTANCE.getCemetery_RemovedElements();
 
 		/**
 		 * The meta object literal for the '{@link eu.mondo.collaboration.operationtracemodel.impl.InsertAttributeImpl <em>Insert Attribute</em>}' class.

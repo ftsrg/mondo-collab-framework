@@ -111,7 +111,7 @@
       <styles xmi:type="notation:FilteringStyle" xmi:id="_rAuMK1mTEeSCM7QDtZoZOg"/>
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_rAuMIVmTEeSCM7QDtZoZOg" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
-    <element xmi:type="ecore:EClass" href="OperationTraceModel.ecore#//Cemetary"/>
+    <element xmi:type="ecore:EClass" href="OperationTraceModel.ecore#//Cemetery"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_rAuMIlmTEeSCM7QDtZoZOg" x="651" y="131"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_QGJB0GKjEeSg3OJlN7iYlQ" type="1001">
@@ -349,7 +349,7 @@
     </children>
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_RGp9oVkhEeSqH_VqfxhgmQ" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_RGp9olkhEeSqH_VqfxhgmQ" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="OperationTraceModel.ecore#//Trace/Commands"/>
+    <element xmi:type="ecore:EReference" href="OperationTraceModel.ecore#//Trace/commands"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_RGp9o1khEeSqH_VqfxhgmQ" points="[-1, 21, 2, -53]$[-1, 67, 2, -7]"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_RGp9qFkhEeSqH_VqfxhgmQ" id="(0.5098039215686274,0.18604651162790697)"/>
   </edges>
@@ -440,7 +440,7 @@
     </children>
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_6gwykVmTEeSCM7QDtZoZOg" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_6gwyklmTEeSCM7QDtZoZOg" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="OperationTraceModel.ecore#//Trace/cemetary"/>
+    <element xmi:type="ecore:EReference" href="OperationTraceModel.ecore#//Trace/cemetery"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6gwyk1mTEeSCM7QDtZoZOg" points="[13, 3, -287, -58]$[301, 51, 1, -10]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6g6jlFmTEeSCM7QDtZoZOg" id="(0.8725490196078431,0.18604651162790697)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6g6jlVmTEeSCM7QDtZoZOg" id="(0.14705882352941177,0.2558139534883721)"/>
@@ -561,7 +561,7 @@
     </children>
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_Xoil4XCREeSGZfMcYBOd4g" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_Xoil4nCREeSGZfMcYBOd4g" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="OperationTraceModel.ecore#//Cemetary/removedElements"/>
+    <element xmi:type="ecore:EReference" href="OperationTraceModel.ecore#//Cemetery/removedElements"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Xoil43CREeSGZfMcYBOd4g" points="[50, 17, -299, -471]$[319, 109, -30, -379]$[346, 459, -3, -29]"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_Xoil6HCREeSGZfMcYBOd4g" type="3002" source="_u7CngGKlEeSg3OJlN7iYlQ" target="_Xn8wAHCREeSGZfMcYBOd4g">

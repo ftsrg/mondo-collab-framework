@@ -27,13 +27,13 @@ public class ExampleCollabFramework implements ICollabFrameworkEMF {
 	}
 
 	public ResourceSet update(ILoginData loginData, IVersion version,
-			String query, ResourceSet rootModel, ResourceSet modelA,
+			Query query, ResourceSet rootModel, ResourceSet modelA,
 			ResourceSet modelB) {
 		System.out.println("Update: chekout latest and merge");
 		return null;
 	}
 
-	public int commit(ILoginData loginData, ResourceSet editedModeol,
+	public int commit(ILoginData loginData, ResourceSet editedModel,
 			String commitMessage) {
 		System.out.println("Commit: Save the modell changes");
 		return 0;
@@ -60,18 +60,23 @@ public class ExampleCollabFramework implements ICollabFrameworkEMF {
 		return null;
 	}
 
-	public int setPermission(String loginData, IPermissionRule permissionRule) {
+	public int setPermission(ILoginData loginData, IPermissionRule permissionRule) {
 		System.out.println("Add new permission");
 		return 0;
 	}
 
-	public int removePermission(String loginData, int permissionID) {
+	public int removePermission(ILoginData loginData, int permissionID) {
 		System.out.println("Remove permission");
 		return 0;
 	}
 
-	public Set<Integer> listPermissions(String loginData) {
+	public Set<Integer> listPermissions(ILoginData loginData) {
 		System.out.println("Get permission IDs");
+		return null;	
+	}
+
+	public ResourceSet getResourseSet(String path) {
+		System.out.println("Get ResourceSet");
 		return null;
 	}
 
