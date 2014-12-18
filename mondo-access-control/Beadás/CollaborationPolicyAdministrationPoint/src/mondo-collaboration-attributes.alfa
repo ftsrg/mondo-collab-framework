@@ -1,0 +1,53 @@
+namespace eu.mondo.collaboration.accessprotocol.accesspolicy{
+    namespace Attributes{
+        namespace user{
+            attribute role{
+                category = subjectCat
+                id = "role"
+                type = string
+            }
+            attribute userId{
+            	category = subjectCat
+            	id = "urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+            	type = string
+            }      
+        }
+        
+        namespace action{
+            attribute actionId{
+                category = actionCat
+                id = "urn:oasis:names:tc:xacml:1.0:action:action-id"
+                type = string
+            }           
+        }
+        
+        namespace resource{
+        	attribute resourceType{
+        		category = resourceCat
+        		id = "resource-type"
+        		type = string
+        	}
+        	attribute resourceAttributeName{
+        		category = resourceCat
+        		id = "resource-attribute-name"
+        		type = string
+        	}
+        	attribute resourceAttributeValue{
+        		category = resourceCat
+        		id = "resource-attribute-value"
+        		type = string
+        	}
+        }
+        
+        obligation displayAttributes = "eu.mondo.collaboration.accessprotocol.accesspolicy.response.obligation"
+        advice displayAdvice = "eu.mondo.collaboration.accessprotocol.accesspolicy.response.advice" 
+        attribute message {
+        	category = environmentCat
+        	id = "message"
+        	type = string
+        }        
+    }
+    
+
+    
+}

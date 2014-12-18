@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+<extension
+     point="org.eclipse.ui.popupMenus">
+	<objectContribution
+       id="ikerlanEMF.editor.contribution1"
+       objectClass="org.eclipse.core.resources.IProject">
+	    <menu
+	          id="ikerlanEMF.editor.menu1"
+	          label="MONDO collaboration"
+	          path="additions">
+	       <separator
+	             name="group1">
+	       </separator>
+	    </menu>
+	    <action
+	          class="eu.mondo.collaboration.accessprotocol.actions.CheckoutAction"
+	          enablesFor="1"
+	          id="ikerlanEMF.editor.newAction"
+	          label="Checkout"
+	          menubarPath="ikerlanEMF.editor.menu1/group1">
+	    </action>
+	    <action
+	          class="eu.mondo.collaboration.accessprotocol.actions.CommitAction"
+	          enablesFor="1"
+	          id="ikerlanEMF.editor.commitAction"
+	          label="Commit"
+	          menubarPath="ikerlanEMF.editor.menu1/group1">
+	    </action>
+	</objectContribution>
+</extension>
+
+
+</plugin>
