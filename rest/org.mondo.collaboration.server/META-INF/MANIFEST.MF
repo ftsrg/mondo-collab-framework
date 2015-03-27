@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Server
+Bundle-SymbolicName: org.mondo.collaboration.server;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.mondo.collaboration.server.org.mondo.collaboration.server
+Import-Package: org.osgi.framework;version="1.8.0"
+Require-Bundle: com.eclipsesource.jaxrs.jersey-all;bundle-version="2.16.1"
+Bundle-Activator: org.mondo.collaboration.server.org.mondo.collaboration.server.Activator
