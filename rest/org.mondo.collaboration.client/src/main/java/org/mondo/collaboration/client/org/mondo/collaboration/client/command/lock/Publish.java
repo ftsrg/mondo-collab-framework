@@ -3,6 +3,7 @@ package org.mondo.collaboration.client.org.mondo.collaboration.client.command.lo
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.rmi.activation.Activator;
 import java.util.ArrayList;
 
 import javax.ws.rs.client.Client;
@@ -31,106 +32,39 @@ import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
 
-
-
-
-
-
 public class Publish implements IHandler {
 
 	public void addHandlerListener(IHandlerListener handlerListener) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+	
 	}
 	
 	public void test()
 	{
-		
-		
 		try {
 			 
 			Thread .currentThread ().setContextClassLoader(this.getClass().getClassLoader()); 
 			
-			//ServiceFinder.setIteratorProvider(new Buscador());
 			Client client = ClientBuilder.newClient();
+	
+			String url="http://localhost:9090/services/emfgit";
 			
 			
-	 
-			//client.setChunkedEncodingSize(1024);
-			
-			
-			 JerseyClient jclient = JerseyClientBuilder.createClient();
-			
-//			JerseyWebTarget a = jclient.target("http://localhost:9090/services/hello23");
-//			 
-//			a.request(MediaType.APPLICATION_OCTET_STREAM).p
-//		
-			String url="http://localhost:9090/services/hello23";
-		
-			
-			WebTarget target=client.target(url);
-			
-			Response se=target.request(MediaType.APPLICATION_JSON).get();
-			
-			//target.request().
-			
-		//	target.path("/upload").
-			
-			System.out.println("Output from Server .... \n");
-			System.out.println(se.toString());
-			
-//			WebResource webResource = client
-//			   .resource(url);	
-//	 
-			File fileToUpload=new File("C:\\setup.log");
-			InputStream stream=new FileInputStream(fileToUpload);
-			
-			 String contentDisposition = "test; filename=\"" + fileToUpload.getName() + "\"";
-			 
-			 Entity<File> fe=Entity.entity(fileToUpload, MediaType.APPLICATION_OCTET_STREAM);
-			 
-			 
-				 url="http://localhost:9090/services/hello23/upload";
+			for(IFile item:getProjectsLockFiles())
+			{
+				WebTarget target=client.target(url).path("/upload").queryParam("projectName", getProjectName())
+						.queryParam("fileName", item.getName());
 				
-				
-				 target=client.target(url);
-			 
-			 
-		Response se2=	target.request(MediaType.APPLICATION_OCTET_STREAM)
-			.post(fe);
-		
-		System.out.println("Output from Server .... \n");
-		System.out.println(se2.toString());
-			
-//		
-//			    ClientResponse response = webResource
-//			            .type(MediaType.APPLICATION_OCTET_STREAM).header("Content-Disposition", contentDisposition)
-//			            .post(ClientResponse.class, stream);
-//			
-			 //   webResource.type(type)
-//			System.out.println("Try to publish");
-//			System.out.println(response.toString());
-			
-			//MediaType.APPLICATION_JSON
-//			ClientResponse response = webResource.accept(MediaType.APPLICATION_OCTET_STREAM)
-//	                   .get(ClientResponse.class);
-//			
-//			if (response.getStatus() != 200) {
-//			   throw new RuntimeException("Failed : HTTP error code : "
-//				+ response.getStatus());
-//			}
-//	 
-			//String output = response.getEntity(String.class);
-			
-		//	webResource.a
-	 
-//			System.out.println("Output from Server .... \n");
-//			System.out.println(response.toString());
+				File fileToUpload=item.getRawLocation().makeAbsolute().toFile();
+
+				 Entity<File> entity=Entity.entity(fileToUpload, MediaType.APPLICATION_OCTET_STREAM);
+				 
+				Response response=	target.request(MediaType.APPLICATION_OCTET_STREAM)
+					.post(entity);
+			}
 	 
 		  } catch (Exception e) {
 	 
@@ -142,85 +76,8 @@ public class Publish implements IHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		try {
-			
-		//	Client client=new 
-			
-			//System.out.println(getProjectsLockFiles());
-			
-			
-//			 URI uri = URI.create("ws://localhost:8080/events/");
-//
-//		        try
-//		        {
-//		            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-//
-//		            try
-//		            {
-//		                // Attempt Connect
-//		                Session session = container.connectToServer(EventSocket.class,uri);
-//		                // Send a message
-//		                session.getBasicRemote().sendText("Hello");
-//		          //  session.getBasicRemote().s
-//		                // Close session
-//		                session.close();
-//		            }
-//		            finally
-//		            {
-//		                // Force lifecycle stop when done with container.
-//		                // This is to free up threads and resources that the
-//		                // JSR-356 container allocates. But unfortunately
-//		                // the JSR-356 spec does not handle lifecycles (yet)
-//		                if (container instanceof LifeCycle)
-//		                {
-//		                    ((LifeCycle)container).stop();
-//		                }
-//		            }
-//		        }
-//		        catch (Throwable t)
-//		        {
-//		            t.printStackTrace(System.err);
-//		        }
-			
-			
-			
-			
-			
-			
 			test();
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			//MondoOfflineClient client = Activator.getClient();
-//			MondoOfflineClient client = new MondoOfflineClient(new URI(
-//					"ws://localhost:8080/mondo-server/"));
-//
-//			 ArrayList<IFile> lockFiles = getProjectsLockFiles();
-//			 
-//			 for(IFile file : lockFiles)
-//			 {
-//					MessageToServer msg = new MessageToServer();
-//					msg.setPrimitive(OfflineCollaborationPrimitive.LOCK_PUBLISH);
-//					msg.setInfo(file.getFullPath().toString());
-//					msg.setProjectName(getProjectName());
-//					client.sendMessage(msg);
-//					
-//					
-//					String filePathToSend=file.getFullPath().toFile().getAbsolutePath();
-//					//client.sendFile(filePathToSend);
-//			 }
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -238,8 +95,7 @@ public class Publish implements IHandler {
 	}
 
 	public void removeHandlerListener(IHandlerListener handlerListener) {
-		// TODO Auto-generated method stub
-
+	
 	}
 
 	public ArrayList<IFile> getProjectsLockFiles() {
@@ -255,12 +111,9 @@ public class Publish implements IHandler {
 						.getAdapter(IProject.class);
 				
 				IPath path = project.getFullPath();
-				IResource folder=project.getFolder("Locks");
+				IResource folder=project.getFolder(org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.lockDirName);
 				
 				return getAllFile(folder);
-				
-				//return path.toString();
-
 			}
 		}
 		

@@ -10,49 +10,47 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.glassfish.jersey.media.sse.EventOutput;
-import org.glassfish.jersey.media.sse.OutboundEvent;
-import org.glassfish.jersey.media.sse.SseFeature;
- 
-@Path("/hello23")
-public class ExampleResource {
-	
-	
-@GET
-@Produces(MediaType.APPLICATION_JSON)
-public String helloWorld() {
-	System.out.println("okkke");
-return "Hello World";
-}
 
-@POST
-@Path("/upload")
-@Consumes(MediaType.APPLICATION_OCTET_STREAM)
-public void uploadAttachment( InputStream attachmentInputStream) {
-    
-	System.out.println("UPLOAD");
-	//System.out.println(attachmentName);
-	
-	
-	try {
-		System.out.println(attachmentInputStream.available());
-		
-		FileOutputStream outputStream = new FileOutputStream(new File("C:\\tmp\\testAAA.txt"));
-		
-		int read = 0;
-		byte[] bytes = new byte[1024];
- 
-		while ((read = attachmentInputStream.read(bytes)) != -1) {
-			outputStream.write(bytes, 0, read);
-		}
-		
-	} catch (Exception e) {
-		
-		e.printStackTrace();
+@Path("/emfgit")
+public class ExampleResource {
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public String helloWorld() {
+		return "Server Working!";
 	}
-	
+
+	@POST
+	@Path("/upload")
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	public void upload(@QueryParam("projectName") String projectName,
+			@QueryParam("fileName") String filename, InputStream fileInputStream) {
+
+		File projectDir = new File(Activator.serverRoot + "\\" + projectName);
+		if (!projectDir.exists()) {
+			projectDir.mkdir();
+		}
+
+		try {
+
+			FileOutputStream outputStream = new FileOutputStream(
+					Activator.serverRoot + "\\" + projectName + "\\" + filename);
+
+			int read = 0;
+			byte[] bytes = new byte[1024];
+
+			while ((read = fileInputStream.read(bytes)) != -1) {
+				outputStream.write(bytes, 0, read);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
 }
- 
-} 

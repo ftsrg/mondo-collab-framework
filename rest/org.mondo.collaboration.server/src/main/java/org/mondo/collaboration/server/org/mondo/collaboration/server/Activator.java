@@ -1,5 +1,7 @@
 package org.mondo.collaboration.server.org.mondo.collaboration.server;
 
+import java.io.File;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -12,30 +14,38 @@ public class Activator implements BundleActivator {
 	private ServiceRegistration<ExampleResource> registration;
 	private ServiceRegistration<BroadcasterResource> registration2;
 	
+	public static String serverRoot="D:\\emfgit\\";
+	public static String lockDirName="locks";
+	
 	static BundleContext getContext() {
 		return context;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
+	 
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		registration = bundleContext.registerService(ExampleResource.class, new ExampleResource(), null);
 		
+		createBaseDirIfNotExists();
+		
+		registration = bundleContext.registerService(ExampleResource.class, new ExampleResource(), null);
 		registration2 = bundleContext.registerService(BroadcasterResource.class, new BroadcasterResource(), null);
 		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
+	
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
 		registration.unregister();
 		registration2.unregister();
+	}
+	
+	public void createBaseDirIfNotExists()
+	{
+		File root=new File(serverRoot);
+		if(!root.exists())
+		{
+			root.mkdir();
+		}
 	}
 
 }
