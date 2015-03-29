@@ -17,7 +17,7 @@ public class Activator implements BundleActivator {
 
 	public static String broadcastUrl="http://localhost:9090/broadcast";
 	
-	Client client;
+	private static Client client;
 	EventSource eventSource;
 	WebTarget target;
 	EventListener listener;
@@ -37,7 +37,7 @@ public class Activator implements BundleActivator {
 		eventSource.register(listener, "message-to-client");
 		eventSource.open();
 
-		
+		System.out.println("Client Started");
 
 	}
 
@@ -46,7 +46,7 @@ public class Activator implements BundleActivator {
 
 	}
 	
-	public Client getClient() {
+	public static Client getClient() {
 		return client;
 	}
 

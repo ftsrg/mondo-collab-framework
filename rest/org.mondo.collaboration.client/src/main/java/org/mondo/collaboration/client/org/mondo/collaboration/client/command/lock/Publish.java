@@ -42,13 +42,15 @@ public class Publish implements IHandler {
 	
 	}
 	
-	public void uploadFiles()
+	private void uploadFiles()
 	{
 		try {
 			 
 			Thread .currentThread ().setContextClassLoader(this.getClass().getClassLoader()); 
 			
-			Client client = ClientBuilder.newClient();
+		//	Client client = ClientBuilder.newClient();
+			
+			Client client = org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
 	
 			String url="http://localhost:9090/services/emfgit";
 			
@@ -71,6 +73,18 @@ public class Publish implements IHandler {
 			e.printStackTrace();
 	 
 		  }
+	}
+	
+	private void broadcastUploadEvent()
+	{
+		
+		Client client=org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
+		
+		
+		
+		String url="http://localhost:9090/broadcast";
+		
+		
 	}
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
