@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 
 
 @Path("/emfgit")
-public class EmfgitResource {
+public class LockResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

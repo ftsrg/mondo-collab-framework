@@ -42,7 +42,7 @@ public class Publish implements IHandler {
 	
 	}
 	
-	public void test()
+	public void uploadFiles()
 	{
 		try {
 			 
@@ -75,13 +75,8 @@ public class Publish implements IHandler {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		try {
-			test();
+			uploadFiles();
 			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		return null;
 	}
 
@@ -97,6 +92,8 @@ public class Publish implements IHandler {
 	public void removeHandlerListener(IHandlerListener handlerListener) {
 	
 	}
+	
+	
 
 	public ArrayList<IFile> getProjectsLockFiles() {
 

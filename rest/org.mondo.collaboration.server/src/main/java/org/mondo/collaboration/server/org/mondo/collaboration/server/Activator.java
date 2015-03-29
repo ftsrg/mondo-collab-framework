@@ -11,7 +11,7 @@ public class Activator implements BundleActivator {
 	private static BundleContext context;
 
 	
-	private ServiceRegistration<EmfgitResource> registration;
+	private ServiceRegistration<LockResource> registration;
 	private ServiceRegistration<BroadcasterResource> registration2;
 	
 	public static String serverRoot="D:\\emfgit\\";
@@ -27,7 +27,7 @@ public class Activator implements BundleActivator {
 		
 		createBaseDirIfNotExists();
 		
-		registration = bundleContext.registerService(EmfgitResource.class, new EmfgitResource(), null);
+		registration = bundleContext.registerService(LockResource.class, new LockResource(), null);
 		registration2 = bundleContext.registerService(BroadcasterResource.class, new BroadcasterResource(), null);
 		
 	}
