@@ -10,7 +10,7 @@ public class Activator implements BundleActivator{
 	public static String lockDirName="locks";
 	
 	public void start(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	
 	}
