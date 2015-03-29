@@ -77,19 +77,22 @@ public class Publish implements IHandler {
 	
 	private void broadcastUploadEvent()
 	{
-		
 		Client client=org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
-		
-		
 		
 		String url="http://localhost:9090/broadcast";
 		
+		WebTarget target = client.target(url).queryParam("message", "testMessage");
 		
+		Response response=target.request(MediaType.TEXT_PLAIN).get();
+		
+		System.out.println(	response.toString());
+	
 	}
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 			uploadFiles();
+			broadcastUploadEvent();
 			
 		return null;
 	}

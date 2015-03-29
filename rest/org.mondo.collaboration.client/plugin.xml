@@ -19,7 +19,7 @@
             name="Enable">
       </command>
       <command
-            defaultHandler="org.mondo.emfgit.lock.Disable"
+            defaultHandler="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable"
             id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable"
             name="Disable">
       </command>
