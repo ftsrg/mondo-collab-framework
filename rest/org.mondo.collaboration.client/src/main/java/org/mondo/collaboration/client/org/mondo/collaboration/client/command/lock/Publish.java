@@ -1,13 +1,10 @@
 package org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -27,9 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.glassfish.jersey.client.JerseyClient;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.glassfish.jersey.client.JerseyWebTarget;
+import org.json.simple.JSONArray;
 
 
 public class Publish implements IHandler {
@@ -79,7 +74,7 @@ public class Publish implements IHandler {
 	{
 		Client client=org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
 		
-		String url="http://localhost:9090/broadcast";
+		String url="http://localhost:9090/services/broadcast";
 		
 		WebTarget target = client.target(url).queryParam("message", "testMessage");
 		
@@ -169,7 +164,7 @@ public class Publish implements IHandler {
 	}
 	
 	
-	public String getProjectName() {
+	public static String getProjectName() {
 
 		IWorkbenchWindow window = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow();
@@ -187,5 +182,20 @@ public class Publish implements IHandler {
 		
 		return null;
 	}
+	
+	public static ArrayList<String> convertJsonArrayToArrayList(JSONArray arr)
+	{
+		
+		
+		ArrayList<String> list = new ArrayList<String>();
+		for(int i = 0; i < arr.size(); i++){
+		    list.add((String) arr.get(i));
+		}
+		
+		return list;
+		
+		
+	}
+	
 
 }

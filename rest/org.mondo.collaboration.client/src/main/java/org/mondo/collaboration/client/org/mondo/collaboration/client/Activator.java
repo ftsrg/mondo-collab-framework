@@ -4,6 +4,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
+import org.glassfish.jersey.media.sse.EventInput;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.InboundEvent;
@@ -15,7 +16,7 @@ public class Activator implements BundleActivator {
 
 	public static String lockDirName = "locks";
 
-	public static String broadcastUrl="http://localhost:9090/broadcast";
+	public static String broadcastUrl="http://localhost:9090/services/broadcast";
 	
 	private static Client client;
 	EventSource eventSource;
@@ -24,19 +25,24 @@ public class Activator implements BundleActivator {
 	
 	public void start(BundleContext context) throws Exception {
 
-		client = ClientBuilder.newBuilder().register(SseFeature.class)
+		client = ClientBuilder.newBuilder()
+				
 				.build();
-		 target = client.target(broadcastUrl);
-		eventSource = EventSource.target(target).build();
-		listener = new EventListener() {
-			public void onEvent(InboundEvent inboundEvent) {
-				System.out.println(inboundEvent.getName() + "; "
-						+ inboundEvent.readData(String.class));
-			}
-		};
-		eventSource.register(listener, "message-to-client");
-		eventSource.open();
-
+		
+//		 target = client.target(broadcastUrl);
+//		eventSource = EventSource.target(target).build();
+//		listener = new EventListener() {
+//			public void onEvent(InboundEvent inboundEvent) {
+//				
+//				System.out.println("jön adat");
+//				System.out.println(inboundEvent.getName() + "; "
+//						+ inboundEvent.readData(String.class));
+//			}
+//		};
+//		eventSource.register(listener, "message-to-client");
+//		eventSource.open();
+//		
+		
 		System.out.println("Client Started");
 
 	}

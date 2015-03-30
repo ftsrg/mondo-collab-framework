@@ -23,6 +23,11 @@
             id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable"
             name="Disable">
       </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download"
+            id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download"
+            name="Download">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -51,6 +56,11 @@
                <command
                      commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable"
                      label="Disable"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download"
+                     label="Download"
                      style="push">
                </command>
             </menu>
