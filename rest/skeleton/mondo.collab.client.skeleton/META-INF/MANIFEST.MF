@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Client Skeleton
+Bundle-SymbolicName: mondo.collab.client.skeleton
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: mondo.collab.client.skeleton.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.sun.jersey.client;bundle-version="1.19.0",
+ com.sun.jersey.core;bundle-version="1.19.0",
+ javax.ws.rs.jsr311-api;bundle-version="1.1.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/jersey-client-1.19.jar,
+ lib/jersey-core-1.19.jar,
+ lib/jsr311-api-1.1.1.jar
