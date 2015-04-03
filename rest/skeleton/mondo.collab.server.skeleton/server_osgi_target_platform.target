@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="Running Platform" sequenceNumber="20">
+<locations>
+<location path="${eclipse_home}" type="Profile"/>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="com.eclipsesource.jaxrs.connector.feature.feature.group" version="4.3.0.201503290743"/>
+<repository location="http://hstaudacher.github.io/osgi-jax-rs-connector"/>
+</location>
+<location path="${project_loc:mondo.collab.server.skeleton}/lib" type="Directory"/>
+</locations>
+<environment>
+<os>win32</os>
+<ws>win32</ws>
+<arch>x86_64</arch>
+<nl>en_GB</nl>
+</environment>
+<launcherArgs>
+<vmArgs>-Dosgi.requiredJavaVersion=1.6 -Xms40m -Xmx512m</vmArgs>
+</launcherArgs>
+</target>
