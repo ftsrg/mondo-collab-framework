@@ -38,6 +38,7 @@ public class LockResource {
 	public void upload(@QueryParam("projectName") String projectName,
 			@QueryParam("fileName") String filename, InputStream fileInputStream) {
 
+		System.out.println(projectName+filename);
 		File projectDir = new File(Activator.serverRoot + "\\" + projectName);
 		if (!projectDir.exists()) {
 			projectDir.mkdir();
