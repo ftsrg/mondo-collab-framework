@@ -1,15 +1,20 @@
 package org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+
+import javax.ws.rs.core.MediaType;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -17,7 +22,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 import org.mondo.collaboration.client.org.mondo.collaboration.client.Activator;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 public class Download implements IHandler {
 
@@ -35,114 +45,121 @@ public class Download implements IHandler {
 	
 		
 		
-//		createLocksDirIfNotExists(Publish.getProjectName());
-//		 ArrayList<String> listToDownload = getProjectFiles();
-//		
-//		 
-//		
-//		for(String item: listToDownload)
-//		{
-//			System.out.println(item);
-//			File downloadedFile=downloadFile(Publish.getProjectName(), item);
-//			saveFile(downloadedFile, Publish.getProjectName(), item);
-//			
-//		}
-//		
+		createLocksDirIfNotExists(Publish.getProjectName());
+		 ArrayList<String> listToDownload = getProjectFiles();
+		
+		 
+		
+		for(String item: listToDownload)
+		{
+			System.out.println(item);
+			File downloadedFile=downloadFile(Publish.getProjectName(), item);
+			saveFile(downloadedFile, Publish.getProjectName(), item);
+			
+		}
+		
 		
 		
 		return null;
 	}
 	
-//	private File downloadFile(String projectName,String fileName)
-//	{
-//		
-//		Client client=Activator.getClient();
-//		
-//		String url="http://localhost:9090/services/emfgit";
-//		
-//		
+	private File downloadFile(String projectName,String fileName)
+	{
+		
+		Client client=Activator.getClient();
+		
+		String url="http://localhost:9090/services/emfgit";
+		
+		
 //		WebTarget target=client.target(url).path("/download").queryParam("projectName", Publish.getProjectName())
 //				.queryParam("filename", fileName);
-//				
-//	
+		
+		WebResource resource = client.resource(url).path("/download").queryParam("projectName", Publish.getProjectName())
+		.queryParam("filename", fileName);
+				
+		File response=resource.accept(MediaType.APPLICATION_OCTET_STREAM).get(File.class);
+	
 //		File response=	target.request(MediaType.APPLICATION_OCTET_STREAM)
 //			.get(File.class);
-//		
-//		System.out.println(response.getAbsolutePath());
-//		
-//		return response;
-//	}
-//	private void saveFile(File fileToSave,String projectName,String fileName)
-//	{
-//		IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-//		IProject myWebProject = myWorkspaceRoot.getProject(projectName);
-//		
-//		IFolder locksDir = myWebProject.getFolder(Activator.lockDirName);
-//		
-//		IFile fileToCreate = locksDir.getFile(fileName);
-//		
-//		if(!fileToCreate.exists())
-//		{
-//			try {
-//				fileToCreate.create(new ByteArrayInputStream(new byte[0]), true, getProgressMonitor());
-//			} catch (CoreException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		
-//		
-//		try {
-//			copyFile(fileToSave,  fileToCreate.getLocation().toFile() );
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		
-//		
-//		
-//	}
-//	
-//	private ArrayList<String> getProjectFiles()
-//	{
-//		Client client=Activator.getClient();
-//		
-//		String url="http://localhost:9090/services/emfgit";
-//		
-//		
-//		WebTarget target=client.target(url).path("/projectFiles").queryParam("projectName", Publish.getProjectName());
-//				
-//	
+		
+		System.out.println(response.getAbsolutePath());
+		
+		return response;
+	}
+	private void saveFile(File fileToSave,String projectName,String fileName)
+	{
+		IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject myWebProject = myWorkspaceRoot.getProject(projectName);
+		
+		IFolder locksDir = myWebProject.getFolder("lock");
+		
+		IFile fileToCreate = locksDir.getFile(fileName);
+		
+		if(!fileToCreate.exists())
+		{
+			try {
+				fileToCreate.create(new ByteArrayInputStream(new byte[0]), true, getProgressMonitor());
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		try {
+			copyFile(fileToSave,  fileToCreate.getLocation().toFile() );
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+	}
+	
+	private ArrayList<String> getProjectFiles()
+	{
+		Client client=Activator.getClient();
+		
+		String url="http://localhost:9090/services/emfgit";
+		
+		
+		//WebTarget target=client.target(url).path("/projectFiles").queryParam("projectName", Publish.getProjectName());
+				
+		WebResource resource=client.resource(url).path("/projectFiles").queryParam("projectName", Publish.getProjectName());
+		
+		String response= resource.accept(MediaType.APPLICATION_JSON).get(String.class);
+		
 //		String response=	target.request(MediaType.APPLICATION_JSON)
 //			.get(String.class);
-//		
-//		
-//		JSONArray jsa=(JSONArray) JSONValue.parse(response);
-//		
-//		
-//		return Publish.convertJsonArrayToArrayList(jsa);
-//		
-//	}
+		
+		
+		JSONArray jsa=(JSONArray) JSONValue.parse(response);
+		
+		
+		return Publish.convertJsonArrayToArrayList(jsa);
+		
+	}
 	
-//	public void createLocksDirIfNotExists(String projectName)
-//	{
-//		IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-//		IProject myWebProject = myWorkspaceRoot.getProject(projectName);
-//		
-//		IFolder locksDir = myWebProject.getFolder(Activator.lockDirName);
-//		
-//		if(!locksDir.exists())
-//		{
-//			try {
-//				locksDir.create(IResource.NONE, true, getProgressMonitor());
-//			} catch (CoreException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//	}
+	public void createLocksDirIfNotExists(String projectName)
+	{
+		IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject myWebProject = myWorkspaceRoot.getProject(projectName);
+		
+		IFolder locksDir = myWebProject.getFolder("lock");
+		
+		if(!locksDir.exists())
+		{
+			try {
+				locksDir.create(IResource.NONE, true, getProgressMonitor());
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	private IProgressMonitor getProgressMonitor()
 	{

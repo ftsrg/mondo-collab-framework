@@ -14,6 +14,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "mondo.collab.client.skeleton"; //$NON-NLS-1$
+	static Client client ;
 
 	// The shared instance
 	private static Activator plugin;
@@ -31,11 +32,11 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
 
-		Client c = new Client();
+		 client = new Client();
 		{
 			String url = "http://localhost:9090/services/emfgit";
 		
-			WebResource resource = c.resource(url);
+			WebResource resource = client.resource(url);
 			try{
 				Builder builder = resource.accept("application/json");
 				String helloString = builder.get(String.class);
@@ -62,6 +63,9 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+	public static Client getClient() {
+		return client;
 	}
 
 }
