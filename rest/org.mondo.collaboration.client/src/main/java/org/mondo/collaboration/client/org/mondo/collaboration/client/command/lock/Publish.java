@@ -1,14 +1,6 @@
 package org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -20,7 +12,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -37,57 +28,57 @@ public class Publish implements IHandler {
 	
 	}
 	
-	private void uploadFiles()
-	{
-		try {
-			 
-			Thread .currentThread ().setContextClassLoader(this.getClass().getClassLoader()); 
-			
-		//	Client client = ClientBuilder.newClient();
-			
-			Client client = org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
-	
-			String url="http://localhost:9090/services/emfgit";
-			
-			
-			for(IFile item:getProjectsLockFiles())
-			{
-				WebTarget target=client.target(url).path("/upload").queryParam("projectName", getProjectName())
-						.queryParam("fileName", item.getName());
-				
-				File fileToUpload=item.getRawLocation().makeAbsolute().toFile();
-
-				 Entity<File> entity=Entity.entity(fileToUpload, MediaType.APPLICATION_OCTET_STREAM);
-				 
-				Response response=	target.request(MediaType.APPLICATION_OCTET_STREAM)
-					.post(entity);
-			}
-	 
-		  } catch (Exception e) {
-	 
-			e.printStackTrace();
-	 
-		  }
-	}
-	
-	private void broadcastUploadEvent()
-	{
-		Client client=org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
-		
-		String url="http://localhost:9090/services/broadcast";
-		
-		WebTarget target = client.target(url).queryParam("message", "testMessage");
-		
-		Response response=target.request(MediaType.TEXT_PLAIN).get();
-		
-		System.out.println(	response.toString());
-	
-	}
+//	private void uploadFiles()
+//	{
+//		try {
+//			 
+//			Thread .currentThread ().setContextClassLoader(this.getClass().getClassLoader()); 
+//			
+//		//	Client client = ClientBuilder.newClient();
+//			
+//			Client client = org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
+//	
+//			String url="http://localhost:9090/services/emfgit";
+//			
+//			
+//			for(IFile item:getProjectsLockFiles())
+//			{
+//				WebTarget target=client.target(url).path("/upload").queryParam("projectName", getProjectName())
+//						.queryParam("fileName", item.getName());
+//				
+//				File fileToUpload=item.getRawLocation().makeAbsolute().toFile();
+//
+//				 Entity<File> entity=Entity.entity(fileToUpload, MediaType.APPLICATION_OCTET_STREAM);
+//				 
+//				Response response=	target.request(MediaType.APPLICATION_OCTET_STREAM)
+//					.post(entity);
+//			}
+//	 
+//		  } catch (Exception e) {
+//	 
+//			e.printStackTrace();
+//	 
+//		  }
+//	}
+//	
+//	private void broadcastUploadEvent()
+//	{
+//		Client client=org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
+//		
+//		String url="http://localhost:9090/services/broadcast";
+//		
+//		WebTarget target = client.target(url).queryParam("message", "testMessage");
+//		
+//		Response response=target.request(MediaType.TEXT_PLAIN).get();
+//		
+//		System.out.println(	response.toString());
+//	
+//	}
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-			uploadFiles();
-			broadcastUploadEvent();
+//			uploadFiles();
+//			broadcastUploadEvent();
 			
 		return null;
 	}
@@ -107,27 +98,27 @@ public class Publish implements IHandler {
 	
 	
 
-	public ArrayList<IFile> getProjectsLockFiles() {
-
-		IWorkbenchWindow window = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow();
-		if (window != null) {
-			IStructuredSelection selection = (IStructuredSelection) window
-					.getSelectionService().getSelection();
-			Object firstElement = selection.getFirstElement();
-			if (firstElement instanceof IAdaptable) {
-				IProject project = (IProject) ((IAdaptable) firstElement)
-						.getAdapter(IProject.class);
-				
-				IPath path = project.getFullPath();
-				IResource folder=project.getFolder(org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.lockDirName);
-				
-				return getAllFile(folder);
-			}
-		}
-		
-		return null;
-	}
+//	public ArrayList<IFile> getProjectsLockFiles() {
+//
+//		IWorkbenchWindow window = PlatformUI.getWorkbench()
+//				.getActiveWorkbenchWindow();
+//		if (window != null) {
+//			IStructuredSelection selection = (IStructuredSelection) window
+//					.getSelectionService().getSelection();
+//			Object firstElement = selection.getFirstElement();
+//			if (firstElement instanceof IAdaptable) {
+//				IProject project = (IProject) ((IAdaptable) firstElement)
+//						.getAdapter(IProject.class);
+//				
+//				IPath path = project.getFullPath();
+//				IResource folder=project.getFolder(org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.lockDirName);
+//				
+//				return getAllFile(folder);
+//			}
+//		}
+//		
+//		return null;
+//	}
 	
 	
 	ArrayList<IFile> files;

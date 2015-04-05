@@ -1,59 +1,67 @@
 package org.mondo.collaboration.client.org.mondo.collaboration.client;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-
-import org.glassfish.jersey.media.sse.EventInput;
-import org.glassfish.jersey.media.sse.EventListener;
-import org.glassfish.jersey.media.sse.EventSource;
-import org.glassfish.jersey.media.sse.InboundEvent;
-import org.glassfish.jersey.media.sse.SseFeature;
-import org.osgi.framework.BundleActivator;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.WebResource.Builder;
 
-	public static String lockDirName = "locks";
+/**
+ * The activator class controls the plug-in life cycle
+ */
+public class Activator extends AbstractUIPlugin {
 
-	public static String broadcastUrl="http://localhost:9090/services/broadcast";
+	// The plug-in ID
+	public static final String PLUGIN_ID = "mondo.collab.client.skeleton"; //$NON-NLS-1$
+
+	// The shared instance
+	private static Activator plugin;
 	
-	private static Client client;
-	EventSource eventSource;
-	WebTarget target;
-	EventListener listener;
-	
+	/**
+	 * The constructor
+	 */
+	public Activator() {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 */
 	public void start(BundleContext context) throws Exception {
+		plugin = this;
 
-		client = ClientBuilder.newBuilder()
-				
-				.build();
+		Client c = new Client();
+		{
+			String url = "http://localhost:9090/services/emfgit";
 		
-//		 target = client.target(broadcastUrl);
-//		eventSource = EventSource.target(target).build();
-//		listener = new EventListener() {
-//			public void onEvent(InboundEvent inboundEvent) {
-//				
-//				System.out.println("jön adat");
-//				System.out.println(inboundEvent.getName() + "; "
-//						+ inboundEvent.readData(String.class));
-//			}
-//		};
-//		eventSource.register(listener, "message-to-client");
-//		eventSource.open();
-//		
-		
-		System.out.println("Client Started");
-
+			WebResource resource = c.resource(url);
+			try{
+				Builder builder = resource.accept("application/json");
+				String helloString = builder.get(String.class);
+				System.out.println(helloString);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 */
 	public void stop(BundleContext context) throws Exception {
-		eventSource.close();
-
+		plugin = null;
+		super.stop(context);
 	}
-	
-	public static Client getClient() {
-		return client;
+
+	/**
+	 * Returns the shared instance
+	 *
+	 * @return the shared instance
+	 */
+	public static Activator getDefault() {
+		return plugin;
 	}
 
 }
