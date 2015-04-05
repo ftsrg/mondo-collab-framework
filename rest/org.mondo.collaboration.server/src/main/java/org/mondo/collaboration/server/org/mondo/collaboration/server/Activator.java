@@ -35,26 +35,14 @@ public class Activator implements BundleActivator {
 		System.out.println("Server Started");
 		
 		
-		//Thread .currentThread ().setContextClassLoader(SseFeature.class.getClassLoader()); 
-		
-		
-		// registration3 = bundleContext.registerService( SseFeature.class.getName(), new SseFeature(), null );
-		
-		 
-		//final Application app=new ResourceConfig().register(componentClass);
+	
 		 
 		registration = bundleContext.registerService(LockResource.class, new LockResource(), null);
 		registration2 = bundleContext.registerService(BroadcasterResource.class, new BroadcasterResource(), null);
 		
 		
 		
-		
-		
-		//registration3=bundleContext.registerService(co, service, properties);
-		
-	//	bundleContext.registerService(SseFeature.class, , null);
-		
-		//ResourceConfig resconf=new ResourceConfig(classes);
+	
 	}
 
 	
@@ -62,7 +50,7 @@ public class Activator implements BundleActivator {
 		Activator.context = null;
 		registration.unregister();
 		registration2.unregister();
-		//registration3.unregister();
+	
 	}
 	
 	public void createBaseDirIfNotExists()

@@ -28,6 +28,7 @@ public class LockResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String helloWorld() {
+		System.out.println("hello");
 		return "Server Working!";
 	}
 
