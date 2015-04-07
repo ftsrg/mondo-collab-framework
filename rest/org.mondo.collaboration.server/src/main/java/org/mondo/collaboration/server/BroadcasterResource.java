@@ -1,4 +1,4 @@
-package org.mondo.collaboration.server.org.mondo.collaboration.server;
+package org.mondo.collaboration.server;
 
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;

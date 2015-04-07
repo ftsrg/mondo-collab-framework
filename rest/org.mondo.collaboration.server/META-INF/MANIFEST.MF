@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Server
 Bundle-SymbolicName: org.mondo.collaboration.server;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Export-Package: org.mondo.collaboration.server.org.mondo.collaboration.server
+Export-Package: org.mondo.collaboration.server
 Import-Package: org.osgi.framework;version="1.8.0"
-Bundle-Activator: org.mondo.collaboration.server.org.mondo.collaboration.server.Activator
+Bundle-Activator: org.mondo.collaboration.server.Activator
 Require-Bundle: com.eclipsesource.jaxrs.jersey-all;bundle-version="2.16.1",
  com.eclipsesource.jaxrs.publisher;bundle-version="4.2.1",
  com.googlecode.json-simple;bundle-version="1.1.1"
