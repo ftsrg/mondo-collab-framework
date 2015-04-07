@@ -1,4 +1,4 @@
-package org.mondo.collaboration.client.org.mondo.collaboration.client;
+package org.mondo.collaboration.client;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

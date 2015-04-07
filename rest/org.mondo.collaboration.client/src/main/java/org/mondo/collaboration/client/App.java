@@ -1,3 +1,4 @@
+package org.mondo.collaboration.client;
 //package org.mondo.collaboration.client.org.mondo.collaboration.client;
 //
 //import javax.ws.rs.client.Client;

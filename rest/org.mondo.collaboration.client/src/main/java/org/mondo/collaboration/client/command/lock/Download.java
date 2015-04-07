@@ -1,4 +1,4 @@
-package org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock;
+package org.mondo.collaboration.client.command.lock;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
-import org.mondo.collaboration.client.org.mondo.collaboration.client.Activator;
+import org.mondo.collaboration.client.Activator;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;

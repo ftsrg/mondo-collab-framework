@@ -1,3 +1,4 @@
+package org.mondo.collaboration.client.command.lock;
 //package org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock;
 //
 //import java.io.File;

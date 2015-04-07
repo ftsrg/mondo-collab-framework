@@ -4,27 +4,27 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish"
+            defaultHandler="org.mondo.collaboration.client.command.lock.Publish"
             id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish"
             name="Publish">
       </command>
       <command
-            defaultHandler="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Unpublish"
+            defaultHandler="org.mondo.collaboration.client.command.lock.Unpublish"
             id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Unpublish"
             name="Unpublish">
       </command>
       <command
-            defaultHandler="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Enable"
+            defaultHandler="org.mondo.collaboration.client.command.lock.Enable"
             id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Enable"
             name="Enable">
       </command>
       <command
-            defaultHandler="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable"
+            defaultHandler="org.mondo.collaboration.client.command.lock.Disable"
             id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable"
             name="Disable">
       </command>
       <command
-            defaultHandler="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download"
+            defaultHandler="org.mondo.collaboration.client.command.lock.Download"
             id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download"
             name="Download">
       </command>

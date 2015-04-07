@@ -1,4 +1,4 @@
-package org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock;
+package org.mondo.collaboration.client.command.lock;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class Publish implements IHandler {
 			
 		//	Client client = ClientBuilder.newClient();
 			
-			Client client = org.mondo.collaboration.client.org.mondo.collaboration.client.Activator.getClient();
+			Client client = org.mondo.collaboration.client.Activator.getClient();
 	
 			String url="http://localhost:9090/services/emfgit";
 			
