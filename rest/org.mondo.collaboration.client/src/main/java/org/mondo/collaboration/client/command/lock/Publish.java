@@ -88,7 +88,6 @@ public class Publish implements IHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 			uploadFiles();
-		
 			
 		return null;
 	}
@@ -110,6 +109,11 @@ public class Publish implements IHandler {
 
 	public ArrayList<IFile> getProjectsLockFiles() {
 
+		
+		return getFilesFromProjectsDir("lock");
+	}
+	public static ArrayList<IFile> getFilesFromProjectsDir(String dirName)
+	{
 		IWorkbenchWindow window = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow();
 		if (window != null) {
@@ -121,18 +125,19 @@ public class Publish implements IHandler {
 						.getAdapter(IProject.class);
 				
 				IPath path = project.getFullPath();
-				IResource folder=project.getFolder("lock");
+				IResource folder=project.getFolder(dirName);
 				
 				return getAllFile(folder);
 			}
 		}
 		
 		return null;
+		
 	}
 	
 	
-	ArrayList<IFile> files;
-	public ArrayList<IFile> getAllFile(IResource item)
+	static ArrayList<IFile> files;
+	public static ArrayList<IFile> getAllFile(IResource item)
 	{
 		 files=new ArrayList<IFile>();
 		
@@ -141,13 +146,13 @@ public class Publish implements IHandler {
 		 return files;
 	}
 	
-	private void travelResources(IResource resource)
+	private static void travelResources(IResource resource)
 	{
 		
 		if(resource.getType()==IResource.FILE)
 		{
 			files.add((IFile) resource);
-			System.out.println(resource.getFullPath());
+			
 		}
 		else if(resource.getType()==IResource.FOLDER)
 		{

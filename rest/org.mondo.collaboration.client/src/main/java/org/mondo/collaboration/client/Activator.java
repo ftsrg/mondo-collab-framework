@@ -1,5 +1,9 @@
 package org.mondo.collaboration.client;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -45,6 +49,17 @@ public class Activator extends AbstractUIPlugin {
 				System.out.println(e.getMessage());
 			}
 		}
+		
+		
+		 IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		   IResourceChangeListener listener = new IResourceChangeListener() {
+		      public void resourceChanged(IResourceChangeEvent event) {
+		         System.out.println("IResourceChangeListener");
+		      }
+		   };
+		   workspace.addResourceChangeListener(listener);
+		
+		
 	}
 
 	/*

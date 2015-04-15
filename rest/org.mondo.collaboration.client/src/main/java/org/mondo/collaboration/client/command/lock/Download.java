@@ -48,8 +48,6 @@ public class Download implements IHandler {
 		createLocksDirIfNotExists(Publish.getProjectName());
 		 ArrayList<String> listToDownload = getProjectFiles();
 		
-		 
-		
 		for(String item: listToDownload)
 		{
 			System.out.println(item);

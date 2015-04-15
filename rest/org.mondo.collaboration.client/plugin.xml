@@ -1,71 +1,78 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-<plugin>
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="org.mondo.collaboration.client.command.lock.Publish"
-            id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish"
-            name="Publish">
-      </command>
-      <command
-            defaultHandler="org.mondo.collaboration.client.command.lock.Unpublish"
-            id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Unpublish"
-            name="Unpublish">
-      </command>
-      <command
-            defaultHandler="org.mondo.collaboration.client.command.lock.Enable"
-            id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Enable"
-            name="Enable">
-      </command>
-      <command
-            defaultHandler="org.mondo.collaboration.client.command.lock.Disable"
-            id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable"
-            name="Disable">
-      </command>
-      <command
-            defaultHandler="org.mondo.collaboration.client.command.lock.Download"
-            id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download"
-            name="Download">
-      </command>
-   </extension>
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <menu
-               id="team.main"
-               label="T&amp;eam">
-            <menu
-                  label="Locks">
-               <command
-                     commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish"
-                     label="Publish"
-                     style="push">
-               </command>
-               <command
-                     commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Unpublish"
-                     label="Unpublish"
-                     style="push">
-               </command>
-               <command
-                     commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Enable"
-                     label="Enable"
-                     style="push">
-               </command>
-               <command
-                     commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable"
-                     label="Disable"
-                     style="push">
-               </command>
-               <command
-                     commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download"
-                     label="Download"
-                     style="push">
-               </command>
-            </menu>
-         </menu>
-      </menuContribution>
-   </extension>
-
+<?xml version="1.0" encoding="UTF-8"?><?eclipse version="3.4"?><plugin>
+  <extension point="org.eclipse.ui.commands">
+    <command defaultHandler="org.mondo.collaboration.client.command.lock.Publish" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish" name="Publish"/>
+    <command defaultHandler="org.mondo.collaboration.client.command.lock.Unpublish" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Unpublish" name="Unpublish"/>
+    <command defaultHandler="org.mondo.collaboration.client.command.lock.Enable" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Enable" name="Enable"/>
+    <command defaultHandler="org.mondo.collaboration.client.command.lock.Disable" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable" name="Disable"/>
+    <command defaultHandler="org.mondo.collaboration.client.command.lock.Download" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download" name="Download"/>
+    <command defaultHandler="org.mondo.collaboration.client.command.lock.EMFchangeDetectTester" id="org.mondo.collaboration.client.command1" name="Test"/>
+    <command defaultHandler="org.mondo.collaboration.client.command.lock.EditingDomainTest" id="org.mondo.collaboration.client.command2" name="Test2"/>
+    <command
+          defaultHandler="org.mondo.collaboration.client.command.lock.IncqueryTest"
+          id="org.mondo.collaboration.client.commandIncquery"
+          name="IncqureyTest">
+    </command>
+    <command
+          defaultHandler="org.mondo.collaboration.client.command.lock.MarkerTester"
+          id="org.mondo.collaboration.client.command3"
+          name="MarkerTester">
+    </command>
+  </extension>
+  <extension point="org.eclipse.ui.menus">
+    <menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+      <menu id="team.main" label="T&amp;eam">
+        <menu label="Locks">
+          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish" label="Publish" style="push"/>
+          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Unpublish" label="Unpublish" style="push"/>
+          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Enable" label="Enable" style="push"/>
+          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable" label="Disable" style="push"/>
+          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download" label="Download" style="push"/>
+          <command commandId="org.mondo.collaboration.client.command1" label="Test" style="push"/>
+          <command commandId="org.mondo.collaboration.client.command2" label="TEST2" style="push"/>
+          <command
+                commandId="org.mondo.collaboration.client.commandIncquery"
+                label="IncqueryTest"
+                style="push">
+          </command>
+          <command
+                commandId="org.mondo.collaboration.client.command3"
+                label="MarkerTester"
+                style="push">
+          </command>
+        </menu>
+      </menu>
+    </menuContribution>
+  </extension>
+  <extension
+        point="org.eclipse.ui.perspectiveExtensions">
+     <perspectiveExtension
+           targetID="org.eclipse.jdt.ui.JavaPerspective">
+        <view
+              id="org.mondo.collaboration.client.views.SampleView"
+              ratio="0.5"
+              relationship="right"
+              relative="org.eclipse.ui.views.ProblemView">
+        </view>
+     </perspectiveExtension>
+  </extension>
+  <extension
+        point="org.eclipse.help.contexts">
+     <contexts
+           file="contexts.xml">
+     </contexts>
+  </extension>
+  <extension
+        point="org.eclipse.ui.views">
+     <category
+           id="org.mondo.collaboration.client"
+           name="EMF Lock">
+     </category>
+     <view
+           category="org.mondo.collaboration.client"
+           class="org.mondo.collaboration.client.views.SampleView"
+           icon="icons/sample.gif"
+           id="org.mondo.collaboration.client.views.SampleView"
+           name="EMF Lock">
+     </view>
+  </extension>
 </plugin>
