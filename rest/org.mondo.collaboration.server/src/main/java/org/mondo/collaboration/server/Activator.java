@@ -17,10 +17,10 @@ public class Activator implements BundleActivator {
 	
 	private ServiceRegistration<LockResource> registration;
 	private ServiceRegistration<BroadcasterResource> registration2;
-	ServiceRegistration registration3;
+	private ServiceRegistration<CollaborationResource> collabRegistration;
 	
-	public static String serverRoot="D:\\emfgit\\";
-	public static String lockDirName="locks";
+	public static String serverRoot = "D:\\emfgit\\";
+	public static String lockDirName = "locks";
 	
 	static BundleContext getContext() {
 		return context;
@@ -29,20 +29,13 @@ public class Activator implements BundleActivator {
 	 
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		
 		createBaseDirIfNotExists();
 		
 		System.out.println("Server Started");
-		
-		
-	
 		 
 		registration = bundleContext.registerService(LockResource.class, new LockResource(), null);
 		registration2 = bundleContext.registerService(BroadcasterResource.class, new BroadcasterResource(), null);
-		
-		
-		
-	
+		collabRegistration = bundleContext.registerService(CollaborationResource.class, new CollaborationResource(), null);
 	}
 
 	
@@ -50,14 +43,13 @@ public class Activator implements BundleActivator {
 		Activator.context = null;
 		registration.unregister();
 		registration2.unregister();
+		collabRegistration.unregister();
 	
 	}
 	
-	public void createBaseDirIfNotExists()
-	{
+	public void createBaseDirIfNotExists() {
 		File root=new File(serverRoot);
-		if(!root.exists())
-		{
+		if(!root.exists()) {
 			root.mkdir();
 		}
 	}

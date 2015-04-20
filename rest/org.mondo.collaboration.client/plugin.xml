@@ -1,49 +1,147 @@
-<?xml version="1.0" encoding="UTF-8"?><?eclipse version="3.4"?><plugin>
-  <extension point="org.eclipse.ui.commands">
-    <command defaultHandler="org.mondo.collaboration.client.command.lock.Publish" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish" name="Publish"/>
-    <command defaultHandler="org.mondo.collaboration.client.command.lock.Unpublish" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Unpublish" name="Unpublish"/>
-    <command defaultHandler="org.mondo.collaboration.client.command.lock.Enable" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Enable" name="Enable"/>
-    <command defaultHandler="org.mondo.collaboration.client.command.lock.Disable" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable" name="Disable"/>
-    <command defaultHandler="org.mondo.collaboration.client.command.lock.Download" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download" name="Download"/>
-    <command defaultHandler="org.mondo.collaboration.client.command.lock.EMFchangeDetectTester" id="org.mondo.collaboration.client.command1" name="Test"/>
-    <command defaultHandler="org.mondo.collaboration.client.command.lock.EditingDomainTest" id="org.mondo.collaboration.client.command2" name="Test2"/>
-    <command
-          defaultHandler="org.mondo.collaboration.client.command.lock.IncqueryTest"
-          id="org.mondo.collaboration.client.commandIncquery"
-          name="IncqureyTest">
-    </command>
-    <command
-          defaultHandler="org.mondo.collaboration.client.command.lock.MarkerTester"
-          id="org.mondo.collaboration.client.command3"
-          name="MarkerTester">
-    </command>
-  </extension>
-  <extension point="org.eclipse.ui.menus">
-    <menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-      <menu id="team.main" label="T&amp;eam">
-        <menu label="Locks">
-          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish" label="Publish" style="push"/>
-          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Unpublish" label="Unpublish" style="push"/>
-          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Enable" label="Enable" style="push"/>
-          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Disable" label="Disable" style="push"/>
-          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download" label="Download" style="push"/>
-          <command commandId="org.mondo.collaboration.client.command1" label="Test" style="push"/>
-          <command commandId="org.mondo.collaboration.client.command2" label="TEST2" style="push"/>
-          <command
-                commandId="org.mondo.collaboration.client.commandIncquery"
-                label="IncqueryTest"
-                style="push">
-          </command>
-          <command
-                commandId="org.mondo.collaboration.client.command3"
-                label="MarkerTester"
-                style="push">
-          </command>
-        </menu>
-      </menu>
-    </menuContribution>
-  </extension>
-  <extension
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command 
+            defaultHandler="org.mondo.collaboration.client.command.lock.EMFchangeDetectTester" 
+            id="org.mondo.collaboration.client.command1" 
+            name="Test"/>
+      <command 
+            defaultHandler="org.mondo.collaboration.client.command.lock.EditingDomainTest" 
+            id="org.mondo.collaboration.client.command2" 
+            name="Test2"/>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.lock.IncqueryTest"
+            id="org.mondo.collaboration.client.commandIncquery"
+            name="IncqureyTest">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.lock.MarkerTester"
+            id="org.mondo.collaboration.client.command3"
+            name="MarkerTester">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.lock.Publish"
+            id="org.mondo.collaboration.client.command.lock.Publish"
+            name="Publish">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.lock.Unpublish"
+            id="org.mondo.collaboration.client.command.lock.Unpublish"
+            name="Unpublish">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.lock.Enable"
+            id="org.mondo.collaboration.client.command.lock.Enable"
+            name="Enable">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.lock.Disable"
+            id="org.mondo.collaboration.client.command.lock.Disable"
+            name="Disable">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.lock.Download"
+            id="org.mondo.collaboration.client.command.lock.Download"
+            name="Download">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.collaboration.Checkout"
+            id="org.mondo.collaboration.client.command.collaboration.Checkout"
+            name="Checkout">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.collaboration.Update"
+            id="org.mondo.collaboration.client.command.collaboration.Update"
+            name="Update">
+      </command> 
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.collaboration.Commit"
+            id="org.mondo.collaboration.client.command.collaboration.Commit"
+            name="Commit">
+      </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.collaboration.Log"
+            id="org.mondo.collaboration.client.command.collaboration.Log"
+            name="Log">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="team.main"
+               label="T&amp;eam">
+            <menu
+                  label="Locks">
+               <command commandId="org.mondo.collaboration.client.command2" label="TEST2" style="push"/>
+               <command
+                    commandId="org.mondo.collaboration.client.commandIncquery"
+                    label="IncqueryTest"
+                    style="push">
+               </command>
+               <command
+                    commandId="org.mondo.collaboration.client.command3"
+                    label="MarkerTester"
+                    style="push">
+               </command>
+               <command 
+                    commandId="org.mondo.collaboration.client.command1" 
+                    label="Test" 
+                    style="push"/>
+               <command commandId="org.mondo.collaboration.client.command2" label="TEST2" style="push"/>
+               <command
+                     commandId="org.mondo.collaboration.client.command.lock.Publish"
+                     label="Publish"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.mondo.collaboration.client.command.lock.Unpublish"
+                     label="Unpublish"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.mondo.collaboration.client.command.lock.Enable"
+                     label="Enable"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.mondo.collaboration.client.command.lock.Disable"
+                     label="Disable"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.mondo.collaboration.client.command.lock.Download"
+                     label="Download"
+                     style="push">
+               </command>
+            </menu>
+           <command
+                 commandId="org.mondo.collaboration.client.command.collaboration.Checkout"
+                 label="Checkout"
+                 style="push">
+           </command>
+           <command
+                 commandId="org.mondo.collaboration.client.command.collaboration.Update"
+                 label="Update"
+                 style="push">
+           </command>
+           <command
+                 commandId="org.mondo.collaboration.client.command.collaboration.Commit"
+                 label="Commit"
+                 style="push">
+           </command>
+           <command
+                 commandId="org.mondo.collaboration.client.command.collaboration.Log"
+                 label="Log"
+                 style="push">
+           </command>
+         </menu>
+      </menuContribution>
+   </extension>
+ <extension
         point="org.eclipse.ui.perspectiveExtensions">
      <perspectiveExtension
            targetID="org.eclipse.jdt.ui.JavaPerspective">
