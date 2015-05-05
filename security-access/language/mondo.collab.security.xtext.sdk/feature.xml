@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="mondo.collab.security.xtext.sdk"
+	label="SecurityAccess SDK Feature "
+	version="1.0.0.qualifier">
+	<plugin
+			id="mondo.collab.security.xtext"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+	<plugin
+			id="mondo.collab.security.xtext.ui"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+</feature>
