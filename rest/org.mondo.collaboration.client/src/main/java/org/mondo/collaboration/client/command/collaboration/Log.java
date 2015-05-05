@@ -56,7 +56,7 @@ public class Log implements IHandler {
 		if(branchName == null) {
 			branchName = "";
 		}
-		return !Activator.modelFolderIsEmpty(projectName + "/" + branchName);
+		return Activator.user.isSet() && !Activator.modelFolderIsEmpty(projectName + "/" + branchName);
 	}
 
 	@Override

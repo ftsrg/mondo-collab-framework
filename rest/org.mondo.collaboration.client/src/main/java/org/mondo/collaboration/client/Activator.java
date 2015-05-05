@@ -34,6 +34,8 @@ public class Activator extends AbstractUIPlugin {
 
 	private static String localRepoPath = "D:\\emfgit_local\\projects\\";
 	
+	public static User user;
+	
 	/**
 	 * The constructor
 	 */
@@ -42,7 +44,7 @@ public class Activator extends AbstractUIPlugin {
 
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
-
+		user = new User();
 		client = new Client();
 		{
 			String url = "http://localhost:9090/services/emfgit";
@@ -158,6 +160,8 @@ public class Activator extends AbstractUIPlugin {
 		try {
 			System.out.println(savePath.substring(0, savePath.lastIndexOf("\\")));
 			createOrCleanDir(savePath.substring(0, savePath.lastIndexOf("\\")));
+			File f = new File(savePath);
+			f.deleteOnExit();
 			byte[] bytes = readContentIntoByteArray(fileToSave);
 			FileOutputStream fos = new FileOutputStream(savePath);
 			fos.write(bytes);

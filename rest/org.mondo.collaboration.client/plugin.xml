@@ -66,6 +66,11 @@
             id="org.mondo.collaboration.client.command.collaboration.Log"
             name="Log">
       </command>
+      <command
+            defaultHandler="org.mondo.collaboration.client.command.collaboration.SetUser"
+            id="org.mondo.collaboration.client.command.collaboration.SetUser"
+            name="SetUser">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -136,6 +141,11 @@
            <command
                  commandId="org.mondo.collaboration.client.command.collaboration.Log"
                  label="Log"
+                 style="push">
+           </command>
+            <command
+                 commandId="org.mondo.collaboration.client.command.collaboration.SetUser"
+                 label="Setup user"
                  style="push">
            </command>
          </menu>

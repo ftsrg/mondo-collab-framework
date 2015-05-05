@@ -5,7 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.core.commands.ExecutionEvent;
@@ -31,8 +35,12 @@ public class Checkout implements IHandler {
 	}
 
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
-		System.out.println("Executing checkout");
-		String projectName = "mondo_test";
+		System.out.println("Executing checkout...");
+		String projectName = getProjectNameFromUser();
+		if(projectName == null || projectName.equals("")) {
+			System.out.println("Invalid project name. Checkout failed.");
+			return null;
+		}
 		
 		Client client = Activator.getClient();
 		String url = "http://localhost:9090/services/emfgit/collaboration";
@@ -101,13 +109,27 @@ public class Checkout implements IHandler {
 		return null;
 	}
 
-	public boolean isEnabled() {
-		String projectName = "mondo_test";
-		String branchName = Activator.getBranchName(projectName);
-		if(branchName == null) {
-			branchName = "";
+	private String getProjectNameFromUser() {
+		JPanel panel = new JPanel();
+		
+		JLabel projectLabel = new JLabel("Project name:");
+		JTextField projectField = new JTextField(10);
+		panel.add(projectLabel);
+		panel.add(projectField);
+		
+		String[] options = new String[]{"OK", "Cancel"};
+		int option = JOptionPane.showOptionDialog(null, panel, "Checkout project",
+             JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+             null, options, options[1]);
+		
+		if(option == 0) { // pressing OK button
+			return projectField.getText();
 		}
-		return Activator.modelFolderIsEmpty(projectName + "/" + branchName);
+		return null;
+	}
+
+	public boolean isEnabled() {
+		return Activator.user.isSet();
 	}
 
 	public boolean isHandled() {

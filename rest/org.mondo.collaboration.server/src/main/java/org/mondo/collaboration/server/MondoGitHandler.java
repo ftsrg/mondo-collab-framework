@@ -68,9 +68,9 @@ public class MondoGitHandler {
     		.commit().setAll(true).setMessage(msg).call();
     }
 	
-    public void push(String projectName, String branchName) throws IOException, JGitInternalException,
+    public void push(String projectName, String branchName, String username, String password) throws IOException, JGitInternalException,
     	GitAPIException {
-    	CredentialsProvider cp = new UsernamePasswordCredentialsProvider("no", "isaidNO");
+    	CredentialsProvider cp = new UsernamePasswordCredentialsProvider(username, password);
     	Iterable<PushResult> pushResult = getGitObject(projectName, branchName).getGitInstance().push().setCredentialsProvider(cp).call();
     	System.out.println("Push result: ");
     	for(PushResult res : pushResult) {
@@ -105,7 +105,7 @@ public class MondoGitHandler {
 			e.printStackTrace();
 		}
 		
-		String remotePath = "https://github.com/1forintos/mondo_test.git";
+		String remotePath = "https://github.com/1forintos/" + projectName + ".git";
 		System.out.println("branchName - " + branchName);
 		String branchPath = localPath + "/" + projectName + "/" + branchName;
 		System.out.println("Cloning branch [" + branchName + "] to path [" + branchPath + "]");

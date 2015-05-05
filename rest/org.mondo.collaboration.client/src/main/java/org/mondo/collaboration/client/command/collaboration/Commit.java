@@ -5,19 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import javax.swing.JOptionPane;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xml.type.impl.XMLTypeFactoryImpl;
 import org.mondo.collaboration.client.Activator;
 
 import com.sun.jersey.api.client.Client;
@@ -58,10 +53,15 @@ public class Commit implements IHandler {
 			WebResource resource = client.resource(url)
 				.path("commit")
 				.queryParam("projectName", projectName)
-				.queryParam("branchName", branchName);
+				.queryParam("branchName", branchName)
+				.queryParam("username", Activator.user.getUsername())
+				.queryParam("password", Activator.user.getPassword());
 			ClientResponse response = resource.type(MediaType.APPLICATION_OCTET_STREAM)
                 .header("Content-Disposition", sContentDisposition)
                 .post(ClientResponse.class, fileInStream); 
+			if(response.getStatus() == 403) {
+				JOptionPane.showMessageDialog(null, "Invalid username and/or password.");
+			}
 			System.out.println("response: " + response.getStatus());
 			// System.out.println("Commit response: " + resp);
 		} catch(UniformInterfaceException e) {
@@ -81,7 +81,7 @@ public class Commit implements IHandler {
 		if(branchName == null) {
 			branchName = "";
 		}
-		return !Activator.modelFolderIsEmpty(projectName + "/" + branchName);
+		return Activator.user.isSet() && !Activator.modelFolderIsEmpty(projectName + "/" + branchName);
 	}
 
 	@Override

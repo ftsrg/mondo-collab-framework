@@ -2,6 +2,7 @@ package org.mondo.collaboration.server;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,26 +75,50 @@ public class CollaborationResource {
 	@POST
 	@Path("commit")
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
-	public Response commit(InputStream is, @QueryParam("projectName") String projectName, @QueryParam("branchName") String branchName) {
+	public Response commit(
+			InputStream is, 
+			@QueryParam("projectName") String projectName, 
+			@QueryParam("branchName") String branchName,
+			@QueryParam("username") String username,
+			@QueryParam("password") String password) {
 		String modelName = "Model.ecore";
 		System.out.println("commiting model: " + modelName + " in project: " + projectName + "_" + branchName);
 		// TODO check permissions and merge
 		String savePath =  Activator.serverRoot + projectName + "\\" + branchName + "\\model\\" + modelName;
-		
+		File originalFile = new File(savePath);
+		byte[] originalBytes = null;
+		if(originalFile.exists()) {
+			originalBytes = readContentIntoByteArray(originalFile);
+		}
 		saveInputStreamToFile(is, savePath);
 		try {
 			//mGit.addFile("Model.ecore");
 			mGit.commit("TODO assemble commit message", projectName, branchName);
-			mGit.push(projectName, branchName);
+			mGit.push(projectName, branchName, username, password);
 		} catch (JGitInternalException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			if(e.getCause().toString().contains("not authorized")) {
+				if(originalBytes != null) {
+					FileOutputStream fos;
+					try {
+						fos = new FileOutputStream(savePath);
+						fos.write(originalBytes);
+						fos.close();
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				return Response.status(Response.Status.FORBIDDEN).entity("Not authorized.").build();
+			}
 		}
 		return Response.ok().entity("Model successfully commited.").build();
 	}
@@ -128,8 +153,6 @@ public class CollaborationResource {
 			while ((read = streamToSave.read(bytes)) != -1) {
 				outputStream.write(bytes, 0, read);
 			}
-	 
-			System.out.println("Done!");
 	 
 		} catch (IOException e) {
 			e.printStackTrace();
