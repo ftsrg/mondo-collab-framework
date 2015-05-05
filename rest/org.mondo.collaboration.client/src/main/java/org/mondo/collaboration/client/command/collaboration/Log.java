@@ -30,11 +30,12 @@ public class Log implements IHandler {
 	@Override
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
 		String projectName = "mondo_test";
-		
+		String branchName = Activator.getBranchName(projectName);
 		Client client = Activator.getClient();
 		String url = "http://localhost:9090/services/emfgit/collaboration";
 		WebResource resource = client.resource(url).path("logs")
-			.queryParam("projectName", projectName);
+			.queryParam("projectName", projectName)
+			.queryParam("branchName", branchName);
 		
 		String allLogs = resource.accept(MediaType.APPLICATION_JSON).get(String.class);
 		String[] splitLogs = decodeLogs(allLogs);
@@ -50,8 +51,12 @@ public class Log implements IHandler {
 	
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return true;
+		String projectName = "mondo_test";
+		String branchName = Activator.getBranchName(projectName);
+		if(branchName == null) {
+			branchName = "";
+		}
+		return !Activator.modelFolderIsEmpty(projectName + "/" + branchName);
 	}
 
 	@Override

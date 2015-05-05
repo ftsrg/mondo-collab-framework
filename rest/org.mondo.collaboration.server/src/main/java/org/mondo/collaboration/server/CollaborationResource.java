@@ -33,13 +33,32 @@ public class CollaborationResource {
 	}
 	
 	@GET
+	@Path("branches")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getBranches(@QueryParam("projectName") String projectName) {
+		mGit.initGit(projectName);
+		String branches = mGit.getBranches(projectName);
+		ResponseBuilder response = Response.ok(branches, MediaType.APPLICATION_JSON);
+		return response.build();
+	}
+	
+	@GET
 	@Path("checkout")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response checkout(@QueryParam("projectName") String projectName) {
-		String modelFolderPath = Activator.serverRoot + "\\" + projectName + "\\model";
-		System.out.println("checking out folder " + modelFolderPath);
-
-		File modelFolder = new File(modelFolderPath);
+	public Response checkout(@QueryParam("projectName") String projectName, @QueryParam("branchName") String branchName) {
+		String branchPath = "";
+		try {
+			branchPath = mGit.cloneBranch(projectName, branchName);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		} catch (GitAPIException e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+		System.out.println("checking out folder " + branchPath);
+		
+		File modelFolder = new File(branchPath + "\\model");
 		String[] models = modelFolder.list();
 		if(models.length < 1) {
 			return Response.status(Response.Status.NOT_FOUND).entity(new String("No models found for project [" + projectName + "]" )).build();
@@ -55,18 +74,17 @@ public class CollaborationResource {
 	@POST
 	@Path("commit")
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
-	public Response commit(InputStream is) {
+	public Response commit(InputStream is, @QueryParam("projectName") String projectName, @QueryParam("branchName") String branchName) {
 		String modelName = "Model.ecore";
-		String projectName = "mondo_test";
-		System.out.println("commiting model: " + modelName + " in project: " + projectName);
+		System.out.println("commiting model: " + modelName + " in project: " + projectName + "_" + branchName);
 		// TODO check permissions and merge
-		String savePath =  Activator.serverRoot + projectName + "\\model\\" + modelName;
+		String savePath =  Activator.serverRoot + projectName + "\\" + branchName + "\\model\\" + modelName;
 		
 		saveInputStreamToFile(is, savePath);
 		try {
 			//mGit.addFile("Model.ecore");
-			mGit.commit("TODO assemble commit message");
-			mGit.push();
+			mGit.commit("TODO assemble commit message", projectName, branchName);
+			mGit.push(projectName, branchName);
 		} catch (JGitInternalException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,9 +101,9 @@ public class CollaborationResource {
 	@GET
 	@Path("logs")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response logs(@QueryParam("projectName") String projectName) {
+	public Response logs(@QueryParam("projectName") String projectName, @QueryParam("branchName") String branchName) {
 		try {
-			return Response.ok(encodeLogs(mGit.logs())).build();
+			return Response.ok(encodeLogs(mGit.logs(projectName, branchName))).build();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

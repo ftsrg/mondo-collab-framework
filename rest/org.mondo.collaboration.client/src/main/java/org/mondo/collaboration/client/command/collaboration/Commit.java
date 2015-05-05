@@ -42,19 +42,23 @@ public class Commit implements IHandler {
 	@Override
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
 		String projectName = "mondo_test";
-		File diff = getDiff(projectName);
+		String branchName = Activator.getBranchName(projectName);
+		File mergedModel = Activator.merge(projectName, branchName, false);
 		Client client = Activator.getClient();
 		String url = "http://localhost:9090/services/emfgit/collaboration";
 		
-		if(diff == null) {
+		if(mergedModel == null) {
 			System.out.println("Diff is null.");
 			return null;
 		}
 		
 		try {
-			InputStream fileInStream = new FileInputStream(diff);
-			String sContentDisposition = "attachment; filename=\"" + diff.getName()+"\"";
-			WebResource resource = client.resource(url).path("commit");
+			InputStream fileInStream = new FileInputStream(mergedModel);
+			String sContentDisposition = "attachment; filename=\"" + mergedModel.getName()+"\"";
+			WebResource resource = client.resource(url)
+				.path("commit")
+				.queryParam("projectName", projectName)
+				.queryParam("branchName", branchName);
 			ClientResponse response = resource.type(MediaType.APPLICATION_OCTET_STREAM)
                 .header("Content-Disposition", sContentDisposition)
                 .post(ClientResponse.class, fileInStream); 
@@ -70,43 +74,14 @@ public class Commit implements IHandler {
 		return null;
 	}
 
-	// returns the diff calculated from the altered model in the project
-	// and the corresponding model in the local repository
-	private File getDiff(String projectName) {
-		// retrieval of the altered model
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		String modelDirPath = workspace.getRoot().getLocation().toString() + "/" + projectName + "/model/";
-		System.out.println("workspace model dir: " + modelDirPath);
-		File modelDir = new File(modelDirPath);
-
-		// get the first file in the directory
-		String[] models = modelDir.list();
-		if(models.length < 1) {
-			System.out.println("No files found in " + modelDir);
-			return null;
-		}
-		
-		String alteredModelPath = modelDirPath + "/" + models[0];
-		System.out.println("alteredModelPath " + alteredModelPath);
-		File alteredModel = new File(alteredModelPath);
-		
-		ResourceSet resourceSet = new ResourceSetImpl(); 
-		URI fileURI = URI.createFileURI(alteredModelPath); 
-		Resource resource = resourceSet.getResource(fileURI, true); 
-		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("key", new XMLTypeFactoryImpl());
-		
-		// retrieval of model in the local repository
-		String repoModelPath = Activator.getLocalRepositoryPath() + projectName + "\\" + models[0];
-		System.out.println(repoModelPath);
-		File oldModel = new File(repoModelPath);
-		
-		return alteredModel;
-	}
-
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return !Activator.modelFolderIsEmpty("mondo_test");
+		String projectName = "mondo_test";
+		String branchName = Activator.getBranchName(projectName);
+		if(branchName == null) {
+			branchName = "";
+		}
+		return !Activator.modelFolderIsEmpty(projectName + "/" + branchName);
 	}
 
 	@Override

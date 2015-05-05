@@ -3,7 +3,9 @@ package org.mondo.collaboration.client.command.collaboration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
+import javax.swing.JOptionPane;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.core.commands.ExecutionEvent;
@@ -29,12 +31,35 @@ public class Checkout implements IHandler {
 	}
 
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
+		System.out.println("Executing checkout");
 		String projectName = "mondo_test";
 		
 		Client client = Activator.getClient();
 		String url = "http://localhost:9090/services/emfgit/collaboration";
-		WebResource resource = client.resource(url).path("checkout")
+		
+		WebResource resource = client.resource(url).path("branches")
 			.queryParam("projectName", projectName);
+			
+		String branchesInfo = resource.accept(MediaType.APPLICATION_JSON).get(String.class);
+		String selectedBranch = null;
+		if(branchesInfo != null) {
+			System.out.println("Received branches.");
+			String[] branches = branchesInfo.split(";");
+		    selectedBranch = (String) JOptionPane.showInputDialog(
+		    	null, 
+		    	"Please select a branch",
+		        "Available branches", 
+		        JOptionPane.QUESTION_MESSAGE, 
+		        null, 
+		        branches,
+		        branches[0]
+		    );
+		}
+		System.out.println("Selected branch: " + selectedBranch);
+	    
+		resource = client.resource(url).path("checkout")
+			.queryParam("projectName", projectName)
+			.queryParam("branchName", selectedBranch);
 		
 		File receivedModel = resource.accept(MediaType.APPLICATION_OCTET_STREAM).get(File.class);
 		
@@ -43,17 +68,32 @@ public class Checkout implements IHandler {
 			
 			String modelFileName = head.getHeaders().get("filename").get(0);
 			System.out.println("modelFileName: " + modelFileName);
+			String localRepoName = projectName;
+			if(selectedBranch != null) {
+				localRepoName += "\\" + selectedBranch;
+			} else {
+				localRepoName += "\\master";
+			}
 			// save to local repository
-			String savePath = Activator.getLocalRepositoryPath() + projectName + "\\" + modelFileName;
+			String savePath = Activator.getLocalRepositoryPath() + localRepoName + "\\" + modelFileName;
 			System.out.println("Saving model to local repository: " + savePath);
-			saveFile(receivedModel, savePath);
+			Activator.saveFile(receivedModel, savePath);
 
 			// save model into runtime project 
 			IWorkspace workspace = ResourcesPlugin.getWorkspace(); 
 			File workspaceDirectory = workspace.getRoot().getLocation().toFile();
 			savePath = workspaceDirectory.getPath() + "\\" + projectName + "\\model\\" + modelFileName;
 			System.out.println("Saving model to runtime project: " + savePath);
-			saveFile(receivedModel, savePath);
+			Activator.saveFile(receivedModel, savePath);
+			File branchFile = new File(workspaceDirectory.getPath() + "\\" + projectName + "\\" 
+				+ "\\branch\\" + selectedBranch);
+			try {
+				branchFile.mkdirs();
+				branchFile.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else {
 			System.out.println("No model received.");
 		}
@@ -61,35 +101,13 @@ public class Checkout implements IHandler {
 		return null;
 	}
 
-	private void saveFile(File fileToSave, String savePath) {
-		try {
-			byte[] bytes = readContentIntoByteArray(fileToSave);
-			FileOutputStream fos = new FileOutputStream(savePath);
-			fos.write(bytes);
-			fos.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private byte[] readContentIntoByteArray(File file) {
-		 FileInputStream fileInputStream = null;
-		 byte[] bFile = new byte[(int) file.length()];
-		 try {
-			//convert file into array of bytes
-			fileInputStream = new FileInputStream(file);
-			fileInputStream.read(bFile);
-			fileInputStream.close();
-		 }
-		 catch (Exception e) {
-		    e.printStackTrace();
-		 }
-		 return bFile;
-	}
-	
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return Activator.modelFolderIsEmpty("mondo_test");
+		String projectName = "mondo_test";
+		String branchName = Activator.getBranchName(projectName);
+		if(branchName == null) {
+			branchName = "";
+		}
+		return Activator.modelFolderIsEmpty(projectName + "/" + branchName);
 	}
 
 	public boolean isHandled() {
