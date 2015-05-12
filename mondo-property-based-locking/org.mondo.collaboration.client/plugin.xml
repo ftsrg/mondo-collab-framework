@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><?eclipse version="3.4"?><plugin>
+  <extension point="org.eclipse.ui.commands">
+    <command defaultHandler="org.mondo.collaboration.client.command.Publish" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish" name="Publish"/>
+    <command defaultHandler="org.mondo.collaboration.client.command.Download" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download" name="Download"/>
+    <command defaultHandler="org.mondo.collaboration.client.command.MarkerTester" id="org.mondo.collaboration.client.command3" name="MarkerTester"/>
+    <command defaultHandler="org.mondo.collaboration.client.projectNature.AddEMFGitNature" id="org.mondo.collaboration.client.command.AddEMFGitNature" name="AddEMFGitNature"/>
+    <command defaultHandler="org.mondo.collaboration.client.projectNature.RemoveEMFGitNature" id="org.mondo.collaboration.client.command.RemoveEMFGitNature" name="RemoveEMFGitNature"/>
+  </extension>
+  <extension point="org.eclipse.ui.menus">
+    <menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+      <menu id="team.main" label="T&amp;eam">
+        <menu label="Locks">
+          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish" label="Publish" style="push"/>
+          <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download" label="Download" style="push"/>
+          <command commandId="org.mondo.collaboration.client.command3" label="MarkerTester" style="push"/>
+          <command commandId="org.mondo.collaboration.client.command.AddEMFGitNature" label="Add EMFGit Nature" style="push"/>
+          <command commandId="org.mondo.collaboration.client.command.RemoveEMFGitNature" label="Remove EMFGit Nature" style="push"/>
+        </menu>
+      </menu>
+    </menuContribution>
+  </extension>
+  <extension point="org.eclipse.ui.views">
+    <category id="org.mondo.collaboration.client" name="EMF Lock"/>
+    <view category="org.mondo.collaboration.client" class="org.mondo.collaboration.client.ui.EMFGitLocksView" icon="icons/sample.gif" id="org.mondo.collaboration.client.views.SampleView" name="EMF Lock"/>
+  </extension>
+  <extension point="org.eclipse.ui.startup">
+    <startup class="org.mondo.collaboration.client.Activator"/>
+  </extension>
+  <extension id="EMFGitNature" name="EMFGitNature" point="org.eclipse.core.resources.natures">
+    <runtime>
+      <run class="org.mondo.collaboration.client.projectNature.EMFGitPorjectNature"/>
+    </runtime>
+  </extension>
+  <extension point="org.eclipse.ui.perspectives">
+    <perspective class="org.mondo.collaboration.client.ui.EMFGitPerspectie" fixed="true" id="org.mondo.collaboration.client.EMFGitPersperctive" name="EMFGit"/>
+  </extension>
+  <extension point="org.eclipse.ui.preferencePages">
+    <page class="org.mondo.collaboration.client.ui.EMFGitPreferencePage" id="org.mondo.collaboration.client.EMFGitPreferencePage" name="EMFGit"/>
+  </extension>
+  <extension id="org.mondo.collaboration.client.EMFGitPreference" name="EMFGit Preferences" point="org.eclipse.core.runtime.preferences">
+    <initializer class="org.mondo.collaboration.client.preference.Preferences"/>
+  </extension>
+  <extension id="org.mondo.collaboration.client.incquery.School" point="org.eclipse.incquery.runtime.queryspecification">
+    <group group="org.eclipse.incquery.runtime.extensibility.SingletonExtensionFactory:org.mondo.collaboration.client.incquery.School" id="org.mondo.collaboration.client.incquery.School"/>
+  </extension>
+</plugin>

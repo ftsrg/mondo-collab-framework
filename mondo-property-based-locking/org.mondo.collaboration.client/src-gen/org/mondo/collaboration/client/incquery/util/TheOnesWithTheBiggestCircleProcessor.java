@@ -1,0 +1,26 @@
+package org.mondo.collaboration.client.incquery.util;
+
+import org.eclipse.incquery.runtime.api.IMatchProcessor;
+import org.mondo.collaboration.client.incquery.TheOnesWithTheBiggestCircleMatch;
+import school.Student;
+
+/**
+ * A match processor tailored for the org.mondo.collaboration.client.incquery.theOnesWithTheBiggestCircle pattern.
+ * 
+ * Clients should derive an (anonymous) class that implements the abstract process().
+ * 
+ */
+@SuppressWarnings("all")
+public abstract class TheOnesWithTheBiggestCircleProcessor implements IMatchProcessor<TheOnesWithTheBiggestCircleMatch> {
+  /**
+   * Defines the action that is to be executed on each match.
+   * @param pS the value of pattern parameter S in the currently processed match
+   * 
+   */
+  public abstract void process(final Student pS);
+  
+  @Override
+  public void process(final TheOnesWithTheBiggestCircleMatch match) {
+    process(match.getS());
+  }
+}
