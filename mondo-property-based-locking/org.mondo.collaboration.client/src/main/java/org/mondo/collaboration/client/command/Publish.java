@@ -104,30 +104,8 @@ public class Publish implements IHandler {
 		
 		return getAllFile(lockDir);
 		
-	//	return getFilesFromProjectsDir("lock");
 	}
-//	public static ArrayList<IFile> getFilesFromProjectsDir(String dirName)
-//	{
-//		IWorkbenchWindow window = PlatformUI.getWorkbench()
-//				.getActiveWorkbenchWindow();
-//		if (window != null) {
-//			IStructuredSelection selection = (IStructuredSelection) window
-//					.getSelectionService().getSelection();
-//			Object firstElement = selection.getFirstElement();
-//			if (firstElement instanceof IAdaptable) {
-//				IProject project = (IProject) ((IAdaptable) firstElement)
-//						.getAdapter(IProject.class);
-//				
-//				IPath path = project.getFullPath();
-//				IResource folder=project.getFolder(dirName);
-//				
-//				return getAllFile(folder);
-//			}
-//		}
-//		
-//		return null;
-//		
-//	}
+
 	
 	
 	static ArrayList<IFile> files;
@@ -158,7 +136,7 @@ public class Publish implements IHandler {
 			} catch (CoreException e) {
 				
 				//silently fail
-				e.printStackTrace();
+			//	e.printStackTrace();
 			}
 		}
 	}

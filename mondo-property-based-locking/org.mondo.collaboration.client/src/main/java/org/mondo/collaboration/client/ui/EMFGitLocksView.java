@@ -2,6 +2,7 @@ package org.mondo.collaboration.client.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -16,8 +17,12 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ComboBoxViewerCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -111,7 +116,7 @@ public class EMFGitLocksView extends ViewPart {
 		rowLayout.center = true;
 
 		rowLayout.wrap = true;
-		
+
 		row.setLayout(rowLayout);
 
 		Button addRow = new Button(row, SWT.PUSH);
@@ -124,6 +129,23 @@ public class EMFGitLocksView extends ViewPart {
 				// addRow(currentEiq, null);
 
 				addRow();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+
+			}
+		});
+
+		Button deleteRow = new Button(row, SWT.PUSH);
+		deleteRow.setText("Delete Row(s)");
+
+		deleteRow.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				deleteSelectedRows();
 			}
 
 			@Override
@@ -149,7 +171,6 @@ public class EMFGitLocksView extends ViewPart {
 			}
 		});
 
-
 		Button activate = new Button(row, SWT.PUSH);
 		activate.setText("Activate");
 
@@ -158,7 +179,7 @@ public class EMFGitLocksView extends ViewPart {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 
-				lockHandler.activateLocks2(currentEiq, collectLockDetails(),
+				lockHandler.activateLocks(currentEiq, collectLockDetails(),
 						currentEditor);
 			}
 
@@ -185,7 +206,25 @@ public class EMFGitLocksView extends ViewPart {
 			}
 		});
 
+	}
 
+	private void deleteSelectedRows() {
+		IStructuredSelection selection = (IStructuredSelection) tableViewer
+				.getSelection();
+
+		
+		Lock[] currentLocks = (Lock[]) tableViewer.getInput();
+		
+	
+	ArrayList<Lock> currentLocksList=new ArrayList<Lock>(Arrays.asList(currentLocks));
+	
+	currentLocksList.removeAll(selection.toList());
+	
+	tableViewer.setInput(currentLocksList.toArray(new Lock[currentLocksList.size()]));
+		
+	//	tableViewer.remove(selection.toArray());
+	//	tableViewer.re
+		tableViewer.refresh();
 	}
 
 	private void addRow() {
@@ -202,18 +241,18 @@ public class EMFGitLocksView extends ViewPart {
 		list.add(new Lock());
 
 		tableViewer.setInput(list.toArray(new Lock[list.size()]));
+
 	}
 
 	IFile currentEiq;
 	IFile currentBind;
 	IEditingDomainProvider currentEditor;
 
-	
-	public void setEditingDomainProvider(IEditingDomainProvider editor)
-	{
-		currentEditor=editor;
-		
+	public void setEditingDomainProvider(IEditingDomainProvider editor) {
+		currentEditor = editor;
+
 	}
+
 	public void refresh(IFile eiq, IFile bind, IEditingDomainProvider editor) {
 		currentBind = bind;
 		currentEiq = eiq;
@@ -226,7 +265,7 @@ public class EMFGitLocksView extends ViewPart {
 		}
 
 		addTools();
-
+		
 		addTable(eiq, bind);
 		loadLockFromFile(eiq, bind);
 
@@ -288,7 +327,6 @@ public class EMFGitLocksView extends ViewPart {
 
 				cellEditor.setInput(comboData);
 			} else if (type == FieldType.ENABLEFIELD) {
-			
 
 				cellEditor = new ComboBoxViewerCellEditor(
 						(Composite) getViewer().getControl(), SWT.READ_ONLY);
@@ -300,7 +338,6 @@ public class EMFGitLocksView extends ViewPart {
 				textCellEditor = new TextCellEditor((Composite) getViewer()
 						.getControl(), SWT.SINGLE);
 
-				
 			}
 
 		}
@@ -310,7 +347,7 @@ public class EMFGitLocksView extends ViewPart {
 			if (type == FieldType.PATTERNFIELD) {
 				return cellEditor;
 			} else if (type == FieldType.ENABLEFIELD) {
-				
+
 				return cellEditor;
 			} else {
 				return textCellEditor;
@@ -337,7 +374,7 @@ public class EMFGitLocksView extends ViewPart {
 					return ((Lock) element).getBinds();
 				} else if (this.type == FieldType.ENABLEFIELD) {
 					return ((Lock) element).isEnabled();
-				
+
 				}
 
 			}
@@ -384,6 +421,11 @@ public class EMFGitLocksView extends ViewPart {
 		if (tableViewer != null) {
 			tableViewer.getTable().dispose();
 		}
+		
+		if(!eiq.getRawLocation().toFile().exists())
+		{
+			return;
+		}
 
 		TableLayout tableLayout = new TableLayout();
 		tableLayout.addColumnData(new ColumnWeightData(1));
@@ -392,7 +434,7 @@ public class EMFGitLocksView extends ViewPart {
 		tableLayout.addColumnData(new ColumnWeightData(1));
 
 		Table baseTable = new Table(c, SWT.BORDER | SWT.FULL_SELECTION
-				| SWT.V_SCROLL);
+				| SWT.MULTI | SWT.V_SCROLL);
 		baseTable.setLinesVisible(true);
 		baseTable.setHeaderVisible(true);
 		baseTable.setLayout(tableLayout);
@@ -443,7 +485,33 @@ public class EMFGitLocksView extends ViewPart {
 		tableViewer.setLabelProvider(new ExampleTableLabelProvider());
 
 		tableViewer.refresh();
+
 		
+		
+		
+//		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+//			
+//			@Override
+//			public void selectionChanged(SelectionChangedEvent event) {
+//				Object source = event.getSource();
+//				
+//				TableViewer table = ((TableViewer) source);
+//						IStructuredSelection selection = (IStructuredSelection)table
+//								.getSelection();
+//						
+//						for(Object item:selection.toList())
+//						{
+//							table.refresh(item);
+//						}
+//						table.removeSelectionChangedListener(this);
+//						table.setSelection(selection, true);
+//						table.addSelectionChangedListener(this);
+//						
+//						
+//				
+//			}
+//		});
+
 
 	}
 

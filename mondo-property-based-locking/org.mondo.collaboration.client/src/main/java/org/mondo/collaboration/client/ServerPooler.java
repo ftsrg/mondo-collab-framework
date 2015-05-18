@@ -62,27 +62,26 @@ public class ServerPooler {
 	
 	private void prepareJob()
 	{
-	job=new Job("Check locks on server") {
+job=new Job("Check locks on server") {
+		
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			try{
 				
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try{
-				
-					
-					monitor.beginTask("Check locks ", 1);
-					
-					refreshActiveProjectsLocks();
-					
-					monitor.done();
-					return Status.OK_STATUS;
-					}finally{
-						schedule(Preferences.PoolingInterval);
-					}
-				}
-			};
-	
-		job.setPriority(Job.SHORT);
-		job.setSystem(true);
+			monitor.beginTask("Check locks ", 1);
+			
+			refreshActiveProjectsLocks();
+			
+			monitor.done();
+			return Status.OK_STATUS;
+			}finally{
+				schedule(Preferences.PoolingInterval);
+			}
+		}
+	};
+
+job.setPriority(Job.SHORT);
+job.setSystem(true);
 	}
 	
 	

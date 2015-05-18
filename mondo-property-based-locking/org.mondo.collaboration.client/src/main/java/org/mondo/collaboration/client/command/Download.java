@@ -94,6 +94,8 @@ public class Download implements IHandler {
 		
 		WebResource resource = client.resource(url).path("/download").queryParam("projectID", projectID)
 		.queryParam("filename", fileName);
+		
+		
 				
 		File response=resource.accept(MediaType.APPLICATION_OCTET_STREAM).get(File.class);
 		

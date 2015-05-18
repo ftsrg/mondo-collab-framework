@@ -2,7 +2,6 @@
   <extension point="org.eclipse.ui.commands">
     <command defaultHandler="org.mondo.collaboration.client.command.Publish" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish" name="Publish"/>
     <command defaultHandler="org.mondo.collaboration.client.command.Download" id="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download" name="Download"/>
-    <command defaultHandler="org.mondo.collaboration.client.command.MarkerTester" id="org.mondo.collaboration.client.command3" name="MarkerTester"/>
     <command defaultHandler="org.mondo.collaboration.client.projectNature.AddEMFGitNature" id="org.mondo.collaboration.client.command.AddEMFGitNature" name="AddEMFGitNature"/>
     <command defaultHandler="org.mondo.collaboration.client.projectNature.RemoveEMFGitNature" id="org.mondo.collaboration.client.command.RemoveEMFGitNature" name="RemoveEMFGitNature"/>
   </extension>
@@ -12,7 +11,6 @@
         <menu label="Locks">
           <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Publish" label="Publish" style="push"/>
           <command commandId="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download" label="Download" style="push"/>
-          <command commandId="org.mondo.collaboration.client.command3" label="MarkerTester" style="push"/>
           <command commandId="org.mondo.collaboration.client.command.AddEMFGitNature" label="Add EMFGit Nature" style="push"/>
           <command commandId="org.mondo.collaboration.client.command.RemoveEMFGitNature" label="Remove EMFGit Nature" style="push"/>
         </menu>

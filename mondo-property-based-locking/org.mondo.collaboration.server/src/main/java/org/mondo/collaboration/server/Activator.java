@@ -12,7 +12,7 @@ public class Activator implements BundleActivator {
 	private static BundleContext context;
 
 	
-	private ServiceRegistration<LockResource> registration;
+	private ServiceRegistration<ResourceHandler> registration;
 	
 	
 	public static String serverRoot="D:\\emfgit\\";
@@ -30,7 +30,7 @@ public class Activator implements BundleActivator {
 		
 		System.out.println("EMFGit Server Started");
 		
-		registration = bundleContext.registerService(LockResource.class, new LockResource(), null);
+		registration = bundleContext.registerService(ResourceHandler.class, new ResourceHandler(), null);
 		
 	}
 

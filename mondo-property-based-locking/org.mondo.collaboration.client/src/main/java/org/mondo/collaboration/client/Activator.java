@@ -163,7 +163,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 
 				
 				if (page != null) {
-
+					
 					page.addPartListener(listener);
 				}
 			}

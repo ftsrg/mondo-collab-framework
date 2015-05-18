@@ -3,6 +3,7 @@ package org.mondo.collaboration.client.incquery;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.incquery.runtime.api.IMatchProcessor;
 import org.eclipse.incquery.runtime.api.IQuerySpecification;
@@ -64,7 +65,7 @@ public class CourseWithNameLongerThanWeightMatcher extends BaseMatcher<CourseWit
   
   private final static int POSITION_C = 0;
   
-  private final static org.apache.log4j.Logger LOGGER = IncQueryLoggingUtil.getLogger(CourseWithNameLongerThanWeightMatcher.class);
+  private final static Logger LOGGER = IncQueryLoggingUtil.getLogger(CourseWithNameLongerThanWeightMatcher.class);
   
   /**
    * Initializes the pattern matcher over a given EMF model root (recommended: Resource or ResourceSet).

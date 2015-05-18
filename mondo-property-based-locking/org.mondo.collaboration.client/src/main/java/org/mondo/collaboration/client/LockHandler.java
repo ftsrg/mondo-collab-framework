@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.EventObject;
 import java.util.HashSet;
 
-
+import org.apache.log4j.Level;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
@@ -20,12 +20,15 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.command.CommandStackListener;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.incquery.databinding.runtime.api.IncQueryObservables;
@@ -42,6 +45,8 @@ import org.eclipse.incquery.runtime.api.IQuerySpecification;
 import org.eclipse.incquery.runtime.api.IncQueryMatcher;
 import org.eclipse.incquery.runtime.api.IncQueryModelUpdateListener;
 import org.eclipse.incquery.runtime.api.IncQueryModelUpdateListener.ChangeLevel;
+import org.eclipse.incquery.runtime.api.scope.IncQueryScope;
+import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.evm.api.Activation;
 import org.eclipse.incquery.runtime.evm.api.Context;
 import org.eclipse.incquery.runtime.evm.api.ExecutionSchema;
@@ -70,17 +75,68 @@ public class LockHandler {
 
 	private ArrayList<Lock> currentLocks;
 	private ArrayList<Lock> currentActivatedLocks;
-	
-	private ResourceSet currentResourceSet;
+
+	private long apppearCounter=0;
 
 	private ExecutionSchema executionSchema;
 	private AdvancedIncQueryEngine engine;
 	private UpdateCompleteBasedSchedulerFactory schedulerFactory;
 
+	
+	
+	 EContentAdapter adapter = new EContentAdapter() {
+         public void notifyChanged(Notification notification) {
+                 super.notifyChanged(notification);
+                 EObject notifier = (EObject) notification.getNotifier();
+                 int event = notification.getEventType();
+
+                 switch (event) {
+                 case Notification.REMOVING_ADAPTER:
+                         break;
+                 case Notification.MOVE:
+                         break; // currently no support for ordering
+                 case Notification.ADD:
+                	 break;
+                 case Notification.ADD_MANY:
+                	 break;
+                 case Notification.REMOVE:
+                	 System.out.println("OBJECT REMOVE");
+                	 Timer.startDeleteTimer();
+                	 break;
+                	 
+                 case Notification.REMOVE_MANY:
+                	 break;
+                 case Notification.RESOLVE:
+                	 break;
+                 case Notification.UNSET:
+                	 break;
+                 case Notification.SET:
+                         // DO Something
+                         break;
+                 }
+         }
+
+         @Override
+         protected void addAdapter(Notifier notifier) {
+                 super.addAdapter(notifier);
+
+                 // DO Something
+         }
+
+         @Override
+         protected void removeAdapter(Notifier notifier) {
+                 super.removeAdapter(notifier);
+
+                 // DO Something
+         }
+ };
+
+
+
 	public LockHandler() {
 
 		validAction = true;
-		currentActivatedLocks=new ArrayList<Lock>();
+		currentActivatedLocks = new ArrayList<Lock>();
 	}
 
 	public void deactivateLocks() {
@@ -95,16 +151,16 @@ public class LockHandler {
 					.getRuleSpecificationMultimap();
 
 			System.out.println("newSpeciSize:" + newSpecs.size());
-			
+
 			Marker.cancalLocksWarning();
 		}
 	}
 
-	public void activateLocks2(IFile eiq, ArrayList<Lock> locks,
+	public void activateLocks(IFile eiq, ArrayList<Lock> locks,
 			IEditingDomainProvider currentEditor) {
-		
+
 		deactivateLocks();
-		
+
 		currentLocks = locks;
 
 		EditingDomain ed = currentEditor.getEditingDomain();
@@ -113,58 +169,56 @@ public class LockHandler {
 
 		boolean engineInitNeeded = true;
 
-		
-//		if (currentResourceSet == null) {
-//			currentResourceSet = resourceSet;
-//			engineInitNeeded = true;
-//		} else if (currentResourceSet != null) {
-//			if (currentResourceSet.equals(resourceSet)) {
-//				engineInitNeeded = false;
-//			} else {
-//				engineInitNeeded = true;
-//			}
-//		}
-
 		try {
 
 			if (engineInitNeeded == true) {
-				
-				System.out.println("");
-				System.out.println("ENGINE INIT");
-				System.out.println("");
-				engine = AdvancedIncQueryEngine
-						.createUnmanagedEngine(resourceSet);
 
+				resourceSet.eAdapters().add(adapter); // Adapter bekötése
+				
+				EMFScope emfScope = new EMFScope(resourceSet);
+
+				
+				engine = AdvancedIncQueryEngine.createUnmanagedEngine(emfScope);
+
+				
+			
 				schedulerFactory = Schedulers
 						.getIQEngineSchedulerFactory(engine);
 
 				executionSchema = ExecutionSchemas
 						.createIncQueryExecutionSchema(engine, schedulerFactory);
 				
-			
+				executionSchema.getLogger().setLevel(Level.OFF);
+
 			}
 			URI fileURI = URI.createFileURI(eiq.getRawLocation().toFile()
 					.toString());
 
 			currentActivatedLocks.clear();
-			
+
 			for (Lock lock : locks) {
-				
-				if(lock.isEnabled())
-				{
+
+				if (lock.isEnabled()) {
 					currentActivatedLocks.add(lock);
-					createAndAddRuleSpecification(fileURI, lock, executionSchema, engine);
+					createAndAddRuleSpecification(fileURI, lock,
+							executionSchema);
 				}
 			}
-			
-			
-			
+
 			Marker.showLocksWarning(currentActivatedLocks);
 
-			executionSchema.startUnscheduledExecution();
-			
 			validAction = true;
 			
+			Timer.startInitTimer();
+			
+			apppearCounter=0;
+			executionSchema.startUnscheduledExecution();
+			Timer.stopInitTimer();
+			Timer.printInitElaspedTime();
+			System.out.println("apperCounter="+apppearCounter);
+			
+			validAction = true;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -177,17 +231,20 @@ public class LockHandler {
 						System.out.println("commandStackListener");
 						Command mostRecentCommand = ((CommandStack) event
 								.getSource()).getMostRecentCommand();
-
+						
 						if (mostRecentCommand != null) {
 
 							if (validAction == false) {
+								
+								Timer.stopDeleteTimer();
+								Timer.printDeleteElaspedTime();
+								
 								System.out.println("COMMAND STACK:");
 								Collection<?> objects = mostRecentCommand
 										.getAffectedObjects();
 								System.out.println(mostRecentCommand
 										.getDescription());
 
-							
 								System.out.println("");
 								System.out.println("UNDO");
 								System.out.println("");
@@ -198,22 +255,6 @@ public class LockHandler {
 								stopUndo();
 								validAction = true;
 
-								// MessageBox messageBox = new MessageBox(shell,
-								// SWT.ICON_WARNING | SWT.OK);
-								//
-								// messageBox.setText("Warning");
-								// messageBox.setMessage("UNDO");
-								// int buttonID = messageBox.open();
-								// switch(buttonID) {
-								// case SWT.YES:
-								//
-								// case SWT.OK:
-								//
-								// break;
-								// case SWT.CANCEL:
-								//
-								// }
-
 							}
 						}
 					}
@@ -222,7 +263,7 @@ public class LockHandler {
 	}
 
 	private void createAndAddRuleSpecification(URI eiq, Lock lock,
-			ExecutionSchema executionSchema, AdvancedIncQueryEngine engine) {
+			ExecutionSchema executionSchema) {
 
 		String patternFQN = lock.getPattern().substring(0,
 				lock.getPattern().indexOf(" "));
@@ -232,77 +273,15 @@ public class LockHandler {
 		IQuerySpecification<? extends IncQueryMatcher<? extends IPatternMatch>> specification = getPatternFromFile(
 				eiq, patternFQN);
 
-		IncQueryMatcher<? extends IPatternMatch> matcher = null;
-		try {
-			matcher = specification.getMatcher(engine);
-
-			engine.addModelUpdateListener(new IncQueryModelUpdateListener() {
-
-				@Override
-				public void notifyChanged(ChangeLevel changeLevel) {
-
-					changeLevel.values();
-				//	System.out.println("change");
-				}
-
-				@Override
-				public ChangeLevel getLevel() {
-					return ChangeLevel.MODEL;
-				}
-			});
-
-		} catch (IncQueryException e) {
-
-			e.printStackTrace();
-		}
-
-		engine.addMatchUpdateListener(matcher,
-				new IMatchUpdateListener<IPatternMatch>() {
-
-					@Override
-					public void notifyAppearance(IPatternMatch match) {
-
-						System.out.println("o");
-
-					}
-
-					@Override
-					public void notifyDisappearance(IPatternMatch match) {
-						System.out.println("a");
-
-					}
-				}, true);
-
-		IObservableSet set = IncQueryObservables.observeMatchesAsSet(
-				specification, engine);
-
-		set.addChangeListener(new IChangeListener() {
-
-			@Override
-			public void handleChange(ChangeEvent event) {
-				System.out.println("change");
-
-			}
-		});
-
-		set.addSetChangeListener(new ISetChangeListener() {
-
-			@Override
-			public void handleSetChange(SetChangeEvent event) {
-				SetDiff dif = event.diff;
-				System.out.println("SETchange");
-			}
-		});
-
 		Job<IPatternMatch> jobAppeared = Jobs.newStatelessJob(
 				IncQueryActivationStateEnum.APPEARED,
 				new IMatchProcessor<IPatternMatch>() {
 
 					@Override
 					public void process(IPatternMatch match) {
-						System.out.println("appear:");
+						apppearCounter++;
 						handlePatternMatch(match);
-						
+
 					}
 				});
 
@@ -326,7 +305,7 @@ public class LockHandler {
 					public void process(IPatternMatch match) {
 
 						System.out.println("update:");
-						//handlePatternMatch(match);
+						
 					}
 				});
 
@@ -337,89 +316,48 @@ public class LockHandler {
 					@Override
 					public void process(IPatternMatch match) {
 						System.out.println("inactive:");
-						// handlePatternMatch(match);
-						// validAction=false;
-					}
-				});
-
-		Job<IPatternMatch> joba = Jobs
-				.newRecordingJobForMatchActivation(new Job<IPatternMatch>(
-						IncQueryActivationStateEnum.UPDATED) {
-
-					@Override
-					protected void execute(
-							Activation<? extends IPatternMatch> activation,
-							Context context) {
-
-						String a = activation.getAtom().toString();
-
-						System.out.println("exec");
-
-					}
-
-					@Override
-					protected void handleError(
-							Activation<? extends IPatternMatch> activation,
-							Exception exception, Context context) {
-
+						
 					}
 				});
 
 		HashSet<Job<IPatternMatch>> jobs = Sets.newHashSet(jobUpdate,
-				jobAppeared, jobDisappeared, jobInactive, joba);
+				jobAppeared, jobDisappeared, jobInactive);
 
 		RuleSpecification<? extends IPatternMatch> ruleSpecification = Rules
 				.newMatcherRuleSpecification(
 						(IQuerySpecification<? extends IncQueryMatcher<IPatternMatch>>) specification,
 						lifecycle, jobs);
 
-		// EventFilter<IPatternMatch> eventFilter=new
-		// EventFilter<IPatternMatch>() {
-		//
-		// @Override
-		// public boolean isProcessable(IPatternMatch eventAtom) {
-		//
-		//
-		//
-		// return true;
-		// }
-		// };
-
-		// executionSchema.addRule(ruleSpecification, eventFilter);
-
 		executionSchema.addRule(ruleSpecification);
-
-		
 
 	}
 
 	private boolean isUndoing = false;
 
 	private void startUndo() {
-		System.out.println("");
-		System.out.println("START UNDO");
+
+		System.out.println("    UNDO");
 		isUndoing = true;
 	}
 
 	private void stopUndo() {
-		System.out.println("");
-		System.out.println("STOP UNDO");
+
 		isUndoing = false;
 	}
 
 	private void handlePatternMatch(IPatternMatch eventAtom) {
 		if (isUndoing == false) {
 			
-			boolean match = isEventAtomMatchAnyLock(eventAtom);
-			System.out.println("handlePatternMatch:" + match);
-
+			boolean match=false;
+			if(validAction==true)
+			{
+				 match = isEventAtomMatchAnyLock(eventAtom);
+			}
+			
 			// pattern match presented and no match detected before
 			if (validAction == true && match == true) {
 				validAction = false;
 			}
-
-			// validAction=!match;
-			// validAction=false;
 
 		}
 	}
@@ -429,7 +367,7 @@ public class LockHandler {
 
 		boolean match = false;
 		for (Lock lock : locks) {
-			if (lock.isMatchWithEventAtom3(eventAtom)) {
+			if (lock.isMatchWithEventAtom(eventAtom)) {
 				return true;
 			}
 		}
@@ -489,71 +427,67 @@ public class LockHandler {
 		}
 		return null;
 	}
-	
-	public ArrayList<String> getPatterNames(IFile eiqFile)
-	{
-		String eiqFilePath=eiqFile.getFullPath().toString();
-		EList<Pattern> pattenrs = Utils.getPatternsFromFile(org.eclipse.emf.common.util.URI.createFileURI(eiqFilePath));
-		
-		ArrayList<String> ret=new ArrayList<String>();
-		
-		for(Pattern pattern:pattenrs)
-		{
-			EList<Variable> paramenters = pattern.getParameters();
-			
-			String paramenterText="";
-			for(Variable parameter:paramenters)
-			{
-				paramenterText=paramenterText+" "+parameter.getName();
+
+	public ArrayList<String> getPatterNames(IFile eiqFile) {
+		String eiqFilePath = eiqFile.getFullPath().toString();
+		EList<Pattern> pattenrs = Utils
+				.getPatternsFromFile(org.eclipse.emf.common.util.URI
+						.createFileURI(eiqFilePath));
+
+		ArrayList<String> ret = new ArrayList<String>();
+
+		if (pattenrs != null) {
+			for (Pattern pattern : pattenrs) {
+				EList<Variable> paramenters = pattern.getParameters();
+
+				String paramenterText = "";
+				for (Variable parameter : paramenters) {
+					paramenterText = paramenterText + " " + parameter.getName();
+				}
+
+				EList<EObject> contents = pattern.eContents();
+				System.out.println("OBJECTS:");
+				for (EObject content : contents) {
+					System.out.println(content);
+				}
+
+				String text = pattern.getName() + paramenterText;
+				ret.add(text);
 			}
-			
-			EList<EObject> contents = pattern.eContents();
-			System.out.println("OBJECTS:");
-			for(EObject content:contents)
-			{
-				System.out.println(content);
-			}
-			
-			
-			String text=pattern.getName()+paramenterText;
-			ret.add(text);
 		}
-		
+
 		return ret;
-		
+
 	}
-	
-	public ArrayList<Lock> loadLockFromFile(IFile eiqFile,IFile bindFile)
-	{
+
+	public ArrayList<Lock> loadLockFromFile(IFile eiqFile, IFile bindFile) {
 		ArrayList<Lock> locks = null;
-		try{
-		 FileInputStream fileIn = new FileInputStream(bindFile.getRawLocation().toFile());
-         ObjectInputStream in = new ObjectInputStream(fileIn);
-         
-         locks = (ArrayList<Lock>) in.readObject();
-         in.close();
-         fileIn.close();
-		}catch(Exception e)
-		{
-			e.printStackTrace();
+		try {
+			FileInputStream fileIn = new FileInputStream(bindFile
+					.getRawLocation().toFile());
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+
+			locks = (ArrayList<Lock>) in.readObject();
+			in.close();
+			fileIn.close();
+		} catch (Exception e) {
+			locks = new ArrayList<Lock>();
+			// e.printStackTrace();
 		}
-		
+
 		return locks;
-		
-		
+
 	}
-	
-	public void saveLockToFile(IFile bindFile,ArrayList<Lock> locks)
-	{
-		try{
-		FileOutputStream fileOut =
-		         new FileOutputStream(bindFile.getRawLocation().toFile());
-		         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-		         out.writeObject(locks);
-		         out.close();
-		         fileOut.close();
-		}catch(Exception e)
-		{
+
+	public void saveLockToFile(IFile bindFile, ArrayList<Lock> locks) {
+		try {
+			FileOutputStream fileOut = new FileOutputStream(bindFile
+					.getRawLocation().toFile());
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(locks);
+			out.close();
+			fileOut.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

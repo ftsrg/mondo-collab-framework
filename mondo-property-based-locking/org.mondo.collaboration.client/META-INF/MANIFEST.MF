@@ -38,6 +38,7 @@ Require-Bundle: com.sun.jersey.client;bundle-version="1.19.0",
  org.eclipse.uml2.uml,
  org.eclipse.equinox.registry,
  org.eclipse.swt,
- org.eclipse.jface
+ org.eclipse.jface,
+ org.apache.log4j;bundle-version="1.2.15"
 Import-Package: org.osgi.framework;version="1.8.0"
 Bundle-ActivationPolicy: lazy

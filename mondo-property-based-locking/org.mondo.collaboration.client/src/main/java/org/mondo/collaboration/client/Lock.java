@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.incquery.runtime.api.IPatternMatch;
@@ -20,6 +21,8 @@ public class Lock implements Serializable {
 	private String name="";
 	private String pattern="";
 	private String binds="";
+	
+	final private String ID=UUID.randomUUID().toString()+Long.toString(System.currentTimeMillis());
 
 	public Boolean isEnabled() {
 		return enabled;
@@ -30,6 +33,7 @@ public class Lock implements Serializable {
 	}
 
 	public String getName() {
+		
 		return name;
 	}
 
@@ -52,6 +56,9 @@ public class Lock implements Serializable {
 	public void setBinds(String binds) {
 		this.binds = binds;
 	}
+	public String getID() {
+		return ID;
+	}
 
 	public boolean isEmpty() {
 		if (name == null || pattern == null) {
@@ -67,7 +74,7 @@ public class Lock implements Serializable {
 
 	
 	
-	public boolean isMatchWithEventAtom3(IPatternMatch eventAtom) {
+	public boolean isMatchWithEventAtom(IPatternMatch eventAtom) {
 		if (isEmpty()) {
 			return false;
 		}
@@ -82,17 +89,13 @@ public class Lock implements Serializable {
 			if (isPatternMatching(eventAtom)) {
 				
 				
-				ArrayList<Map<String, String>> bindsList = parseBinds2();
+				ArrayList<Map<String, String>> bindsList = parseBinds();
 				
 				Map<String, Object> eventAtomObjects = parseEventAtomObjects(eventAtom);
 				
 				
-				
-				HashMap<String,Boolean> lockBindsSatasfaction=new HashMap<String, Boolean>();
-				
 				for(Map<String, String> bind:bindsList)
 				{
-					//String bindType=bind.get(parameterType);
 					String bindField=bind.get(parameterField);
 					String bindValue=bind.get(parameterValue);
 					
@@ -140,10 +143,16 @@ public class Lock implements Serializable {
 
 
 	
-	private ArrayList<Map<String, String>> parseBinds2() {
+	private ArrayList<Map<String, String>> parseBinds() {
 		ArrayList<Map<String, String>> ret = new ArrayList<Map<String, String>>();
 
+		
+		if(binds.isEmpty()==true)
+		{
+			return ret;
+		}
 		String[] bindDefs = binds.split(",");
+		
 		for (String bindDef : bindDefs) {
 			HashMap<String, String> map = new HashMap<String, String>();
 
