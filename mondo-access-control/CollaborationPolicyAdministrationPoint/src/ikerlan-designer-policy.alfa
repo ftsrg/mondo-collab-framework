@@ -1,0 +1,84 @@
+namespace eu.mondo.collaboration.accessprotocol.accesspolicy{
+	import eu.mondo.collaboration.accessprotocol.accesspolicy.Attributes.*
+	import Attributes.*
+	
+    policyset topLevel {
+        apply permitOverrides
+
+        policy userBasedPolicy {
+        	target clause user.userId == "admin"
+        	apply permitOverrides
+        	rule {
+        		permit
+        		on permit {
+        			advice displayAdvice {
+        				message = "Permission granted by user based policy"
+        			}
+        		}
+			}
+		}
+		
+		policyset roleBasedPolicy{
+			apply permitOverrides
+			
+			policy designerPolicy {
+				target clause user.role == "designer"
+				apply denyOverrides
+				rule {
+					target clause resource.resourceType == "SystemOutput" and resource.resourceAttributeName == "sysId" and resource.resourceAttributeValue == "lockedElement" and action.actionId == "RemoveReference"
+					deny
+				}
+				rule {
+					permit
+				}
+				on permit {
+					advice displayAdvice {
+						message = "Permission granted by role based policy: designer policy"
+					}
+				}
+				on deny {
+					advice displayAdvice {
+						message = "Permission denied by role based policy: designer policy"
+					}	
+				}
+			}
+					
+			policyset editorPolicy {
+				target clause user.role == "editor"
+				apply denyOverrides
+				policy {
+					target clause resource.resourceType == "SystemInput" or resource.resourceType == "SystemOutput"
+					apply denyOverrides
+					rule {
+						condition action.actionId == "InsertReference" || action.actionId == "RemoveReference"
+							|| action.actionId == "MoveReference"
+						 deny
+						 on deny {
+							advice displayAdvice {
+								message = "Designers doesn't have access to SystemOutputs or SystemInputs!"
+							}
+						}	
+					}
+					rule {
+						permit
+					}
+				}
+				
+				on permit {
+					advice displayAdvice {
+						message = "Permission granted by role based policy: editor policy"
+					}
+				}
+				on deny {
+					advice displayAdvice {
+						message = "Permission denied by role based policy: editor policy"
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+	
