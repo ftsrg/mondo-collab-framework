@@ -1,0 +1,37 @@
+grammar hu.bme.mit.ftsrg.mondo.accesscontrol.policydsl.Policy with org.eclipse.xtext.common.Terminals
+
+generate policy "http://www.bme.hu/mit/ftsrg/mondo/accesscontrol/policydsl/Policy"
+
+Model:
+	elements+=Elements*;
+	
+Policy:
+	'Policy'
+	name = ID
+	('{'
+		('permission' permission = PermissionType ';' &
+		'query' query = STRING ';' & 
+		'pattern' pattern = STRING ';')
+	'}')
+;
+Association:
+	'Association'
+	('{'
+		(teszt = STRING)?
+		(('defaultPermission' defaultPermission = PermissionType ';')? &
+		'override' override = PermissionType ';' &
+		'target' target = TargetType'.'target_id = STRING ';' &
+		'policies' policies += [Policy] (',' policies += [Policy])* ';')
+	'}')
+;
+	
+Elements:
+	Policy | Association
+;
+
+enum PermissionType:
+	UNSET |DENY | ALLOW
+;
+enum TargetType:
+	GROUP | USER
+;
