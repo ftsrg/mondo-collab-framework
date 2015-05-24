@@ -4,19 +4,19 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
-public class EMFGitPorjectNature implements IProjectNature{
+public class EMFGitPorjectNature implements IProjectNature {
 
-	
-	public static final String ID="org.mondo.collaboration.client.EMFGitNature";
-	
+	public static final String ID = "org.mondo.collaboration.client.EMFGitNature";
+
 	private IProject project;
+
 	@Override
 	public void configure() throws CoreException {
 	}
 
 	@Override
 	public void deconfigure() throws CoreException {
-		
+
 	}
 
 	@Override
@@ -26,8 +26,8 @@ public class EMFGitPorjectNature implements IProjectNature{
 
 	@Override
 	public void setProject(IProject project) {
-		this.project=project;
-		
+		this.project = project;
+
 	}
 
 }

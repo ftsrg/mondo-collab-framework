@@ -20,90 +20,75 @@ import com.sun.jersey.api.client.WebResource.Builder;
 
 public class ServerPooler {
 
-
 	private Download lockerSync;
-	
+
 	private static Job job;
+
 	public ServerPooler() {
 
-		
-		lockerSync=new Download();
-		
-		if(job==null)
-		{
+		lockerSync = new Download();
+
+		if (job == null) {
 			prepareJob();
 		}
-		
-	
+
 	}
-	
-	public static void start()
-	{
-		if(job!=null)
-		{
-			if(Preferences.PoolingEnabled)
-			{
+
+	public static void start() {
+		if (job != null) {
+			if (Preferences.PoolingEnabled) {
 				job.schedule();
 			}
 		}
 	}
-	
-	public static void stop()
-	{
-		if(job!=null)
-		{
-			if(Preferences.PoolingEnabled==false)
-			{
-			job.cancel();
-			}
-		}
-	}
-	
-	
-	private void prepareJob()
-	{
-job=new Job("Check locks on server") {
-		
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			try{
-				
-			monitor.beginTask("Check locks ", 1);
-			
-			refreshActiveProjectsLocks();
-			
-			monitor.done();
-			return Status.OK_STATUS;
-			}finally{
-				schedule(Preferences.PoolingInterval);
-			}
-		}
-	};
 
-job.setPriority(Job.SHORT);
-job.setSystem(true);
-	}
-	
-	
-	private void refreshActiveProjectsLocks()
-	{
-		
-		try{
-		List<IProject> projects=Utils.getActiveEMFGitProjects();
-		
-		for (IProject project : projects) {
-			
-			lockerSync.syncLockFiles(project);
-			
+	public static void stop() {
+		if (job != null) {
+			if (Preferences.PoolingEnabled == false) {
+				job.cancel();
+			}
 		}
-		
-		Marker.cancelConnectionProblem();
-		}catch(Exception e)
-		{
+	}
+
+	private void prepareJob() {
+		job = new Job("Check locks on server") {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
+
+					monitor.beginTask("Check locks ", 1);
+
+					refreshActiveProjectsLocks();
+
+					monitor.done();
+					return Status.OK_STATUS;
+				} finally {
+					schedule(Preferences.PoolingInterval);
+				}
+			}
+		};
+
+		job.setPriority(Job.SHORT);
+		job.setSystem(true);
+	}
+
+	private void refreshActiveProjectsLocks() {
+
+		try {
+			List<IProject> projects = Utils.getActiveEMFGitProjects();
+
+			for (IProject project : projects) {
+
+				lockerSync.syncLockFiles(project);
+
+			}
+
+			Marker.cancelConnectionProblem();
+		} catch (Exception e) {
 			Marker.showConnectionProblem();
 		}
-		
-		
+
 	}
 
 }

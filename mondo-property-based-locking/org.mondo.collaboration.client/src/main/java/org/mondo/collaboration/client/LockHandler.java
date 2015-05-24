@@ -76,62 +76,58 @@ public class LockHandler {
 	private ArrayList<Lock> currentLocks;
 	private ArrayList<Lock> currentActivatedLocks;
 
-	private long apppearCounter=0;
+	private long apppearCounter = 0;
 
 	private ExecutionSchema executionSchema;
 	private AdvancedIncQueryEngine engine;
 	private UpdateCompleteBasedSchedulerFactory schedulerFactory;
 
-	
-	
-	 EContentAdapter adapter = new EContentAdapter() {
-         public void notifyChanged(Notification notification) {
-                 super.notifyChanged(notification);
-                 EObject notifier = (EObject) notification.getNotifier();
-                 int event = notification.getEventType();
+	EContentAdapter adapter = new EContentAdapter() {
+		public void notifyChanged(Notification notification) {
+			super.notifyChanged(notification);
+			EObject notifier = (EObject) notification.getNotifier();
+			int event = notification.getEventType();
 
-                 switch (event) {
-                 case Notification.REMOVING_ADAPTER:
-                         break;
-                 case Notification.MOVE:
-                         break; // currently no support for ordering
-                 case Notification.ADD:
-                	 break;
-                 case Notification.ADD_MANY:
-                	 break;
-                 case Notification.REMOVE:
-                	 System.out.println("OBJECT REMOVE");
-                	 Timer.startDeleteTimer();
-                	 break;
-                	 
-                 case Notification.REMOVE_MANY:
-                	 break;
-                 case Notification.RESOLVE:
-                	 break;
-                 case Notification.UNSET:
-                	 break;
-                 case Notification.SET:
-                         // DO Something
-                         break;
-                 }
-         }
+			switch (event) {
+			case Notification.REMOVING_ADAPTER:
+				break;
+			case Notification.MOVE:
+				break; // currently no support for ordering
+			case Notification.ADD:
+				break;
+			case Notification.ADD_MANY:
+				break;
+			case Notification.REMOVE:
 
-         @Override
-         protected void addAdapter(Notifier notifier) {
-                 super.addAdapter(notifier);
+				Timer.startDeleteTimer();
+				break;
 
-                 // DO Something
-         }
+			case Notification.REMOVE_MANY:
+				break;
+			case Notification.RESOLVE:
+				break;
+			case Notification.UNSET:
+				break;
+			case Notification.SET:
+				// DO Something
+				break;
+			}
+		}
 
-         @Override
-         protected void removeAdapter(Notifier notifier) {
-                 super.removeAdapter(notifier);
+		@Override
+		protected void addAdapter(Notifier notifier) {
+			super.addAdapter(notifier);
 
-                 // DO Something
-         }
- };
+			// DO Something
+		}
 
+		@Override
+		protected void removeAdapter(Notifier notifier) {
+			super.removeAdapter(notifier);
 
+			// DO Something
+		}
+	};
 
 	public LockHandler() {
 
@@ -149,8 +145,6 @@ public class LockHandler {
 
 			Multimap<RuleSpecification<?>, EventFilter<?>> newSpecs = executionSchema
 					.getRuleSpecificationMultimap();
-
-			System.out.println("newSpeciSize:" + newSpecs.size());
 
 			Marker.cancalLocksWarning();
 		}
@@ -173,21 +167,18 @@ public class LockHandler {
 
 			if (engineInitNeeded == true) {
 
-				resourceSet.eAdapters().add(adapter); // Adapter bekötése
-				
+				resourceSet.eAdapters().add(adapter);
+
 				EMFScope emfScope = new EMFScope(resourceSet);
 
-				
 				engine = AdvancedIncQueryEngine.createUnmanagedEngine(emfScope);
 
-				
-			
 				schedulerFactory = Schedulers
 						.getIQEngineSchedulerFactory(engine);
 
 				executionSchema = ExecutionSchemas
 						.createIncQueryExecutionSchema(engine, schedulerFactory);
-				
+
 				executionSchema.getLogger().setLevel(Level.OFF);
 
 			}
@@ -208,15 +199,15 @@ public class LockHandler {
 			Marker.showLocksWarning(currentActivatedLocks);
 
 			validAction = true;
-			
+
 			Timer.startInitTimer();
-			
-			apppearCounter=0;
+
+			apppearCounter = 0;
 			executionSchema.startUnscheduledExecution();
 			Timer.stopInitTimer();
 			Timer.printInitElaspedTime();
-			System.out.println("apperCounter="+apppearCounter);
-			
+			System.out.println("apperCounter=" + apppearCounter);
+
 			validAction = true;
 
 		} catch (Exception e) {
@@ -231,23 +222,20 @@ public class LockHandler {
 						System.out.println("commandStackListener");
 						Command mostRecentCommand = ((CommandStack) event
 								.getSource()).getMostRecentCommand();
-						
+
 						if (mostRecentCommand != null) {
 
 							if (validAction == false) {
-								
+
 								Timer.stopDeleteTimer();
 								Timer.printDeleteElaspedTime();
-								
-								System.out.println("COMMAND STACK:");
+
 								Collection<?> objects = mostRecentCommand
 										.getAffectedObjects();
 								System.out.println(mostRecentCommand
 										.getDescription());
 
-								System.out.println("");
 								System.out.println("UNDO");
-								System.out.println("");
 
 								startUndo();
 								mostRecentCommand.undo();
@@ -291,7 +279,7 @@ public class LockHandler {
 
 					@Override
 					public void process(IPatternMatch match) {
-						System.out.println("disappear:");
+
 						handlePatternMatch(match);
 
 					}
@@ -304,8 +292,6 @@ public class LockHandler {
 					@Override
 					public void process(IPatternMatch match) {
 
-						System.out.println("update:");
-						
 					}
 				});
 
@@ -315,8 +301,7 @@ public class LockHandler {
 
 					@Override
 					public void process(IPatternMatch match) {
-						System.out.println("inactive:");
-						
+
 					}
 				});
 
@@ -347,13 +332,12 @@ public class LockHandler {
 
 	private void handlePatternMatch(IPatternMatch eventAtom) {
 		if (isUndoing == false) {
-			
-			boolean match=false;
-			if(validAction==true)
-			{
-				 match = isEventAtomMatchAnyLock(eventAtom);
+
+			boolean match = false;
+			if (validAction == true) {
+				match = isEventAtomMatchAnyLock(eventAtom);
 			}
-			
+
 			// pattern match presented and no match detected before
 			if (validAction == true && match == true) {
 				validAction = false;
@@ -446,10 +430,6 @@ public class LockHandler {
 				}
 
 				EList<EObject> contents = pattern.eContents();
-				System.out.println("OBJECTS:");
-				for (EObject content : contents) {
-					System.out.println(content);
-				}
 
 				String text = pattern.getName() + paramenterText;
 				ret.add(text);

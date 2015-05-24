@@ -127,7 +127,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 
 			@Override
 			public void partClosed(IWorkbenchPartReference partRef) {
-				
+
 			}
 
 			@Override
@@ -137,7 +137,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 
 			@Override
 			public void partActivated(IWorkbenchPartReference partRef) {
-				
+
 				activateLockView(partRef.getPart(false));
 
 			}
@@ -157,13 +157,11 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 
 					activateLockView(activePart);
 				} catch (Exception e) {
-					
-					
+
 				}
 
-				
 				if (page != null) {
-					
+
 					page.addPartListener(listener);
 				}
 			}
@@ -179,11 +177,10 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 
 			if (partRef instanceof IEditorPart) {
 
-				IEditorPart editor = ((IEditorPart)partRef);
+				IEditorPart editor = ((IEditorPart) partRef);
 
 				if (editor instanceof IEditingDomainProvider) {
 
-					System.out.println("activate");
 					IEditingDomainProvider ed = (IEditingDomainProvider) editor;
 
 					EList<Resource> list = ed.getEditingDomain()
@@ -260,13 +257,11 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 					view.refresh(eiqFile, bindFile, editor);
 				}
 				view.setEditingDomainProvider(editor);
-				
-				
+
 			} else if (!lastModelName.equals(currentModelName)) {
 				lastModelName = currentModelName;
 				view.refresh(eiqFile, bindFile, editor);
 			}
-			
 
 		}
 	}

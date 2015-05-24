@@ -48,7 +48,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	public static IProject getSelectedProject() {
 
 		IWorkbenchWindow window = PlatformUI.getWorkbench()
@@ -57,20 +57,16 @@ public class Utils {
 			IStructuredSelection selection = (IStructuredSelection) window
 					.getSelectionService().getSelection();
 			Object firstElement = selection.getFirstElement();
-			
-			if(firstElement instanceof IProject)
-			{
+
+			if (firstElement instanceof IProject) {
 				return (IProject) firstElement;
-			}
-			else if(firstElement instanceof IResource)
-			{
+			} else if (firstElement instanceof IResource) {
 				return ((IResource) firstElement).getProject();
 			}
 		}
 
 		return null;
 	}
-
 
 	public static void createLocksDirIfNotExists(String projectName) {
 		IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace()
@@ -173,21 +169,20 @@ public class Utils {
 		File file = new File(path);
 		return file.lastModified();
 	}
-	
-	
-	public static String getEobjectsFiled(Object o,String fieldName)
-	{
+
+	public static String getEobjectsFiled(Object o, String fieldName) {
 		if (o instanceof EObject) {
-            EStructuralFeature feature = ((EObject) o).eClass().getEStructuralFeature(fieldName);
-            if (feature != null) {
-                Object value = ((EObject) o).eGet(feature);
-                if (value != null) {
-                    return value.toString();
-                }
-            }
-        }
-        return null;
-		
+			EStructuralFeature feature = ((EObject) o).eClass()
+					.getEStructuralFeature(fieldName);
+			if (feature != null) {
+				Object value = ((EObject) o).eGet(feature);
+				if (value != null) {
+					return value.toString();
+				}
+			}
+		}
+		return null;
+
 	}
 
 	public static EList<Pattern> getPatternsFromFile(URI fileURI) {
@@ -197,7 +192,6 @@ public class Utils {
 
 			Pattern p = null;
 
-			
 			Resource patternResource = resourceSet.getResource(fileURI, true);
 
 			if (patternResource != null) {

@@ -81,20 +81,17 @@ public class EMFGitPreferencePage extends PreferencePage implements
 
 		Label serverAddressText = new Label(c, SWT.LEFT);
 		serverAddressText.setText("Server Address:");
-		
-		
+
 		serverAddress = new Text(c, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
-		
-		
+
 		int columns = 15;
-	    GC gc = new GC(serverAddress);
-	    FontMetrics fm = gc.getFontMetrics();
-	    int width = columns * fm.getAverageCharWidth();
-	    int height = fm.getHeight();
-	    gc.dispose();
-	    serverAddress.setSize(serverAddress.computeSize(width, height));
-		
-		
+		GC gc = new GC(serverAddress);
+		FontMetrics fm = gc.getFontMetrics();
+		int width = columns * fm.getAverageCharWidth();
+		int height = fm.getHeight();
+		gc.dispose();
+		serverAddress.setSize(serverAddress.computeSize(width, height));
+
 		Label serverPoolingText = new Label(c, SWT.LEFT);
 		serverPoolingText.setText("Server Pooling:");
 
@@ -119,16 +116,14 @@ public class EMFGitPreferencePage extends PreferencePage implements
 				}
 			}
 		});
-		
-		
-		
+
 		columns = 8;
-	    gc = new GC(poolingInterval);
-	     fm = gc.getFontMetrics();
-	   width = columns * fm.getAverageCharWidth();
-	     height = fm.getHeight();
-	    gc.dispose();
-	    poolingInterval.setSize(poolingInterval.computeSize(width, height));
+		gc = new GC(poolingInterval);
+		fm = gc.getFontMetrics();
+		width = columns * fm.getAverageCharWidth();
+		height = fm.getHeight();
+		gc.dispose();
+		poolingInterval.setSize(poolingInterval.computeSize(width, height));
 
 		initializeValues();
 

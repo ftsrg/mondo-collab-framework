@@ -37,132 +37,125 @@ import com.sun.jersey.api.client.WebResource;
 
 public class Download implements IHandler {
 
-	
-	public static final String ID="org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download";
-	
+	public static final String ID = "org.mondo.collaboration.client.org.mondo.collaboration.client.command.lock.Download";
+
 	public void addHandlerListener(IHandlerListener handlerListener) {
-	
 
 	}
 
 	public void dispose() {
-		
+
 	}
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
-		IProject selectedProject= Utils.getSelectedProject();
-		
+
+		IProject selectedProject = Utils.getSelectedProject();
+
 		syncLockFiles(selectedProject);
-		 
+
 		return null;
 	}
-	
-	public void syncLockFiles(IProject selectedProject)
-	{
-		
-		String selectedPorjectName=selectedProject.getName();
-		String selectProjectID=EMFGitProjectnatureHandler.getProjectID(selectedProject);
-		
+
+	public void syncLockFiles(IProject selectedProject) {
+
+		String selectedPorjectName = selectedProject.getName();
+		String selectProjectID = EMFGitProjectnatureHandler
+				.getProjectID(selectedProject);
+
 		Utils.createLocksDirIfNotExists(selectedPorjectName);
-		
-		 Map<String, Long> listToDownload = getServersLockFiles(selectedProject);
-		
-		IFolder lockDir= Utils.getProjectLockDir(selectedPorjectName);
-		 
-		 for( String key:  listToDownload.keySet())
-		 {
-			 Long serversModDate=listToDownload.get(key);
-			 
-			Long localModDate=lockDir.getFile(key).getRawLocation().toFile().lastModified();
-			 
-			if(serversModDate>localModDate)
-			{
-				File downloadedFile=downloadFile(selectProjectID, key);
-				saveFile(downloadedFile, selectedPorjectName,key);
+
+		Map<String, Long> listToDownload = getServersLockFiles(selectedProject);
+
+		IFolder lockDir = Utils.getProjectLockDir(selectedPorjectName);
+
+		for (String key : listToDownload.keySet()) {
+			Long serversModDate = listToDownload.get(key);
+
+			Long localModDate = lockDir.getFile(key).getRawLocation().toFile()
+					.lastModified();
+
+			if (serversModDate > localModDate) {
+				File downloadedFile = downloadFile(selectProjectID, key);
+				saveFile(downloadedFile, selectedPorjectName, key);
 			}
-			
-		 }
+
+		}
 	}
-	
-	private File downloadFile(String projectID,String fileName)
-	{
-		
-		Client client=Activator.getClient();
-		
-		String url=Preferences.ServerAddress;
-		
-		WebResource resource = client.resource(url).path("/download").queryParam("projectID", projectID)
-		.queryParam("filename", fileName);
-		
-		
-				
-		File response=resource.accept(MediaType.APPLICATION_OCTET_STREAM).get(File.class);
-		
+
+	private File downloadFile(String projectID, String fileName) {
+
+		Client client = Activator.getClient();
+
+		String url = Preferences.ServerAddress;
+
+		WebResource resource = client.resource(url).path("/download")
+				.queryParam("projectID", projectID)
+				.queryParam("filename", fileName);
+
+		File response = resource.accept(MediaType.APPLICATION_OCTET_STREAM)
+				.get(File.class);
+
 		return response;
 	}
-	private void saveFile(File fileToSave,String projectName,String fileName)
-	{
-		IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+
+	private void saveFile(File fileToSave, String projectName, String fileName) {
+		IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace()
+				.getRoot();
 		IProject project = myWorkspaceRoot.getProject(projectName);
-		
+
 		IFolder locksDir = project.getFolder("lock");
-		
+
 		IFile fileToCreate = locksDir.getFile(fileName);
-		
-		if(!fileToCreate.exists())
-		{
+
+		if (!fileToCreate.exists()) {
 			try {
-				fileToCreate.create(new ByteArrayInputStream(new byte[0]), true, Utils.getProgressMonitor());
+				fileToCreate.create(new ByteArrayInputStream(new byte[0]),
+						true, Utils.getProgressMonitor());
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		try {
 			Files.copy(fileToSave, fileToCreate.getLocation().toFile());
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
-		
-		
-		
-		
+
 	}
-	
-	private Map<String, Long> getServersLockFiles(IProject selectedProject)
-	{
-		Client client=Activator.getClient();
-		
-		String url=Preferences.ServerAddress;
-		
-		
-		String projectID=EMFGitProjectnatureHandler.getProjectID(selectedProject);
-		
-		WebResource resource=client.resource(url).path("/projectFiles").queryParam("projectID", projectID );
-		
-		String response= resource.accept(MediaType.APPLICATION_JSON).get(String.class);
-		
-		JSONObject filesModDate=(JSONObject) JSONValue.parse(response);
-		
-		
+
+	private Map<String, Long> getServersLockFiles(IProject selectedProject) {
+		Client client = Activator.getClient();
+
+		String url = Preferences.ServerAddress;
+
+		String projectID = EMFGitProjectnatureHandler
+				.getProjectID(selectedProject);
+
+		WebResource resource = client.resource(url).path("/projectFiles")
+				.queryParam("projectID", projectID);
+
+		String response = resource.accept(MediaType.APPLICATION_JSON).get(
+				String.class);
+
+		JSONObject filesModDate = (JSONObject) JSONValue.parse(response);
+
 		return Utils.convertJsonObjectToMap(filesModDate);
-		
+
 	}
-	
-	
+
 	public boolean isEnabled() {
-		return EMFGitProjectnatureHandler.isProjectHasEMFGitNature(Utils.getSelectedProject());
+		return EMFGitProjectnatureHandler.isProjectHasEMFGitNature(Utils
+				.getSelectedProject());
 	}
 
 	public boolean isHandled() {
 		return true;
 	}
 
-
 	public void removeHandlerListener(IHandlerListener handlerListener) {
-		
+
 	}
 
 }

@@ -17,12 +17,13 @@ public class Lock implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8761752530179435040L;
-	private Boolean enabled=false;
-	private String name="";
-	private String pattern="";
-	private String binds="";
-	
-	final private String ID=UUID.randomUUID().toString()+Long.toString(System.currentTimeMillis());
+	private Boolean enabled = false;
+	private String name = "";
+	private String pattern = "";
+	private String binds = "";
+
+	final private String ID = UUID.randomUUID().toString()
+			+ Long.toString(System.currentTimeMillis());
 
 	public Boolean isEnabled() {
 		return enabled;
@@ -33,7 +34,7 @@ public class Lock implements Serializable {
 	}
 
 	public String getName() {
-		
+
 		return name;
 	}
 
@@ -56,6 +57,7 @@ public class Lock implements Serializable {
 	public void setBinds(String binds) {
 		this.binds = binds;
 	}
+
 	public String getID() {
 		return ID;
 	}
@@ -71,49 +73,36 @@ public class Lock implements Serializable {
 		return false;
 	}
 
-
-	
-	
 	public boolean isMatchWithEventAtom(IPatternMatch eventAtom) {
 		if (isEmpty()) {
 			return false;
 		}
-		
-		if(enabled==false)
-		{
+
+		if (enabled == false) {
 			return false;
 		}
 
 		else {
 
 			if (isPatternMatching(eventAtom)) {
-				
-				
+
 				ArrayList<Map<String, String>> bindsList = parseBinds();
-				
+
 				Map<String, Object> eventAtomObjects = parseEventAtomObjects(eventAtom);
-				
-				
-				for(Map<String, String> bind:bindsList)
-				{
-					String bindField=bind.get(parameterField);
-					String bindValue=bind.get(parameterValue);
-					
-					if(eventAtomObjects.containsKey(bindField))
-					{
-						if(!eventAtomObjects.get(bindField).equals(bindValue))
-						{
+
+				for (Map<String, String> bind : bindsList) {
+					String bindField = bind.get(parameterField);
+					String bindValue = bind.get(parameterValue);
+
+					if (eventAtomObjects.containsKey(bindField)) {
+						if (!eventAtomObjects.get(bindField).equals(bindValue)) {
 							return false;
 						}
-					}
-					else
-					{
+					} else {
 						return false;
 					}
-					
 
 				}
-				
 
 				return true;
 			}
@@ -122,7 +111,6 @@ public class Lock implements Serializable {
 
 		}
 	}
-
 
 	private boolean isPatternMatching(IPatternMatch eventAtom) {
 		String patternName = eventAtom.patternName();
@@ -141,47 +129,37 @@ public class Lock implements Serializable {
 	final String parameterField = "parameterField";
 	final String parameterValue = "parameterValue";
 
-
-	
 	private ArrayList<Map<String, String>> parseBinds() {
 		ArrayList<Map<String, String>> ret = new ArrayList<Map<String, String>>();
 
-		
-		if(binds.isEmpty()==true)
-		{
+		if (binds.isEmpty() == true) {
 			return ret;
 		}
 		String[] bindDefs = binds.split(",");
-		
+
 		for (String bindDef : bindDefs) {
 			HashMap<String, String> map = new HashMap<String, String>();
 
 			String[] bindItem = bindDef.split("=");
-			
 
 			map.put(parameterField, bindItem[0]);
 			map.put(parameterValue, bindItem[1]);
-			
+
 			ret.add(map);
 		}
 		return ret;
 	}
-	
-	
-	
-	private Map<String,Object> parseEventAtomObjects(IPatternMatch eventAtom)
-	{
-		List<String> paramenterNames = eventAtom.parameterNames();
-		
-		Map<String,Object> parameterObjects=new HashMap<String, Object>();
 
-		for(String name:paramenterNames)
-		{
-			parameterObjects.put(name,  eventAtom.get(name));
+	private Map<String, Object> parseEventAtomObjects(IPatternMatch eventAtom) {
+		List<String> paramenterNames = eventAtom.parameterNames();
+
+		Map<String, Object> parameterObjects = new HashMap<String, Object>();
+
+		for (String name : paramenterNames) {
+			parameterObjects.put(name, eventAtom.get(name));
 		}
-		
+
 		return parameterObjects;
 	}
-
 
 }

@@ -90,7 +90,7 @@ public class Marker {
 				String name = lock.getName();
 
 				lockWarning.setAttribute(IMarker.MESSAGE, "Lock " + name
-						+ " activate!");
+						+ " activated!");
 				lockWarning.setAttribute(IMarker.PRIORITY,
 						IMarker.PRIORITY_HIGH);
 

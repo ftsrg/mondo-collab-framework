@@ -31,7 +31,7 @@ public class EMFGitProjectnatureHandler {
 			if (!description.hasNature(EMFGitPorjectNature.ID)) {
 				String[] natures = description.getNatureIds();
 				String[] newNatures = new String[natures.length + 1];
-				
+
 				System.arraycopy(natures, 0, newNatures, 0, natures.length);
 
 				newNatures[natures.length] = EMFGitPorjectNature.ID;
@@ -84,8 +84,6 @@ public class EMFGitProjectnatureHandler {
 			}
 		} catch (CoreException e) {
 
-			
-
 			return false;
 		}
 
@@ -98,9 +96,9 @@ public class EMFGitProjectnatureHandler {
 
 			IFile file = project.getFile(idFileName);
 			File fileToRead = file.getRawLocation().toFile();
-			
+
 			if (fileToRead.exists()) {
-				
+
 				try {
 					BufferedReader in = new BufferedReader(new FileReader(
 							fileToRead));

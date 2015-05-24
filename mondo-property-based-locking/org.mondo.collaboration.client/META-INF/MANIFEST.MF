@@ -9,8 +9,7 @@ Bundle-ClassPath: lib/jersey-client-1.19.jar,
  lib/jsr311-api-1.1.1.jar,
  .
 Bundle-Activator: org.mondo.collaboration.client.Activator
-Export-Package: org.mondo.collaboration.client,
- org.mondo.collaboration.client.incquery
+Export-Package: org.mondo.collaboration.client
 Require-Bundle: com.sun.jersey.client;bundle-version="1.19.0",
  com.sun.jersey.core;bundle-version="1.19.0",
  javax.ws.rs.jsr311-api;bundle-version="1.1.1",

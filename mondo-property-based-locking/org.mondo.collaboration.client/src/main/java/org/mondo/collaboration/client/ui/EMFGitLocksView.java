@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.internal.dnd.SwtUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.mondo.collaboration.client.Lock;
 import org.mondo.collaboration.client.LockHandler;
@@ -154,6 +155,26 @@ public class EMFGitLocksView extends ViewPart {
 			}
 		});
 
+		Button load = new Button(row, SWT.PUSH);
+		load.setText("Reload");
+
+		load.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				IFile eiq = currentEiq;
+				IFile bind = currentBind;
+				addTable(eiq, bind);
+				loadLockFromFile(eiq, bind);
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+
+			}
+		});
+
 		Button save = new Button(row, SWT.PUSH);
 		save.setText("Save");
 
@@ -212,18 +233,18 @@ public class EMFGitLocksView extends ViewPart {
 		IStructuredSelection selection = (IStructuredSelection) tableViewer
 				.getSelection();
 
-		
 		Lock[] currentLocks = (Lock[]) tableViewer.getInput();
-		
-	
-	ArrayList<Lock> currentLocksList=new ArrayList<Lock>(Arrays.asList(currentLocks));
-	
-	currentLocksList.removeAll(selection.toList());
-	
-	tableViewer.setInput(currentLocksList.toArray(new Lock[currentLocksList.size()]));
-		
-	//	tableViewer.remove(selection.toArray());
-	//	tableViewer.re
+
+		ArrayList<Lock> currentLocksList = new ArrayList<Lock>(
+				Arrays.asList(currentLocks));
+
+		currentLocksList.removeAll(selection.toList());
+
+		tableViewer.setInput(currentLocksList.toArray(new Lock[currentLocksList
+				.size()]));
+
+		// tableViewer.remove(selection.toArray());
+		// tableViewer.re
 		tableViewer.refresh();
 	}
 
@@ -265,7 +286,7 @@ public class EMFGitLocksView extends ViewPart {
 		}
 
 		addTools();
-		
+
 		addTable(eiq, bind);
 		loadLockFromFile(eiq, bind);
 
@@ -421,9 +442,8 @@ public class EMFGitLocksView extends ViewPart {
 		if (tableViewer != null) {
 			tableViewer.getTable().dispose();
 		}
-		
-		if(!eiq.getRawLocation().toFile().exists())
-		{
+
+		if (!eiq.getRawLocation().toFile().exists()) {
 			return;
 		}
 
@@ -486,32 +506,29 @@ public class EMFGitLocksView extends ViewPart {
 
 		tableViewer.refresh();
 
-		
-		
-		
-//		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-//			
-//			@Override
-//			public void selectionChanged(SelectionChangedEvent event) {
-//				Object source = event.getSource();
-//				
-//				TableViewer table = ((TableViewer) source);
-//						IStructuredSelection selection = (IStructuredSelection)table
-//								.getSelection();
-//						
-//						for(Object item:selection.toList())
-//						{
-//							table.refresh(item);
-//						}
-//						table.removeSelectionChangedListener(this);
-//						table.setSelection(selection, true);
-//						table.addSelectionChangedListener(this);
-//						
-//						
-//				
-//			}
-//		});
-
+		// tableViewer.addSelectionChangedListener(new
+		// ISelectionChangedListener() {
+		//
+		// @Override
+		// public void selectionChanged(SelectionChangedEvent event) {
+		// Object source = event.getSource();
+		//
+		// TableViewer table = ((TableViewer) source);
+		// IStructuredSelection selection = (IStructuredSelection)table
+		// .getSelection();
+		//
+		// for(Object item:selection.toList())
+		// {
+		// table.refresh(item);
+		// }
+		// table.removeSelectionChangedListener(this);
+		// table.setSelection(selection, true);
+		// table.addSelectionChangedListener(this);
+		//
+		//
+		//
+		// }
+		// });
 
 	}
 

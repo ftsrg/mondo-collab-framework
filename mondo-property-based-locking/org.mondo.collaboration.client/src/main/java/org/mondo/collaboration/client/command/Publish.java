@@ -30,7 +30,6 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.core.osgi.Activator;
 
-
 public class Publish implements IHandler {
 
 	public void addHandlerListener(IHandlerListener handlerListener) {
@@ -38,52 +37,53 @@ public class Publish implements IHandler {
 	}
 
 	public void dispose() {
-	
-	}
-	
-	private void uploadFiles()
-	{
-		
-			Client client = org.mondo.collaboration.client.Activator.getClient();
-	
-			String url=Preferences.ServerAddress;
-			
-			String projectID=EMFGitProjectnatureHandler.getProjectID(Utils.getSelectedProject());
-			
-			for(IFile item:getProjectsLockFiles())
-			{
-			
-				WebResource resource = client.resource(url).path("/upload").queryParam("projectID", projectID)
-					.queryParam("fileName", item.getName());
-				
-				File fileToUpload=item.getRawLocation().makeAbsolute().toFile();
-				
-				Builder post = resource.entity(fileToUpload,MediaType.APPLICATION_OCTET_STREAM );
-				post.post();
 
-			}
-	 
-		  
+	}
+
+	private void uploadFiles() {
+
+		Client client = org.mondo.collaboration.client.Activator.getClient();
+
+		String url = Preferences.ServerAddress;
+
+		String projectID = EMFGitProjectnatureHandler.getProjectID(Utils
+				.getSelectedProject());
+
+		for (IFile item : getProjectsLockFiles()) {
+
+			long lastMod = item.getRawLocation().toFile().lastModified();
+			WebResource resource = client.resource(url).path("/upload")
+					.queryParam("projectID", projectID)
+					.queryParam("fileName", item.getName())
+					.queryParam("lastMod", Long.toString(lastMod));
+
+			File fileToUpload = item.getRawLocation().makeAbsolute().toFile();
+
+			Builder post = resource.entity(fileToUpload,
+					MediaType.APPLICATION_OCTET_STREAM);
+			post.post();
+
+		}
+
 	}
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		
-		try{
+		try {
 			uploadFiles();
 			Marker.cancelPublishProblem();
-		}catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			Marker.showPublishProblem();
 		}
-			
+
 		return null;
 	}
 
 	public boolean isEnabled() {
 
-		return EMFGitProjectnatureHandler.isProjectHasEMFGitNature(Utils.getSelectedProject());
+		return EMFGitProjectnatureHandler.isProjectHasEMFGitNature(Utils
+				.getSelectedProject());
 	}
 
 	public boolean isHandled() {
@@ -91,68 +91,53 @@ public class Publish implements IHandler {
 	}
 
 	public void removeHandlerListener(IHandlerListener handlerListener) {
-	
+
 	}
-	
-	
 
 	public ArrayList<IFile> getProjectsLockFiles() {
-		
-		
-		String selectedProject=Utils.getSelectedProjectName();
-		IFolder lockDir=Utils.getProjectLockDir(selectedProject);
-		
+
+		String selectedProject = Utils.getSelectedProjectName();
+		IFolder lockDir = Utils.getProjectLockDir(selectedProject);
+
 		return getAllFile(lockDir);
-		
+
 	}
 
-	
-	
 	static ArrayList<IFile> files;
-	public static ArrayList<IFile> getAllFile(IResource item)
-	{
-		 files=new ArrayList<IFile>();
-		
-		 travelResources(item);
-		
-		 return files;
+
+	public static ArrayList<IFile> getAllFile(IResource item) {
+		files = new ArrayList<IFile>();
+
+		travelResources(item);
+
+		return files;
 	}
-	
-	private static void travelResources(IResource resource)
-	{
-		
-		if(resource.getType()==IResource.FILE)
-		{
+
+	private static void travelResources(IResource resource) {
+
+		if (resource.getType() == IResource.FILE) {
 			files.add((IFile) resource);
-			
-		}
-		else if(resource.getType()==IResource.FOLDER)
-		{
+
+		} else if (resource.getType() == IResource.FOLDER) {
 			try {
-				for(IResource item : ((IFolder) resource).members()  )
-				{
+				for (IResource item : ((IFolder) resource).members()) {
 					travelResources(item);
 				}
 			} catch (CoreException e) {
-				
-				//silently fail
-			//	e.printStackTrace();
+
+				// silently fail
+				// e.printStackTrace();
 			}
 		}
 	}
-	
-	
-	
-	
-	public static ArrayList<String> convertJsonArrayToArrayList(JSONArray arr)
-	{
+
+	public static ArrayList<String> convertJsonArrayToArrayList(JSONArray arr) {
 		ArrayList<String> list = new ArrayList<String>();
-		for(int i = 0; i < arr.size(); i++){
-		    list.add((String) arr.get(i));
+		for (int i = 0; i < arr.size(); i++) {
+			list.add((String) arr.get(i));
 		}
-		
+
 		return list;
 	}
-	
 
 }
