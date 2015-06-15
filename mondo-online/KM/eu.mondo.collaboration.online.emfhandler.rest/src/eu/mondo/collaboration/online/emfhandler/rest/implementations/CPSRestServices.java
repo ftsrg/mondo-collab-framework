@@ -1,7 +1,6 @@
 package eu.mondo.collaboration.online.emfhandler.rest.implementations;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -14,20 +13,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipselabs.emfjson.EMFJs;
-import org.eclipselabs.emfjson.resource.JsResourceFactoryImpl;
+import org.emfjson.EMFJs;
+import org.emfjson.jackson.resource.JsonResourceFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import WTSpec.WTSpecPackage;
-import WTSpec.impl.WTSpecFactoryImpl;
 import eu.mondo.collaboration.online.emfhandler.rest.interfaces.ICPSRestServices;
 
 @Path("/modelHandler")
@@ -52,10 +48,9 @@ public class CPSRestServices implements ICPSRestServices {
 		final File folder = new File(pathToResFolder);
 		Integer id = 0;
 		
-		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 	    // Obtain a new resource set
 	    ResourceSet resourceSet = new ResourceSetImpl();
-	    Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("json", new JsResourceFactoryImpl());
+	    Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("json", new JsonResourceFactory());
 	    
 	    Map<String, Object> options = new HashMap<String, Object>();
 	    options.put(EMFJs.OPTION_INDENT_OUTPUT, false);
@@ -109,11 +104,9 @@ public class CPSRestServices implements ICPSRestServices {
 		String jsonPath = "D:/Eclipse/Eclipse_EE/Eclipse/MondoModelHandler/tmp/output/" + jsonFileName;
 		createJsonFile(jsonPath, modelData.getJSONObject("model").toString());
 		
-		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
-	    
 	    // Obtain a new resource set
 	    ResourceSet resourceSet = new ResourceSetImpl();
-	    Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("json", new JsResourceFactoryImpl());
+	    Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("json", new JsonResourceFactory());
 	    
 	    Map<String, Object> saveOptions = new HashMap<String, Object>();
 	    saveOptions.put(EMFJs.OPTION_INDENT_OUTPUT, true);

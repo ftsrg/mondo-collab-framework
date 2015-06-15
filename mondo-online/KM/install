@@ -1,0 +1,14 @@
+Online: 
+	- Java 8 u45 
+	OSGi EMF model parser - Eclipse Modeling Tool:
+		- install emfjson using Eclipse/Install new software - using http://ghillairet.github.com/p2 update site (tick EMF json from the list)
+
+	Session manager server + client ui - Eclipse EE:
+		- "Vaading" plugin via marketplace
+		- Download glassfish 4.1 - java ee 7 full platform from https://glassfish.java.net/download.html
+		- install Glassfish 4 plugin via marketplace
+		- setup glassfish 4 server
+		- import:
+			MondoOnlineCollaborationClient
+			MondoOnlineCollaborationServer
+

@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: 
  WTSpec.impl,
+ javax.ws.rs,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.resource,
@@ -16,12 +17,13 @@ Service-Component: OSGI-INF/component.xml
 JPA-PersistenceUnits: osgi.demo.jpa
 Require-Bundle: 
  org.eclipse.equinox.app,
- com.sun.jersey.core;bundle-version="1.17.1",
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.xmi,
  com.fasterxml.jackson.core.jackson-core;bundle-version="2.3.1",
- org.eclipselabs.emfjson;bundle-version="0.8.0",
  com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.3.0",
  com.fasterxml.jackson.core.jackson-databind;bundle-version="2.3.1",
- WTSpec
+ WTSpec,
+ org.emfjson.core;bundle-version="0.10.0",
+ org.emfjson.jackson;bundle-version="0.10.0",
+ com.eclipsesource.jaxrs.jersey-all;bundle-version="2.16.1"
 Bundle-ActivationPolicy: lazy
