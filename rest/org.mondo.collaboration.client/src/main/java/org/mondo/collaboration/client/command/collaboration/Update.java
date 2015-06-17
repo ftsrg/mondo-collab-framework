@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
 
 import javax.ws.rs.core.MediaType;
 
@@ -11,8 +13,19 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.incquery.runtime.exception.IncQueryException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.PlatformUI;
 import org.mondo.collaboration.client.Activator;
 
 import com.sun.jersey.api.client.Client;
@@ -30,55 +43,78 @@ public class Update implements IHandler {
 	}
 
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
-		String projectName = "mondo_test";
-		String branchName = Activator.getBranchName(projectName);
+		String projectName = Activator.getProjectNameFromUser();
 		Client client = Activator.getClient();
 		String url = "http://localhost:9090/services/emfgit/collaboration";
 		
-		WebResource resource = client.resource(url).path("checkout")
-				.queryParam("projectName", projectName)
-				.queryParam("branchName", branchName);
+		System.out.println("Executing update...");
+		if(projectName == null || projectName.equals("")) {
+			System.out.println("Invalid project name. Checkout failed.");
+			return null;
+		}
+		
+		WebResource resource = client.resource(url).path("update")
+			.queryParam("projectName", projectName);
+		
+		File receivedModel = resource.accept(MediaType.APPLICATION_OCTET_STREAM).get(File.class);
+		
+		if(receivedModel != null) {
+			ClientResponse head = resource.head();
 			
-			File receivedModel = resource.accept(MediaType.APPLICATION_OCTET_STREAM).get(File.class);
-			
-			if(receivedModel != null) {
-				ClientResponse head = resource.head();
-				
-				String modelFileName = head.getHeaders().get("filename").get(0);
-				System.out.println("modelFileName: " + modelFileName);
-				String localRepoName = projectName;
-				if(branchName != null) {
-					localRepoName += "\\" + branchName;
-				} else {
-					localRepoName += "\\master";
-				}
-				
-				
-				// save to local repository
-				String savePath = Activator.getLocalRepositoryPath() + localRepoName + "\\" + modelFileName;
-				System.out.println("Saving model to local repository: " + savePath);
-				Activator.saveFile(receivedModel, savePath);
+			String modelFileName = head.getHeaders().get("filename").get(0);
+			System.out.println("modelFileName: " + modelFileName);
+			String localRepoName = projectName;
 
-				Activator.merge(projectName, branchName, true);
-				
-				// save model into runtime project 
-				IWorkspace workspace = ResourcesPlugin.getWorkspace(); 
-				File workspaceDirectory = workspace.getRoot().getLocation().toFile();
-				savePath = workspaceDirectory.getPath() + "\\" + projectName + "\\model\\" + modelFileName;
-				System.out.println("Saving model to runtime project: " + savePath);
-				Activator.saveFile(receivedModel, savePath);
-				File branchFile = new File(workspaceDirectory.getPath() + "\\" + projectName + "\\" 
-					+ "\\branch\\" + branchName);
-				try {
-					branchFile.mkdirs();
-					branchFile.createNewFile();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			// save to temp dir for three-way merge
+			String remoteModelName = new StringBuilder(modelFileName).insert(modelFileName.lastIndexOf('.') - 1, ".new").toString();
+			String localRepoModelPath = Activator.getLocalRepositoryPath() + localRepoName + "\\" + remoteModelName;
+			
+			// get working copy path from runtime project 
+			String workingCopyFolderPath = "";
+			ISelectionService service = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+			ISelection selection = service.getSelection();
+			if(selection instanceof StructuredSelection) {
+				StructuredSelection treeSelection = (StructuredSelection) selection;
+				Iterator iterator = treeSelection.iterator();
+				while (iterator.hasNext()) {
+					Object next = iterator.next();
+					if(next instanceof IResource) {
+						IResource iResource = (IResource) next;
+						workingCopyFolderPath = iResource.getLocation().toString() + "\\";
+					}
 				}
-			} else {
-				System.out.println("No model received.");
 			}
+			Activator.saveFile(receivedModel, workingCopyFolderPath + remoteModelName);
+			EObject mergedModel = null;
+			try {
+				mergedModel = Activator.merge(URI.createURI(workingCopyFolderPath + modelFileName + ".changeset"), URI.createURI(localRepoModelPath), URI.createURI(workingCopyFolderPath + remoteModelName));
+			} catch (IncQueryException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			System.out.println("Saving model to runtime project: " + localRepoModelPath);
+			ResourceSet rSetLocal = new ResourceSetImpl();
+			Resource local = rSetLocal.createResource(URI.createURI(localRepoModelPath));
+			local.getContents().add(mergedModel);
+			try {
+				local.save(Collections.emptyMap());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			Resource ws = rSetLocal.createResource(URI.createURI(workingCopyFolderPath + modelFileName));
+			ws.getContents().add(mergedModel);
+			try {
+				ws.save(Collections.emptyMap());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("No model received.");
+		}
+		
 		return null;
 	}
 

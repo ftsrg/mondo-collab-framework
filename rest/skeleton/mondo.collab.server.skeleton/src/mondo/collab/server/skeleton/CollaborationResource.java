@@ -1,10 +1,9 @@
-package org.mondo.collaboration.server;
+package mondo.collab.server.skeleton;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +25,7 @@ import org.eclipse.jgit.api.errors.JGitInternalException;
 @Path("/emfgit/collaboration")
 public class CollaborationResource {
 	
-	private static MondoGitHandler mGit = MondoGitHandler.instance;
+	private static MondoGitHandler mGit = new MondoGitHandler();
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -47,10 +46,10 @@ public class CollaborationResource {
 	@GET
 	@Path("checkout")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response checkout(@QueryParam("projectName") String projectName) {
+	public Response checkout(@QueryParam("projectName") String projectName, @QueryParam("branchName") String branchName) {
 		String branchPath = "";
 		try {
-			branchPath = mGit.cloneBranch(projectName, "master");
+			branchPath = mGit.cloneBranch(projectName, branchName);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -60,13 +59,8 @@ public class CollaborationResource {
 		}
 		System.out.println("checking out folder " + branchPath);
 		
-		File modelFolder = new File(branchPath);// + "\\model");
-		String[] models = modelFolder.list(new FilenameFilter() {
-			
-			public boolean accept(File dir, String name) {
-				return !name.startsWith(".");
-			}
-		});
+		File modelFolder = new File(branchPath + "\\model");
+		String[] models = modelFolder.list();
 		if(models.length < 1) {
 			return Response.status(Response.Status.NOT_FOUND).entity(new String("No models found for project [" + projectName + "]" )).build();
 		}
@@ -78,41 +72,6 @@ public class CollaborationResource {
 		return response.build();
 	}
 
-	@GET
-	@Path("update")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response update(@QueryParam("projectName") String projectName) {
-		mGit.initGit(projectName);
-		String branchPath = "";
-		try {
-			mGit.pull(projectName, "master");
-			branchPath = mGit.cloneBranch(projectName, "master");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		File modelFolder = new File(branchPath);// + "\\model");
-		String[] models = modelFolder.list(new FilenameFilter() {
-			
-			public boolean accept(File dir, String name) {
-				return !name.startsWith(".");
-			}
-		});
-		if(models.length < 1) {
-			return Response.status(Response.Status.NOT_FOUND).entity(new String("No models found for project [" + projectName + "]" )).build();
-		}
-		String modelFileName = models[0];
-		File modelFile = new File(modelFolder.getAbsolutePath() + "\\" + modelFileName);
-		System.out.println("Model File path: " + modelFile.getAbsolutePath());
-		ResponseBuilder response = Response.ok(modelFile, MediaType.APPLICATION_OCTET_STREAM);
-		response.header("filename", modelFileName);
-		return response.build();
-	}
-	
 	@POST
 	@Path("commit")
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
@@ -122,10 +81,10 @@ public class CollaborationResource {
 			@QueryParam("branchName") String branchName,
 			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
-		String modelName = "original.wtspec4m";
+		String modelName = "Model.ecore";
 		System.out.println("commiting model: " + modelName + " in project: " + projectName + "_" + branchName);
 		// TODO check permissions and merge
-		String savePath =  Activator.serverRoot + projectName + "\\" + modelName;
+		String savePath =  Activator.serverRoot + projectName + "\\" + branchName + "\\model\\" + modelName;
 		File originalFile = new File(savePath);
 		byte[] originalBytes = null;
 		if(originalFile.exists()) {
@@ -134,7 +93,7 @@ public class CollaborationResource {
 		saveInputStreamToFile(is, savePath);
 		try {
 			//mGit.addFile("Model.ecore");
-			mGit.commit("", projectName, branchName);
+			mGit.commit("TODO assemble commit message", projectName, branchName);
 			mGit.push(projectName, branchName, username, password);
 		} catch (JGitInternalException e) {
 			e.printStackTrace();

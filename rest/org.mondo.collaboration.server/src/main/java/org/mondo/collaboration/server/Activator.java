@@ -14,7 +14,6 @@ public class Activator implements BundleActivator {
 
 	private static BundleContext context;
 
-	
 	private ServiceRegistration<LockResource> registration;
 	private ServiceRegistration<BroadcasterResource> registration2;
 	private ServiceRegistration<CollaborationResource> collabRegistration;
@@ -30,6 +29,8 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		createBaseDirIfNotExists();     
+		
+		MondoGitHandler handler = MondoGitHandler.instance;
 		
 		System.out.println("Server Started");
 		

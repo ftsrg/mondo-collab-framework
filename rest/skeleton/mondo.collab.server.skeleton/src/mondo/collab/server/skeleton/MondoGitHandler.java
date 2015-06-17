@@ -1,4 +1,4 @@
-package org.mondo.collaboration.server;
+package mondo.collab.server.skeleton;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,18 +21,14 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 public class MondoGitHandler {
 
-	private static final String REPO_URL = "https://github.com/FTSRG/mondo-demo-repo";
-	private static final String LOCAL_PATH = "D:/emfgit/projects";
-
-	public static MondoGitHandler instance = new MondoGitHandler();
-	
 	// TODO add collection of GitInstances and their dynamic handling
 	private ArrayList<GitInstance> storedRepos;
 	
-    private MondoGitHandler() {
+	private String localPath;
+	
+    public MondoGitHandler() {
     	try {
 			init();
-			initGit("org.mondo.collaboration.demo.example");
 		} catch (IOException e) {
 			System.out.println("Failed to initialize git.");
 			e.printStackTrace();
@@ -40,7 +36,7 @@ public class MondoGitHandler {
     }
     
     public void initGit(String projectName) {
- 		String repoPath = LOCAL_PATH;// + "/" + projectName;// + "/master";
+		String repoPath = localPath + "/" + projectName + "/master";
 		System.out.println("Initializing git object for project: " + projectName + " at path: " + repoPath);
 		try {
 			Repository localRepo = new FileRepository(repoPath + "/.git");
@@ -52,6 +48,7 @@ public class MondoGitHandler {
 	}
     
     public void init() throws IOException {
+        localPath = "D:/emfgit/projects";
         storedRepos = new ArrayList<GitInstance>();
         // remotePath = "https://github.com/1forintos/mondo_test.git";
     }
@@ -98,7 +95,7 @@ public class MondoGitHandler {
     }
 
 	public String cloneBranch(String projectName, String branchName) throws IOException, GitAPIException {
-		String repoPath = LOCAL_PATH + "/" + projectName; // + "/" + branchName;
+		String repoPath = localPath + "/" + projectName + "/" + branchName;
 		System.out.println("Initializing git object for project: " + projectName + " at path: " + repoPath);
 		try {
 			Repository localRepo = new FileRepository(repoPath + "/.git");
@@ -108,9 +105,9 @@ public class MondoGitHandler {
 			e.printStackTrace();
 		}
 		
-		String remotePath = REPO_URL + projectName + ".git";
+		String remotePath = "https://github.com/1forintos/" + projectName + ".git";
 		System.out.println("branchName - " + branchName);
-		String branchPath = LOCAL_PATH + "/" + projectName;
+		String branchPath = localPath + "/" + projectName + "/" + branchName;
 		System.out.println("Cloning branch [" + branchName + "] to path [" + branchPath + "]");
 		// createOrCleanDir(branchPath);
 		
@@ -124,6 +121,7 @@ public class MondoGitHandler {
     }
 	
 	public String getBranches(String projectName) {
+		System.out.println("yo mafaka getBranches");
 		String branches = "";
 		try {
 			List<Ref> bz = getGitObject(projectName, "master").getGitInstance().branchList().setListMode(ListMode.REMOTE).call();
@@ -163,7 +161,7 @@ public class MondoGitHandler {
 		dir.mkdirs();
 	}
 	
-	public GitInstance getGitObject(String projectName, String branchName) {
+	private GitInstance getGitObject(String projectName, String branchName) {
 		String gitObjectName = projectName + "_" + branchName; 
 		for(GitInstance g : storedRepos) {
 			if(g.getName().equals(gitObjectName)) {

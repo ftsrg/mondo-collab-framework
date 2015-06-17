@@ -7,12 +7,11 @@ import java.io.InputStream;
 
 import javax.swing.JOptionPane;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandlerListener;
 import org.mondo.collaboration.client.Activator;
 
 import com.sun.jersey.api.client.Client;
@@ -20,23 +19,12 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
-public class Commit implements IHandler {
+public class Commit extends AbstractHandler implements IHandler {
 
-	@Override
-	public void addHandlerListener(IHandlerListener arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
-		String projectName = "mondo_test";
+		String projectName = Activator.getProjectNameFromUser();
 		String branchName = Activator.getBranchName(projectName);
 		File mergedModel = Activator.merge(projectName, branchName, false);
 		Client client = Activator.getClient();
@@ -53,7 +41,7 @@ public class Commit implements IHandler {
 			WebResource resource = client.resource(url)
 				.path("commit")
 				.queryParam("projectName", projectName)
-				.queryParam("branchName", branchName)
+				.queryParam("branchName", "")
 				.queryParam("username", Activator.user.getUsername())
 				.queryParam("password", Activator.user.getPassword());
 			ClientResponse response = resource.type(MediaType.APPLICATION_OCTET_STREAM)
@@ -86,14 +74,7 @@ public class Commit implements IHandler {
 
 	@Override
 	public boolean isHandled() {
-		// TODO Auto-generated method stub
 		return true;
-	}
-
-	@Override
-	public void removeHandlerListener(IHandlerListener arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
