@@ -1,8 +1,6 @@
 package org.mondo.collaboration.client.command.collaboration;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -14,8 +12,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -34,6 +30,10 @@ import com.sun.jersey.api.client.WebResource;
 
 public class Update implements IHandler {
 
+	private String lastModelPath;
+	private String lastModelName;
+	private String lastProjectName;
+	
 	public void addHandlerListener(IHandlerListener arg0) {
 		// TODO Auto-generated method stub
 	}
@@ -57,7 +57,6 @@ public class Update implements IHandler {
 			.queryParam("projectName", projectName);
 		
 		File receivedModel = resource.accept(MediaType.APPLICATION_OCTET_STREAM).get(File.class);
-		
 		if(receivedModel != null) {
 			ClientResponse head = resource.head();
 			
@@ -87,7 +86,11 @@ public class Update implements IHandler {
 			Activator.saveFile(receivedModel, workingCopyFolderPath + remoteModelName);
 			EObject mergedModel = null;
 			try {
-				mergedModel = Activator.merge(URI.createURI(workingCopyFolderPath + modelFileName + ".changeset"), URI.createURI(localRepoModelPath), URI.createURI(workingCopyFolderPath + remoteModelName));
+				mergedModel = Activator.merge(
+					URI.createURI(workingCopyFolderPath + modelFileName + ".changeset"), 
+					URI.createURI(localRepoModelPath), 
+					URI.createURI(workingCopyFolderPath + remoteModelName)
+				);
 			} catch (IncQueryException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -111,6 +114,10 @@ public class Update implements IHandler {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			this.lastModelPath = workingCopyFolderPath + remoteModelName;
+			this.lastModelName = remoteModelName;
+			this.lastProjectName = projectName;
 		} else {
 			System.out.println("No model received.");
 		}
@@ -134,5 +141,17 @@ public class Update implements IHandler {
 
 	public void removeHandlerListener(IHandlerListener arg0) {
 		// TODO Auto-generated method stub
+	}
+	
+	public String getLastModelPath() {
+		return this.lastModelPath;
+	}
+	
+	public String getLastModelName() {
+		return this.lastModelName;
+	}
+	
+	public String getLastProjectName() {
+		return this.lastProjectName;
 	}
 }
