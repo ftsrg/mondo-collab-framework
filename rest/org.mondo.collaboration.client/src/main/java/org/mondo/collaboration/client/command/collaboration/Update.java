@@ -65,8 +65,8 @@ public class Update implements IHandler {
 			String localRepoName = projectName;
 
 			// save to temp dir for three-way merge
-			String remoteModelName = new StringBuilder(modelFileName).insert(modelFileName.lastIndexOf('.') - 1, ".new").toString();
-			String localRepoModelPath = Activator.getLocalRepositoryPath() + localRepoName + "\\" + remoteModelName;
+			String remoteModelName = new StringBuilder(modelFileName).insert(modelFileName.lastIndexOf('.'), ".new").toString();
+			String localRepoModelPath = Activator.getLocalRepositoryPath() + localRepoName;
 			
 			// get working copy path from runtime project 
 			String workingCopyFolderPath = "";
@@ -83,13 +83,13 @@ public class Update implements IHandler {
 					}
 				}
 			}
-			Activator.saveFile(receivedModel, workingCopyFolderPath + remoteModelName);
+			Activator.saveFile(receivedModel, localRepoModelPath + "\\" + remoteModelName);
 			EObject mergedModel = null;
 			try {
 				mergedModel = Activator.merge(
-					URI.createURI(workingCopyFolderPath + modelFileName + ".changeset"), 
-					URI.createURI(localRepoModelPath), 
-					URI.createURI(workingCopyFolderPath + remoteModelName)
+					URI.createFileURI(workingCopyFolderPath + modelFileName + ".changeset"), 
+					URI.createFileURI(localRepoModelPath + "\\" + modelFileName), 
+					URI.createFileURI(localRepoModelPath + "\\" + remoteModelName)
 				);
 			} catch (IncQueryException e1) {
 				// TODO Auto-generated catch block
@@ -97,7 +97,7 @@ public class Update implements IHandler {
 			}
 			System.out.println("Saving model to runtime project: " + localRepoModelPath);
 			ResourceSet rSetLocal = new ResourceSetImpl();
-			Resource local = rSetLocal.createResource(URI.createURI(localRepoModelPath));
+			Resource local = rSetLocal.createResource(URI.createFileURI(localRepoModelPath + "\\" + modelFileName));
 			local.getContents().add(mergedModel);
 			try {
 				local.save(Collections.emptyMap());
@@ -106,7 +106,7 @@ public class Update implements IHandler {
 				e.printStackTrace();
 			}
 			
-			Resource ws = rSetLocal.createResource(URI.createURI(workingCopyFolderPath + modelFileName));
+			Resource ws = rSetLocal.createResource(URI.createFileURI(workingCopyFolderPath + modelFileName));
 			ws.getContents().add(mergedModel);
 			try {
 				ws.save(Collections.emptyMap());
@@ -115,8 +115,8 @@ public class Update implements IHandler {
 				e.printStackTrace();
 			}
 			
-			this.lastModelPath = workingCopyFolderPath + remoteModelName;
-			this.lastModelName = remoteModelName;
+			this.lastModelPath = localRepoModelPath + "\\" + modelFileName;
+			this.lastModelName = modelFileName;
 			this.lastProjectName = projectName;
 		} else {
 			System.out.println("No model received.");

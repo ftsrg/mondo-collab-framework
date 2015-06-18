@@ -164,7 +164,7 @@ public class MondoGitHandler {
 	}
 	
 	public GitInstance getGitObject(String projectName, String branchName) {
-		String gitObjectName = projectName + "_" + branchName; 
+		String gitObjectName = projectName + "_master"; 
 		for(GitInstance g : storedRepos) {
 			if(g.getName().equals(gitObjectName)) {
 				return g;

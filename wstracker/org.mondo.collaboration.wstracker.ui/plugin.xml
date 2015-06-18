@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.mondo.collaboration.wstracker.ui.AddAdapterHandler"
+            commandId="org.mondo.collaboration.wstracker.ui.addadapter">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="Workspace tracker">
+            <command
+                  commandId="org.mondo.collaboration.wstracker.ui.addadapter"
+                  style="toggle">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.mondo.collaboration.wstracker.ui.addadapter"
+            name="Add Adapter to Resource">
+      </command>
+   </extension>
+
+</plugin>

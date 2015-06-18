@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.Comparison;
 import org.eclipse.emf.compare.EMFCompare;
@@ -44,6 +45,7 @@ import org.eclipse.viatra.dse.api.DSETransformationRule;
 import org.eclipse.viatra.dse.merge.DSEMergeManager;
 import org.eclipse.viatra.dse.merge.DSEMergeManager.Solution;
 import org.eclipse.viatra.dse.merge.emf_compare.EMFCompareTranslator;
+import org.eclipse.viatra.dse.merge.model.Change;
 import org.eclipse.viatra.dse.merge.model.ChangeSet;
 import org.eclipse.viatra.dse.merge.model.ModelFactory;
 import org.mondo.collaboration.wstracker.adapter.WSTrackerContentAdapter;
@@ -220,9 +222,9 @@ public class Activator extends AbstractUIPlugin {
 
 	// returns the merged model of the altered model in the project
 	// and the corresponding model in the local repository
-	public static EObject merge(URI original, URI local, URI remote) throws IncQueryException {
+	public static EObject merge(URI localChanges, URI original, URI remote) throws IncQueryException {
 		Resource originalModel = new ResourceSetImpl().getResource(original, true);
-		Resource remoteModel = new ResourceSetImpl().getResource(original, true);
+		Resource remoteModel = new ResourceSetImpl().getResource(remote, true);
 		
 		
 		// Configure EMF Compare
@@ -240,9 +242,13 @@ public class Activator extends AbstractUIPlugin {
 
 		ChangeSet changeSetOR = EMFCompareTranslator.translate(comparisonOR);
 		ChangeSet changeSetOL = null;
-		boolean hasLocalChanges = new File(local.toString()).exists(); 
+		boolean hasLocalChanges = new File(localChanges.toFileString()).exists(); 
 		if(hasLocalChanges) {
-			changeSetOL = (ChangeSet) new ResourceSetImpl().getResource(local, true).getContents().get(0);
+			changeSetOL = (ChangeSet) new ResourceSetImpl().getResource(localChanges, true).getContents().get(0);
+			EList<Change> changes = changeSetOL.getChanges();
+			for (Change change : changes) {
+				change.setExecutable(true);
+			}
 		} else {
 			changeSetOL = ModelFactory.eINSTANCE.createChangeSet();
 		}

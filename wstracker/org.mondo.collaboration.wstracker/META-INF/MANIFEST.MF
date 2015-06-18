@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Workspace Tracker
+Bundle-SymbolicName: org.mondo.collaboration.wstracker;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.mondo.collaboration.wstracker.adapter
+Require-Bundle: org.eclipse.emf.ecore,
+ org.eclipse.viatra.dse.merge,
+ org.eclipse.emf.ecore.xmi,
+ org.apache.log4j,
+ org.eclipse.emf.transaction;bundle-version="1.8.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.apache.log4j
