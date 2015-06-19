@@ -131,7 +131,7 @@ public class Update implements IHandler {
 		if(branchName == null) {
 			branchName = "";
 		}
-		return Activator.user.isSet() && !Activator.modelFolderIsEmpty(projectName + "/" + branchName);
+		return Activator.user.isSet() && !Activator.modelFolderIsEmpty(projectName + "\\" + branchName);
 	}
 
 	public boolean isHandled() {

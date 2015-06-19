@@ -77,7 +77,7 @@ public class Commit extends AbstractHandler implements IHandler {
 		if(branchName == null) {
 			branchName = "";
 		}
-		return Activator.user.isSet() && !Activator.modelFolderIsEmpty(projectName + "/" + branchName);
+		return Activator.user.isSet() && !Activator.modelFolderIsEmpty(projectName + "\\" + branchName);
 	}
 
 	@Override
