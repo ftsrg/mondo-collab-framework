@@ -22,7 +22,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 public class MondoGitHandler {
 
 	private static final String REPO_URL = "https://github.com/FTSRG/mondo-demo-repo";
-	private static final String LOCAL_PATH = "D:/emfgit/projects";
+	private static final String LOCAL_PATH = "D:\\emfgit\\projects";
 
 	public static MondoGitHandler instance = new MondoGitHandler();
 	
@@ -98,7 +98,7 @@ public class MondoGitHandler {
     }
 
 	public String cloneBranch(String projectName, String branchName) throws IOException, GitAPIException {
-		String repoPath = LOCAL_PATH + "/" + projectName; // + "/" + branchName;
+		String repoPath = LOCAL_PATH + "\\" + projectName; // + "/" + branchName;
 		System.out.println("Initializing git object for project: " + projectName + " at path: " + repoPath);
 		try {
 			Repository localRepo = new FileRepository(repoPath + "/.git");
@@ -110,7 +110,7 @@ public class MondoGitHandler {
 		
 		String remotePath = REPO_URL + projectName + ".git";
 		System.out.println("branchName - " + branchName);
-		String branchPath = LOCAL_PATH + "/" + projectName;
+		String branchPath = LOCAL_PATH + "\\" + projectName;
 		System.out.println("Cloning branch [" + branchName + "] to path [" + branchPath + "]");
 		// createOrCleanDir(branchPath);
 		
@@ -128,7 +128,7 @@ public class MondoGitHandler {
 		try {
 			List<Ref> bz = getGitObject(projectName, "master").getGitInstance().branchList().setListMode(ListMode.REMOTE).call();
 			for (Ref b : bz) {
-				String branchName = b.getName().substring(b.getName().lastIndexOf("/") + 1);
+				String branchName = b.getName().substring(b.getName().lastIndexOf("\\") + 1);
 	            System.out.println("cloned branch " + branchName);
 	            if(!branches.equals("")) {
 	            	branches += ";";
