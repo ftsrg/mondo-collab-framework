@@ -16,6 +16,8 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.PlatformUI;
 import org.mondo.collaboration.client.Activator;
@@ -53,7 +55,8 @@ public class Commit extends AbstractHandler implements IHandler {
                 .header("Content-Disposition", sContentDisposition)
                 .post(ClientResponse.class, fileInStream); 
 			if(response.getStatus() == 403) {
-				JOptionPane.showMessageDialog(null, "Invalid username and/or password.");
+				MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_ERROR);
+			    messageBox.setMessage("Invalid username and/or password.");
 			}
 			System.out.println("response: " + response.getStatus());
 			// System.out.println("Commit response: " + resp);

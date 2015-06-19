@@ -10,7 +10,11 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.mondo.collaboration.client.Activator;
+import org.mondo.collaboration.client.views.PasswordDialog;
 
 public class SetUser implements IHandler {
 
@@ -28,26 +32,11 @@ public class SetUser implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
-		JPanel panel = new JPanel();
-		
-		JLabel userLabel = new JLabel("User name:");
-		JTextField username = new JTextField(10);
-		panel.add(userLabel);
-		panel.add(username);
-		
-		JLabel passLabel = new JLabel("Password:");
-		JPasswordField pass = new JPasswordField(10);
-		panel.add(passLabel);
-		panel.add(pass);
-		
-		String[] options = new String[]{"OK", "Cancel"};
-		int option = JOptionPane.showOptionDialog(null, panel, "User",
-             JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-             null, options, options[1]);
-		
-		if(option == 0) { // pressing OK button
-			String usernameText = username.getText();
-			String password = new String(pass.getPassword());
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		PasswordDialog dialog = new PasswordDialog(shell);
+		if (dialog.open() == Window.OK) {
+			String usernameText = dialog.getUser();
+			String password = new String(dialog.getPassword());
 			Activator.user.setUsername(usernameText);
 			Activator.user.setPassword(password);
 		}

@@ -6,11 +6,6 @@ import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
@@ -31,12 +26,13 @@ import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.compare.utils.UseIdentifiers;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.incquery.runtime.api.IQuerySpecification;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -48,6 +44,7 @@ import org.eclipse.viatra.dse.merge.emf_compare.EMFCompareTranslator;
 import org.eclipse.viatra.dse.merge.model.Change;
 import org.eclipse.viatra.dse.merge.model.ChangeSet;
 import org.eclipse.viatra.dse.merge.model.ModelFactory;
+import org.mondo.collaboration.client.views.ProjectDialog;
 import org.mondo.collaboration.wstracker.adapter.WSTrackerContentAdapter;
 import org.osgi.framework.BundleContext;
 
@@ -306,22 +303,13 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public static String getProjectNameFromUser() {
-		JPanel panel = new JPanel();
 		
-		JLabel projectLabel = new JLabel("Project name:");
-		JTextField projectField = new JTextField(10);
-		panel.add(projectLabel);
-		panel.add(projectField);
-		projectField.setText("org.mondo.collaboration.demo.example");
-		
-		String[] options = new String[]{"OK", "Cancel"};
-		int option = JOptionPane.showOptionDialog(null, panel, "Checkout project",
-             JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-             null, options, options[0]);
-		
-		if(option == 0) { // pressing OK button
-			return projectField.getText();
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		ProjectDialog dialog = new ProjectDialog(shell);
+		if (dialog.open() == Window.OK) {
+			return dialog.getProject();
 		}
+		
 		return null;
 	}
 	
