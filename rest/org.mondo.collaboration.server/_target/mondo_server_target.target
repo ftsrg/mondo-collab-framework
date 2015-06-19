@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="MONDO Server Platform" sequenceNumber="38">
+<locations>
+<location path="${project_loc:org.mondo.collaboration.server}/lib" type="Directory"/>
+<location path="${eclipse_home}" type="Directory"/>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.9.0.v20140221-1852"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.3"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.eclipsesource.jaxrs.connector.feature.feature.group" version="4.3.0.201503290743"/>
+<repository location="http://hstaudacher.github.io/osgi-jax-rs-connector"/>
+</location>
+</locations>
+</target>
