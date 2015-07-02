@@ -29,5 +29,44 @@
             name="Add Adapter to Resource">
       </command>
    </extension>
+	<extension point="org.eclipse.ui.navigator.navigatorContent">
+    <commonFilter
+        description="Hides *.changeset resources"
+        id="org.mondo.collaboration.wstracker.filter"
+        name="*.changeset resources"
+        activeByDefault="true">
+        <filterExpression>
+            <and>
+                <adapt type="org.eclipse.core.resources.IResource">
+                    <test property="org.eclipse.core.resources.name" value="*.changeset"/>
+                </adapt>
+            </and>
+        </filterExpression>
+    </commonFilter>
+</extension>
+<extension point="org.eclipse.ui.navigator.viewer">
+    <viewerContentBinding
+          viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+          <includes>
+            <contentExtension pattern="org.mondo.collaboration.wstracker.filter"/> 
+          </includes>
+    </viewerContentBinding>
+</extension>
+<extension
+      point="org.eclipse.ui.startup">
+   <startup
+         class="StartupPhase">
+   </startup>
+</extension>
+<extension
+      point="org.eclipse.jdt.ui.javaElementFilters">
+   <filter
+         description="Hides *.changeset resources"
+         enabled="true"
+         id="org.mondo.collaboration.wstracker.filter"
+         name="*.changeset resources"
+         pattern="*.changeset">
+   </filter>
+</extension>
 
 </plugin>

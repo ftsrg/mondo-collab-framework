@@ -8,6 +8,7 @@ Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.viatra.dse.merge,
  org.eclipse.emf.ecore.xmi,
  org.apache.log4j,
- org.eclipse.emf.transaction;bundle-version="1.8.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+ org.eclipse.emf.transaction;bundle-version="1.8.0",
+ org.eclipse.ui.navigator;bundle-version="3.5.401"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.log4j

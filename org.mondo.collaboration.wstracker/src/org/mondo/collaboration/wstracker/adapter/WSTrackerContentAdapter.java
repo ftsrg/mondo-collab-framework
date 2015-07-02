@@ -110,7 +110,7 @@ public class WSTrackerContentAdapter extends EContentAdapter {
 	}
 
 	@Override
-	public void notifyChanged(Notification notification) {
+	public void notifyChanged(final Notification notification) {
 		super.notifyChanged(notification);
 		boolean isSaved = handleSave(notification);
 		
