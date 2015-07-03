@@ -1,0 +1,46 @@
+/*******************************************************************************
+ * Copyright (c) 2004-2015 Gabor Bergmann and Daniel Varro
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Gabor Bergmann - initial API and implementation
+ *******************************************************************************/
+
+package org.mondo.collaboration.security.lens;
+
+import java.util.Comparator;
+import java.util.Map;
+
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Rule;
+
+/**
+ * @author Bergmann Gabor
+ *
+ */
+public class FirstApplicableResolution implements Comparator<SecurityRuleJudgement> {
+	
+	private Map<Rule, Integer> ruleToIndex;
+
+	public FirstApplicableResolution(Policy policy) {
+		super();
+		
+		int index = 0;
+		for (Rule rule : policy.getRules()) {
+			ruleToIndex.put(rule, index++);
+		}
+	}
+
+	@Override
+	public int compare(SecurityRuleJudgement arg0, SecurityRuleJudgement arg1) {
+		return getIndex(arg0) - getIndex(arg1);
+	}
+
+	public Integer getIndex(SecurityRuleJudgement arg0) {
+		return ruleToIndex.get(arg0.getRule());
+	}
+
+}
