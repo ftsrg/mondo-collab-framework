@@ -17,7 +17,7 @@ import java.util.WeakHashMap;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * Maintains weak references, uunlike Google Collect's BiMap.
+ * Maintains weak references, unlike Google Collect's BiMap.
  * 
  * @author Bergmann Gabor
  *

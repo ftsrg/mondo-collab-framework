@@ -11,13 +11,17 @@
 
 package org.mondo.collaboration.security.lens;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.Set;
 import java.util.TreeSet;
 
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Group;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Role;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.RuleType;
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.User;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -37,11 +41,17 @@ public class SecurityArbiter {
 		DEFAULT
 	}*/
 	
-	private Policy policy;
+	private final Policy policy;
+	private Role roleRestriction;
 	
-	public SecurityArbiter(Policy policy) {
+	/**
+	 * @param policy
+	 * @param roleRestriction if not null, only this role will be considered; if null, all roles will be considered
+	 */
+	public SecurityArbiter(Policy policy, Role roleRestriction) {
 		super();
 		this.policy = policy;
+		this.roleRestriction = roleRestriction;
 		this.ruleConflictResolver = new FirstApplicableResolution(policy);
 	}
 
@@ -57,18 +67,63 @@ public class SecurityArbiter {
 	 * @return null if no rules applicable, or the 'type' of the most prioritized applicable rule otherwise
 	 */
 	public RuleType getPrevailingJudgement(Operation op, Role role, Asset asset) {
-		TreeSet<SecurityRuleJudgement> judgements = getConflictingJudgements(op, role, asset);
+		Set<SecurityRuleJudgement> judgements = getConflictingJudgements(op, role, asset);
+		return getPrevailingJudgementInternal(judgements);
+	}
+
+	private RuleType getPrevailingJudgementInternal(Set<SecurityRuleJudgement> judgements) {
 		if (judgements.isEmpty()) return null;
 		return judgements.iterator().next().getRule().getType();
 	}
 
-	public TreeSet<SecurityRuleJudgement> getConflictingJudgements(Operation op, Role role, Asset asset) {
+	public Set<SecurityRuleJudgement> getConflictingJudgements(Operation op, Role role, Asset asset) {
+		Set<SecurityRuleJudgement> judgements = currentRights.get(op).get(role, asset);
+//		if (judgements == null) {
+//			judgements = new TreeSet<>(ruleConflictResolver);
+//			currentRights.get(op).put(role, asset, judgements);
+//		}
+		if (judgements == null)
+			judgements = Collections.emptySet();
+		return judgements;
+	}
+	
+	/**
+	 * If role is a group, users are updated as well.
+	 */
+	public void updateJudgement(Operation op, Role role, Asset asset, SecurityRuleJudgement judgement, boolean addition) {
+		updateJudgementInternal(op, role, asset, judgement, addition);
+		if (role instanceof Group) {
+			for (User user : ((Group) role).getUsers()) {
+				updateJudgementInternal(op, user, asset, judgement, addition);
+			}
+		}
+	}
+	
+	private void updateJudgementInternal(Operation op, Role role, Asset asset, SecurityRuleJudgement judgement, boolean addition) {
+		if (roleRestriction != null && role != roleRestriction) return;
+		
 		TreeSet<SecurityRuleJudgement> judgements = currentRights.get(op).get(role, asset);
 		if (judgements == null) {
 			judgements = new TreeSet<>(ruleConflictResolver);
 			currentRights.get(op).put(role, asset, judgements);
 		}
-		return judgements;
+		
+		RuleType oldPrevailing = getPrevailingJudgementInternal(judgements);
+		if (addition) {
+			judgements.add(judgement);
+		} else {
+			judgements.remove(judgement);			
+			if (judgements.isEmpty())
+				currentRights.get(op).remove(role, asset);
+		}
+		RuleType newPrevailing = getPrevailingJudgementInternal(judgements);
+		
+		if (oldPrevailing != newPrevailing) {
+			// TODO notifications			
+			// if (oldPrevailing != null) send(...);
+			// if (newPrevailing != null) send(...);
+		}
+		
 	}
 	
 	/**
