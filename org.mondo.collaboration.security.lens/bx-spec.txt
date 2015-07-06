@@ -1,0 +1,87 @@
+preinitialize /*Correspond$Resource and*/ Correspond$EObject and Correspond$Value where possible
+
+template triple-rule (gold, middle-assume, middle-create, front, security-check, carry-over, priority) {
+	let gold-readable = {gold; security-check[read]} in
+	let full = {gold-readable; middle-assume; middle-create; front} in
+	get { 
+		rule (gold-readable; middle-assume; !full) --> (create front; create middle-create; carry-over;) with priority;
+		rule (!full; middle-assume; front) --> (delete front; obsolete middle-create;) with -priority;
+	}
+	putback {
+		rule (!full; middle-assume; front) --> (create gold; create middle-create; carry-over; if !security-check[write] rollback;) with priority;
+		rule (gold; middle-assume; !full) --> (if !security-check[write] rollback; delete gold; obsolete middle-create; carry-over;) with -priority;
+	}		
+} // smallest priority comes first
+
+
+// TODO no secCheck?
+triple-rule resources (priority: 10) {
+	Gold$Resource(goldResource, relativePath);
+/*
+} middle-create {
+	Correspond$Resource(goldResource, frontResource);
+*/
+} front {
+	Front$Resource(frontResource, relativePath);
+}
+
+triple-rule objects (priority: 20) {
+	Gold$EObject(goldEObject, eClass);
+} middle-create {
+	Correspond$EObject(goldEObject, frontEObject);
+} front {
+	Front$EObject(frontEObject, eClass);
+} security-check {
+	SecurityAllow$EObject(goldEObject, $op$);
+}
+
+// TODO security analysis: I can move an object from/to a resource root iff I have the object-level rights
+triple-rule rootObjects (priority: 30) {
+	Gold$Resource.rootContents(goldResource, goldEObject);
+} middle-assume {
+	Correspond$Resource(goldResource, frontResource);
+	Correspond$EObject(goldEObject, frontEObject);
+} front {
+	Front$Resource.rootContents(frontResource, frontEObject);
+} security-check {
+	SecurityAllow$EObject(goldEObject, $op$);
+}
+
+// TODO security pattern should list each pair of elements that I am not allowed to connect? - do rollback check with LS instead
+triple-rule references (priority: 40) {
+	Gold$EObject.refers(goldSrc, eReference, goldTrg);
+} middle-assume {
+	Correspond$EObject(goldSrc, frontSrc);
+	Correspond$EObject(goldTrg, frontTrg);
+} front {
+	Front$EObject.refers(frontSrc, eReference, frontTrg);
+} security-check {
+	SecurityAllow$Reference(goldSrc, eReference, goldTrg, $op$);
+}
+
+triple-rule attributeDirect (priority: 50) {
+	Gold$EObject.attributeSlot(goldEObject, eAttribute, value);
+} middle-assume {
+	Correspond$EObject(goldEObject, frontEObject);
+} front {
+	Front$EObject.attributeSlot(frontEObject, eAttribute, value);
+	OBFUSCATE != SecurityAllow$Attribute(goldEObject, eAttribute, read); // without this, it would clash with attribute-obfuscated	
+} security-check {
+	SecurityAllow$Attribute(goldEObject, eAttribute, $op$); // ALLOW, not OBFUSCATE
+}
+
+get-only triple-rule attributeObfuscated (priority: 60) {
+	Gold$EObject.attributeSlot(goldEObject, eAttribute, goldValue);
+} middle-assume {
+	Correspond$EObject(goldEObject, frontEObject);
+	OBFUSCATE == SecurityAllow$Attribute(goldEObject, eAttribute, read);
+} middle-create {
+	Correspond$Value(goldValue, frontValue);
+} front {
+	Front$EObject.attributeSlot(frontEObject, eAttribute, frontValue);
+}
+
+
+
+
+
