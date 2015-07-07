@@ -9,7 +9,7 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens;
+package org.mondo.collaboration.security.lens.arbiter;
 
 import org.eclipse.incquery.runtime.api.IPatternMatch;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Rule;

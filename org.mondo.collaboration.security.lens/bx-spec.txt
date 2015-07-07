@@ -8,8 +8,8 @@ template triple-rule (gold, middle-assume, middle-create, front, security-check,
 		rule (!full; middle-assume; front) --> (delete front; obsolete middle-create;) with -priority;
 	}
 	putback {
-		rule (!full; middle-assume; front) --> (create gold; create middle-create; carry-over; if !security-check[write] rollback;) with priority;
-		rule (gold; middle-assume; !full) --> (if !security-check[write] rollback; delete gold; obsolete middle-create; carry-over;) with -priority;
+		rule (!full; middle-assume; front) --> (create gold; create middle-create; carry-over; if !LS(security-check[write]) rollback;) with priority;
+		rule (gold; middle-assume; !full) --> (if !LS(security-check[write]) rollback; delete gold; obsolete middle-create; carry-over;) with -priority;
 	}		
 } // smallest priority comes first
 
@@ -47,7 +47,8 @@ triple-rule rootObjects (priority: 30) {
 	SecurityAllow$EObject(goldEObject, $op$);
 }
 
-// TODO security pattern should list each pair of elements that I am not allowed to connect? - do rollback check with LS instead
+// TODO ordered lists?
+// TODO security pattern should list each pair of elements that I am not allowed to connect? --> do rollback check with LS instead
 triple-rule references (priority: 40) {
 	Gold$EObject.refers(goldSrc, eReference, goldTrg);
 } middle-assume {

@@ -9,9 +9,8 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens;
+package org.mondo.collaboration.security.lens.arbiter;
 
-import java.util.Comparator;
 import java.util.Map;
 
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
@@ -21,7 +20,7 @@ import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Ru
  * @author Bergmann Gabor
  *
  */
-public class FirstApplicableResolution implements Comparator<SecurityRuleJudgement> {
+public class FirstApplicableResolution implements SecurityArbiter.RuleConflictResolver {
 	
 	private Map<Rule, Integer> ruleToIndex;
 
