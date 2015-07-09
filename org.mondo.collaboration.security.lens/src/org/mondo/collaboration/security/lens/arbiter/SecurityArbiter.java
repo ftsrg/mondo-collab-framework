@@ -34,7 +34,6 @@ import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.incquery.runtime.matchers.tuple.LeftInheritanceTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
-import org.mondo.collaboration.security.lens.Asset;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Binding;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.ConflictResolutionTypes;
@@ -105,6 +104,8 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	private AdvancedIncQueryEngine policyQueryEngine;
 	private SpecificationBuilder specBuilder;
 	
+	private Map<Rule, Asset.Factory> assetFactories = new HashMap<>();
+	
 	/**
 	 * @param policy the policy describing the security rules to be applied
 	 * @param roleRestriction if not null, only this role will be considered; if null, all roles will be considered
@@ -147,6 +148,8 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		IQuerySpecification<? extends IncQueryMatcher<? extends IPatternMatch>> query = 
 				specBuilder.getOrCreateSpecification(rule.getPattern());
 		ruleQueryAccumulator.add(query);
+		
+		assetFactories.put(rule, Asset.factoryFrom(query));
 	}
 
 	private void initRuleListeners(final Rule rule) throws IncQueryException {
@@ -218,7 +221,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 				return;
 		}
 		
-		Set<Asset> assets = matchToAssets(rule, match);
+		Set<? extends Asset> assets = assetFactories.get(rule).apply(match);
 		for (Asset asset : assets) {			
 			for (OperationKind op : rightsToOps.get(rule.getRights())) {
 				updateJudgement(op, rule.getRole(), asset, new SecurityRuleJudgement(rule, asset, match), isAddition);

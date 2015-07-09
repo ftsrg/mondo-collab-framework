@@ -1,87 +1,95 @@
-preinitialize /*Correspond$Resource and*/ Correspond$EObject and Correspond$Value where possible
+transformation	
+const <user> 
 
-template triple-rule (gold, middle-assume, middle-create, front, security-check, carry-over, priority) {
-	let gold-readable = {gold; security-check[read]} in
-	let full = {gold-readable; middle-assume; middle-create; front} in
+preinitialize /*Correspond$Resource and*/ Correspond$EObject (and obfuscate cache?) where possible
+
+template triple-rule (gold, middle-assume, middle-create, front, security-check, priority) {
+	let mapped-putback = {gold;                         middle-assume; middle-create; front} in
+	let mapped-get =     {gold; security-check[::READ]; middle-assume; middle-create; front} in
 	get { 
-		rule (gold-readable; middle-assume; !full) --> (create front; create middle-create; carry-over;) with priority;
-		rule (!full; middle-assume; front) --> (delete front; obsolete middle-create;) with -priority;
+		rule get.add       (!mapped-get; middle-assume; gold; security-check[::READ]) --> (create front; create middle-create;)    with +priority;
+		rule get.remove    (!mapped-get; middle-assume; front)                        --> (delete front; obsolete middle-create;)  with -priority;
 	}
 	putback {
-		rule (!full; middle-assume; front) --> (create gold; create middle-create; carry-over; if !LS(security-check[write]) rollback;) with priority;
-		rule (gold; middle-assume; !full) --> (if !LS(security-check[write]) rollback; delete gold; obsolete middle-create; carry-over;) with -priority;
+		rule putback.add    (!mapped-putback; middle-assume; front)  --> (create gold; create middle-create; if !LS(security-check[::WRITE]) rollback;)   with +priority;
+		rule putback.remove (!mapped-putback; middle-assume; gold)   --> (if !LS(security-check[::WRITE]) rollback; delete gold; obsolete middle-create;) with -priority;
 	}		
 } // smallest priority comes first
 
+/*
+ * TGG/QVT analogy?
+ * gold = source-bottom
+ * security-check = source-top?
+ * middle-create = middle-bottom
+ * middle-assume = middle-top
+ * front = target-bottom
+ */
+
 
 // TODO no secCheck?
-triple-rule resources (priority: 10) {
+triple-rule resources (priority: 10) gold {
 	Gold$Resource(goldResource, relativePath);
-/*
 } middle-create {
 	Correspond$Resource(goldResource, frontResource);
-*/
 } front {
 	Front$Resource(frontResource, relativePath);
 }
 
-triple-rule objects (priority: 20) {
+triple-rule objects (priority: 20) gold {
 	Gold$EObject(goldEObject, eClass);
 } middle-create {
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
 	Front$EObject(frontEObject, eClass);
-} security-check {
-	SecurityAllow$EObject(goldEObject, $op$);
+} security-check[op] {
+	// TODO defaults?
+	[op]Judgement$EObject(goldEObject, <user>, ::PERMIT);
 }
 
 // TODO security analysis: I can move an object from/to a resource root iff I have the object-level rights, is this secure this way?
-triple-rule rootObjects (priority: 30) {
+triple-rule rootObjects (priority: 30) gold {
 	Gold$Resource.rootContents(goldResource, goldEObject);
 } middle-assume {
 	Correspond$Resource(goldResource, frontResource);
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
 	Front$Resource.rootContents(frontResource, frontEObject);
-} security-check {
-	SecurityAllow$EObject(goldEObject, $op$);
+} security-check[op] {
+	// TODO defaults?
+	[op]Judgement$EObject(goldEObject, <user>, ::PERMIT);
 }
 
 // TODO ordered lists?
 // TODO security pattern should list each pair of elements that I am not allowed to connect? --> do rollback check with LS instead
-triple-rule references (priority: 40) {
+triple-rule references (priority: 40) gold {
 	Gold$EObject.refers(goldSrc, eReference, goldTrg);
 } middle-assume {
 	Correspond$EObject(goldSrc, frontSrc);
 	Correspond$EObject(goldTrg, frontTrg);
 } front {
 	Front$EObject.refers(frontSrc, eReference, frontTrg);
-} security-check {
-	SecurityAllow$Reference(goldSrc, eReference, goldTrg, $op$);
+} security-check[op] {
+	// TODO defaults?
+	[op]Judgement$Reference(goldSrc, eReference, goldTrg, <user>, ::PERMIT);
 }
 
-triple-rule attributeDirect (priority: 50) {
-	Gold$EObject.attributeSlot(goldEObject, eAttribute, value);
+triple-rule attributes (priority: 50) gold {
+	Gold$EObject.attributeSlot(goldEObject, eAttribute, goldValue);
 } middle-assume {
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
 	Front$EObject.attributeSlot(frontEObject, eAttribute, value);
-	OBFUSCATE != SecurityAllow$Attribute(goldEObject, eAttribute, read); // without this, it would clash with attribute-obfuscated	
-} security-check {
-	SecurityAllow$Attribute(goldEObject, eAttribute, $op$); // ALLOW, not OBFUSCATE
+} security-check[op] {
+	// TODO defaults?
+	[op]Judgement$Attribute(goldEObject, eAttribute, <user>, Prevailing);
+	frontValue == eval(
+		switch(Prevailing) {
+			case ::OBFUSCATE: obfuscate(goldValue)
+			case ::PERMIT   : goldValue 
+			case ::DENY     : null /* IncQuery treats this as a failed check */
+		}
+	);
 }
-
-get-only triple-rule attributeObfuscated (priority: 60) {
-	Gold$EObject.attributeSlot(goldEObject, eAttribute, goldValue);
-} middle-assume {
-	Correspond$EObject(goldEObject, frontEObject);
-	OBFUSCATE == SecurityAllow$Attribute(goldEObject, eAttribute, read);
-} middle-create {
-	Correspond$Value(goldValue, frontValue);
-} front {
-	Front$EObject.attributeSlot(frontEObject, eAttribute, frontValue);
-}
-
 
 
 
