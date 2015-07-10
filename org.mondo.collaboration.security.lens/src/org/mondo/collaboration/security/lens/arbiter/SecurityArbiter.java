@@ -62,6 +62,12 @@ import com.google.common.collect.Table;
  *   
  * <p> Note that no entry is created for the default case, when no security rules match at all. 
  * 
+ * <p> TODO: Can we make the assumption that RuleConflictResolver can be Comparator<Rule>, 
+ * 	i.e. not depend on the match and the asset? In this case, currentRights can be restructured as an
+ *   <pre>EnumMap < OperationKind, Table < Role, Asset, TreeMultimap < Rule, IPatternMatch > > > </pre>
+ *  which would be more efficient, since multiple justifications for the same judgement do not have to be
+ *  compared against each other.
+ * 
  * @author Bergmann Gabor
  *
  */
@@ -274,10 +280,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		Tuple resultTuple = new LeftInheritanceTuple(asset.toTuple(), new Object[]{role, prevailing});
 		
 		LiveTable table = getResultsAsLiveTable(op, asset.getClass());
-		if (isAddition)
-			table.addTuple(resultTuple);
-		else
-			table.removeTuple(resultTuple);
+		table.updateTuple(resultTuple, isAddition);
 	}
 
 	/**

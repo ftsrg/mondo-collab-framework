@@ -73,15 +73,16 @@ triple-rule references (priority: 40) gold {
 	[op]Judgement$Reference(goldSrc, eReference, goldTrg, <user>, ::PERMIT);
 }
 
+// TODO assumption: obfuscated attributes are read-only
 triple-rule attributes (priority: 50) gold {
 	Gold$EObject.attributeSlot(goldEObject, eAttribute, goldValue);
 } middle-assume {
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
 	Front$EObject.attributeSlot(frontEObject, eAttribute, value);
-} security-check[op] {
+} security-check[::READ] {
 	// TODO defaults?
-	[op]Judgement$Attribute(goldEObject, eAttribute, <user>, Prevailing);
+	ReadJudgement$Attribute(goldEObject, eAttribute, <user>, Prevailing);
 	frontValue == eval(
 		switch(Prevailing) {
 			case ::OBFUSCATE: obfuscate(goldValue)
@@ -89,6 +90,9 @@ triple-rule attributes (priority: 50) gold {
 			case ::DENY     : null /* IncQuery treats this as a failed check */
 		}
 	);
+} security-check[::WRITE] {
+	// TODO defaults?
+	WriteJudgement$Attribute(goldEObject, eAttribute, <user>, ::PERMIT);
 }
 
 

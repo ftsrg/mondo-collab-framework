@@ -35,20 +35,18 @@ public class LiveTable {
 	private Map<TupleMask, Dispatcher> dispatchers = new HashMap<>();
 	
 	public boolean addTuple(Tuple t) {
-		final boolean changed = tuples.add(t);
-		if (changed) {
-			dispatchUpdate(t, true);
-		}
-		return changed;
+		return updateTuple(t, true);
 	}
 	public boolean removeTuple(Tuple t) {
-		final boolean changed = tuples.remove(t);
+		return updateTuple(t, false);
+	}
+	public boolean updateTuple(Tuple t, boolean isInsertion) {
+		final boolean changed = isInsertion ? tuples.add(t) : tuples.remove(t);
 		if (changed) {
-			dispatchUpdate(t, false);
+			dispatchUpdate(t, isInsertion);
 		}
 		return changed;
 	}
-	
 	public Set<Tuple> getTuplesForSeed(Tuple seed) {
 		Index index = getOrCreateIndex(seedToMask(seed));
 		return index.get(seed);
