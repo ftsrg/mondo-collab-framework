@@ -32,7 +32,7 @@ Policy:
 ;
 
 Rule:
-	'rule' name=ID type=RuleType rights=RuleRights
+	'rule' name=ID type=RuleType rights=RuleRights 'to' roles+=[Role]+
 	'{'		
 		'query' pattern=[iql::Pattern|STRING] ';'?
 		bindings+=Binding*
@@ -69,7 +69,7 @@ enum RuleRights:
 ;
 
 enum RuleType:
-	Deny = 'deny' | Permit = 'permit' | Obfuscate = 'obfuscate'
+	Deny = 'deny' | Permit = 'permit'
 ;
 
 enum ConflictResolutionTypes:
