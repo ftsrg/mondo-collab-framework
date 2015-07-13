@@ -9,29 +9,37 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens
+package org.mondo.collaboration.security.lens.context;
 
-import org.eclipse.xtend.lib.annotations.Data
-
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.EReference
-import org.eclipse.emf.ecore.EAttribute
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
 
 /**
+ * Tuples of ({@link EObject}, {@link EAttribute}, attribute slot value).
  * @author Bergmann Gabor
  *
  */
-abstract class Asset {	
-    @Data public static class ObjectAsset extends Asset {
-		EObject object
-    }
-    @Data public static class ReferenceAsset extends Asset {
-		EObject source
-		EReference reference
-		EObject target
-    }
-    @Data public static class AttributeAsset extends Asset {
-		EObject source
-		EAttribute attribute
-    }
+public enum EObjectAttributeKey implements CollabLensInputKey {
+	GOLD,
+	FRONT;
+	
+	@Override
+	public String getPrettyPrintableName() {
+		return getStringID();
+	}
+
+	@Override
+	public String getStringID() {
+		return name()+"$EObject.attribute";
+	}
+
+	@Override
+	public int getArity() {
+		return 3;
+	}
+
+	@Override
+	public boolean isEnumerable() {
+		return true;
+	}
 }
