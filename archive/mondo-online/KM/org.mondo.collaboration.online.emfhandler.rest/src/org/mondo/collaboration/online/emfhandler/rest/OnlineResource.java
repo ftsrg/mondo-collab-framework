@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import WTSpec.WTSpecPackage;
 
-@Path("/hello")
+@Path("/modelHandler")
 public class OnlineResource {
 
 private JSONArray modelsInJson;

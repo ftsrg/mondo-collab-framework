@@ -75,7 +75,7 @@ public class CollaborationServerApplication {
 		}
 		*/
 		try {
-			URL url = new URL("http://localhost:8070/modelHandler/getModels");
+			URL url = new URL("http://localhost:8070/services/modelHandler/getModels");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setDoInput(true);
@@ -287,7 +287,7 @@ public class CollaborationServerApplication {
 
 			String postDataString = postData.toString();
 			
-			URL url = new URL("http://localhost:8070/modelHandler/persistModel");
+			URL url = new URL("http://localhost:8070/services/modelHandler/persistModel");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.addRequestProperty("id", sessionId);
 			conn.addRequestProperty("title", title);
