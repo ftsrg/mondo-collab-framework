@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="EMF Rest Running Platform" sequenceNumber="51">
+<?pde version="3.8"?><target name="EMF Rest Running Platform" sequenceNumber="62">
 <locations>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.0.v20150601-0402"/>
+<repository location="http://download.eclipse.org/releases/mars/"/>
+</location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="com.eclipsesource.jaxrs.provider.security.feature.feature.group" version="2.2.0.201506221200"/>
 <unit id="com.eclipsesource.jaxrs.provider.moxy.feature.feature.group" version="2.2.0.201506221200"/>
@@ -11,19 +15,13 @@
 <repository location="http://hstaudacher.github.io/osgi-jax-rs-connector"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.0.v20150601-0402"/>
-<repository location="http://download.eclipse.org/releases/mars/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.11.0.v20150602-1417"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.5"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.3.1"/>
-<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.3.0"/>
-<unit id="org.emfjson.feature.feature.group" version="0.10.0"/>
-<unit id="com.fasterxml.jackson.core.jackson-core" version="2.3.1"/>
-<repository location="http://ghillairet.github.com/p2"/>
+<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.5.0.v201504151636"/>
+<unit id="com.fasterxml.jackson.core.jackson-core" version="2.5.0.v201504151636"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150519210750/repository/"/>
 </location>
 </locations>
 <environment>

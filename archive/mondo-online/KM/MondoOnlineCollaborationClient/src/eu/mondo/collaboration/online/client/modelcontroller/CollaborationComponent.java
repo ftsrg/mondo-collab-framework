@@ -93,11 +93,11 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 	private JSONObject connectElementToRootNode(JSONObject node, JSONObject element) {
 		try {
 			String type = element.getString("type");
-			String typeSetName = "its" + element.getString("type") + "s";
+			String typeSetName = element.getString("type");
 			JSONObject newElement =  new JSONObject();
 			// TODO set additional EMF properties
-			newElement.put("sysId", element.getString("sysId"));
-			if(type.equals("WTC")) {
+			newElement.put("name", element.getString("name"));
+			if(type.equals("WTCtrl")) {
 				type = "CtrlUnit10";
 			}
 			String eClass = "http://WTSpec/2.0#//" + type;
@@ -125,7 +125,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				for(int i = 0; i < subtree.length(); i++) {
 					JSONObject currentNode = subtree.getJSONObject(i);
 					boolean success = false;
-					if(currentNode.getString("sysId").equals(element.getString("parentSysId"))) {
+					if(currentNode.getString("name").equals(element.getString("parentName"))) {
 						currentNode = connectElementToRootNode(currentNode, element);
 						node.getJSONArray(identifier).put(i, currentNode);
 						success = true;
@@ -155,7 +155,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				for(int i = 0; i < subtree.length(); i++) {
 					JSONObject currentNode = subtree.getJSONObject(i);
 					boolean success = false;
-					if(currentNode.getString("sysId").equals(original.getString("sysId"))) {
+					if(currentNode.getString("name").equals(original.getString("name"))) {
 						currentNode = updateNode(currentNode, edited);
 						node.getJSONArray(identifier).put(i, currentNode);
 						success = true;
@@ -199,7 +199,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				for(int i = 0; i < subtree.length(); i++) {
 					JSONObject currentNode = subtree.getJSONObject(i);
 					boolean success = false;
-					if(currentNode.getString("sysId").equals(nodeToDelete.getString("sysId"))) {
+					if(currentNode.getString("name").equals(nodeToDelete.getString("name"))) {
 						JSONArray newSubtree = removeItemFromJsonArray(subtree, i);
 						node.put(identifier, newSubtree);
 						success = true;
@@ -248,7 +248,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				System.out.println("add: " + element.toString());
 				System.out.println("Model: " + newModel);
 				// if root's child
-				if(element.getString("parentSysId").equals("")) {
+				if(element.getString("parentName").equals("")) {
 					// if no children with this type
 					newModel = connectElementToRootNode(newModel, element);
 				} else {

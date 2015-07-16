@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/es.ikerlan.wt.emf.model/src/main/java" modelPluginID="es.ikerlan.wt.emf.model"
+    modelName="WTSpec4M40" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>WTSpec4M40_benchmark.ecore</foreignModel>
+  <genPackages prefix="WTSpec4M" basePackage="es.ikerlan" disposableProviderFactory="true"
+      ecorePackage="WTSpec4M40_benchmark.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="WTSpec4M40_benchmark.ecore#//TypeEnum">
+      <genEnumLiterals ecoreEnumLiteral="WTSpec4M40_benchmark.ecore#//TypeEnum/FanCtrl"/>
+      <genEnumLiterals ecoreEnumLiteral="WTSpec4M40_benchmark.ecore#//TypeEnum/HeaterCtrl"/>
+      <genEnumLiterals ecoreEnumLiteral="WTSpec4M40_benchmark.ecore#//TypeEnum/PumpCtrl"/>
+      <genEnumLiterals ecoreEnumLiteral="WTSpec4M40_benchmark.ecore#//TypeEnum/UnderTemperatureChecker"/>
+      <genEnumLiterals ecoreEnumLiteral="WTSpec4M40_benchmark.ecore#//TypeEnum/OverTemperatureChecker"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="WTSpec4M40_benchmark.ecore#//CycleEnum">
+      <genEnumLiterals ecoreEnumLiteral="WTSpec4M40_benchmark.ecore#//CycleEnum/High"/>
+      <genEnumLiterals ecoreEnumLiteral="WTSpec4M40_benchmark.ecore#//CycleEnum/Medium"/>
+      <genEnumLiterals ecoreEnumLiteral="WTSpec4M40_benchmark.ecore#//CycleEnum/Low"/>
+    </genEnums>
+    <genClasses ecoreClass="WTSpec4M40_benchmark.ecore#//WTSystem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//WTSystem/model"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//WTSystem/version"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//WTSystem/subsystems"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//WTSystem/inputs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//WTSystem/outputs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//WTSystem/params"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//WTSystem/alarms"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec4M40_benchmark.ecore#//SystemInput"/>
+    <genClasses ecoreClass="WTSpec4M40_benchmark.ecore#//SystemOutput"/>
+    <genClasses ecoreClass="WTSpec4M40_benchmark.ecore#//SystemAlarm">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//SystemAlarm/activated"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec4M40_benchmark.ecore#//SystemParam">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//SystemParam/value"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="WTSpec4M40_benchmark.ecore#//WTCtrlInput"/>
+    <genClasses image="false" ecoreClass="WTSpec4M40_benchmark.ecore#//WTCtrlOutput"/>
+    <genClasses image="false" ecoreClass="WTSpec4M40_benchmark.ecore#//WTCtrlParam"/>
+    <genClasses ecoreClass="WTSpec4M40_benchmark.ecore#//Subsystem">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//Subsystem/subsystems"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//Subsystem/wtctrls"/>
+    </genClasses>
+    <genClasses ecoreClass="WTSpec4M40_benchmark.ecore#//WTCtrl">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//WTCtrl/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//WTCtrl/cycle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//WTCtrl/order"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//WTCtrl/enabled"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//WTCtrl/input"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//WTCtrl/param"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WTSpec4M40_benchmark.ecore#//WTCtrl/output"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="WTSpec4M40_benchmark.ecore#//WTElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//WTElement/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WTSpec4M40_benchmark.ecore#//WTElement/id"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
