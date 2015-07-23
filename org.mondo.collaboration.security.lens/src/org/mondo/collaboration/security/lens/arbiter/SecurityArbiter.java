@@ -34,6 +34,7 @@ import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.incquery.runtime.matchers.tuple.LeftInheritanceTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Binding;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.ConflictResolutionTypes;
@@ -209,7 +210,11 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 //		return results;
 //	}
 	
-	public LiveTable getResultsAsLiveTable(OperationKind op, Class<? extends Asset> assetClass) {
+	public ILiveRelation getResultsAsLiveRelation(OperationKind op, Class<? extends Asset> assetClass) {
+		return getResultsAsLiveTable(op, assetClass);
+	}
+
+	private LiveTable getResultsAsLiveTable(OperationKind op, Class<? extends Asset> assetClass) {
 		return results.get(op).get(assetClass);
 	}
 
