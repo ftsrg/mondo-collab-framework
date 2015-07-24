@@ -9,15 +9,37 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.context;
+package org.mondo.collaboration.security.lens.context.keys;
 
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 
 /**
- * Common base interface for MONDO collaboration lens input keys.
+ * Tuples of ({@link EObject}, {@link EClass}).
  * @author Bergmann Gabor
  *
  */
-public interface CollabLensInputKey extends IInputKey {
+public enum EObjectKey implements CollabLensInputKey {
+	GOLD,
+	FRONT;
 	
+	@Override
+	public String getPrettyPrintableName() {
+		return getStringID();
+	}
+
+	@Override
+	public String getStringID() {
+		return name()+"$EObject";
+	}
+
+	@Override
+	public int getArity() {
+		return 2;
+	}
+
+	@Override
+	public boolean isEnumerable() {
+		return true;
+	}
 }

@@ -92,10 +92,8 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		for (OperationKind operationKind : OperationKind.values()) {
 			final HashMap<Class<? extends Asset>, LiveTable> opResults = new HashMap<Class<? extends Asset>, LiveTable>();
 			results.put(operationKind, opResults);
-			for (Class<?> assetClass : Asset.class.getClasses()) {
-				if (Asset.class.isAssignableFrom(assetClass)) {
-					opResults.put((Class<? extends Asset>) assetClass, new LiveTable());
-				}
+			for (Class<? extends Asset> assetClass : Asset.getKinds()) {
+				opResults.put(assetClass, new LiveTable());
 			}			
 		}		
 	}

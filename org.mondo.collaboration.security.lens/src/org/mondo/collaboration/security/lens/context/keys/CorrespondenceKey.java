@@ -9,20 +9,18 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.context;
-
-import org.eclipse.emf.ecore.resource.Resource;
+package org.mondo.collaboration.security.lens.context.keys;
 
 /**
- * Tuples of ({@link Resource}, relative path).
+ * Tuples of (gold, front).
  * @author Bergmann Gabor
  *
  */
-public enum ResourceKey implements CollabLensInputKey {
-	
-	GOLD,
-	FRONT;
-	
+public enum CorrespondenceKey implements CollabLensInputKey {
+
+	RESOURCE,
+	EOBJECT;
+
 	@Override
 	public String getPrettyPrintableName() {
 		return getStringID();
@@ -30,7 +28,7 @@ public enum ResourceKey implements CollabLensInputKey {
 
 	@Override
 	public String getStringID() {
-		return name()+"$Resource";
+		return "Correspond$"+name();
 	}
 
 	@Override

@@ -9,17 +9,17 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.context;
+package org.mondo.collaboration.security.lens.context.keys;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * Tuples of ({@link Resource}, {@link EObject}).
+ * Tuples of ({@link EObject}, {@link EAttribute}, attribute slot value).
  * @author Bergmann Gabor
  *
  */
-public enum ResourceRootContentsKey implements CollabLensInputKey {
+public enum EObjectAttributeKey implements CollabLensInputKey {
 	GOLD,
 	FRONT;
 	
@@ -30,17 +30,16 @@ public enum ResourceRootContentsKey implements CollabLensInputKey {
 
 	@Override
 	public String getStringID() {
-		return name()+"$Resource.rootContents";
+		return name()+"$EObject.attribute";
 	}
 
 	@Override
 	public int getArity() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public boolean isEnumerable() {
 		return true;
 	}
-
 }

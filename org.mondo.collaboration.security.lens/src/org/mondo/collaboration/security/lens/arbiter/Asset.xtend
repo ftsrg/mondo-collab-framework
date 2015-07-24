@@ -94,6 +94,10 @@ abstract class Asset {
 		}	
     }
     
+   public def static getKinds() {
+		Asset.classes.filter[Asset.isAssignableFrom(it)].map[it as Class<? extends Asset>]
+   }
+    
    public static interface Factory extends Function<IPatternMatch, Set<? extends Asset>> {}
    
    def static Factory factoryFrom(IQuerySpecification<?> query) {

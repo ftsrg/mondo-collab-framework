@@ -32,9 +32,9 @@ import com.google.common.collect.Iterables;
 public abstract class LiveTableBasedRuntimeContext implements IQueryRuntimeContext {
 	
 	private IQueryMetaContext metacontext;
-	private Map<IInputKey, ILiveRelation> aggregatedTables;
+	private Map<IInputKey, ? extends ILiveRelation> aggregatedTables;
 
-	public LiveTableBasedRuntimeContext(IQueryMetaContext metacontext, Map<IInputKey, ILiveRelation> aggregatedTables) {
+	public LiveTableBasedRuntimeContext(IQueryMetaContext metacontext, Map<IInputKey, ? extends ILiveRelation> aggregatedTables) {
 		super();
 		this.metacontext = metacontext;
 		this.aggregatedTables = ImmutableMap.copyOf(aggregatedTables);

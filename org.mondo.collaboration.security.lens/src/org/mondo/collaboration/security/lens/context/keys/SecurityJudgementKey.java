@@ -9,7 +9,7 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.context;
+package org.mondo.collaboration.security.lens.context.keys;
 
 import org.mondo.collaboration.security.lens.arbiter.Asset;
 import org.mondo.collaboration.security.lens.arbiter.Asset.AttributeAsset;
