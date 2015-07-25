@@ -35,6 +35,12 @@ public class ModelIndexer {
 		super();
 		this.baseURI = baseURI;
 		this.root = root;
+		
+		final EMFAdapter emfAdapter = new EMFAdapter(this);
+		this.adapter = emfAdapter;
+		emfAdapter.addAdapter(root);
+		
+		root.eAdapters().add(adapter);
 	}
 	
 	LiveTable indexedResources = new LiveTable();
@@ -67,7 +73,7 @@ public class ModelIndexer {
 	
 	EMFModelComprehension comprehension = new EMFModelComprehension(new BaseIndexOptions(false, true));
 	
-	private EContentAdapter adapter = new EMFAdapter(this);
+	private EContentAdapter adapter;
 	
 	URI uriToRelativePath(URI resourceURI) {
 		final URI relative = resourceURI.deresolve(baseURI, false, true, true);

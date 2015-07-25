@@ -18,7 +18,7 @@ package org.mondo.collaboration.security.lens.context.keys;
  */
 public enum CorrespondenceKey implements CollabLensInputKey {
 
-	RESOURCE,
+	//RESOURCE,
 	EOBJECT;
 
 	@Override

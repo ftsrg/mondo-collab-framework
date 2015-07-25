@@ -14,6 +14,7 @@ package org.mondo.collaboration.security.lens.context;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.eclipse.incquery.runtime.matchers.context.IInputKey;
@@ -114,6 +115,8 @@ public class MondoLensRuntimeContext extends LiveTableBasedRuntimeContext {
 	}
 
 
-	
+	public Set<IInputKey> getInputKeys() {
+		return this.aggregatedTables.keySet();
+	}
 	
 }

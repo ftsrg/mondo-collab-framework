@@ -38,10 +38,12 @@ class EMFAdapter extends EContentAdapter {
 	@Override
 	protected void addAdapter(Notifier notifier) {
 		traverseNotifier(notifier, true);
+		super.addAdapter(notifier);
 	}
 
 	@Override
 	protected void removeAdapter(Notifier notifier) {
+		super.removeAdapter(notifier);
 		traverseNotifier(notifier, false);
 	}
 

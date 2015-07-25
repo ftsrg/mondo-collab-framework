@@ -40,7 +40,7 @@ class Visitor extends EMFVisitor {
 	}
 	@Override
 	public boolean pruneFeature(EStructuralFeature feature) {
-		return true;
+		return false;
 	}
 	
 	@Override

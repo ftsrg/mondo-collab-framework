@@ -133,6 +133,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		this.ruleConflictResolver = new FirstApplicableResolution(policy);
 
 		policyQueryEngine = AdvancedIncQueryEngine.from(IncQueryEngine.on(new EMFScope(goldModelRoots, indexOptions)));
+		this.specBuilder = new SpecificationBuilder();
 		
 		Set<IQuerySpecification<?>> ruleQueries = new HashSet<>();
 		for (Rule rule : policy.getRules()) {

@@ -29,8 +29,8 @@ template triple-rule (gold, middle-assume, middle-create, front, security-check,
 // TODO no secCheck?
 triple-rule resources (priority: 10) gold {
 	Gold$Resource(goldResource, relativePath);
-} middle-create {
-	Correspond$Resource(goldResource, frontResource);
+// } middle-create {
+//	Correspond$Resource(goldResource, frontResource);
 } front {
 	Front$Resource(frontResource, relativePath);
 }
