@@ -1,12 +1,12 @@
-module org.mondo.collaboration.security.macl.xtext.GenerateMondoAccessControlLanguage
+module org.mondo.collaboration.security.macl.xtext.rule.GenerateMACLRule
 
 import org.eclipse.emf.mwe.utils.*
 import org.eclipse.xtext.generator.*
 import org.eclipse.xtext.ui.generator.*
 
-var grammarURI = "classpath:/org/mondo/collaboration/security/macl/xtext/MondoAccessControlLanguage.xtext"
-var fileExtensions = "macl"
-var projectName = "org.mondo.collaboration.security.macl.xtext"
+var grammarURI = "classpath:/org/mondo/collaboration/security/macl/xtext/rule/MACLRule.xtext"
+var fileExtensions = "maclr"
+var projectName = "org.mondo.collaboration.security.macl.xtext.rule"
 var runtimeProject = "../${projectName}"
 var generateXtendStub = true
 var encoding = "UTF-8"
@@ -18,7 +18,6 @@ Workflow {
     	// The following two lines can be removed, if Xbase is not used.
     	registerGeneratedEPackage = "org.eclipse.xtext.xbase.XbasePackage"
     	registerGenModelFile = "platform:/resource/org.eclipse.xtext.xbase/model/Xbase.genmodel"
-    	registerGenModelFile = "platform:/resource/org.mondo.collaboration.security.macl.xtext.rule/model/generated/MACLRule.genmodel"
     	registerGenModelFile = "platform:/resource/org.eclipse.incquery.patternlanguage/model/generated/PatternLanguage.genmodel"
     }
     
@@ -59,7 +58,7 @@ Workflow {
     
     		// serializer 2.0
     		fragment = serializer.SerializerFragment auto-inject {
-    			generateStub = true
+    			generateStub = false
     		}
     
     		// a custom ResourceFactory for use with EMF
