@@ -1,0 +1,53 @@
+/*******************************************************************************
+ * Copyright (c) 2004-2015 Gabor Bergmann and Daniel Varro
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Gabor Bergmann - initial API and implementation
+ *******************************************************************************/
+
+package org.mondo.collaboration.security.lens.context;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.incquery.runtime.matchers.context.IInputKey;
+import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
+import org.mondo.collaboration.security.lens.context.keys.EObjectKey;
+import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
+import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey;
+import org.mondo.collaboration.security.lens.util.DefaultMetaContext;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+/**
+ * @author Bergmann Gabor
+ *
+ */
+public class MondoLensMetaContext extends DefaultMetaContext {
+	public static MondoLensMetaContext INSTANCE = new MondoLensMetaContext();
+	
+	@Override
+	public Map<Set<Integer>, Set<Integer>> getFunctionalDependencies(IInputKey key) {
+		if (key instanceof CorrespondenceKey || key instanceof ResourceKey) {
+			return ImmutableMap.<Set<Integer>, Set<Integer>>of(
+					ImmutableSet.of(0), ImmutableSet.of(1),
+					ImmutableSet.of(1), ImmutableSet.of(0)
+			);
+		} else if (key instanceof ResourceRootContentsKey) {
+			return ImmutableMap.<Set<Integer>, Set<Integer>>of(
+					ImmutableSet.of(1), ImmutableSet.of(0)
+			);
+		} else if (key instanceof EObjectKey) {
+			return ImmutableMap.<Set<Integer>, Set<Integer>>of(
+					ImmutableSet.of(0), ImmutableSet.of(1)
+			);
+		}
+		return super.getFunctionalDependencies(key);
+	}
+
+}

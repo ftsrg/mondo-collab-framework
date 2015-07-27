@@ -38,10 +38,12 @@ class EMFAdapter extends EContentAdapter {
 	@Override
 	protected void addAdapter(Notifier notifier) {
 		traverseNotifier(notifier, true);
+		super.addAdapter(notifier);
 	}
 
 	@Override
 	protected void removeAdapter(Notifier notifier) {
+		super.removeAdapter(notifier);
 		traverseNotifier(notifier, false);
 	}
 
@@ -138,15 +140,15 @@ class EMFAdapter extends EContentAdapter {
 
 	private void updateResourceRoot(Resource resource, Object topObject, boolean isInsertion) {
 		if (topObject != null)
-			modelIndexer.getIndexedResourceRootContents().updateTuple(new FlatTuple(resource, topObject), isInsertion);
+			modelIndexer.indexedResourceRootContents.updateTuple(new FlatTuple(resource, topObject), isInsertion);
 	}
 	
 	private void updateFeature(EObject source, EStructuralFeature feature, Object value, boolean isInsertion) {
 		if (value != null) {
 			if (feature instanceof EReference)
-				modelIndexer.getIndexedEObjectReferences().updateTuple(new FlatTuple(source, feature, value), isInsertion);
+				modelIndexer.indexedEObjectReferences.updateTuple(new FlatTuple(source, feature, value), isInsertion);
 			else if (feature instanceof EAttribute)
-				modelIndexer.getIndexedEObjectAttributes().updateTuple(new FlatTuple(source, feature, value), isInsertion);
+				modelIndexer.indexedEObjectAttributes.updateTuple(new FlatTuple(source, feature, value), isInsertion);
 		}			
 	}
 

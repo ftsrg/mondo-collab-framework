@@ -25,16 +25,16 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 
 /**
- * A default implementation of runtime context that dispatches input keys to live tables.
+ * A default implementation of runtime context that dispatches input keys to {@link ILiveRelation}s.
  * @author Bergmann Gabor
  *
  */
 public abstract class LiveTableBasedRuntimeContext implements IQueryRuntimeContext {
 	
 	private IQueryMetaContext metacontext;
-	private Map<IInputKey, LiveTable> aggregatedTables;
+	protected Map<IInputKey, ? extends ILiveRelation> aggregatedTables;
 
-	public LiveTableBasedRuntimeContext(IQueryMetaContext metacontext, Map<IInputKey, LiveTable> aggregatedTables) {
+	public LiveTableBasedRuntimeContext(IQueryMetaContext metacontext, Map<IInputKey, ? extends ILiveRelation> aggregatedTables) {
 		super();
 		this.metacontext = metacontext;
 		this.aggregatedTables = ImmutableMap.copyOf(aggregatedTables);
@@ -95,7 +95,7 @@ public abstract class LiveTableBasedRuntimeContext implements IQueryRuntimeConte
 	 * @author Bergmann Gabor
 	 *
 	 */
-	private static class LiveTableListener implements LiveTable.Listener {
+	private static class LiveTableListener implements ILiveRelation.Listener {
 		private final IInputKey key;
 		private final IQueryRuntimeContextListener listener;
 

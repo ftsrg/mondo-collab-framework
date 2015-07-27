@@ -54,8 +54,8 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			onAdd: function(newData, callback) {
 		        var newNode = {
 		        	elementType: 1,
-		        	parentSysId: "",
-		        	sysId: "",
+		        	parentName: "",
+		        	name: "",
 		        	type: "",
 		        	// id: newData.id,
 		        	label: "New element",
@@ -82,83 +82,6 @@ collaborationLibrary.CollaborationComponent = function(component) {
 
 		var container = document.getElementById('workspace');
 		var network = new vis.Network(container, data, options);
-		/*
-		for(var property in element) {
-		    if(element.hasOwnProperty(property)) {
-		    	var node = {};
-		    }
-	    }*/
-		/*
-		var nodes = model.nodes;
-		var edges = model.edges;
-		
-		for(var i in edges) {
-			edges[i].style = "arrow";
-		}
-		for(var i in nodes) {
-			nodes[i] = setElementView(nodes[i]);
-		}
-		var container = document.getElementById('workspace');
-		var data = {
-		    nodes: nodes,
-		    edges: edges
-		}; 
-		var options = {
-			keyboard: true,
-			smoothCurves: false,
-			dataManipulation: {
-			    enabled: true,
-			    initiallyVisible: true
-			},
-			onAdd: function(newData, callback) {
-		        var newNode = {
-        			elementType: 1,
-		        	type: "",
-		        	id: newData.id,
-		        	label: "New element",
-		        	group: "",
-		        	x: newData.x,
-		        	y: newData.y		        	
-		        }; 
-		        editDialog(newNode, true);
-		    },
-	        onEdit: function(nodeData, callback) {
-	        	var node = getElement(nodeData.id, nodes);
-	        	editDialog(node, false);
-	        },
-	        onEditEdge: function(edgeData, callback) {
-	        	var edge = getElement(edgeData.id, edges);
-	        	editDialog(edge, false);
-	        },
-	        onConnect: function(newEdgeData, callback) {
-	        	var id = generateEdgeId(edges);
-	        	var newEdge = {
-        			elementType: 2,
-        			type: "",
-		        	id: id,
-		        	from: newEdgeData.from,
-		        	to: newEdgeData.to,
-		        	name: "New connection",
-		        	group: ""
-		        }; 
-		        cc.addElement(newEdge);
-	        },
-	        onDelete: function(dataToDelete, callback) {
-	        	var deletionData = {
-	        		nodeId: dataToDelete.nodes.shift(),
-	        		edgeIds: dataToDelete.edges
-	        	}
-	        	cc.deleteElement(deletionData);
-	        },
-		    nodes: {
-		        shape: 'box'	
-		    }
-		};
-		network = new vis.Network(container, data, options);
-		
-		network.on('select', function(properties) {
-			closeEditDialog();
-		});*/
 	}
 	var getElement = function(id, stack) {
 		for(var i in stack) {
@@ -176,7 +99,6 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		$('#editPropertiesTable').empty();
 	}
 	// prepare pop-up function for editing nodes
-	// TODO rename node to generic
 	var editDialog = function(element, isNewElement) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
@@ -188,8 +110,13 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	    	&& property != "level") {
 		    	var propLabel = property + ':';
 		    	var propValue = element[property];
+	    		if(typeof propValue["$ref"] !== "undefined") {
+	    			propValue = propValue["$ref"];
+	    		}
 		    	var inputCell = $('<td/>');
 		    	var input = null;
+		    	console.log("yoyo");
+		    	console.log(element);
 		    	if(property == "type" && element['elementType'] != 2) {
 		    		input = $('<select/>').attr('id', property);
 		    		for(var i in types) {
@@ -214,7 +141,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			        	)
 			        );
 		    	}
-		    } 
+	    	}
 		}
 		$('#editDialogContainer #saveButton').click(function() {
 			var editedElement = {};
@@ -225,102 +152,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			if(element["elementType"] == 1) {
 				editedElement["type"] = $('#editPropertiesTable select').val();
 			}
-			
-			if(isNewElement) {
-				cc.addElement(editedElement);
-			} else {
-				var editData = {
-					original: element,
-					edited: editedElement
-				};
-				cc.editElement(editData);
-			}
-			closeEditDialog();
-		});
-		
-		$('#editDialogContainer #cancelButton').click(function(){
-			closeEditDialog();
-		});
-		$('#editDialogContainer').show();
-	}
-	
-	/*
-	var generateEdgeId = function(edges) {
-		var num = 0;
-		var pattern = /^NewId_(\d)+$/;
-		for(var i in edges) {
-			if(pattern.test(edges[i].id)) {
-				var numAtTheEnd = parseInt(edges[i].id.substr(6));
-				if(!isNaN(numAtTheEnd) && numAtTheEnd >= num) {
-					num = numAtTheEnd + 1; 
-				}
-			}
-		}
-		return "NewId_" + num;
-	}
-	
-	var closeEditDialog = function() {
-		$("#editDialogContainer #cancelButton").unbind("click");
-		$("#editDialogContainer #saveButton").unbind("click");
-		$('#editDialogContainer').hide();
-		$('#editPropertiesTable').empty();
-	}
-	// prepare pop-up function for editing nodes
-	// TODO rename node to generic
-	var editDialog = function(element, isNewElement) {
-		var propertiesTable = $('#editPropertiesTable'); 
-		propertiesTable.empty();
-		var types = ["SubSystem", "CtrlUnit", "SystemInput", "SystemOutput", "SystemParam", "SystemFault", "SystemVariable"];
 
-		for(var property in element) {
-		    if(element.hasOwnProperty(property) && property != "elementType"
-		    && property != "shape" && property != "radius"  && property != "style") {
-		    	var propLabel = property + ':';
-		    	var propValue = element[property];
-		    	var inputCell = $('<td/>');
-		    	var input = null;
-		    	if(property == "type" && element['elementType'] != 2) {
-		    		input = $('<select/>').attr('id', property);
-		    		for(var i in types) {
-		    			input.append($('<option>' + types[i] + '</option>')
-	    					.attr('value', types[i])
-		    			);
-		    		}
-		    	} else {
-		    		input =	$('<input/>')
-        				.attr('id', property)
-        				.attr('value', propValue);
-		    	}
-		    	if(input != null) {
-			    	inputCell.append(input);
-			    	propertiesTable.append(
-			        	$('<tr/>').append(
-			        		$('<td class="label"/>').text(propLabel),
-			        		inputCell
-			        	)
-			        );
-		    	}
-		    } 
-		}
-		$('#editDialogContainer #saveButton').click(function() {
-			var editedElement = {};
-			$('#editPropertiesTable input').each(function() {
-				editedElement[this.id] = this.value;
-			});
-			editedElement["elementType"] = element["elementType"];
-			if(element["elementType"] == 1) {
-				editedElement.x = parseInt(editedElement.x.trim());
-				editedElement.y = parseInt(editedElement.y.trim());
-				
-				if(isNaN(editedElement.x) 
-				|| isNaN(editedElement.y)) {
-					alert("Invalid data!\nX and Y have to be numbers.");
-					return;
-				}
-				
-				editedElement["type"] = $('#editPropertiesTable select').val();
-			}
-			
 			if(isNewElement) {
 				cc.addElement(editedElement);
 			} else {
@@ -337,7 +169,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			closeEditDialog();
 		});
 		$('#editDialogContainer').show();
-	}*/
+	}
 	
 	// WTSpec -ific..  huehue :(
 	var extractRoot = function(root) {
@@ -367,7 +199,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		depthTracker.depth++;
 		currentLevel++;
 		var maxDepth = currentLevel; 
-		node.id = node.sysId;
+		node.id = node.name;
 		node.level = currentLevel;
 		addNodeStyle(node, type);
 		var model = {
@@ -381,8 +213,8 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		    	var setOfChildren = node[property]; 
 		    	for(var i in setOfChildren) {
 					var newEdge = {
-						from: node.sysId,
-						to: setOfChildren[i].sysId,
+						from: node.name,
+						to: setOfChildren[i].name,
 						style: "arrow",
 						connectionType: "containment"
 					}

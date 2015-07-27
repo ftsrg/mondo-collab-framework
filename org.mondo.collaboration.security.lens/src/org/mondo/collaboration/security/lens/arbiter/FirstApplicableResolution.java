@@ -11,6 +11,7 @@
 
 package org.mondo.collaboration.security.lens.arbiter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
@@ -22,7 +23,7 @@ import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Ru
  */
 public class FirstApplicableResolution implements SecurityArbiter.RuleConflictResolver {
 	
-	private Map<Rule, Integer> ruleToIndex;
+	private Map<Rule, Integer> ruleToIndex = new HashMap<Rule, Integer>();
 
 	public FirstApplicableResolution(Policy policy) {
 		super();

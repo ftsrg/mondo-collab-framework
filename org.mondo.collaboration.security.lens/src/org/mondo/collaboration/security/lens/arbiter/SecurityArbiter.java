@@ -34,6 +34,7 @@ import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.incquery.runtime.matchers.tuple.LeftInheritanceTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Binding;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.ConflictResolutionTypes;
@@ -64,7 +65,10 @@ import com.google.common.collect.Table;
  * 
  * <p> TODO: Can we make the assumption that RuleConflictResolver can be Comparator<Rule>, 
  * 	i.e. not depend on the match and the asset? In this case, currentRights can be restructured as an
- *   <pre>EnumMap < OperationKind, Table < Role, Asset, TreeMultimap < Rule, IPatternMatch > > > </pre>
+ *   <pre>EnumMap < OperationKind, Table < Role, Asset, Multimap < Rule, IPatternMatch > > > </pre>
+ *  where
+ *   the contained Multimaps are created as
+ *   <pre>Multimaps.newSetMultimap(new TreeMap(comparator), (() => new HashSet) )</pre>
  *  which would be more efficient, since multiple justifications for the same judgement do not have to be
  *  compared against each other.
  * 
@@ -88,10 +92,8 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		for (OperationKind operationKind : OperationKind.values()) {
 			final HashMap<Class<? extends Asset>, LiveTable> opResults = new HashMap<Class<? extends Asset>, LiveTable>();
 			results.put(operationKind, opResults);
-			for (Class<?> assetClass : Asset.class.getClasses()) {
-				if (Asset.class.isAssignableFrom(assetClass)) {
-					opResults.put((Class<? extends Asset>) assetClass, new LiveTable());
-				}
+			for (Class<? extends Asset> assetClass : Asset.getKinds()) {
+				opResults.put(assetClass, new LiveTable());
 			}			
 		}		
 	}
@@ -131,6 +133,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		this.ruleConflictResolver = new FirstApplicableResolution(policy);
 
 		policyQueryEngine = AdvancedIncQueryEngine.from(IncQueryEngine.on(new EMFScope(goldModelRoots, indexOptions)));
+		this.specBuilder = new SpecificationBuilder();
 		
 		Set<IQuerySpecification<?>> ruleQueries = new HashSet<>();
 		for (Rule rule : policy.getRules()) {
@@ -206,7 +209,11 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 //		return results;
 //	}
 	
-	public LiveTable getResultsAsLiveTable(OperationKind op, Class<? extends Asset> assetClass) {
+	public ILiveRelation getResultsAsLiveRelation(OperationKind op, Class<? extends Asset> assetClass) {
+		return getResultsAsLiveTable(op, assetClass);
+	}
+
+	private LiveTable getResultsAsLiveTable(OperationKind op, Class<? extends Asset> assetClass) {
 		return results.get(op).get(assetClass);
 	}
 
@@ -228,9 +235,11 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		}
 		
 		Set<? extends Asset> assets = assetFactories.get(rule).apply(match);
-		for (Asset asset : assets) {			
+		for (Asset asset : assets) {	
 			for (OperationKind op : rightsToOps.get(rule.getRights())) {
-				updateJudgement(op, rule.getRole(), asset, new SecurityRuleJudgement(rule, asset, match), isAddition);
+				for (Role role : rule.getRoles()) {
+					updateJudgement(op, role, asset, new SecurityRuleJudgement(rule, asset, match), isAddition);
+				}				
 			}
 		}
 		

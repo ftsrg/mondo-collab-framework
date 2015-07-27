@@ -40,42 +40,42 @@ class Visitor extends EMFVisitor {
 	}
 	@Override
 	public boolean pruneFeature(EStructuralFeature feature) {
-		return true;
+		return false;
 	}
 	
 	@Override
 	public void visitElement(EObject source) {
 		Tuple t = new FlatTuple(source, source.eClass());
-		updateIndex(modelIndexer.getIndexedEObjects(), t);
+		updateIndex(modelIndexer.indexedEObjects, t);
 	}
 	
 	@Override
 	public void visitResource(Resource resource) {
 		Tuple t = new FlatTuple(resource, modelIndexer.uriToRelativePath(resource.getURI()));
-		updateIndex(modelIndexer.getIndexedResources(), t);
+		updateIndex(modelIndexer.indexedResources, t);
 	}
 	
 	@Override
 	public void visitTopElementInResource(Resource resource, EObject element) {
 		Tuple t = new FlatTuple(resource, element);
-		updateIndex(modelIndexer.getIndexedResourceRootContents(), t);
+		updateIndex(modelIndexer.indexedResourceRootContents, t);
 	}
 
 	@Override
 	public void visitAttribute(EObject source, EAttribute feature, Object target) {
-		updateFeature(modelIndexer.getIndexedEObjectAttributes(), source, feature, target);
+		updateFeature(modelIndexer.indexedEObjectAttributes, source, feature, target);
 	}
 	@Override
 	public void visitInternalContainment(EObject source, EReference feature, EObject target) {
-		updateFeature(modelIndexer.getIndexedEObjectReferences(), source, feature, target);
+		updateFeature(modelIndexer.indexedEObjectReferences, source, feature, target);
 	}
 	@Override
 	public void visitNonContainmentReference(EObject source, EReference feature, EObject target) {
-		updateFeature(modelIndexer.getIndexedEObjectReferences(), source, feature, target);
+		updateFeature(modelIndexer.indexedEObjectReferences, source, feature, target);
 	}
 	@Override
 	public void visitProxyReference(EObject source, EReference reference, EObject targetObject, Integer position) {
-		updateFeature(modelIndexer.getIndexedEObjectReferences(), source, reference, targetObject);
+		updateFeature(modelIndexer.indexedEObjectReferences, source, reference, targetObject);
 	}
 	
 	private void updateFeature(LiveTable index, EObject source, EStructuralFeature feature, Object target) {

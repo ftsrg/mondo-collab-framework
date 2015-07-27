@@ -16,10 +16,13 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.incquery.runtime.base.comprehension.EMFModelComprehension;
+import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 
 /**
  * Connects a given EMF model to the security lens.
+ * <p> The EMF model is indexed and exposed as {@link LiveTable}s.
+ * 
  * @author Bergmann Gabor
  *
  */
@@ -32,13 +35,19 @@ public class ModelIndexer {
 		super();
 		this.baseURI = baseURI;
 		this.root = root;
+		
+		final EMFAdapter emfAdapter = new EMFAdapter(this);
+		this.adapter = emfAdapter;
+		emfAdapter.addAdapter(root);
+		
+		root.eAdapters().add(adapter);
 	}
 	
-	private LiveTable indexedResources = new LiveTable();
-	private LiveTable indexedResourceRootContents = new LiveTable(); 
-	private LiveTable indexedEObjects = new LiveTable(); 
-	private LiveTable indexedEObjectReferences = new LiveTable(); 
-	private LiveTable indexedEObjectAttributes = new LiveTable();
+	LiveTable indexedResources = new LiveTable();
+	LiveTable indexedResourceRootContents = new LiveTable(); 
+	LiveTable indexedEObjects = new LiveTable(); 
+	LiveTable indexedEObjectReferences = new LiveTable(); 
+	LiveTable indexedEObjectAttributes = new LiveTable();
 	
 	public URI getBaseURI() {
 		return baseURI;
@@ -46,25 +55,25 @@ public class ModelIndexer {
 	public ResourceSet getRoot() {
 		return root;
 	}
-	public LiveTable getIndexedResources() {
+	public ILiveRelation getIndexedResources() {
 		return indexedResources;
 	}
-	public LiveTable getIndexedResourceRootContents() {
+	public ILiveRelation getIndexedResourceRootContents() {
 		return indexedResourceRootContents;
 	}
-	public LiveTable getIndexedEObjects() {
+	public ILiveRelation getIndexedEObjects() {
 		return indexedEObjects;
 	}
-	public LiveTable getIndexedEObjectReferences() {
+	public ILiveRelation getIndexedEObjectReferences() {
 		return indexedEObjectReferences;
 	}
-	public LiveTable getIndexedEObjectAttributes() {
+	public ILiveRelation getIndexedEObjectAttributes() {
 		return indexedEObjectAttributes;
 	} 
 	
 	EMFModelComprehension comprehension = new EMFModelComprehension(new BaseIndexOptions(false, true));
 	
-	private EContentAdapter adapter = new EMFAdapter(this);
+	private EContentAdapter adapter;
 	
 	URI uriToRelativePath(URI resourceURI) {
 		final URI relative = resourceURI.deresolve(baseURI, false, true, true);

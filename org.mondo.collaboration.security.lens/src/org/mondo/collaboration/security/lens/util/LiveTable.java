@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.eclipse.incquery.runtime.matchers.tuple.TupleMask;
@@ -28,18 +27,12 @@ import com.google.common.collect.SetMultimap;
  * @author Bergmann Gabor
  *
  */
-public class LiveTable {
+public class LiveTable implements ILiveRelation, IManipulableRelation {
 	
 	private Set<Tuple> tuples = new LinkedHashSet<>();
 	private Map<TupleMask, Index> indexes = new HashMap<>();
 	private Map<TupleMask, Dispatcher> dispatchers = new HashMap<>();
 	
-	public boolean addTuple(Tuple t) {
-		return updateTuple(t, true);
-	}
-	public boolean removeTuple(Tuple t) {
-		return updateTuple(t, false);
-	}
 	public boolean updateTuple(Tuple t, boolean isInsertion) {
 		final boolean changed = isInsertion ? tuples.add(t) : tuples.remove(t);
 		if (changed) {
@@ -47,15 +40,39 @@ public class LiveTable {
 		}
 		return changed;
 	}
+	public boolean addTupleDirect(Tuple t) {
+		return updateTuple(t, true);
+	}
+	@Override
+	public Tuple assertTuple(Tuple seed) {
+		for (Object object : seed.getElements()) {
+			if (object == null) 
+				throw new UnsupportedOperationException(
+						getClass().getSimpleName() 
+						+ " can assert fully seeded tuples only; received instead " 
+						+ seed);
+		}
+		addTupleDirect(seed);
+		return seed;
+	}
+	@Override
+	public boolean retractTuple(Tuple tuple) {
+		return updateTuple(tuple, false);
+	}
+	
+	
+	@Override
 	public Set<Tuple> getTuplesForSeed(Tuple seed) {
 		Index index = getOrCreateIndex(seedToMask(seed));
 		return index.get(seed);
 	}
 	
+	@Override
 	public boolean addListener(Tuple seed, Listener listener) {
 		Dispatcher dispatcher = getOrCreateDispatcher(seedToMask(seed));
 		return dispatcher.addListener(seed, listener);
 	}
+	@Override
 	public boolean removeListener(Tuple seed, Listener listener) {
 		Dispatcher dispatcher = getOrCreateDispatcher(seedToMask(seed));
 		return dispatcher.removeListener(seed, listener);
@@ -95,13 +112,6 @@ public class LiveTable {
 			keep[i] = (null != seed.get(i));
 		return new TupleMask(keep);
 	}
-	
-	/**
-	 * Callback interface that is notified of tuple updates. 
-	 * Invocations indicate the tuple and an additional boolean set to true for addition and false for removal of tuple.
-	 * @author Bergmann Gabor
-	 */
-	public static interface Listener extends BiConsumer<Tuple, Boolean> {}
 	
 	private class Index {
 		private SetMultimap<Tuple, Tuple> tuplesBySignature = LinkedHashMultimap.<Tuple, Tuple>create();
