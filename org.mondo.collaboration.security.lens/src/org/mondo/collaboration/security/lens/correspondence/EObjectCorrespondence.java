@@ -9,7 +9,7 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.util;
+package org.mondo.collaboration.security.lens.correspondence;
 
 import java.util.Collection;
 import java.util.Map;
@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
+import org.mondo.collaboration.security.lens.util.LiveTable;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
@@ -25,24 +26,33 @@ import com.google.common.collect.Multimaps;
 // * Maintains weak references, unlike Google Collect's BiMap.
 
 /**
- * 
+ * Responsible for initializing correspondence tables between resources.
  * @author Bergmann Gabor
  *
  */
 public class EObjectCorrespondence {
 
 	/**
+	 * Assign unique ID to objects for establishing correspondence. 
+	 * Never return null; return the argument if no ID is available.
+	 */
+	public interface UniqueIDFunction extends Function<EObject, Object> {}
+	
+	/**
 	 * Builds a correspondence table between two models based on unique identifiers.
 	 */
 	public static LiveTable buildEObjectCorrespondenceTable(
-			ResourceSet goldModel, ResourceSet frontModel,
-			final Function<EObject, Object> objectToUniqueIdentifier) {
+			ResourceSet goldModel, 
+			UniqueIDFunction goldObjectToUniqueIdentifier,
+			ResourceSet frontModel,
+			UniqueIDFunction frontObjectToUniqueIdentifier) 
+	{
 		final LiveTable table = new LiveTable();
 		
 		Map<Object, Collection<EObject>> goldIndex = 
-				Multimaps.index(Iterators.filter(goldModel.getAllContents(), EObject.class), objectToUniqueIdentifier).asMap();
+				Multimaps.index(Iterators.filter(goldModel.getAllContents(), EObject.class), goldObjectToUniqueIdentifier).asMap();
 		Map<Object, Collection<EObject>> frontIndex = 
-				Multimaps.index(Iterators.filter(frontModel.getAllContents(), EObject.class), objectToUniqueIdentifier).asMap();
+				Multimaps.index(Iterators.filter(frontModel.getAllContents(), EObject.class), frontObjectToUniqueIdentifier).asMap();
 		
 		for (Entry<Object, Collection<EObject>> goldEntry : goldIndex.entrySet()) {
 			final Collection<EObject> golds = goldEntry.getValue();

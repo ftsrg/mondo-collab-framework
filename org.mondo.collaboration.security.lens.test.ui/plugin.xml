@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
-   <extension
+	<extension point="org.eclipse.core.expressions.definitions">
+	    <definition id="org.mondo.collaboration.security.lens.test.ui.commands.isVisible">
+	         <with
+	               variable="selection">
+	            <and>
+					<count value="3"/>		           
+		            <iterate>
+		               <adapt
+		                     type="org.eclipse.core.resources.IFile"/>
+		            </iterate>
+		            <iterate
+		                  operator="or">
+		               <adapt
+		                     type="org.eclipse.core.resources.IFile">
+		                  <test
+		                        property="org.eclipse.core.resources.extension"
+		                        value="macl">
+		                  </test>
+		               </adapt>
+		            </iterate>
+				 </and>
+	         </with>
+	    </definition>
+	</extension>   
+	<extension
          point="org.eclipse.ui.commands">
       <category
             name="MONDO Security Lens Testing"
@@ -32,34 +55,10 @@
             <command
                   commandId="org.mondo.collaboration.security.lens.test.ui.commands.lensContextTestCommand"
                   style="push">
-               <visibleWhen
-                     checkEnabled="false">
-		         <with
-		               variable="selection">
-		            <and>
-     					<count value="3"/>		           
-			            <iterate>
-			               <adapt
-			                     type="org.eclipse.core.resources.IFile"/>
-			            </iterate>
-			            <iterate
-			                  operator="or">
-			               <adapt
-			                     type="org.eclipse.core.resources.IFile">
-			                  <test
-			                        property="org.eclipse.core.resources.extension"
-			                        value="macl">
-			                  </test>
-			               </adapt>
-			            </iterate>
-     				 </and>
-		         </with>
+               <visibleWhen checkEnabled="false">
+    				<reference definitionId="org.mondo.collaboration.security.lens.test.ui.commands.isVisible"/>
                </visibleWhen>
             </command>
-            <separator
-                  name="additions"
-                  visible="true">
-            </separator>
          </menu>
       </menuContribution>
    </extension>

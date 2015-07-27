@@ -12,10 +12,10 @@
 package org.mondo.collaboration.security.lens.arbiter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Rule;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Rule;
 
 /**
  * @author Bergmann Gabor
@@ -25,11 +25,11 @@ public class FirstApplicableResolution implements SecurityArbiter.RuleConflictRe
 	
 	private Map<Rule, Integer> ruleToIndex = new HashMap<Rule, Integer>();
 
-	public FirstApplicableResolution(Policy policy) {
+	public FirstApplicableResolution(List<Rule> rules) {
 		super();
 		
 		int index = 0;
-		for (Rule rule : policy.getRules()) {
+		for (Rule rule : rules) {
 			ruleToIndex.put(rule, index++);
 		}
 	}

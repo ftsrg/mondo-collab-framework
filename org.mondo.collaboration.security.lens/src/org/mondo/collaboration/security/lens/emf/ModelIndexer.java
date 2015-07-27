@@ -27,14 +27,17 @@ import org.mondo.collaboration.security.lens.util.LiveTable;
  *
  */
 public class ModelIndexer {
-	private URI baseURI;
 	private ResourceSet root;
 	//private Resource unrootedElements = new XMIResourceImpl();
+	private URI baseURI;
+	URIRelativiser uriRelativiser;
 	
 	public ModelIndexer(URI baseURI, ResourceSet root) {
 		super();
-		this.baseURI = baseURI;
 		this.root = root;
+		this.baseURI = baseURI;
+
+		this.uriRelativiser = new URIRelativiser(baseURI);
 		
 		final EMFAdapter emfAdapter = new EMFAdapter(this);
 		this.adapter = emfAdapter;
@@ -75,22 +78,5 @@ public class ModelIndexer {
 	
 	private EContentAdapter adapter;
 	
-	URI uriToRelativePath(URI resourceURI) {
-		final URI relative = resourceURI.deresolve(baseURI, false, true, true);
-		if (!relative.isRelative()) { // wow, an absolute reference
-			//if (relative.isFile() || relative.isPlatformResource() || relative.isArchive() || relative.host() != null) {
-			if (! relative.isPlatformPlugin()) { // only plugin absolute URIs are allowed
-				// this is breaking the sandbox...
-				throw new IllegalArgumentException(
-						"Resource URI: " + resourceURI + 
-						"is trying to leave the confines of the base URI: " + baseURI);
-				// TODO handle better, e.g. return null and skip resource entirely.
-			}
-		}
-		return relative;
-	}
-	URI relativePathToURI(URI relativeURI) {
-		return relativeURI.resolve(baseURI, false);
-	}
 
 }

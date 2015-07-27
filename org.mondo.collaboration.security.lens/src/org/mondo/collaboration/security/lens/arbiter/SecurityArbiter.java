@@ -11,16 +11,19 @@
 
 package org.mondo.collaboration.security.lens.arbiter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.incquery.patternlanguage.emf.specification.SpecificationBuilder;
 import org.eclipse.incquery.runtime.api.AdvancedIncQueryEngine;
 import org.eclipse.incquery.runtime.api.GenericPatternGroup;
@@ -36,16 +39,17 @@ import org.eclipse.incquery.runtime.matchers.tuple.LeftInheritanceTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Binding;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.ConflictResolutionTypes;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Group;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Role;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Rule;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.RuleRights;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.RuleType;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.User;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.ValueBind;
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.RuleRef;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Binding;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Group;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Role;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Rule;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleRights;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.ValueBind;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableSet;
@@ -127,20 +131,30 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		this.roleRestriction = roleRestriction;
 		this.goldModelRoots = goldModelRoots;
 		
+		List<Rule> rules = new ArrayList<>();
+		for (EObject ruleObject : policy.getRules()) {
+			if (ruleObject instanceof Rule) {
+				rules.add((Rule) ruleObject);
+			} else if (ruleObject instanceof RuleRef) {
+				final Rule rule = ((RuleRef) ruleObject).getRule();
+				if (rule != null) rules.add(rule);
+			}
+		}
+		
 		if (ConflictResolutionTypes.FIRST_APPLICABLE != policy.getType())
 			throw new UnsupportedOperationException(
 					"Unsupported conflict resolution: " + policy.getType());
-		this.ruleConflictResolver = new FirstApplicableResolution(policy);
+		this.ruleConflictResolver = new FirstApplicableResolution(rules);
 
 		policyQueryEngine = AdvancedIncQueryEngine.from(IncQueryEngine.on(new EMFScope(goldModelRoots, indexOptions)));
 		this.specBuilder = new SpecificationBuilder();
 		
 		Set<IQuerySpecification<?>> ruleQueries = new HashSet<>();
-		for (Rule rule : policy.getRules()) {
+		for (Rule rule : rules) {
 			preprocessRules(rule, ruleQueries);
 		}
 		new GenericPatternGroup(ruleQueries).prepare(policyQueryEngine);
-		for (final Rule rule : policy.getRules()) {
+		for (final Rule rule : rules) {
 			initRuleListeners(rule);
 		}
 		
