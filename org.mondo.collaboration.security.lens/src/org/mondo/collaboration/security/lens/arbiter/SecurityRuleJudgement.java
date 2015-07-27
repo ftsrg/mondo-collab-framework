@@ -12,7 +12,7 @@
 package org.mondo.collaboration.security.lens.arbiter;
 
 import org.eclipse.incquery.runtime.api.IPatternMatch;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Rule;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Rule;
 
 /**
  * Immutable object representing that the given security rule is applicable to the object or feature setting 

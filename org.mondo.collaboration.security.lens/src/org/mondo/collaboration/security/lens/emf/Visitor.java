@@ -51,7 +51,7 @@ class Visitor extends EMFVisitor {
 	
 	@Override
 	public void visitResource(Resource resource) {
-		Tuple t = new FlatTuple(resource, modelIndexer.uriToRelativePath(resource.getURI()));
+		Tuple t = new FlatTuple(resource, modelIndexer.uriRelativiser.uriToRelativePath(resource.getURI()));
 		updateIndex(modelIndexer.indexedResources, t);
 	}
 	

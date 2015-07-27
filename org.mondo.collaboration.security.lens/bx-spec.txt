@@ -50,7 +50,7 @@ triple-rule objects (priority: 20) gold {
 triple-rule rootObjects (priority: 30) gold {
 	Gold$Resource.rootContents(goldResource, goldEObject);
 } middle-assume {
-	Correspond$Resource(goldResource, frontResource);
+	Correspond$Resource(goldResource, frontResource); // TODO ??
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
 	Front$Resource.rootContents(frontResource, frontEObject);
