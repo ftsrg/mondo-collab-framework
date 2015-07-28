@@ -4,15 +4,17 @@ const <user>
 preinitialize /*Correspond$Resource and*/ Correspond$EObject (and obfuscate cache?) where possible
 
 template triple-rule (gold, middle-assume, middle-create, front, security-check, priority) {
-	let mapped-putback = {gold;                         middle-assume; middle-create; front} in
-	let mapped-get =     {gold; security-check[::READ]; middle-assume; middle-create; front} in
+	let gold-readable  = {gold; security-check[::READ]} in 
+	let mapped = {gold-readable; middle-assume; middle-create; front} in
+		//	let mapped-putback = {gold;          middle-assume; middle-create; front} in
+		//	let mapped-get     = {gold-readable; middle-assume; middle-create; front} in
 	get { 
-		rule get.add       (!mapped-get; middle-assume; gold; security-check[::READ]) --> (create front; create middle-create;)    with +priority;
-		rule get.remove    (!mapped-get; middle-assume; front)                        --> (delete front; obsolete middle-create;)  with -priority;
+		rule get.add        (!mapped; middle-assume; gold-readable)       --> (create front; create middle-create;)    with +priority;
+		rule get.remove     (!mapped; middle-assume; front)               --> (delete front; obsolete middle-create;)  with -priority;
 	}
 	putback {
-		rule putback.add    (!mapped-putback; middle-assume; front)  --> (create gold; create middle-create; if !LS(security-check[::WRITE]) rollback;)   with +priority;
-		rule putback.remove (!mapped-putback; middle-assume; gold)   --> (if !LS(security-check[::WRITE]) rollback; delete gold; obsolete middle-create;) with -priority;
+		rule putback.add    (!mapped; middle-assume; front) /* TODO if unreadable?*/  --> (create gold; create middle-create; if !LS(security-check[::WRITE]) rollback;)   with +priority;
+		rule putback.remove (!mapped; middle-assume; gold-readable)                   --> (if !LS(security-check[::WRITE]) rollback; delete gold; obsolete middle-create;) with -priority;
 	}		
 } // smallest priority comes first
 
@@ -79,7 +81,7 @@ triple-rule attributes (priority: 50) gold {
 } middle-assume {
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
-	Front$EObject.attributeSlot(frontEObject, eAttribute, value);
+	Front$EObject.attributeSlot(frontEObject, eAttribute, frontValue);
 } security-check[::READ] {
 	// TODO defaults?
 	ReadJudgement$Attribute(goldEObject, eAttribute, <user>, Prevailing);
