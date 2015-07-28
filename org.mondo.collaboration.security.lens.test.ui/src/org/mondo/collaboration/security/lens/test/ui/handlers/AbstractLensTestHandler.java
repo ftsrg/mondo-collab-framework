@@ -26,15 +26,11 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
-import org.mondo.collaboration.security.lens.context.MondoLensRuntimeContext;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
 import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions;
@@ -56,7 +52,7 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 	Injector injector;
 
 	protected abstract void doTest(MondoLensScope scope, IFile policyFile, IFile goldFile, IFile frontFile, Resource policyResource, Resource goldResource,
-			Resource frontResource);
+			Resource frontResource) throws Exception;
 
 	@Inject
 	protected IResourceSetProvider resSetProvider;
