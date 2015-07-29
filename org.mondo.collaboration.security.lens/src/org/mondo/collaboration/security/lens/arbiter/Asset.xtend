@@ -26,6 +26,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import com.google.common.base.Splitter
 
 /**
+ * An asset represents something that policy rules can permit/deny access to.
  * @author Bergmann Gabor
  *
  */
