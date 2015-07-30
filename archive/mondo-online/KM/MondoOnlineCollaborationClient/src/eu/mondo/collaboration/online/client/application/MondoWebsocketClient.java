@@ -19,11 +19,8 @@ public class MondoWebsocketClient {
 	
 	private Application application;
 
-	private String incomingMessage;
-	
 	public MondoWebsocketClient(Application application) {
 		this.application = application;
-		this.incomingMessage = "";
 	}
 	
 	@OnOpen
@@ -35,21 +32,9 @@ public class MondoWebsocketClient {
 	
 	@OnMessage 
     public void processMessage(String rawMessage) {
-		/*
-		if(this.incomingMessage.equals("")) {
-			this.application.setPollInterval(-1);
-		}
-		System.out.println("OnMessage - partial");
-		this.incomingMessage += rawMessage;
-		if(!isLast) {
-			return;
-		}
-		this.application.setPollInterval(1000);
-		*/
 		System.out.println("OnMessage - finished transmission");
     	try {
     		JSONObject message = new JSONObject(rawMessage);
-    		this.incomingMessage = "";
     		String operation = message.getString("operation");
     		System.out.println("Operation: " + operation);
     		if(operation.equals("updateModel")) {

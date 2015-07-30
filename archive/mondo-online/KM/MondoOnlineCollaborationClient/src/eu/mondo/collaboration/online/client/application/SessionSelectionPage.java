@@ -81,7 +81,13 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 	}
 
 	private void updateSessionsView() {
-		this.removeAllComponents();
+		this.application.getUI().getSession().lock();
+		try {
+			this.removeAllComponents();
+		} finally {
+			this.application.getUI().getSession().unlock();
+		}
+
 		// Panel sessionSelection = this.initSessionsView();
 		this.initSessionsView();
 		//addComponent(sessionSelection); //, "left: 10px; top: 40px;");
@@ -152,7 +158,8 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 					int state = CollaborationSession.getSessionStateByString(
 						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
 					);
-					if(state == CollaborationSession.STATE_CLOSED) {
+					if(state == CollaborationSession.STATE_READY) {
+						application.getUser().addSessionId(sessionId);
 						startSession(sessionId);
 					} else {
 						Notification.show("Selected session is not in closed state.");
@@ -167,6 +174,10 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 				Object rowId = sessionsTable.getValue();
 				if(rowId != null) {
 					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
+					if(!application.getUser().leadsSession(sessionId)) {
+						Notification.show("Only its leader may finish a session.");
+						return;
+					}
 					int state = CollaborationSession.getSessionStateByString(
 						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
 					);

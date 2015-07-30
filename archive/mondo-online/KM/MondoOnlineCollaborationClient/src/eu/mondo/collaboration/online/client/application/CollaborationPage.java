@@ -11,8 +11,10 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Button.ClickEvent;
 
 import eu.mondo.collaboration.online.client.modelcontroller.CollaborationComponent;
 
@@ -29,34 +31,48 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 	
 	private List<User> users;
 	
+	private boolean initialized = false;
+	
+	private Label titleLabel = null;
+	
 	public CollaborationPage(final Navigator navigator, Application application) {
-		System.out.println("Construct CollaborationPage");
-		this.navigator = navigator;
-		this.application = application;
-		this.sessionId = null;
-		this.users = new ArrayList<User>();
-		setSizeFull();
+		if(!initialized) {
+			System.out.println("Construct CollaborationPage");
+			this.navigator = navigator;
+			this.application = application;
+			this.sessionId = null;
+			this.users = new ArrayList<User>();
+			setSizeFull();
+			
+			Button buttonLeave = new Button("Leave"); 
+			buttonLeave.addClickListener(new Button.ClickListener() {
+				public void buttonClick(ClickEvent event) {
+					leaveSession();
+				}
+			});
+			buttonLeave.setHeight("30px");
+			addComponent(buttonLeave, "left: 27px; top: 5px;");
+			
+			CollaborationComponent collabComponent = new CollaborationComponent(this);
 		
-		CollaborationComponent collabComponent = new CollaborationComponent(this);
-
-		// Set the value from server- side
-		collabComponent.setValue("Server-side value");
-
-		// Process a value input by the user from the client-side
-		collabComponent.addValueChangeListener(
-		        new CollaborationComponent.ValueChangeListener() {
-		    @Override
-		    public void valueChange() {
-		        Notification.show("Value: " + collabComponent.getValue());
-		    }
-		});
-		this.cc = collabComponent;
-		addComponent(this.cc);
+			// Process a value input by the user from the client-side
+			collabComponent.addValueChangeListener(
+			        new CollaborationComponent.ValueChangeListener() {
+			    @Override
+			    public void valueChange() {
+			        Notification.show("Value: " + collabComponent.getValue());
+			    }
+			});
+			this.cc = collabComponent;
+			addComponent(this.cc, "top: 15px;");
+			this.initialized = true;
+		}
 	}
 
 	@Override
 	public void enter(ViewChangeEvent event) {
 		this.loadModel();
+		
 	}
 
 	private void loadModel() {
@@ -86,6 +102,11 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 		return this.sessionId;
 	}
 
+	private void leaveSession() {
+		this.removeComponent(this.titleLabel);
+		this.navigator.navigateTo(SessionSelectionPage.NAME);
+	}
+	
 	public void setUsersList(JSONArray jsonUsers) {
 		try {
 			List<User> newUsers = new ArrayList<User>();
@@ -108,8 +129,12 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 	}
 
 	public void setTitle(String title) {
-		Label titleLabel = new Label(title);
-		titleLabel.setDebugId("title");
-		addComponent(titleLabel, "left: 40px; top: 5px;");
+		this.titleLabel = new Label("Session: " + title);
+		this.titleLabel.setDebugId("title");
+		addComponent(titleLabel, "left: 130px; top: 10px;");
+	}
+	
+	public boolean isInitialized() {
+		return this.initialized;
 	}
 }
