@@ -32,17 +32,17 @@ public class ManipulableTemplate {
 			]
 		}
 		def RelationalRuleSpecification.ActionStep asRetractAction() {
-			return [ context |
-				val Object[] valueArray = argumentVariables.map[context.variables.get(it)]
-				context.manipulables.get(key).retractTuple(new FlatTuple(valueArray))
+			return [ environment |
+				val Object[] valueArray = argumentVariables.map[environment.variables.get(it)]
+				environment.transformation.getManipulable(key).retractTuple(new FlatTuple(valueArray))
 			]
 		}
 		def RelationalRuleSpecification.ActionStep asAssertAction() {
-			return [ context |
-				val Object[] valueArray = argumentVariables.map[context.variables.get(it)]
-				val assertedTuple = context.manipulables.get(key).assertTuple(new FlatTuple(valueArray))
+			return [ environment |
+				val Object[] valueArray = argumentVariables.map[environment.variables.get(it)]
+				val assertedTuple = environment.transformation.getManipulable(key).assertTuple(new FlatTuple(valueArray))
 				for (int i : 0..< argumentVariables.size)
-					context.variables.put(argumentVariables.get(i), assertedTuple.get(i))
+					environment.variables.put(argumentVariables.get(i), assertedTuple.get(i))
 			]
 		}
 }

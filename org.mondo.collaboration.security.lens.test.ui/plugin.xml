@@ -46,6 +46,11 @@
             categoryId="org.mondo.collaboration.security.lens.test.ui.commands.category"
             id="org.mondo.collaboration.security.lens.test.ui.commands.lensQueryTestCommand">
       </command>
+      <command
+            name="Lens GET Test"
+            categoryId="org.mondo.collaboration.security.lens.test.ui.commands.category"
+            id="org.mondo.collaboration.security.lens.test.ui.commands.lensGetTestCommand">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -60,6 +65,10 @@
       <handler
             commandId="org.mondo.collaboration.security.lens.test.ui.commands.lensQueryTestCommand"
             class="org.mondo.collaboration.security.lens.test.ui.ExecutableExtensionFactory:org.mondo.collaboration.security.lens.test.ui.handlers.LensQueryTestHandler">
+      </handler>
+      <handler
+            commandId="org.mondo.collaboration.security.lens.test.ui.commands.lensGetTestCommand"
+            class="org.mondo.collaboration.security.lens.test.ui.ExecutableExtensionFactory:org.mondo.collaboration.security.lens.test.ui.handlers.LensGetTestHandler">
       </handler>
    </extension>
    <extension
@@ -86,6 +95,13 @@
             </command>
             <command
                   commandId="org.mondo.collaboration.security.lens.test.ui.commands.lensQueryTestCommand"
+                  style="push">
+               <visibleWhen checkEnabled="false">
+    				<reference definitionId="org.mondo.collaboration.security.lens.test.ui.commands.isVisible"/>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.mondo.collaboration.security.lens.test.ui.commands.lensGetTestCommand"
                   style="push">
                <visibleWhen checkEnabled="false">
     				<reference definitionId="org.mondo.collaboration.security.lens.test.ui.commands.isVisible"/>

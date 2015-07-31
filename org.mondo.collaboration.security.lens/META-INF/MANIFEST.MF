@@ -18,4 +18,6 @@ Export-Package: org.mondo.collaboration.security.lens.arbiter,
  org.mondo.collaboration.security.lens.context.keys,
  org.mondo.collaboration.security.lens.correspondence,
  org.mondo.collaboration.security.lens.emf,
+ org.mondo.collaboration.security.lens.bx,
+ org.mondo.collaboration.security.lens.relational,
  org.mondo.collaboration.security.lens.util

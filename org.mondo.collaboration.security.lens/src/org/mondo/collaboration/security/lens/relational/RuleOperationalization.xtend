@@ -11,21 +11,22 @@
 
 package org.mondo.collaboration.security.lens.relational
 
-import org.eclipse.incquery.runtime.api.IQuerySpecification
 import java.util.Set
-import org.eclipse.incquery.runtime.evm.api.Job
+import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.incquery.runtime.evm.api.RuleSpecification
+import org.eclipse.incquery.runtime.api.IQuerySpecification
 
 /**
  * A class representing the operationalized form of a high-level relational rule.
  * @author Bergmann Gabor
  *
  */
-class Operationalization {
+@Data
+class RuleOperationalization {
 	RelationalTransformationSpecification transformation
 	RelationalRuleSpecification rule
 	
-	Set<IQuerySpecification> queries = newHashSet()	
+    Set<IQuerySpecification> queries = newHashSet()	
 	Set<RuleSpecification> rulesForGet = newHashSet()
 	Set<RuleSpecification> rulesForPutback = newHashSet()
 	

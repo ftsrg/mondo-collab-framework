@@ -219,10 +219,16 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	}
 	
 	
+	
 //	public Map<Operation, Map<Class<? extends Asset>, LiveTable>> getResults() {
 //		return results;
 //	}
 	
+	public Policy getPolicy() {
+		return policy;
+	}
+
+
 	public ILiveRelation getResultsAsLiveRelation(OperationKind op, Class<? extends Asset> assetClass) {
 		return getResultsAsLiveTable(op, assetClass);
 	}

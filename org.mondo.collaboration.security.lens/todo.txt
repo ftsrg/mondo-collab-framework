@@ -1,0 +1,23 @@
+ TODO
+ - deal with unrooted elements
+ 
+ - sane logging
+ - implement manipulators
+ - uniform security exception (for write checking and resource URIs)
+ 
+ - implement & test putback
+ - add further triple rules
+ 
+ - better unique IDs for Ecore models 
+ - correspondence needs cleanup?
+ 
+ - allow for locking check
+ 
+ - more efficient arbiter data structures
+ - 'cheap move' feature in model indexers
+ - use EVM Context & do code cosmetics on rule specification / etc 
+ 
+ - multiple policy conflict resolution strategies?
+ 
+ DONE
+  - default should be ::PERMIT if there are no rules?

@@ -25,18 +25,14 @@ import org.mondo.collaboration.security.lens.util.ILiveRelation
 @Data
 class RuleExecutionEnvironment {
 	/**
+	 * The transformation that is happening now.
+	 */
+	RelationalTransformationSpecification transformation
+	
+	/**
 	 * The set of rule variable values, keyed by variable name. 
 	 * Modifiable by {@link org.mondo.collaboration.security.lens.relational.RelationalRule$ActionStep}s.
 	 */
-	Map<String, Object> variables
+	Map<String, Object> variables = newHashMap
 	
-	/**
-	 * Manipulable base relations.
-	 */
-	Map<IInputKey, IManipulableRelation> manipulables
-	
-	/**
-	 * Queryable base relations.
-	 */
-	Map<IInputKey, ILiveRelation> queryables
 }

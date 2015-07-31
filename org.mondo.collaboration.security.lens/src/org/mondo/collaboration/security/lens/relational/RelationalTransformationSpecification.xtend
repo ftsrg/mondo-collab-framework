@@ -13,6 +13,13 @@ package org.mondo.collaboration.security.lens.relational
 
 import java.util.Set
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.incquery.runtime.matchers.context.IInputKey
+import java.util.Map
+import org.mondo.collaboration.security.lens.util.IManipulableRelation
+import org.mondo.collaboration.security.lens.util.ILiveRelation
+import com.google.common.collect.ImmutableMap
+import org.eclipse.incquery.runtime.evm.specific.resolver.FixedPriorityConflictResolver
+import org.eclipse.incquery.runtime.evm.api.RuleSpecification
 
 /**
  * Specifices a collection of relational rule specifications 
@@ -21,11 +28,36 @@ import org.eclipse.xtend.lib.annotations.Accessors
  *
  */
 public abstract class RelationalTransformationSpecification {
-	@Accessors(PUBLIC_GETTER)
+	// @Accessors(PUBLIC_GETTER)
 	protected Set<RelationalRuleSpecification> rules = newHashSet()
+	
+	private final Map<IInputKey, IManipulableRelation> manipulables;
+	private final Map<IInputKey, ILiveRelation> queriables;
+	protected final FixedPriorityConflictResolver priorityResolver = new FixedPriorityConflictResolver;
+	
+	public new (Map<IInputKey, ? extends IManipulableRelation> manipulables, Map<IInputKey, ? extends ILiveRelation> queriables) {
+		this.manipulables = ImmutableMap.copyOf(manipulables)
+		this.queriables = ImmutableMap.copyOf(queriables)
+	}
+	
+	/**
+	 * Manipulable base relations.
+	 */
+	def IManipulableRelation getManipulable(IInputKey key) {manipulables.get(key)}
+	
+	/**
+	 * Queryable base relations.
+	 */
+	def ILiveRelation getQueriable(IInputKey key) {queriables.get(key)}
+	
+	/**
+	 * Assigns priority to rule specification.
+	 */
+	def void assignPriority(RuleSpecification rule, int priority) {priorityResolver.setPriority(rule, priority)}
 
 	/**
 	 * Returns a qualified name for the transformation specification
 	 */
 	def abstract String getFullyQualifiedName()
+	
 }

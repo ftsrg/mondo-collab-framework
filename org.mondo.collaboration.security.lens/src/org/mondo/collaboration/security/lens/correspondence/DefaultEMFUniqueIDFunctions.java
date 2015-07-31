@@ -28,6 +28,7 @@ public class DefaultEMFUniqueIDFunctions {
 	
 	public static ComposableIDFunction forBaseURI(URI baseURI) {
 		return ComposableIDFunction.dispatchTo(
+				new EcoreUniqueIDFunction(),
 				new URIBasedIDFunction(baseURI), 
 				new URIBasedIDFunction(null));
 	}
