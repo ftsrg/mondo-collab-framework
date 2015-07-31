@@ -11,23 +11,24 @@
 
 package org.mondo.collaboration.security.lens.relational
 
-import java.util.Set
-import org.eclipse.incquery.runtime.api.IQuerySpecification
-import org.eclipse.incquery.runtime.evm.api.RuleSpecification
-import org.eclipse.xtend.lib.annotations.Data
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
+import org.eclipse.incquery.runtime.matchers.psystem.PBody
 
 /**
- * A class representing the operationalized form of a high-level relational rule.
- * @author Bergmann Gabor
- *
+ * Generates constraints into rule precondition patterns, also exposing the variables to which it can bind value.
  */
-@Data
-class RuleOperationalization {
-	RelationalTransformationSpecification transformation
-	RelationalRuleSpecification rule
+public abstract class QueryTemplate implements Procedure1<PBody> {
+	public abstract def Iterable<String> getVariables()
 	
-    Set<IQuerySpecification> queries = newHashSet()	
-	Set<RuleSpecification> rulesForGet = newHashSet()
-	Set<RuleSpecification> rulesForPutback = newHashSet()
+	public static def QueryTemplate fromConstrainer(Iterable<String> variables, Procedure1<PBody> constrainer) {
+		return new QueryTemplate() {
+			override getVariables() {
+				variables
+			}
+			override apply(PBody p) {
+				constrainer.apply(p)
+			}
+		}
+	}
 	
 }

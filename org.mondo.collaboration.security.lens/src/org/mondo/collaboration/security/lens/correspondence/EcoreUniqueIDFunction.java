@@ -13,6 +13,7 @@ package org.mondo.collaboration.security.lens.correspondence;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EFactory;
+import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -26,7 +27,8 @@ public class EcoreUniqueIDFunction extends ComposableIDFunction {
 	@Override
 	public Object tryApply(EObject input) {
 		if (input instanceof EPackage) {
-			return ((EPackage) input).getNsURI();
+			final String nsURI = ((EPackage) input).getNsURI();
+			if (nsURI != null) return nsURI + "$$Package";
 		} else if (input instanceof EFactory) {
 			final EFactory eFactory = (EFactory) input;
 			final Object parentURI = tryApply(eFactory.getEPackage());
@@ -38,7 +40,13 @@ public class EcoreUniqueIDFunction extends ComposableIDFunction {
 		} else if (input instanceof ENamedElement) {
 			final ENamedElement named = (ENamedElement) input;
 			final Object parentURI = tryApply(named.eContainer());
-			if (parentURI instanceof String) return parentURI + "$$/" + named.getName();
+			if (parentURI instanceof String) return parentURI + "$$/" + named.eClass().getName() + ":" + named.getName();
+		} else if (input instanceof EGenericType) {
+			final EGenericType genType = (EGenericType) input;
+			final Object parentURI = tryApply(genType.eContainer());
+			final Object rawURI = tryApply(genType.getERawType());
+			if (parentURI instanceof String && rawURI instanceof String) 
+				return parentURI + "$$GenericType<>" + rawURI;
 		}
 		return null;
 	}

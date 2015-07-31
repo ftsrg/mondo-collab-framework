@@ -4,17 +4,19 @@ const <user>
 preinitialize /*Correspond$Resource and*/ Correspond$EObject (and obfuscate cache?) where possible
 
 template triple-rule (gold, condition, correspondence, front, security-check, priority) {
-	let gold-readable  = {gold; security-check[::READ]} in 
-	let mapped = {gold-readable; condition; correspondence; front} in
-		//	let mapped-putback = {gold;          condition; correspondence; front} in
-		//	let mapped-get     = {gold-readable; condition; correspondence; front} in
+	let gold-readable  = {gold; security-check[::READ]}  
+	let mapped = {gold-readable; condition; correspondence; front} 
+		//	let mapped-putback = {gold;          condition; correspondence; front} 
+		//	let mapped-get     = {gold-readable; condition; correspondence; front} 
+	let unmappedGold = {!mapped; condition; gold-readable}
+	let unmappedFront = {!mapped; condition; front}
 	get { 
-		rule get.add        (!mapped; condition; gold-readable)                   --> (create front; create correspondence;)    with +priority;
-		rule get.remove     (!mapped; condition; front)                           --> (delete front; obsolete correspondence;)  with -priority;
+		rule get.add        unmappedGold   --> (create front; create correspondence;)    with +priority;
+		rule get.remove     unmappedFront  --> (delete front; obsolete correspondence;)  with -priority;
 	}
 	putback {
-		rule putback.add    (!mapped; condition; front) /* TODO if unreadable?*/  --> (create gold; create correspondence; if !LS(security-check[::WRITE]) rollback;)   with +priority;
-		rule putback.remove (!mapped; condition; gold-readable)                   --> (if !LS(security-check[::WRITE]) rollback; delete gold; obsolete correspondence;) with -priority;
+		rule putback.add    unmappedFront  --> (create gold; create correspondence; if !LS(security-check[::WRITE]) rollback;)   with +priority;  /* TODO if unreadable?*/
+		rule putback.remove unmappedGold   --> (if !LS(security-check[::WRITE]) rollback; delete gold; obsolete correspondence;) with -priority;
 	}		
 } // smallest priority comes first
 
@@ -44,8 +46,7 @@ triple-rule objects (priority: 20) gold {
 } front {
 	Front$EObject(frontEObject, eClass);
 } security-check[op] {
-	// TODO defaults?
-	[op]Judgement$EObject(goldEObject, <user>, ::PERMIT);
+	! [op]Judgement$EObject(goldEObject, <user>, ::DENY);
 }
 
 // TODO security analysis: I can move an object from/to a resource root iff I have the object-level rights, is this secure this way?
@@ -57,8 +58,7 @@ triple-rule rootObjects (priority: 30) gold {
 } front {
 	Front$Resource.rootContents(frontResource, frontEObject);
 } security-check[op] {
-	// TODO defaults?
-	[op]Judgement$EObject(goldEObject, <user>, ::PERMIT);
+	! Judgement$EObject(goldEObject, <user>, ::DENY);
 }
 
 // TODO ordered lists?
@@ -71,8 +71,7 @@ triple-rule references (priority: 40) gold {
 } front {
 	Front$EObject.refers(frontSrc, eReference, frontTrg);
 } security-check[op] {
-	// TODO defaults?
-	[op]Judgement$Reference(goldSrc, eReference, goldTrg, <user>, ::PERMIT);
+	! [op]Judgement$Reference(goldSrc, eReference, goldTrg, <user>, ::DENY);
 }
 
 // TODO assumption: obfuscated attributes are read-only

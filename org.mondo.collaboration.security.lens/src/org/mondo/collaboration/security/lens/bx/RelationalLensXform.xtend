@@ -14,6 +14,7 @@ package org.mondo.collaboration.security.lens.bx
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
 import java.util.Set
+import org.eclipse.incquery.runtime.api.IQuerySpecification
 import org.eclipse.incquery.runtime.api.IncQueryEngine
 import org.eclipse.incquery.runtime.evm.api.Activation
 import org.eclipse.incquery.runtime.evm.api.Context
@@ -22,30 +23,34 @@ import org.eclipse.incquery.runtime.evm.api.RuleSpecification
 import org.eclipse.incquery.runtime.evm.specific.RuleEngines
 import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.ConstantValue
 import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint
+import org.eclipse.incquery.runtime.matchers.psystem.queries.QueryInitializationException
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.mondo.collaboration.security.lens.arbiter.Asset
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind
+import org.mondo.collaboration.security.lens.context.BaseMondoLensPQuery
+import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification
 import org.mondo.collaboration.security.lens.context.MondoLensScope
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey
 import org.mondo.collaboration.security.lens.context.keys.EObjectKey
 import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey
 import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey
+import org.mondo.collaboration.security.lens.relational.ActionStep
 import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
+import org.mondo.collaboration.security.lens.relational.QueryTemplate
 import org.mondo.collaboration.security.lens.relational.RelationalRuleSpecification
 import org.mondo.collaboration.security.lens.relational.RelationalTransformationSpecification
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
+import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
-import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification
-import org.mondo.collaboration.security.lens.context.BaseMondoLensPQuery
-import org.eclipse.incquery.runtime.matchers.psystem.queries.QueryInitializationException
-import org.eclipse.incquery.runtime.matchers.psystem.PBody
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExportedParameter
-import org.mondo.collaboration.security.lens.util.OperationalizationExtensions
-import org.eclipse.incquery.runtime.api.IQuerySpecification
+
+import static org.mondo.collaboration.security.lens.bx.RelationalLensXform.*
 
 /**
+ * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
+ * obeying an access control policy.
+ * 
  * @author Bergmann Gabor
  *
  */
@@ -145,10 +150,10 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			)
 			condition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldSrc, varFrontSrc]
-			).asConstrainer
+			)
 			condition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldTrg, varFrontTrg]
-			).asConstrainer
+			)
 			front += new ManipulableTemplate(
 				EObjectReferenceKey.FRONT, #[varFrontSrc, varEReference, varFrontTrg]
 			)
@@ -158,7 +163,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	}
 	
 	
-	def RelationalRuleSpecification.ActionStep checkWriteAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
+	def ActionStep checkWriteAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
 		return [
 			val Object[] valueArray = Iterables::concat(assetVariables.map[name | variables.get(name)], #[user, RuleType::DENY])
 			val seed = new FlatTuple(valueArray)
@@ -169,28 +174,40 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			}
 		]
 	}
-	def RelationalRuleSpecification.ConstrainerTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
+	def QueryTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
 		negativeCall(assetClass.readDeniedHelperPattern(assetVariables))
 	}
 	// TODO cache
 	def IQuerySpecification readDeniedHelperPattern(Class<? extends Asset> assetClass, String... assetVariables) {
-		return new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
-			'''«fullyQualifiedName».readDenied.«assetClass.simpleName»''',
-			makePParameterList(assetVariables) //, #[varUser])
-		) {
-			override protected doGetContainedBodies() throws QueryInitializationException {
-				singleBody(#{[ body |
-					val Object[] variableArray = Iterables::concat(assetVariables, #[varUser, varJudgement]).map[body.getOrCreateVariableByName(it)]
-					new TypeConstraint(body, 
-						new FlatTuple(variableArray), 
-						new SecurityJudgementKey(OperationKind.READ, assetClass)
-					)
-					new ConstantValue(body, body.getOrCreateVariableByName(varUser), user)			
-					new ConstantValue(body, body.getOrCreateVariableByName(varJudgement), RuleType::DENY)
-				]})
-			}
-		})
+		composeQuery('''«fullyQualifiedName».readDenied.«assetClass.simpleName»''', 
+			#[QueryTemplate::fromConstrainer(assetVariables)[ body |
+				val Object[] variableArray = Iterables::concat(assetVariables, #[varUser, varJudgement]).map[body.getOrCreateVariableByName(it)]
+				new TypeConstraint(body, 
+					new FlatTuple(variableArray), 
+					new SecurityJudgementKey(OperationKind.READ, assetClass)
+				)
+				new ConstantValue(body, body.getOrCreateVariableByName(varUser), user)			
+				new ConstantValue(body, body.getOrCreateVariableByName(varJudgement), RuleType::DENY)
+			]]
+		)
 	}
+//		return new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
+//			'''«fullyQualifiedName».readDenied.«assetClass.simpleName»''',
+//			makePParameterList(assetVariables) //, #[varUser])
+//		) {
+//			override protected doGetContainedBodies() throws QueryInitializationException {
+//				singleBody(#{[ body |
+//					val Object[] variableArray = Iterables::concat(assetVariables, #[varUser, varJudgement]).map[body.getOrCreateVariableByName(it)]
+//					new TypeConstraint(body, 
+//						new FlatTuple(variableArray), 
+//						new SecurityJudgementKey(OperationKind.READ, assetClass)
+//					)
+//					new ConstantValue(body, body.getOrCreateVariableByName(varUser), user)			
+//					new ConstantValue(body, body.getOrCreateVariableByName(varJudgement), RuleType::DENY)
+//				]})
+//			}
+//		})
+//	}
 //	// static queries shared by all lens instances
 //	val readDeniedQueries = #{
 //		Asset.ObjectAsset -> Asset.ObjectAsset.readDeniedHelperPattern(varGoldEObject),
@@ -198,7 +215,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 //		Asset.AttributeAsset -> Asset.AttributeAsset.readDeniedHelperPattern(varGoldEObject, varEAttribute)
 //	}
 	
-	extension OperationalizationExtensions extendUtil = OperationalizationExtensions::INSTANCE
+	extension RuleGeneratorExtensions extendUtil = RuleGeneratorExtensions::INSTANCE
 	
 	
 	static val varGoldEObject = "goldEObject"

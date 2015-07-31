@@ -36,7 +36,7 @@ import org.mondo.collaboration.security.lens.context.BaseMondoLensPQuery
 import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification
 
 import static extension org.mondo.collaboration.security.lens.relational.RelationalRuleSpecification.*
-import org.mondo.collaboration.security.lens.util.OperationalizationExtensions
+import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 
 /**
  * A class representing a high-level, relational specification of a bidirectional transformation rule 
@@ -52,88 +52,60 @@ public class RelationalRuleSpecification {
 	List<ManipulableTemplate> correspondence = newArrayList()
 	List<ManipulableTemplate> front = newArrayList()
 	
-	List<ConstrainerTemplate> condition = newArrayList()
-	List<ConstrainerTemplate> readAuthorization = newArrayList()
+	List<QueryTemplate> condition = newArrayList()
+	List<QueryTemplate> readAuthorization = newArrayList()
 	List<ActionStep> writeAuthorization = newArrayList()
 	
-	extension OperationalizationExtensions extendUtil = OperationalizationExtensions::INSTANCE
-	
-	/**
-	 * Generates constraints into rule precondition patterns.
-	 */
-	public static abstract class ConstrainerTemplate implements Procedure1<PBody> {}
-	/**
-	 * Represents an imperative step that can be used in a rule postcondition
-	 */
-	public static abstract class ActionStep implements Procedure1<RuleExecutionEnvironment> {}
-	
+	extension RuleGeneratorExtensions extendUtil = RuleGeneratorExtensions::INSTANCE
+		
 		
 	public def operationalize(RelationalTransformationSpecification transformation) {
-		val goldReadable = new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
-			'''«transformation.fullyQualifiedName».«name».goldReadable''',
-			gatherParameters(gold)
-		) {
-			override protected doGetContainedBodies() throws QueryInitializationException {
-				singleBody(
-					gold.map[asConstrainer], 
-					readAuthorization
-				)
-			}
-		})
-		val mapped = new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
-			'''«transformation.fullyQualifiedName».«name».mapped''',
-			gatherParameters(gold, correspondence, front)
-		) {
-			override protected doGetContainedBodies() throws QueryInitializationException {
-				singleBody(
-					#[positiveCall(goldReadable)], 
-					condition, 
-					correspondence.map[asConstrainer], 
-					front.map[asConstrainer]
-				)
-			}
-		})
-		val getAddLHS = new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
-			'''«transformation.fullyQualifiedName».«name».get.add.LHS''',
-			gatherParameters(gold)
-		) {
-			override protected doGetContainedBodies() throws QueryInitializationException {
-				singleBody(
-					condition, 
-					#[
-						positiveCall(goldReadable), 
-						negativeCall(mapped)
-					]
-				)
-			}
-		})
-		val getRemoveLHS = new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
-			'''«transformation.fullyQualifiedName».«name».get.remove.LHS''',
-			gatherParameters(front)
-		) {
-			override protected doGetContainedBodies() throws QueryInitializationException {
-				singleBody(
-					front.map[asConstrainer], 
-					condition, 
-					#[negativeCall(mapped)]
-				)
-			}
-		})
+		val goldReadable = composeQuery('''«transformation.fullyQualifiedName».«name».goldReadable''',
+			gold, 
+			readAuthorization
+		)
+		val mapped = composeQuery('''«transformation.fullyQualifiedName».«name».mapped''',
+			#[positiveCall(goldReadable)], 
+			condition, 
+			correspondence, 
+			front
+		)
+		val unmappedGold = composeQuery('''«transformation.fullyQualifiedName».«name».unmappedGold''',
+			condition, 
+			#[
+				positiveCall(goldReadable), 
+				negativeCall(mapped)
+			]
+		)
+		val unmappedFront = composeQuery('''«transformation.fullyQualifiedName».«name».unmappedFront''',
+			front, 
+			condition, 
+			#[negativeCall(mapped)]
+		)
 		
 		return new RuleOperationalization(transformation, this) => [
 			queries += goldReadable
 			queries += mapped
-			queries += getAddLHS
-			queries += getRemoveLHS
-			rulesForGet += createEVMRule(getAddLHS, 1 * priority,
+			queries += unmappedGold
+			queries += unmappedFront
+			rulesForGet += createEVMRule(unmappedGold, 1 * priority,
 					front.map[asAssertAction],
 					correspondence.map[asAssertAction]
 				)
-			rulesForGet += createEVMRule(getRemoveLHS, -1 * priority,
+			rulesForGet += createEVMRule(unmappedFront, -1 * priority,
 					front.map[asRetractAction],
 					correspondence.map[asRetractAction]
 				)
-		// TODO putback
+			rulesForPutback += createEVMRule(unmappedFront, 1 * priority,
+					gold.map[asAssertAction],
+					correspondence.map[asAssertAction],
+					writeAuthorization
+				)
+			rulesForPutback += createEVMRule(unmappedGold, -1 * priority,
+					writeAuthorization,
+					correspondence.map[asRetractAction],
+					gold.map[asRetractAction]
+				)
 		]
 	}
 	
