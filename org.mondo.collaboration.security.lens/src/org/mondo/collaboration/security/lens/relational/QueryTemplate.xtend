@@ -20,10 +20,10 @@ import org.eclipse.incquery.runtime.matchers.psystem.PBody
 public abstract class QueryTemplate implements Procedure1<PBody> {
 	public abstract def Iterable<String> getVariables()
 	
-	public static def QueryTemplate fromConstrainer(Iterable<String> variables, Procedure1<PBody> constrainer) {
+	public static def QueryTemplate fromConstrainer(Iterable<String> variableNames, Procedure1<PBody> constrainer) {
 		return new QueryTemplate() {
 			override getVariables() {
-				variables
+				variableNames
 			}
 			override apply(PBody p) {
 				constrainer.apply(p)

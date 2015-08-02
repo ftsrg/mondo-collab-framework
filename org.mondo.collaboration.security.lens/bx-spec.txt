@@ -53,7 +53,7 @@ triple-rule objects (priority: 20) gold {
 triple-rule rootObjects (priority: 30) gold {
 	Gold$Resource.rootContents(goldResource, goldEObject);
 } condition {
-	Correspond$Resource(goldResource, frontResource); // TODO ??
+	find resources.mapped(goldResource, frontResource); // TODO ??
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
 	Front$Resource.rootContents(frontResource, frontEObject);

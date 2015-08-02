@@ -11,15 +11,14 @@
 
 package org.mondo.collaboration.security.lens.relational
 
-import java.util.Set
-import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.incquery.runtime.matchers.context.IInputKey
-import java.util.Map
-import org.mondo.collaboration.security.lens.util.IManipulableRelation
-import org.mondo.collaboration.security.lens.util.ILiveRelation
 import com.google.common.collect.ImmutableMap
-import org.eclipse.incquery.runtime.evm.specific.resolver.FixedPriorityConflictResolver
+import java.util.Map
+import java.util.Set
 import org.eclipse.incquery.runtime.evm.api.RuleSpecification
+import org.eclipse.incquery.runtime.evm.specific.resolver.FixedPriorityConflictResolver
+import org.eclipse.incquery.runtime.matchers.context.IInputKey
+import org.mondo.collaboration.security.lens.util.ILiveRelation
+import org.mondo.collaboration.security.lens.util.IManipulableRelation
 
 /**
  * Specifices a collection of relational rule specifications 

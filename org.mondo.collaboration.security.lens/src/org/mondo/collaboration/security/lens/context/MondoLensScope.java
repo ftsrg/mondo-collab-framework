@@ -13,8 +13,8 @@ package org.mondo.collaboration.security.lens.context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.incquery.runtime.api.IncQueryEngine;
 import org.eclipse.incquery.runtime.api.scope.IEngineContext;
 import org.eclipse.incquery.runtime.api.scope.IIndexingErrorListener;
@@ -30,7 +30,13 @@ import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey;
 import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
 import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey;
 import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey;
-import org.mondo.collaboration.security.lens.context.manipulables.DebugManipulable;
+import org.mondo.collaboration.security.lens.context.manipulables.BaseKeyAwareManipulable;
+import org.mondo.collaboration.security.lens.context.manipulables.DebuggableManipulableWrapper;
+import org.mondo.collaboration.security.lens.context.manipulables.EObjectAttributeManipulator;
+import org.mondo.collaboration.security.lens.context.manipulables.EObjectManipulator;
+import org.mondo.collaboration.security.lens.context.manipulables.EObjectReferenceManipulator;
+import org.mondo.collaboration.security.lens.context.manipulables.ResourceManipulator;
+import org.mondo.collaboration.security.lens.context.manipulables.ResourceRootContentsManipulator;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.IManipulableRelation;
@@ -179,35 +185,37 @@ public class MondoLensScope extends IncQueryScope {
 			ModelIndexer goldIndexer, ModelIndexer frontIndexer,
 			Map<CorrespondenceKey, LiveTable> correspondenceTables) 
 	{
-		final Notifier frontRoot = frontIndexer.getRoot();
-		final Notifier goldRoot = goldIndexer.getRoot();
-
 		Map<IInputKey, IManipulableRelation> manipulables = new HashMap<IInputKey, IManipulableRelation>();
 		
-		manipulables.putAll(correspondenceTables);
-//		manipulables.put(EObjectAttributeKey.FRONT, new EObjectAttributeManipulator(frontRoot));
-//		manipulables.put(EObjectAttributeKey.GOLD, new EObjectAttributeManipulator(goldRoot));
-//		manipulables.put(EObjectKey.FRONT, new EObjectManipulator(frontRoot));            
-//		manipulables.put(EObjectKey.GOLD, new EObjectManipulator(goldRoot));              
-//		manipulables.put(EObjectReferenceKey.FRONT, new EObjectReferenceManipulator(frontRoot));            
-//		manipulables.put(EObjectReferenceKey.GOLD, new EObjectReferenceManipulator(goldRoot));              
-//		manipulables.put(ResourceKey.FRONT, new ResourceManipulator(frontRoot));            
-//		manipulables.put(ResourceKey.GOLD, new ResourceManipulator(goldRoot));              
-//		manipulables.put(ResourceRootContentsKey.FRONT, new ResourceRootContentsManipulator(frontRoot));            
-//		manipulables.put(ResourceRootContentsKey.GOLD, new ResourceRootContentsManipulator(goldRoot));              
+		for (Entry<CorrespondenceKey, LiveTable> entry : correspondenceTables.entrySet()) {
+			wrapForDebug(entry.getKey(), entry.getValue()).putInto(manipulables);
+		}		
+		wrapForDebug(EObjectAttributeKey.FRONT    , new EObjectAttributeManipulator(frontIndexer)).putInto(manipulables);
+		wrapForDebug(EObjectAttributeKey.GOLD     , new EObjectAttributeManipulator(goldIndexer)).putInto(manipulables);
+		wrapForDebug(EObjectKey.FRONT             , new EObjectManipulator(frontIndexer)).putInto(manipulables);            
+		wrapForDebug(EObjectKey.GOLD              , new EObjectManipulator(goldIndexer)).putInto(manipulables);              
+		wrapForDebug(EObjectReferenceKey.FRONT    , new EObjectReferenceManipulator(frontIndexer)).putInto(manipulables);            
+		wrapForDebug(EObjectReferenceKey.GOLD     , new EObjectReferenceManipulator(goldIndexer)).putInto(manipulables);              
+		wrapForDebug(ResourceKey.FRONT            , new ResourceManipulator(frontIndexer)).putInto(manipulables);            
+		wrapForDebug(ResourceKey.GOLD             , new ResourceManipulator(goldIndexer)).putInto(manipulables);              
+		wrapForDebug(ResourceRootContentsKey.FRONT, new ResourceRootContentsManipulator(frontIndexer)).putInto(manipulables);            
+		wrapForDebug(ResourceRootContentsKey.GOLD , new ResourceRootContentsManipulator(goldIndexer)).putInto(manipulables);              
 
-		new DebugManipulable(EObjectAttributeKey.FRONT).putInto(manipulables);
-		new DebugManipulable(EObjectAttributeKey.GOLD).putInto(manipulables);			
-		new DebugManipulable(EObjectKey.FRONT).putInto(manipulables);					
-		new DebugManipulable(EObjectKey.GOLD).putInto(manipulables);						
-		new DebugManipulable(EObjectReferenceKey.FRONT).putInto(manipulables);			
-		new DebugManipulable(EObjectReferenceKey.GOLD).putInto(manipulables);			
-		new DebugManipulable(ResourceKey.FRONT).putInto(manipulables);					
-		new DebugManipulable(ResourceKey.GOLD).putInto(manipulables);					
-		new DebugManipulable(ResourceRootContentsKey.FRONT).putInto(manipulables);		
-		new DebugManipulable(ResourceRootContentsKey.GOLD).putInto(manipulables);		
+//		new DebuggableManipulableWrapper(EObjectAttributeKey.FRONT).putInto(manipulables);
+//		new DebuggableManipulableWrapper(EObjectAttributeKey.GOLD).putInto(manipulables);			
+//		new DebuggableManipulableWrapper(EObjectKey.FRONT).putInto(manipulables);					
+//		new DebuggableManipulableWrapper(EObjectKey.GOLD).putInto(manipulables);						
+//		new DebuggableManipulableWrapper(EObjectReferenceKey.FRONT).putInto(manipulables);			
+//		new DebuggableManipulableWrapper(EObjectReferenceKey.GOLD).putInto(manipulables);			
+//		new DebuggableManipulableWrapper(ResourceKey.FRONT).putInto(manipulables);					
+//		new DebuggableManipulableWrapper(ResourceKey.GOLD).putInto(manipulables);					
+//		new DebuggableManipulableWrapper(ResourceRootContentsKey.FRONT).putInto(manipulables);		
+//		new DebuggableManipulableWrapper(ResourceRootContentsKey.GOLD).putInto(manipulables);		
 		
 		return manipulables;
 	}
 
+	private static BaseKeyAwareManipulable wrapForDebug(IInputKey key, IManipulableRelation wrapped) {
+		return new DebuggableManipulableWrapper(wrapped, key);
+	}
 }

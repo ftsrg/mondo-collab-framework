@@ -11,11 +11,8 @@
 
 package org.mondo.collaboration.security.lens.relational
 
-import org.eclipse.xtend.lib.annotations.Data
 import java.util.Map
-import org.eclipse.incquery.runtime.matchers.context.IInputKey
-import org.mondo.collaboration.security.lens.util.IManipulableRelation
-import org.mondo.collaboration.security.lens.util.ILiveRelation
+import org.eclipse.xtend.lib.annotations.Data
 
 /**
  * The runtime execution context of a transformation rule

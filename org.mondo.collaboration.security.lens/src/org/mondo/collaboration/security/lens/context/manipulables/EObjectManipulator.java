@@ -11,28 +11,50 @@
 
 package org.mondo.collaboration.security.lens.context.manipulables;
 
-import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.mondo.collaboration.security.lens.context.keys.EObjectKey;
+import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 
 /**
  * @author Bergmann Gabor
- *
+ * @see EObjectKey
  */
-public class EObjectManipulator extends AbstractEMFManipulable {
+public class EObjectManipulator extends BaseEMFManipulable {
 
-	public EObjectManipulator(Notifier root) {
-		super(root);
+
+	/**
+	 * @param model
+	 */
+	public EObjectManipulator(ModelIndexer model) {
+		super(model);
 	}
 
 	@Override
-	public boolean retractTuple(Tuple tuple) {
-		return false;
+	public Tuple retractTuple(Tuple tuple) {
+		final EObject element = (EObject) tuple.get(0);
+		final EClass clazz = (EClass) tuple.get(1);
+		if (element==null || element.eClass() != clazz)
+			throw new UnsupportedOperationException(tuple.toString());
+		// TODO not entirely correct
+		if (!dummyResource.getContents().remove(element))
+			throw new UnsupportedOperationException(tuple.toString());
+		return tuple;
 	}
 
 	@Override
 	public Tuple assertTuple(Tuple seed) {
-		// TODO Auto-generated method stub
-		return null;
+		//final EObject element = (EObject) seed.get(0);
+		final EClass clazz = (EClass) seed.get(1);
+		if (seed.get(0) != null || clazz == null) 
+			throw new IllegalArgumentException(seed.toString());
+
+		EObject instance = clazz.getEPackage().getEFactoryInstance().create(clazz);
+		dummyResource.getContents().add(instance);
+		
+		return new FlatTuple(instance, clazz);
 	}
 
 }

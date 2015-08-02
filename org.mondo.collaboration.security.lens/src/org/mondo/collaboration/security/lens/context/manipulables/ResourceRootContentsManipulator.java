@@ -11,37 +11,48 @@
 
 package org.mondo.collaboration.security.lens.context.manipulables;
 
-import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey;
+import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 
 /**
  * @author Bergmann Gabor
- *
+ * @see ResourceRootContentsKey 
  */
-public class ResourceRootContentsManipulator extends AbstractEMFManipulable {
+public class ResourceRootContentsManipulator extends BaseEMFManipulable {
+
 
 	/**
-	 * @param root
+	 * @param model
 	 */
-	public ResourceRootContentsManipulator(Notifier root) {
-		super(root);
+	public ResourceRootContentsManipulator(ModelIndexer model) {
+		super(model);
 	}
 
 	@Override
-	public boolean retractTuple(Tuple tuple) {
+	public Tuple retractTuple(Tuple tuple) {
 		final Resource resource = (Resource) tuple.get(0);
-		return resource.getContents().remove(tuple.get(1));
-		// TODO preserve root element?
+		final Object object = tuple.get(1);
+		if (resource == null || object == null)
+			throw new UnsupportedOperationException(tuple.toString());
+		
+		if (resource.getContents().contains(object)) {
+			model.cheapMoveTo((EObject) object, dummyResource, dummyResource.getContents());
+			return tuple;
+		} else throw new UnsupportedOperationException(tuple.toString());
 	}
 
 	@Override
 	public Tuple assertTuple(Tuple seed) {
 		final Resource resource = (Resource) seed.get(0);
-		resource.getContents().add((EObject) seed.get(1));
+		final EObject element = (EObject) seed.get(1);
+		if (resource == null || element == null)
+			throw new UnsupportedOperationException(seed.toString());
+		
+		model.cheapMoveTo(element, resource, resource.getContents());
 		return seed;
-		// TODO preserve root element?
 	}
 
 }

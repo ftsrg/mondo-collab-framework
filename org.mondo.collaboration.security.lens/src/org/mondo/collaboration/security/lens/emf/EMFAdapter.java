@@ -15,16 +15,14 @@ import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 
 /**
+ * Listens to notifications from the EMF model, recursively registering itself along the containment tree.
  * @author Bergmann Gabor
  *
  */
@@ -35,14 +33,23 @@ class EMFAdapter extends EContentAdapter {
 		this.modelIndexer = modelIndexer;
 	}
 
+	/**
+	 * Used to avoid the cost of superfluous traversals in {@link ModelIndexer#cheapMoveTo(EObject, org.eclipse.emf.common.util.EList)} (or other overloaded form).
+	 */
+	protected EObject ignoreInsertionAndDeletion = null;
+
 	@Override
 	protected void addAdapter(Notifier notifier) {
+		if (notifier == ignoreInsertionAndDeletion) return;
+		
 		traverseNotifier(notifier, true);
 		super.addAdapter(notifier);
 	}
 
 	@Override
 	protected void removeAdapter(Notifier notifier) {
+		if (notifier == ignoreInsertionAndDeletion) return;
+		
 		super.removeAdapter(notifier);
 		traverseNotifier(notifier, false);
 	}
@@ -139,17 +146,11 @@ class EMFAdapter extends EContentAdapter {
 	}
 
 	private void updateResourceRoot(Resource resource, Object topObject, boolean isInsertion) {
-		if (topObject != null)
-			modelIndexer.indexedResourceRootContents.updateTuple(new FlatTuple(resource, topObject), isInsertion);
+		new Visitor(modelIndexer, isInsertion, true).visitTopElementInResource(resource, (EObject) topObject);
 	}
 	
 	private void updateFeature(EObject source, EStructuralFeature feature, Object value, boolean isInsertion) {
-		if (value != null) {
-			if (feature instanceof EReference)
-				modelIndexer.indexedEObjectReferences.updateTuple(new FlatTuple(source, feature, value), isInsertion);
-			else if (feature instanceof EAttribute)
-				modelIndexer.indexedEObjectAttributes.updateTuple(new FlatTuple(source, feature, value), isInsertion);
-		}			
+		new Visitor(modelIndexer, isInsertion, true).updateFeature(source, feature, value);
 	}
 
 

@@ -26,11 +26,11 @@ import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 public interface IManipulableRelation {
 
 	/**
-	 * Ensures that the given tuple is no longer present in the relation.
-	 * @param tuple the tuple to be removed, consisting of non-null elements.
-	 * @return true if the relation was changed.
+	 * Removes one given tuple from the relation, filling out any null fields with non-null values.
+	 * @param seed a tuple that binds values to some fields of the newly inserted tuple, to influence what tuple should actually be removed
+	 * @return the tuple that was actually removed, consisting of non-null elements (and conforming to the seed where the seed is non-null)
 	 */
-	public boolean retractTuple(Tuple tuple);
+	public Tuple retractTuple(Tuple seed);
 	
 	/**
 	 * Adds the given tuple to the relation, filling out any null fields with non-null values.

@@ -61,17 +61,17 @@ public class MondoLensBaseIndex implements IBaseIndex {
 
 	@Override
 	public boolean removeIndexingErrorListener(IIndexingErrorListener listener) {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean addInstanceObserver(IInstanceObserver observer, Object observedObject) {
-		throw new UnsupportedOperationException();
+		return true;
 	}
 
 	@Override
 	public boolean removeInstanceObserver(IInstanceObserver observer, Object observedObject) {
-		throw new UnsupportedOperationException();
+		return true;
 	}
 
 }

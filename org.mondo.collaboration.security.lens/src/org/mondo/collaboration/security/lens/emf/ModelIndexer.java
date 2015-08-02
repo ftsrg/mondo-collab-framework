@@ -11,9 +11,14 @@
 
 package org.mondo.collaboration.security.lens.emf;
 
+import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.incquery.runtime.base.comprehension.EMFModelComprehension;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
@@ -30,7 +35,6 @@ public class ModelIndexer {
 	private ResourceSet root;
 	//private Resource unrootedElements = new XMIResourceImpl();
 	private URI baseURI;
-	URIRelativiser uriRelativiser;
 	
 	public ModelIndexer(URI baseURI, ResourceSet root) {
 		super();
@@ -46,6 +50,10 @@ public class ModelIndexer {
 		root.eAdapters().add(adapter);
 	}
 	
+	EMFModelComprehension comprehension = new EMFModelComprehension(new BaseIndexOptions(false, true));
+	URIRelativiser uriRelativiser;
+	Resource dummyResource = new ResourceImpl();
+	
 	LiveTable indexedResources = new LiveTable();
 	LiveTable indexedResourceRootContents = new LiveTable(); 
 	LiveTable indexedEObjects = new LiveTable(); 
@@ -55,8 +63,21 @@ public class ModelIndexer {
 	public URI getBaseURI() {
 		return baseURI;
 	}
+	public URIRelativiser getUriRelativiser() {
+		return uriRelativiser;
+	}
+
 	public ResourceSet getRoot() {
 		return root;
+	}
+	
+	/**
+	 * A dummy resource that contains unrooted elements, 
+	 * 	i.e. model element created by a transformation but not yet placed in the actual containment hierarchy of the model, 
+	 * or elements removed from the containment hierarchy but not yet deleted.  
+	 */
+	public Resource getDummyResource() {
+		return dummyResource;
 	}
 	public ILiveRelation getIndexedResources() {
 		return indexedResources;
@@ -74,9 +95,40 @@ public class ModelIndexer {
 		return indexedEObjectAttributes;
 	} 
 	
-	EMFModelComprehension comprehension = new EMFModelComprehension(new BaseIndexOptions(false, true));
 	
-	private EContentAdapter adapter;
+	private EMFAdapter adapter;
 	
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public void cheapMoveTo(EObject element, Notifier parent, EList targetContainmentReferenceList) {
+    	if (element.eAdapters().contains(adapter) && parent.eAdapters().contains(adapter)) {
+     		adapter.ignoreInsertionAndDeletion = element;
+	    	try {
+	    		targetContainmentReferenceList.add(element);
+	    	} finally {
+	        	adapter.ignoreInsertionAndDeletion = null;
+	    	}
+    	} else {
+    		targetContainmentReferenceList.add(element);
+    	}
+    }
+    
+    @SuppressWarnings("rawtypes")
+	public void cheapMoveTo(EObject element, EObject parent, EReference containmentFeature) {
+    	if (containmentFeature.isMany())
+    		cheapMoveTo(element, parent, (EList)parent.eGet(containmentFeature));
+    	else if (element.eAdapters().contains(adapter) &&
+    			parent.eAdapters().contains(adapter)) 
+    	{
+     		adapter.ignoreInsertionAndDeletion = element;
+	    	try {
+	    		parent.eSet(containmentFeature, element);
+	    	} finally {
+	        	adapter.ignoreInsertionAndDeletion = null;
+	    	}
+		} else {
+			parent.eSet(containmentFeature, element);
+		}
+    }
+
 
 }

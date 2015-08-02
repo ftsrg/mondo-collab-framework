@@ -11,32 +11,49 @@
 
 package org.mondo.collaboration.security.lens.context.manipulables;
 
-import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
+import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 
 /**
  * @author Bergmann Gabor
- *
+ * @see ResourceKey
  */
-public class ResourceManipulator extends AbstractEMFManipulable {
+public class ResourceManipulator extends BaseEMFManipulable {
 
 	/**
-	 * @param root
+	 * @param model
 	 */
-	public ResourceManipulator(Notifier root) {
-		super(root);
+	public ResourceManipulator(ModelIndexer model) {
+		super(model);
 	}
 
 	@Override
-	public boolean retractTuple(Tuple tuple) {
-		// TODO Auto-generated method stub
-		return false;
+	public Tuple retractTuple(Tuple tuple) {
+		final Resource resource = (Resource) tuple.get(0);
+		if (resource == null || tuple.get(1) == null)
+			throw new UnsupportedOperationException(tuple.toString());
+//		final URI relativeURI = (URI) tuple.get(1);
+		
+		//resource.getContents().clear();
+		resource.unload();
+		//root.getResources().remove(resource);
+		return tuple;
 	}
 
 	@Override
 	public Tuple assertTuple(Tuple seed) {
-		// TODO Auto-generated method stub
-		return null;
+//		final Resource resource = (Resource) seed.get(0);
+		final URI relativeURI = (URI) seed.get(1);
+		if (relativeURI == null || seed.get(0) != null) 
+			throw new IllegalArgumentException(seed.toString());
+		
+		URI uri = model.getUriRelativiser().relativePathToURI(relativeURI);
+		Resource resource = root.getResource(uri, true);
+		return new FlatTuple(resource, relativeURI);
 	}
 
 }

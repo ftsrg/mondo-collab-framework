@@ -11,31 +11,8 @@
 
 package org.mondo.collaboration.security.lens.relational
 
-import com.google.common.collect.ImmutableList
-import com.google.common.collect.ImmutableSet
-import com.google.common.collect.Iterables
 import java.util.List
-import org.eclipse.incquery.runtime.api.IMatchProcessor
-import org.eclipse.incquery.runtime.api.IPatternMatch
-import org.eclipse.incquery.runtime.api.IQuerySpecification
-import org.eclipse.incquery.runtime.evm.specific.Jobs
-import org.eclipse.incquery.runtime.evm.specific.Lifecycles
-import org.eclipse.incquery.runtime.evm.specific.Rules
-import org.eclipse.incquery.runtime.evm.specific.event.IncQueryActivationStateEnum
-import org.eclipse.incquery.runtime.matchers.psystem.PBody
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExportedParameter
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.NegativePatternCall
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.PositivePatternCall
-import org.eclipse.incquery.runtime.matchers.psystem.queries.PParameter
-import org.eclipse.incquery.runtime.matchers.psystem.queries.PQuery
-import org.eclipse.incquery.runtime.matchers.psystem.queries.QueryInitializationException
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
-import org.mondo.collaboration.security.lens.context.BaseMondoLensPQuery
-import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification
-
-import static extension org.mondo.collaboration.security.lens.relational.RelationalRuleSpecification.*
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 
 /**

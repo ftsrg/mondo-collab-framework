@@ -11,57 +11,48 @@
 
 package org.mondo.collaboration.security.lens.context.manipulables;
 
-import java.util.Map;
-
 import org.eclipse.incquery.runtime.matchers.context.IInputKey;
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.mondo.collaboration.security.lens.util.IManipulableRelation;
 
 /**
+ * Wrapper that logs manipulator activity.
  * @author Bergmann Gabor
  *
  */
-public class DebugManipulable implements IManipulableRelation {
+public class DebuggableManipulableWrapper extends BaseKeyAwareManipulable {
 	
-	final IInputKey key;
+	private IManipulableRelation wrappedManipulable;
+	private IInputKey key;
 	
-	public DebugManipulable(IInputKey key) {
-		super();
+	public DebuggableManipulableWrapper(IManipulableRelation wrappedManipulable, IInputKey key) {
+		this.wrappedManipulable = wrappedManipulable;
 		this.key = key;
-	}
-
-	public void putInto(Map<IInputKey, IManipulableRelation> manipulables) {
-		manipulables.put(key, this);
 	}
 	
 	@Override
-	public boolean retractTuple(Tuple tuple) {
-		System.out.println(
-				"\t\t" + 
-				key.getPrettyPrintableName() + 
-				"\t\t-- " + 
-				tuple);
-		return true;
+	public Tuple retractTuple(Tuple seed) {
+		final Tuple removedTuple = wrappedManipulable.retractTuple(seed);
+		System.out.println(String.format("\t\t%25s\t\t-- %s --> %s", 
+				getInputKey().getPrettyPrintableName(), 
+				seed, 
+				removedTuple));
+		return removedTuple;
 	}
 
 	@Override
 	public Tuple assertTuple(Tuple seed) {
-		Object[] elements = seed.getElements().clone();
-		for (int i=0; i< elements.length; ++i)
-			if (elements[i] == null)
-				elements[i] = "unique_" + ++nextID;
-		final FlatTuple inserted = new FlatTuple(elements);
-		System.out.println(
-				"\t\t" + 
-				key.getPrettyPrintableName() + 
-				"\t\t++ " + 
-				seed + 
-				" --> " + 
-				inserted);
-		return inserted;
+		Tuple insertedTuple = wrappedManipulable.assertTuple(seed);
+		System.out.println(String.format("\t\t%25s\t\t++ %s --> %s", 
+				getInputKey().getPrettyPrintableName(), 
+				seed, 
+				insertedTuple));
+		return insertedTuple;
 	}
-	
-	static long nextID = 0;
+
+	@Override
+	public IInputKey getInputKey() {
+		return key;
+	}
 
 }

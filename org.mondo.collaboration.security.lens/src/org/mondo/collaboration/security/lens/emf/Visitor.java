@@ -51,14 +51,20 @@ class Visitor extends EMFVisitor {
 	
 	@Override
 	public void visitResource(Resource resource) {
-		Tuple t = new FlatTuple(resource, modelIndexer.uriRelativiser.uriToRelativePath(resource.getURI()));
-		updateIndex(modelIndexer.indexedResources, t);
+		if (resource != modelIndexer.dummyResource)
+		{
+			Tuple t = new FlatTuple(resource, modelIndexer.uriRelativiser.uriToRelativePath(resource.getURI()));
+			updateIndex(modelIndexer.indexedResources, t);
+		}
 	}
 	
 	@Override
 	public void visitTopElementInResource(Resource resource, EObject element) {
-		Tuple t = new FlatTuple(resource, element);
-		updateIndex(modelIndexer.indexedResourceRootContents, t);
+		if (element != null && resource != modelIndexer.dummyResource)
+		{
+			Tuple t = new FlatTuple(resource, element);
+			updateIndex(modelIndexer.indexedResourceRootContents, t);
+		}
 	}
 
 	@Override
@@ -78,6 +84,12 @@ class Visitor extends EMFVisitor {
 		updateFeature(modelIndexer.indexedEObjectReferences, source, reference, targetObject);
 	}
 	
+	public void updateFeature(EObject source, EStructuralFeature feature, Object target) {
+		if (feature instanceof EAttribute)
+			updateFeature(modelIndexer.indexedEObjectAttributes, source, feature, target);
+		else if (feature instanceof EReference)
+			updateFeature(modelIndexer.indexedEObjectReferences, source, feature, target);
+	}
 	private void updateFeature(LiveTable index, EObject source, EStructuralFeature feature, Object target) {
 		if (target!=null && feature.isChangeable() && !feature.isDerived() && (isNotification || source.eIsSet(feature))) {
 			Tuple t = new FlatTuple(source, feature, target);
