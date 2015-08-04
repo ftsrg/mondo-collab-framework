@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/mondo.collab.security.xtext/src-gen" editDirectory="/mondo.collab.security.xtext.edit/src"
-    editorDirectory="/mondo.collab.security.xtext.editor/src" modelPluginID="mondo.collab.security.xtext"
-    forceOverwrite="true" modelName="SecurityAccess" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    complianceLevel="6.0" copyrightFields="false" editPluginID="mondo.collab.security.xtext.edit"
-    editorPluginID="mondo.collab.security.xtext.editor" runtimeVersion="2.10" usedGenPackages="platform:/resource/org.eclipse.incquery.patternlanguage/model/generated/PatternLanguage.genmodel#//patternLanguage">
-  <genPackages prefix="SecurityAccess" basePackage="mondo.collab.security.xtext" disposableProviderFactory="true"
-      fileExtensions="mondosa" ecorePackage="SecurityAccess.ecore#/">
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.mondo.collaboration.security.xtext/src-gen"
+    editDirectory="/org.mondo.collaboration.security.xtext.edit/src" editorDirectory="/org.mondo.collaboration.security.xtext.editor/src"
+    modelPluginID="org.mondo.collaboration.security.xtext" forceOverwrite="true" modelName="SecurityAccess"
+    updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="6.0" copyrightFields="false" editPluginID="org.mondo.collaboration.security.xtext.edit"
+    editorPluginID="org.mondo.collaboration.security.xtext.editor" runtimeVersion="2.10"
+    usedGenPackages="platform:/resource/org.eclipse.incquery.patternlanguage/model/generated/PatternLanguage.genmodel#//patternLanguage">
+  <genPackages prefix="SecurityAccess" basePackage="org.mondo.collaboration.security.xtext"
+      disposableProviderFactory="true" fileExtensions="mondosa" ecorePackage="SecurityAccess.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="SecurityAccess.ecore#//RuleRights">
       <genEnumLiterals ecoreEnumLiteral="SecurityAccess.ecore#//RuleRights/Read"/>
       <genEnumLiterals ecoreEnumLiteral="SecurityAccess.ecore#//RuleRights/Write"/>

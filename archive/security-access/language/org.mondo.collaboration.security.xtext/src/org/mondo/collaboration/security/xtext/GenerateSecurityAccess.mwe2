@@ -1,12 +1,12 @@
-module mondo.collab.security.xtext.GenerateSecurityAccess
+module org.mondo.collaboration.security.xtext.GenerateSecurityAccess
 
 import org.eclipse.emf.mwe.utils.*
 import org.eclipse.xtext.generator.*
 import org.eclipse.xtext.ui.generator.*
 
-var grammarURI = "classpath:/mondo/collab/security/xtext/SecurityAccess.xtext"
+var grammarURI = "classpath:/org/mondo/collaboration/security/xtext/SecurityAccess.xtext"
 var fileExtensions = "mondosa"
-var projectName = "mondo.collab.security.xtext"
+var projectName = "org.mondo.collaboration.security.xtext"
 var runtimeProject = "../${projectName}"
 var generateXtendStub = true
 var encoding = "UTF-8"

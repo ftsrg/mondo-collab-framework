@@ -6,7 +6,7 @@
   <extension point="org.eclipse.emf.ecore.generated_package">
     <package 
        uri = "http://www.collab.mondo/security/xtext/SecurityAccess" 
-       class = "mondo.collab.security.xtext.securityAccess.SecurityAccessPackage"
+       class = "org.mondo.collaboration.security.xtext.securityAccess.SecurityAccessPackage"
        genModel = "model/generated/SecurityAccess.genmodel" /> 
 	
   </extension>
