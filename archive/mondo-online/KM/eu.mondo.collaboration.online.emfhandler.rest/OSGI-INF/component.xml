@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="eu.mondo.collaboration.online.emfhandler.rest">
-   <implementation class="eu.mondo.collaboration.online.emfhandler.rest.implementations.CPSRestServices"/>
-   <service>
-      <provide interface="eu.mondo.collaboration.online.emfhandler.rest.interfaces.ICPSRestServices"/>
-   </service>
-</scr:component>

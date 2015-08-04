@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public class CollaborationSession {
 
-	public static final int STATE_CLOSED = 1;
+	public static final int STATE_READY = 1;
 	public static final int STATE_OPEN = 2;
 	public static final int STATE_FINISHED = 3;
 	
@@ -18,6 +18,7 @@ public class CollaborationSession {
 	private JSONObject model;
 	
 	private List<User> users;
+	private User leader;
 	
 	public CollaborationSession(String id, String title, int state) {
 		this.id = id;
@@ -65,8 +66,8 @@ public class CollaborationSession {
 	}
 	
 	public static String getSessionStateString(int state) {
-		if(state == CollaborationSession.STATE_CLOSED) {
-			return "CLOSED";
+		if(state == CollaborationSession.STATE_READY) {
+			return "READY";
 		} else if(state == CollaborationSession.STATE_OPEN) {
 			return "OPEN";
 		} else if(state == CollaborationSession.STATE_FINISHED) {
@@ -76,8 +77,8 @@ public class CollaborationSession {
 	}
 	
 	public static int getSessionStateByString(String state) {
-		if(state == "CLOSED") {
-			return CollaborationSession.STATE_CLOSED;
+		if(state == "READY") {
+			return CollaborationSession.STATE_READY;
 		} else if(state == "OPEN") {
 			return CollaborationSession.STATE_OPEN;
 		} else if(state == "FINISHED") {
@@ -92,6 +93,14 @@ public class CollaborationSession {
 	
 	public void setModel(JSONObject newModel) {
 		this.model = newModel;
+	}
+	
+	public void setLeader(User newLeader) {
+		this.leader = newLeader;
+	}
+	
+	public User getLeader() {
+		return this.leader;
 	}
 }
 

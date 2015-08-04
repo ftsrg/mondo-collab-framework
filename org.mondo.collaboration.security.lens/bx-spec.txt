@@ -1,0 +1,101 @@
+transformation	
+const <user> 
+
+preinitialize /*Correspond$Resource and*/ Correspond$EObject (and obfuscate cache?) where possible
+
+template triple-rule (gold, condition, correspondence, front, security-check, priority) {
+	let gold-readable  = {gold; security-check[::READ]}  
+	let mapped = {gold-readable; condition; correspondence; front} 
+		//	let mapped-putback = {gold;          condition; correspondence; front} 
+		//	let mapped-get     = {gold-readable; condition; correspondence; front} 
+	let unmappedGold = {!mapped; condition; gold-readable}
+	let unmappedFront = {!mapped; condition; front}
+	get { 
+		rule get.add        unmappedGold   --> (create front; create correspondence;)    with +priority;
+		rule get.remove     unmappedFront  --> (delete front; obsolete correspondence;)  with -priority;
+	}
+	putback {
+		rule putback.add    unmappedFront  --> (create gold; create correspondence; if !LS(security-check[::WRITE]) rollback;)   with +priority;  /* TODO if unreadable?*/
+		rule putback.remove unmappedGold   --> (if !LS(security-check[::WRITE]) rollback; delete gold; obsolete correspondence;) with -priority;
+	}		
+} // smallest priority comes first
+
+/*
+ * TGG/QVT analogy?
+ * gold = source-bottom
+ * security-check = source-top?
+ * correspondence = middle-bottom
+ * condition = middle-top (where?)
+ * front = target-bottom
+ */
+
+
+// TODO no secCheck?
+triple-rule resources (priority: 10) gold {
+	Gold$Resource(goldResource, relativePath);
+// } correspondence {
+//	Correspond$Resource(goldResource, frontResource);
+} front {
+	Front$Resource(frontResource, relativePath);
+}
+
+triple-rule objects (priority: 20) gold {
+	Gold$EObject(goldEObject, eClass);
+} correspondence {
+	Correspond$EObject(goldEObject, frontEObject);
+} front {
+	Front$EObject(frontEObject, eClass);
+} security-check[op] {
+	! [op]Judgement$EObject(goldEObject, <user>, ::DENY);
+}
+
+// TODO security analysis: I can move an object from/to a resource root iff I have the object-level rights, is this secure this way?
+triple-rule rootObjects (priority: 30) gold {
+	Gold$Resource.rootContents(goldResource, goldEObject);
+} condition {
+	Correspond$Resource(goldResource, frontResource); // TODO ??
+	Correspond$EObject(goldEObject, frontEObject);
+} front {
+	Front$Resource.rootContents(frontResource, frontEObject);
+} security-check[op] {
+	! Judgement$EObject(goldEObject, <user>, ::DENY);
+}
+
+// TODO ordered lists?
+// TODO security pattern should list each pair of elements that I am not allowed to connect? --> do rollback check with LS instead
+triple-rule references (priority: 40) gold {
+	Gold$EObject.refers(goldSrc, eReference, goldTrg);
+} condition {
+	Correspond$EObject(goldSrc, frontSrc);
+	Correspond$EObject(goldTrg, frontTrg);
+} front {
+	Front$EObject.refers(frontSrc, eReference, frontTrg);
+} security-check[op] {
+	! [op]Judgement$Reference(goldSrc, eReference, goldTrg, <user>, ::DENY);
+}
+
+// TODO assumption: obfuscated attributes are read-only
+triple-rule attributes (priority: 50) gold {
+	Gold$EObject.attributeSlot(goldEObject, eAttribute, goldValue);
+} condition {
+	Correspond$EObject(goldEObject, frontEObject);
+} front {
+	Front$EObject.attributeSlot(frontEObject, eAttribute, frontValue);
+} security-check[::READ] {
+	// TODO defaults?
+	ReadJudgement$Attribute(goldEObject, eAttribute, <user>, Prevailing);
+	frontValue == eval(
+		switch(Prevailing) {
+			case ::OBFUSCATE: obfuscate(goldValue)
+			case ::PERMIT   : goldValue 
+			case ::DENY     : null /* IncQuery treats this as a failed check */
+		}
+	);
+} security-check[::WRITE] {
+	// TODO defaults?
+	WriteJudgement$Attribute(goldEObject, eAttribute, <user>, ::PERMIT);
+}
+
+
+
+

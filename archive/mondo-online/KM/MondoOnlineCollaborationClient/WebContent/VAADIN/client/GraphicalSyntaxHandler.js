@@ -1,37 +1,39 @@
 var addNodeStyle = function(node, type) {
-	if(type == "itsSubsystems") {
-		node.type = "Subsystem";
+	if(type == "subsystems") {
+		node.type = "subsystems";
 		node.shape = "box";
-	} else if(type == "itsWTCs") {
-		node.type = "WTC";
+	} else if(type == "wtctrls") {
+		node.type = "wtctrls";
 		node.shape = "dot";
 		node.radius = 10;
-	} else if(type == "itsInputs") {
-		node.type = "Input";
-		node.shape = "trianglaDown";
+	} else if(type == "inputs") {
+		node.type = "inputs";
+		node.shape = "triangleDown";
 		node.radius = 10;
-	} else if(type == "itsOutputs") {
-		node.type = "Output";
+	} else if(type == "outputs") {
+		node.type = "outputs";
 		node.shape = "triangle";
 		node.radius = 10;
-	} else if(type == "itsParams") {
-		node.type = "Param";
+	} else if(type == "params") {
+		node.type = "params";
 		node.shape = "square";
 		node.radius = 10;
-	} else if(type == "itsFaults") {
+	} /*else if(type == "faults") {
 		node.type = "Fault";
 		node.shape = "star";
 		node.radius = 10;
-	} else if(type == "itsVariables") {
+	} */
+	/*else if(type == "itsVariables") {
 		node.type = "Variable";
 		node.shape = "box";
-	} else if(type == "itsTimers") {
+	} */
+	/*else if(type == "itsTimers") {
 		node.type = "Timer";
 		node.shape = "circle";
-	}
+	}*/
 }
 
 var getElementTypes = function() {
-	var types = ["Subsystem", "WTC", "Input", "Output", "Param", "Fault", "Variable", "Timer"];
+	var types = ["subsystems", "wtctrls", "inputs", "outputs", "params" /*, "Fault", "Variable", "Timer"*/];
 	return types;
 }

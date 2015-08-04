@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.incquery.patternlanguage.annotation">
+      <annotation
+            language="MACL"
+            name="SecurityObject">
+         <annotationparameter
+               mandatory="true"
+               multiple="false"
+               name="object"
+               type="variablereference">
+         </annotationparameter>
+      </annotation>
+      <annotation
+            language="MACL"
+            name="SecurityAttribute">
+         <annotationparameter
+               mandatory="true"
+               multiple="false"
+               name="feature"
+               type="string">
+         </annotationparameter>
+         <annotationparameter
+               mandatory="true"
+               multiple="false"
+               name="src"
+               type="variablereference">
+         </annotationparameter>
+      </annotation>
+      <annotation
+            language="MACL"
+            name="SecurityReference">
+         <annotationparameter
+               mandatory="true"
+               multiple="false"
+               name="feature"
+               type="string">
+         </annotationparameter>
+         <annotationparameter
+               mandatory="true"
+               multiple="false"
+               name="src"
+               type="variablereference">
+         </annotationparameter>
+         <annotationparameter
+               mandatory="true"
+               multiple="false"
+               name="trg"
+               type="variablereference">
+         </annotationparameter>
+      </annotation>
+   </extension>
+
+</plugin>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.mondo.editor.extensionpoints.patternImplementation">
+      <client
+            class="org.mondo.collaboration.security.macl.tao.MACLPatternImplementation"
+            pattern="MACL Configurator">
+      </client>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.mondo.collaboration.security.macl.tao.MACLIncQueryLanguageExecutableExtensionFactory:org.mondo.collaboration.security.macl.tao.MACLGenerator"
+            id="org.mondo.collaboration.security.macl.tao.generation"
+            name="MONDO ACL Generation">
+         <commandParameter
+               id="org.mondo.collaboration.security.macl.tao.generate.context"
+               name="Context"
+               optional="false">
+         </commandParameter>
+      </command>
+   </extension>
+</plugin>
