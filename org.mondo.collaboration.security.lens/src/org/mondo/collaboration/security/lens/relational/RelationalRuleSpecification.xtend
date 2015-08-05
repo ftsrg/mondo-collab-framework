@@ -29,7 +29,7 @@ public class RelationalRuleSpecification {
 	List<ManipulableTemplate> correspondence = newArrayList()
 	List<ManipulableTemplate> front = newArrayList()
 	
-	List<QueryTemplate> condition = newArrayList()
+	List<QueryTemplate> mappingCondition = newArrayList()
 	List<QueryTemplate> readAuthorization = newArrayList()
 	List<ActionStep> writeAuthorization = newArrayList()
 	
@@ -43,42 +43,54 @@ public class RelationalRuleSpecification {
 		)
 		val mapped = composeQuery('''«transformation.fullyQualifiedName».«name».mapped''',
 			#[positiveCall(goldReadable)], 
-			condition, 
+			mappingCondition, 
 			correspondence, 
 			front
 		)
-		val unmappedGold = composeQuery('''«transformation.fullyQualifiedName».«name».unmappedGold''',
-			condition, 
+		val getAddLHS = composeQuery('''«transformation.fullyQualifiedName».«name».get.add.lhs''',
+			mappingCondition,
 			#[
 				positiveCall(goldReadable), 
 				negativeCall(mapped)
 			]
 		)
-		val unmappedFront = composeQuery('''«transformation.fullyQualifiedName».«name».unmappedFront''',
+		val putbackRemoveLHS = composeQuery('''«transformation.fullyQualifiedName».«name».putback.remove.lhs''',
+			#[
+				positiveCall(goldReadable), 
+				negativeCall(mapped)
+			]
+		)
+		val putbackAddLHS = composeQuery('''«transformation.fullyQualifiedName».«name».putback.add.lhs''',
 			front, 
-			condition, 
+			mappingCondition,
+			#[negativeCall(mapped)]
+		)
+		val getRemoveLHS = composeQuery('''«transformation.fullyQualifiedName».«name».get.remove.lhs''',
+			front, 
 			#[negativeCall(mapped)]
 		)
 		
 		return new RuleOperationalization(transformation, this) => [
 			queries += goldReadable
 			queries += mapped
-			queries += unmappedGold
-			queries += unmappedFront
-			rulesForGet += createEVMRule(unmappedGold, 1 * priority,
+			queries += getAddLHS
+			queries += putbackRemoveLHS
+			queries += putbackAddLHS
+			queries += getRemoveLHS
+			rulesForGet += createEVMRule(getAddLHS, 1 * priority,
 					front.map[asAssertAction],
 					correspondence.map[asAssertAction]
 				)
-			rulesForGet += createEVMRule(unmappedFront, -1 * priority,
+			rulesForGet += createEVMRule(getRemoveLHS, -1 * priority,
 					front.map[asRetractAction],
 					correspondence.map[asRetractAction]
 				)
-			rulesForPutback += createEVMRule(unmappedFront, 1 * priority,
+			rulesForPutback += createEVMRule(putbackAddLHS, 1 * priority,
 					gold.map[asAssertAction],
 					correspondence.map[asAssertAction],
 					writeAuthorization
 				)
-			rulesForPutback += createEVMRule(unmappedGold, -1 * priority,
+			rulesForPutback += createEVMRule(putbackRemoveLHS, -1 * priority,
 					writeAuthorization,
 					correspondence.map[asRetractAction],
 					gold.map[asRetractAction]

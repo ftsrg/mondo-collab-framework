@@ -16,12 +16,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
+import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Multimaps;
 // * Maintains weak references, unlike Google Collect's BiMap.
 
@@ -42,17 +41,17 @@ public class EObjectCorrespondence {
 	 * Builds a correspondence table between two models based on unique identifiers.
 	 */
 	public static LiveTable buildEObjectCorrespondenceTable(
-			ResourceSet goldModel, 
+			ModelIndexer goldIndexer, 
 			UniqueIDFunction goldObjectToUniqueIdentifier,
-			ResourceSet frontModel,
+			ModelIndexer frontIndexer,
 			UniqueIDFunction frontObjectToUniqueIdentifier) 
 	{
 		final LiveTable table = new LiveTable();
 		
 		Map<Object, Collection<EObject>> goldIndex = 
-				Multimaps.index(Iterators.filter(goldModel.getAllContents(), EObject.class), goldObjectToUniqueIdentifier).asMap();
+				Multimaps.index(goldIndexer.getAllEObjects(), goldObjectToUniqueIdentifier).asMap();
 		Map<Object, Collection<EObject>> frontIndex = 
-				Multimaps.index(Iterators.filter(frontModel.getAllContents(), EObject.class), frontObjectToUniqueIdentifier).asMap();
+				Multimaps.index(frontIndexer.getAllEObjects(), frontObjectToUniqueIdentifier).asMap();
 		
 		for (Entry<Object, Collection<EObject>> goldEntry : goldIndex.entrySet()) {
 			final Collection<EObject> golds = goldEntry.getValue();

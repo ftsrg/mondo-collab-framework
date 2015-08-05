@@ -32,20 +32,22 @@ public class DebuggableManipulableWrapper extends BaseKeyAwareManipulable {
 	
 	@Override
 	public Tuple retractTuple(Tuple seed) {
+		final String seedString = seed.toString();
 		final Tuple removedTuple = wrappedManipulable.retractTuple(seed);
 		System.out.println(String.format("\t\t%25s\t\t-- %s --> %s", 
 				getInputKey().getPrettyPrintableName(), 
-				seed, 
+				seedString, 
 				removedTuple));
 		return removedTuple;
 	}
 
 	@Override
 	public Tuple assertTuple(Tuple seed) {
+		final String seedString = seed.toString();
 		Tuple insertedTuple = wrappedManipulable.assertTuple(seed);
 		System.out.println(String.format("\t\t%25s\t\t++ %s --> %s", 
 				getInputKey().getPrettyPrintableName(), 
-				seed, 
+				seedString, 
 				insertedTuple));
 		return insertedTuple;
 	}

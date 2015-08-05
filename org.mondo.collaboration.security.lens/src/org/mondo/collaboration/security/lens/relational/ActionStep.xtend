@@ -16,4 +16,15 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 /**
  * Represents an imperative step that can be used in a rule postcondition
  */
-public abstract class ActionStep implements Procedure1<RuleExecutionEnvironment> {}
+public abstract class ActionStep implements Procedure1<RuleExecutionEnvironment> {
+	
+//	def protected Object getVariableValue(RuleExecutionEnvironment environment, String variableName) {
+//		environment.variables.get(variableName)
+//	}  
+//	def protected Object getVariableValueNonNull(RuleExecutionEnvironment environment, String variableName) {
+//		val value = environment.getVariableValue(variableName)
+//		if (value == null)
+//			throw new IllegalStateException('''Variable "«variableName»" has no value.''')
+//		value
+//	}  
+}

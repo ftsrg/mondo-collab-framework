@@ -11,6 +11,9 @@
 
 package org.mondo.collaboration.security.lens.emf;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -21,6 +24,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.incquery.runtime.base.comprehension.EMFModelComprehension;
+import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
+import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 
@@ -36,20 +41,6 @@ public class ModelIndexer {
 	//private Resource unrootedElements = new XMIResourceImpl();
 	private URI baseURI;
 	
-	public ModelIndexer(URI baseURI, ResourceSet root) {
-		super();
-		this.root = root;
-		this.baseURI = baseURI;
-
-		this.uriRelativiser = new URIRelativiser(baseURI);
-		
-		final EMFAdapter emfAdapter = new EMFAdapter(this);
-		this.adapter = emfAdapter;
-		emfAdapter.addAdapter(root);
-		
-		root.eAdapters().add(adapter);
-	}
-	
 	EMFModelComprehension comprehension = new EMFModelComprehension(new BaseIndexOptions(false, true));
 	URIRelativiser uriRelativiser;
 	Resource dummyResource = new ResourceImpl();
@@ -59,6 +50,20 @@ public class ModelIndexer {
 	LiveTable indexedEObjects = new LiveTable(); 
 	LiveTable indexedEObjectReferences = new LiveTable(); 
 	LiveTable indexedEObjectAttributes = new LiveTable();
+	
+	public ModelIndexer(URI baseURI, ResourceSet root) {
+		super();
+		this.root = root;
+		this.baseURI = baseURI;
+		
+		this.uriRelativiser = new URIRelativiser(baseURI);
+		
+		final EMFAdapter emfAdapter = new EMFAdapter(this);
+		this.adapter = emfAdapter;
+		
+		emfAdapter.addAdapter(root);
+		emfAdapter.addAdapter(dummyResource);
+	}
 	
 	public URI getBaseURI() {
 		return baseURI;
@@ -129,6 +134,14 @@ public class ModelIndexer {
 			parent.eSet(containmentFeature, element);
 		}
     }
+
+	public Iterable<EObject> getAllEObjects() {
+		Collection<EObject> objects = new ArrayList<>();
+		for (Tuple tuple : getIndexedEObjects().getTuplesForSeed(new FlatTuple(null, null))) {
+			objects.add((EObject) tuple.get(0));
+		}
+		return objects;
+	}
 
 
 }

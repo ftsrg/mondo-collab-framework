@@ -22,7 +22,7 @@ import org.mondo.collaboration.security.lens.context.MondoLensScope;
  * @author Bergmann Gabor
  *
  */
-public class LensGetTestHandler extends AbstractLensTestHandler {
+public class LensPutbackTestHandler extends AbstractLensTestHandler {
 
 	@Override
 	protected void doTest(MondoLensScope scope, IFile policyFile, IFile goldFile, IFile frontFile,
@@ -36,8 +36,7 @@ public class LensGetTestHandler extends AbstractLensTestHandler {
 		}
 		
 		///
-		lens.doGet();
-		
+		lens.doPutback();
 	}
 
 }

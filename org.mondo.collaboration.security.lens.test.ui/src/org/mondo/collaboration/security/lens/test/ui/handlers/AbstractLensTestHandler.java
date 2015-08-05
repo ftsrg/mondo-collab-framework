@@ -25,12 +25,15 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.incquery.runtime.api.IPatternMatch;
+import org.eclipse.incquery.runtime.api.IncQueryMatcher;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
+import org.mondo.collaboration.security.lens.bx.RelationalLensXform;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
 import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions;
@@ -38,6 +41,8 @@ import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondenc
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Role;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Injector;
@@ -102,9 +107,9 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 	        
 	        
 			LiveTable correspondenceTable = EObjectCorrespondence.buildEObjectCorrespondenceTable(
-						goldResource.getResourceSet(), 
+						goldIndexer, 
 						DefaultEMFUniqueIDFunctions.forBaseURI(goldBaseURI),
-						frontResource.getResourceSet(), 
+						frontIndexer, 
 						DefaultEMFUniqueIDFunctions.forBaseURI(frontBaseURI)
 			);
 	        Map<CorrespondenceKey, LiveTable> correspondenceTables = new EnumMap<CorrespondenceKey, LiveTable>(CorrespondenceKey.class);
@@ -126,6 +131,30 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 		ResourceSet resourceSet = resSetProvider.get(file.getProject());
 	    URI fileURI = URI.createPlatformResourceURI(file.getFullPath().toString(), false);
 	    return resourceSet.getResource(fileURI, true);
+	}
+
+	protected void printMatchSet(IncQueryMatcher<? extends IPatternMatch> matcher) {
+		System.out.println("-----------------");
+		System.out.println("Matches of query: " + matcher.getPatternName());
+		for (IPatternMatch match : matcher.getAllMatches()) {
+			System.out.println("\t" + match.prettyPrint());
+		}
+		System.out.println();
+	}
+
+	protected RelationalLensXform setupLensForBob(MondoLensScope scope, Resource policyResource) throws IllegalStateException {
+		final AccessControlModel policyModel = (AccessControlModel) policyResource.getContents().get(0);
+		User bobUser = null;
+		for (Role role : policyModel.getRoles()) {
+			if ("bob".equals(role.getName())) {
+				bobUser = (User) role;
+			}
+		}
+		if (bobUser == null) 
+			throw new IllegalStateException("no bob found");
+		
+		RelationalLensXform lens = new RelationalLensXform(scope, bobUser);
+		return lens;
 	}
 
 }

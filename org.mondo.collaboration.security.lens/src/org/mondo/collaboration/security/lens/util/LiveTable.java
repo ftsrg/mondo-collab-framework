@@ -58,9 +58,9 @@ public class LiveTable implements ILiveRelation, IManipulableRelation {
 	@Override
 	public Tuple retractTuple(Tuple seed) {
 		final Set<Tuple> tuplesForSeed = getTuplesForSeed(seed);
-		if (tuplesForSeed.isEmpty()) 
-			throw new UnsupportedOperationException(seed.toString());
-		else {
+		if (tuplesForSeed.isEmpty()) {
+			return null; // throw new UnsupportedOperationException(seed.toString());
+		} else {
 			Tuple tuple = tuplesForSeed.iterator().next();
 			updateTuple(tuple, false);
 			return tuple;

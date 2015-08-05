@@ -1,30 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-	<extension point="org.eclipse.core.expressions.definitions">
-	    <definition id="org.mondo.collaboration.security.lens.test.ui.commands.isVisible">
-	         <with
-	               variable="selection">
-	            <and>
-					<count value="3"/>		           
-		            <iterate>
-		               <adapt
-		                     type="org.eclipse.core.resources.IFile"/>
-		            </iterate>
-		            <iterate
-		                  operator="or">
-		               <adapt
-		                     type="org.eclipse.core.resources.IFile">
-		                  <test
-		                        property="org.eclipse.core.resources.extension"
-		                        value="macl">
-		                  </test>
-		               </adapt>
-		            </iterate>
-				 </and>
-	         </with>
-	    </definition>
-	</extension>   
 	<extension
          point="org.eclipse.ui.commands">
       <category
@@ -37,7 +13,7 @@
             id="org.mondo.collaboration.security.lens.test.ui.commands.lensContextTestCommand">
       </command>
       <command
-            name="Lens Context Change Test"
+            name="Lens Dynamic Context Test"
             categoryId="org.mondo.collaboration.security.lens.test.ui.commands.category"
             id="org.mondo.collaboration.security.lens.test.ui.commands.lensContextChangeTestCommand">
       </command>
@@ -50,6 +26,11 @@
             name="Lens GET Test"
             categoryId="org.mondo.collaboration.security.lens.test.ui.commands.category"
             id="org.mondo.collaboration.security.lens.test.ui.commands.lensGetTestCommand">
+      </command>
+      <command
+            name="Lens PUTBACK Test"
+            categoryId="org.mondo.collaboration.security.lens.test.ui.commands.category"
+            id="org.mondo.collaboration.security.lens.test.ui.commands.lensPutbackTestCommand">
       </command>
    </extension>
    <extension
@@ -69,6 +50,10 @@
       <handler
             commandId="org.mondo.collaboration.security.lens.test.ui.commands.lensGetTestCommand"
             class="org.mondo.collaboration.security.lens.test.ui.ExecutableExtensionFactory:org.mondo.collaboration.security.lens.test.ui.handlers.LensGetTestHandler">
+      </handler>
+      <handler
+            commandId="org.mondo.collaboration.security.lens.test.ui.commands.lensPutbackTestCommand"
+            class="org.mondo.collaboration.security.lens.test.ui.ExecutableExtensionFactory:org.mondo.collaboration.security.lens.test.ui.handlers.LensPutbackTestHandler">
       </handler>
    </extension>
    <extension
@@ -107,8 +92,38 @@
     				<reference definitionId="org.mondo.collaboration.security.lens.test.ui.commands.isVisible"/>
                </visibleWhen>
             </command>
+            <command
+                  commandId="org.mondo.collaboration.security.lens.test.ui.commands.lensPutbackTestCommand"
+                  style="push">
+               <visibleWhen checkEnabled="false">
+    				<reference definitionId="org.mondo.collaboration.security.lens.test.ui.commands.isVisible"/>
+               </visibleWhen>
+            </command>
          </menu>
       </menuContribution>
    </extension>
-
+	<extension point="org.eclipse.core.expressions.definitions">
+	    <definition id="org.mondo.collaboration.security.lens.test.ui.commands.isVisible">
+	         <with
+	               variable="selection">
+	            <and>
+					<count value="3"/>		           
+		            <iterate>
+		               <adapt
+		                     type="org.eclipse.core.resources.IFile"/>
+		            </iterate>
+		            <iterate
+		                  operator="or">
+		               <adapt
+		                     type="org.eclipse.core.resources.IFile">
+		                  <test
+		                        property="org.eclipse.core.resources.extension"
+		                        value="macl">
+		                  </test>
+		               </adapt>
+		            </iterate>
+				 </and>
+	         </with>
+	    </definition>
+	</extension>   
 </plugin>

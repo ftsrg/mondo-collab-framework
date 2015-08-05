@@ -157,14 +157,14 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			gold += new ManipulableTemplate(
 				ResourceRootContentsKey.GOLD, #[varGoldResource, varGoldEObject]
 			)
-			condition += new ManipulableTemplate(
+			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
 			)
 			// TODO resue mapped from earlier rule
-			condition += new ManipulableTemplate(
+			mappingCondition += new ManipulableTemplate(
 				ResourceKey.GOLD, #[varGoldResource, varRelativeURI]
 			)
-			condition += new ManipulableTemplate(
+			mappingCondition += new ManipulableTemplate(
 				ResourceKey.FRONT, #[varFrontResource, varRelativeURI]
 			)
 			front += new ManipulableTemplate(
@@ -180,10 +180,10 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			gold += new ManipulableTemplate(
 				EObjectReferenceKey.GOLD, #[varGoldSrc, varEReference, varGoldTrg]
 			)
-			condition += new ManipulableTemplate(
+			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldSrc, varFrontSrc]
 			)
-			condition += new ManipulableTemplate(
+			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldTrg, varFrontTrg]
 			)
 			front += new ManipulableTemplate(
@@ -198,10 +198,10 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			gold += new ManipulableTemplate(
 				EObjectAttributeKey.GOLD, #[varGoldEObject, varEAttribute, varGoldValue]
 			)
-			condition += new ManipulableTemplate(
+			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
 			)
-			condition += QueryTemplate::fromConstrainer(#[varGoldValue, varFrontValue]) [ body | 
+			mappingCondition += QueryTemplate::fromConstrainer(#[varGoldValue, varFrontValue]) [ body | 
 				// TODO add obfuscation, move to security check
 				new Equality(body, body.getOrCreateVariableByName(varGoldValue), body.getOrCreateVariableByName(varFrontValue))
 			]

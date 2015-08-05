@@ -3,20 +3,22 @@ const <user>
 
 preinitialize /*Correspond$Resource and*/ Correspond$EObject (and obfuscate cache?) where possible
 
-template triple-rule (gold, condition, correspondence, front, security-check, priority) {
+template triple-rule (gold, mappingCondition, correspondence, front, security-check, priority) {
 	let gold-readable  = {gold; security-check[::READ]}  
-	let mapped = {gold-readable; condition; correspondence; front} 
-		//	let mapped-putback = {gold;          condition; correspondence; front} 
-		//	let mapped-get     = {gold-readable; condition; correspondence; front} 
-	let unmappedGold = {!mapped; condition; gold-readable}
-	let unmappedFront = {!mapped; condition; front}
+	let mapped = {gold-readable; mappingCondition; correspondence; front} 
+		//	let mapped-putback = {gold;          mappingCondition; correspondence; front} 
+		//	let mapped-get     = {gold-readable; mappingCondition; correspondence; front} 
+	let get.add.lhs        = {!mapped; gold-readable; mappingCondition}
+	let putback.remove.lhs = {!mapped; gold-readable}
+	let putback.add.lhs    = {!mapped; front;         mappingCondition}
+	let get.remove.lhs     = {!mapped; front}
 	get { 
-		rule get.add        unmappedGold   --> (create front; create correspondence;)    with +priority;
-		rule get.remove     unmappedFront  --> (delete front; obsolete correspondence;)  with -priority;
+		rule get.add        get.add.lhs        --> (create front; create correspondence;)    with +priority;
+		rule get.remove     get.remove.lhs     --> (delete front; obsolete correspondence;)  with -priority;
 	}
 	putback {
-		rule putback.add    unmappedFront  --> (create gold; create correspondence; if !LS(security-check[::WRITE]) rollback;)   with +priority;  /* TODO if unreadable?*/
-		rule putback.remove unmappedGold   --> (if !LS(security-check[::WRITE]) rollback; delete gold; obsolete correspondence;) with -priority;
+		rule putback.add    putback.add.lhs    --> (create gold; create correspondence; if !LS(security-check[::WRITE]) rollback;)   with +priority;  /* TODO if unreadable?*/
+		rule putback.remove putback.remove.lhs --> (if !LS(security-check[::WRITE]) rollback; delete gold; obsolete correspondence;) with -priority;
 	}		
 } // smallest priority comes first
 
@@ -25,7 +27,7 @@ template triple-rule (gold, condition, correspondence, front, security-check, pr
  * gold = source-bottom
  * security-check = source-top?
  * correspondence = middle-bottom
- * condition = middle-top (where?)
+ * mappingCondition = middle-top (where?)
  * front = target-bottom
  */
 
@@ -52,7 +54,7 @@ triple-rule objects (priority: 20) gold {
 // TODO security analysis: I can move an object from/to a resource root iff I have the object-level rights, is this secure this way?
 triple-rule rootObjects (priority: 30) gold {
 	Gold$Resource.rootContents(goldResource, goldEObject);
-} condition {
+} mappingCondition {
 	find resources.mapped(goldResource, frontResource); // TODO ??
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
@@ -65,7 +67,7 @@ triple-rule rootObjects (priority: 30) gold {
 // TODO security pattern should list each pair of elements that I am not allowed to connect? --> do rollback check with LS instead
 triple-rule references (priority: 40) gold {
 	Gold$EObject.refers(goldSrc, eReference, goldTrg);
-} condition {
+} mappingCondition {
 	Correspond$EObject(goldSrc, frontSrc);
 	Correspond$EObject(goldTrg, frontTrg);
 } front {
@@ -77,7 +79,7 @@ triple-rule references (priority: 40) gold {
 // TODO assumption: obfuscated attributes are read-only
 triple-rule attributes (priority: 50) gold {
 	Gold$EObject.attributeSlot(goldEObject, eAttribute, goldValue);
-} condition {
+} mappingCondition {
 	Correspond$EObject(goldEObject, frontEObject);
 } front {
 	Front$EObject.attributeSlot(frontEObject, eAttribute, frontValue);
