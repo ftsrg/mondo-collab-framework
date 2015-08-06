@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
@@ -32,19 +33,23 @@ import com.google.common.collect.Multimaps;
 public class EObjectCorrespondence {
 
 	/**
-	 * Assign unique ID to objects for establishing correspondence. 
+	 * Assigns unique ID to objects for establishing correspondence. 
 	 * Never return null; return the argument if no ID is available.
 	 */
-	public interface UniqueIDFunction extends Function<EObject, Object> {}
-	
+	public interface UniqueIDScheme extends Function<EObject, Object> {}
+	/**
+	 * Returns an ID scheme relative to a given BaseURI.
+	 */
+	public interface UniqueIDSchemeFactory extends Function<URI, UniqueIDScheme> {}
+
 	/**
 	 * Builds a correspondence table between two models based on unique identifiers.
 	 */
 	public static LiveTable buildEObjectCorrespondenceTable(
 			ModelIndexer goldIndexer, 
-			UniqueIDFunction goldObjectToUniqueIdentifier,
+			UniqueIDScheme goldObjectToUniqueIdentifier,
 			ModelIndexer frontIndexer,
-			UniqueIDFunction frontObjectToUniqueIdentifier) 
+			UniqueIDScheme frontObjectToUniqueIdentifier) 
 	{
 		final LiveTable table = new LiveTable();
 		

@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Bergmann Gabor
  *
  */
-public abstract class ComposableIDFunction implements EObjectCorrespondence.UniqueIDFunction {
+public abstract class ComposableIDFunction implements EObjectCorrespondence.UniqueIDScheme {
 
 	@Override
 	public Object apply(EObject input) {

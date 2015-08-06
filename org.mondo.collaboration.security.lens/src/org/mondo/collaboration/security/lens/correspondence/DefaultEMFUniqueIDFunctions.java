@@ -13,6 +13,8 @@ package org.mondo.collaboration.security.lens.correspondence;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDScheme;
+import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 
 /**
  * Provides a default unique ID function for EMF models.
@@ -31,6 +33,15 @@ public class DefaultEMFUniqueIDFunctions {
 				new EcoreUniqueIDFunction(),
 				new URIBasedIDFunction(baseURI), 
 				new URIBasedIDFunction(null));
+	}
+	
+	public static enum Factory implements UniqueIDSchemeFactory {
+		INSTANCE;
+
+		@Override
+		public UniqueIDScheme apply(URI input) {
+			return DefaultEMFUniqueIDFunctions.forBaseURI(input);
+		}
 	}
 
 }

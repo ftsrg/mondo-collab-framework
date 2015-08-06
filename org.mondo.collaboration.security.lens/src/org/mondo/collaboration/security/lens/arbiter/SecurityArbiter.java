@@ -24,6 +24,8 @@ import java.util.TreeSet;
 
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.patternlanguage.emf.specification.SpecificationBuilder;
 import org.eclipse.incquery.runtime.api.AdvancedIncQueryEngine;
 import org.eclipse.incquery.runtime.api.GenericPatternGroup;
@@ -39,6 +41,7 @@ import org.eclipse.incquery.runtime.matchers.tuple.LeftInheritanceTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.ConflictResolutionTypes;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.RuleRef;
@@ -80,6 +83,21 @@ import com.google.common.collect.Table;
  *
  */
 public class SecurityArbiter { /*received through {@link #updateJudgement(OperationKind, Role, Asset, SecurityRuleJudgement, boolean)}. */
+
+	public static SecurityArbiter create(
+			Resource policyResource, 
+			ResourceSet goldResourceSet,
+			User userFilter) throws IncQueryException 
+	{
+		AccessControlModel accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
+		SecurityArbiter arbiter = new SecurityArbiter(
+				accessControlModel.getPolicy(), 
+				userFilter, 
+				ImmutableSet.of(goldResourceSet), 
+				new BaseIndexOptions());
+		return arbiter;
+	}	
+	
 	public static enum OperationKind {
 		READ,
 		WRITE
@@ -315,6 +333,18 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	/**
 	 * "lesser" judgement overrides bigger judgement
 	 */
-	public static interface RuleConflictResolver extends Comparator<SecurityRuleJudgement> {} 
+	public static interface RuleConflictResolver extends Comparator<SecurityRuleJudgement> {}
+
+	/**
+	 * Convenience method: finds the given user in the access control model.
+	 */
+	public static User getUserByName(AccessControlModel accessControlModel, String userName) {
+		for (Role role : accessControlModel.getRoles()) {
+			if (role instanceof User && userName.equals(role.getName()))
+				return (User) role;
+		}
+		
+		return null;
+	} 
 
 }

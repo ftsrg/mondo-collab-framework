@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.api.IPatternMatch;
 import org.eclipse.incquery.runtime.api.IncQueryMatcher;
-import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -44,7 +43,6 @@ import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Ac
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Role;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.Injector;
 
 /**
@@ -84,26 +82,25 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 			
 			Resource policyResource = parseEMFResource(policyFile);
 	        Resource goldResource = parseEMFResource(goldFile);
+	        final ResourceSet goldResourceSet = goldResource.getResourceSet();
 	        Resource frontResource = parseEMFResource(frontFile);
+	        final ResourceSet frontResourceSet = frontResource.getResourceSet();
+	        
+	        User userFilter = null;
 	
-	        AccessControlModel accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
-	        SecurityArbiter arbiter = new SecurityArbiter(
-	        		accessControlModel.getPolicy(), 
-	        		null, 
-	        		ImmutableSet.of(goldResource.getResourceSet()), 
-	        		new BaseIndexOptions());
+	        SecurityArbiter arbiter = SecurityArbiter.create(policyResource, goldResourceSet, userFilter);
 	        
 	        // security container: parent folder of main resource?
 	        final URI goldBaseURI = URI.createPlatformResourceURI(goldFile./*getParent().*/getFullPath().toString(), false);
 			ModelIndexer goldIndexer = new ModelIndexer(
 	        		goldBaseURI,
-	        		goldResource.getResourceSet());
+	        		goldResourceSet);
 	        
 			// security container: parent folder of main resource?
 	        final URI frontBaseURI = URI.createPlatformResourceURI(frontFile./*getParent().*/getFullPath().toString(), false);
 			ModelIndexer frontIndexer = new ModelIndexer(
 	        		frontBaseURI,
-	        		frontResource.getResourceSet());
+	        		frontResourceSet);
 	        
 	        
 			LiveTable correspondenceTable = EObjectCorrespondence.buildEObjectCorrespondenceTable(
