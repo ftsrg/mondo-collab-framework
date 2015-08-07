@@ -9,30 +9,34 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.mondo.collaboration.security.lens.bx.OfflineCollaborationSession;
 import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions;
 import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions.Factory;
+import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
 
 public class OfflineLensApplication implements IApplication {
 
 	private static final String GOLD_MODEL_ROOTS_PATH_OPTION 		= "-gold";
 	private static final String FRONT_MODEL_ROOTS_PATH_OPTION 		= "-front";
 	private static final String ACCESS_CONTROL_MODEL_PATH_OPTION	= "-macl";
+	private static final String SECURITY_QUERIES_PATH_OPTION 		= "-eiq";
 	private static final String PATH_VALUE 							= "<path>";
-	private static final String USER_NAME_OPTION 					= "-user";
+	private static final String USER_NAME_OPTION 					= "-userName";
 	private static final String USER_VALUE      			 		= "<userName>";
-	private static final String PERFORM_GET_SWITCH 					= "-perform-get";
-	private static final String PERFORM_PUTBACK_SWITCH 		 		= "-perform-putback";
+	private static final String PERFORM_GET_SWITCH 					= "-performGet";
+	private static final String PERFORM_PUTBACK_SWITCH 		 		= "-performPutback";
 
 
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		String[] argArray = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 
-		List<String> goldPaths  =  getRequiredCLIOptionValues(argArray, GOLD_MODEL_ROOTS_PATH_OPTION, 		PATH_VALUE);
-		List<String> frontPaths =  getRequiredCLIOptionValues(argArray, FRONT_MODEL_ROOTS_PATH_OPTION, 		PATH_VALUE);
-		String policyPath  		=  getSingletonCLIOptionValue(argArray, ACCESS_CONTROL_MODEL_PATH_OPTION,	PATH_VALUE);
-		String userName 		=  getSingletonCLIOptionValue(argArray, USER_NAME_OPTION, 					USER_VALUE);
+		List<String> goldPaths  		=  getRequiredCLIOptionValues(argArray, GOLD_MODEL_ROOTS_PATH_OPTION, 		PATH_VALUE);
+		List<String> frontPaths 		=  getRequiredCLIOptionValues(argArray, FRONT_MODEL_ROOTS_PATH_OPTION, 		PATH_VALUE);
+		List<String> securityQueryPaths =  getRequiredCLIOptionValues(argArray, SECURITY_QUERIES_PATH_OPTION, 		PATH_VALUE);
+		String policyPath  				=  getSingletonCLIOptionValue(argArray, ACCESS_CONTROL_MODEL_PATH_OPTION,	PATH_VALUE);
+		String userName 				=  getSingletonCLIOptionValue(argArray, USER_NAME_OPTION, 					USER_VALUE);
 
 		boolean performGet = getCLISwitch(argArray, PERFORM_GET_SWITCH);
 		boolean performPutback = getCLISwitch(argArray, PERFORM_PUTBACK_SWITCH);
@@ -44,9 +48,12 @@ public class OfflineLensApplication implements IApplication {
 		URI goldConfinementURI = URI.createFileURI(goldPaths.get(0));
 		URI frontConfinementURI = URI.createFileURI(frontPaths.get(0));
 		
+		EMFPatternLanguageStandaloneSetup.doSetup();
+		AccessControlLanguageStandaloneSetup.doSetup();
+		
 		ResourceSet goldResourceSet 	= loadModelRoots(goldPaths); // TODO use resourceSetProvider?
 		ResourceSet frontResourceSet 	= loadModelRoots(frontPaths); // TODO use resourceSetProvider?
-		Resource policyResource 		= loadPolicyModel(policyPath); // TODO use resourceSetProvider?
+		Resource policyResource 		= loadPolicyModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
 		
 		// TODO unique ID provider factory?
 		final Factory uniqueIDSchemeFactory = DefaultEMFUniqueIDFunctions.Factory.INSTANCE;
@@ -71,12 +78,18 @@ public class OfflineLensApplication implements IApplication {
 	private ResourceSet loadModelRoots(List<String> paths) {
 		ResourceSet model = new ResourceSetImpl();
 		for (String path : paths) {
-			model.getResource(URI.createFileURI(path), true);
+			getResourceAtPath(model, path);
 		}
 		return model;
 	}
-	private Resource loadPolicyModel(String path) {
+	private Resource loadPolicyModel(String policyPath, List<String> securityQueryPaths) {
 		ResourceSet model = new ResourceSetImpl();
+		for (String eiqPath : securityQueryPaths) {
+			getResourceAtPath(model, eiqPath);
+		}
+		return getResourceAtPath(model, policyPath);
+	}
+	private Resource getResourceAtPath(ResourceSet model, String path) {
 		return model.getResource(URI.createFileURI(path), true);
 	}
 	

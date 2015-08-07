@@ -1,17 +1,19 @@
  TODO
  
- - implement & test putback
+ - clear "unrooted" set at the end of offline session
+ 
+ - rethink permission implications: deny/obfuscate R -> deny W, allow W -> allow R ?
+ - rethink permission implications: read edge needs read src/trg, write edge needs write src/read trg (write trg if containment), read/write attribute needs read/write src?
  
  - add obfuscation
- - reuse per-asset permissions
+ - reuse per-asset permission queries?
  - reuse resources.mapped for resourceRoot rule?
  
  - sane logging
  - uniform security exception (for write checking and resource URIs)
- - allow for locking check
+ - allow for locking check (not part of Resource?)
  
  - address ecore-specific EGenericType infinite loop (see Appendix 1)
- - address ecore-specific EFactory issue (see Appendix 1)
  
  - more efficient arbiter data structures
  - more efficient arbiter role filtering (Set<User> + query for group)
@@ -20,6 +22,8 @@
  - multiple policy conflict resolution strategies?
  - user equivalence classes based on read permissions
  - ordered collections
+ - binding user or object values?
+ - support cross-resource containment?
  
  DONE
  - default should be ::PERMIT if there are no rules?
@@ -29,6 +33,9 @@
  - implement manipulators
  - add further triple rules
  - correspondence needs cleanup?
+ - address ecore-specific EFactory issue
+ - test putback
+ - fix container edge change
 
   
  APPENDIX 1 

@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.patternlanguage.emf.specification.SpecificationBuilder;
+import org.eclipse.incquery.patternlanguage.patternLanguage.Pattern;
 import org.eclipse.incquery.runtime.api.AdvancedIncQueryEngine;
 import org.eclipse.incquery.runtime.api.GenericPatternGroup;
 import org.eclipse.incquery.runtime.api.IMatchUpdateListener;
@@ -186,8 +187,12 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 						"Unsupported binding " + binding.getValue() + " in rule " + rule.getName());
 		}
 		
+		final Pattern pattern = rule.getPattern();
+		if (pattern == null || pattern.eIsProxy())
+			throw new IllegalArgumentException("Cannot resolve query of rule: " + rule.getName());
+		
 		IQuerySpecification<? extends IncQueryMatcher<? extends IPatternMatch>> query = 
-				specBuilder.getOrCreateSpecification(rule.getPattern());
+				specBuilder.getOrCreateSpecification(pattern);
 		ruleQueryAccumulator.add(query);
 		
 		assetFactories.put(rule, Asset.factoryFrom(query));
@@ -345,6 +350,12 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		}
 		
 		return null;
+	}
+
+	public AdvancedIncQueryEngine getPolicyQueryEngine() {
+		return policyQueryEngine;
 	} 
 
+	
+	
 }

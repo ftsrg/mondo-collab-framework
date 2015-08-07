@@ -45,6 +45,7 @@ import org.mondo.collaboration.security.lens.context.keys.ResourceKey
 import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey
 import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
 import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.Equality
+import org.apache.log4j.Logger
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 

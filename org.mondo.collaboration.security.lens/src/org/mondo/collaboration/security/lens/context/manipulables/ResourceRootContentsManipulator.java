@@ -39,7 +39,7 @@ public class ResourceRootContentsManipulator extends BaseEMFManipulable {
 			throw new UnsupportedOperationException(tuple.toString());
 		
 		if (resource.getContents().contains(object)) {
-			model.cheapMoveTo((EObject) object, dummyResource, dummyResource.getContents());
+			model.cheapUnroot((EObject) object);
 			return tuple;
 		} else throw new UnsupportedOperationException(tuple.toString());
 	}

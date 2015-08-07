@@ -51,16 +51,16 @@ class Visitor extends EMFVisitor {
 	
 	@Override
 	public void visitResource(Resource resource) {
-		if (resource != modelIndexer.dummyResource)
-		{
+//		if (resource != modelIndexer.dummyResource)
+//		{
 			Tuple t = new FlatTuple(resource, modelIndexer.uriRelativiser.uriToRelativePath(resource.getURI()));
 			updateIndex(modelIndexer.indexedResources, t);
-		}
+//		}
 	}
 	
 	@Override
 	public void visitTopElementInResource(Resource resource, EObject element) {
-		if (element != null && resource != modelIndexer.dummyResource)
+		if (element != null /*&& resource != modelIndexer.dummyResource*/)
 		{
 			Tuple t = new FlatTuple(resource, element);
 			updateIndex(modelIndexer.indexedResourceRootContents, t);

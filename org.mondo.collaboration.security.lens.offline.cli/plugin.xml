@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="id1"
+         id="org.mondo.collaboration.security.lens.offline.cli"
          point="org.eclipse.core.runtime.applications">
       <application
             cardinality="singleton-global"
@@ -12,6 +12,18 @@
                class="org.mondo.collaboration.security.lens.offline.cli.OfflineLensApplication">
          </run>
       </application>
+   </extension>
+   <extension
+         id="MondoSecurityLensOffline"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.mondo.collaboration.security.lens.offline.cli"
+            name="Mondo Offline Collaboration Command-line Application Product">
+         <property
+               name="appName"
+               value="Mondo Offline Collaboration Command-line Application Product">
+         </property>
+      </product>
    </extension>
 
 </plugin>

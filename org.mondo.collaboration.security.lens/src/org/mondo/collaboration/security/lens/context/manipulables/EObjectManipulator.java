@@ -39,7 +39,7 @@ public class EObjectManipulator extends BaseEMFManipulable {
 		if (element==null || element.eClass() != clazz)
 			throw new UnsupportedOperationException(tuple.toString());
 		// TODO not entirely correct
-		if (!dummyResource.getContents().remove(element))
+		if (!model.removeUnrooted(element))
 			throw new UnsupportedOperationException(tuple.toString());
 		return tuple;
 	}
@@ -52,7 +52,7 @@ public class EObjectManipulator extends BaseEMFManipulable {
 			throw new IllegalArgumentException(seed.toString());
 
 		EObject instance = clazz.getEPackage().getEFactoryInstance().create(clazz);
-		dummyResource.getContents().add(instance);
+		model.addUnrooted(instance);
 		
 		return new FlatTuple(instance, clazz);
 	}

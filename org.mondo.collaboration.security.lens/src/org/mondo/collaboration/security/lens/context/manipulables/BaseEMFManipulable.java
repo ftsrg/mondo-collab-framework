@@ -11,7 +11,6 @@
 
 package org.mondo.collaboration.security.lens.context.manipulables;
 
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.IManipulableRelation;
@@ -25,12 +24,12 @@ public abstract class BaseEMFManipulable implements IManipulableRelation {
 
 	ModelIndexer model;
 	ResourceSet root;
-	Resource dummyResource;
+//	Resource dummyResource;
 
 	public BaseEMFManipulable(ModelIndexer model) {
 		super();
 		this.model = model;
-		this.dummyResource = model.getDummyResource();
+//		this.dummyResource = model.getDummyResource();
 		this.root = model.getRoot();
 	}
 

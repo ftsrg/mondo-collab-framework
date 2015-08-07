@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
+import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
@@ -93,7 +94,8 @@ public class OfflineCollaborationSession {
 		// security container: parent folder of main resource?
 		ModelIndexer goldIndexer = new ModelIndexer(
         		goldConfinementURI,
-        		goldResourceSet);
+        		goldResourceSet,
+        		EMFScope.extractUnderlyingEMFIndex(arbiter.getPolicyQueryEngine()));
         
 		// security container: parent folder of main resource?
 		ModelIndexer frontIndexer = new ModelIndexer(
@@ -153,6 +155,7 @@ public class OfflineCollaborationSession {
 	 */
 	public static boolean isconfined(Resource resource, URI confinementURI) {
 		URI resourceURI = resource.getURI();
+		
 		final URI deresolved = resourceURI.deresolve(confinementURI, false, true, true);
 		return deresolved.isRelative();
 	}

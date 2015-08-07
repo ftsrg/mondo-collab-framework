@@ -12,6 +12,7 @@
 package org.mondo.collaboration.security.lens.arbiter
 
 import com.google.common.base.Function
+import com.google.common.base.Splitter
 import java.util.Set
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EObject
@@ -23,7 +24,6 @@ import org.eclipse.incquery.runtime.matchers.psystem.annotations.ParameterRefere
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple
 import org.eclipse.xtend.lib.annotations.Data
-import com.google.common.base.Splitter
 
 /**
  * An asset represents something that policy rules can permit/deny access to.
@@ -66,7 +66,10 @@ abstract class Asset {
 			[
 				val src = get(sourcePos) as EObject
 				val trg = get(targetPos) as EObject
-				val reference = src.eClass.getEStructuralFeature(referenceName) as EReference
+				val feature = src.eClass.getEStructuralFeature(referenceName)
+				if (feature == null || !(feature instanceof EReference))
+					throw new IllegalArgumentException('''Security Policy parsing error: No EReference of name «referenceName» found in EClass «src.eClass» of object «src»''')
+				val reference = feature as EReference
 				val opposite = reference.EOpposite
 				if (opposite == null)
 					#{new ReferenceAsset(src, reference, trg)}
@@ -89,7 +92,10 @@ abstract class Asset {
 		def static Factory factory(int sourcePos, String attributeName) {
 			[
 				val src = get(sourcePos) as EObject
-				val attribute = src.eClass.getEStructuralFeature(attributeName) as EAttribute
+				val feature = src.eClass.getEStructuralFeature(attributeName)
+				if (feature == null || !(feature instanceof EAttribute))
+					throw new IllegalArgumentException('''Security Policy parsing error: No EAttribute of name «attributeName» found in EClass «src.eClass» of object «src»''')
+				val attribute = feature as EAttribute
 				#{new AttributeAsset(src, attribute)}
 			] 
 		}	
