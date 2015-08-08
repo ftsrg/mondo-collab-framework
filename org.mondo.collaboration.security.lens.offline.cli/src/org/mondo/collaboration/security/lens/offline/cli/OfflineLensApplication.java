@@ -13,6 +13,7 @@ import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetu
 import org.mondo.collaboration.security.lens.bx.OfflineCollaborationSession;
 import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions;
 import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions.Factory;
+import org.mondo.collaboration.security.lens.emf.EMFUtil;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
 
 public class OfflineLensApplication implements IApplication {
@@ -90,7 +91,8 @@ public class OfflineLensApplication implements IApplication {
 		return getResourceAtPath(model, policyPath);
 	}
 	private Resource getResourceAtPath(ResourceSet model, String path) {
-		return model.getResource(URI.createFileURI(path), true);
+		final URI fileURI = URI.createFileURI(path);
+		return EMFUtil.getOrCreateResource(model, fileURI);
 	}
 	
 	private static String getSingletonCLIOptionValue(String[] argArray, String optionKey, String valuePlaceHolder) {
