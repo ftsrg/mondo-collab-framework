@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.mondo.collaboration.security.lens.offline.cli.uniqueIDSchemeFactory" name="Mondo Offline Collaboration Unique ID Scheme Factory" schema="schema/org.mondo.collaboration.security.lens.offline.cli.uniqueIDSchemeFactory.exsd"/>
    <extension
          id="org.mondo.collaboration.security.lens.offline.cli"
          point="org.eclipse.core.runtime.applications">

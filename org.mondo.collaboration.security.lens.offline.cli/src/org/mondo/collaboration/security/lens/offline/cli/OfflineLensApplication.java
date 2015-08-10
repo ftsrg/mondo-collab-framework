@@ -3,6 +3,9 @@ package org.mondo.collaboration.security.lens.offline.cli;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -12,7 +15,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.mondo.collaboration.security.lens.bx.OfflineCollaborationSession;
 import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions;
-import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions.Factory;
+import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.EMFUtil;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
 
@@ -56,8 +59,7 @@ public class OfflineLensApplication implements IApplication {
 		ResourceSet frontResourceSet 	= loadModelRoots(frontPaths); // TODO use resourceSetProvider?
 		Resource policyResource 		= loadPolicyModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
 		
-		// TODO unique ID provider factory?
-		final Factory uniqueIDSchemeFactory = DefaultEMFUniqueIDFunctions.Factory.INSTANCE;
+		final UniqueIDSchemeFactory uniqueIDSchemeFactory = getIDProviderFactory();
 		
 		OfflineCollaborationSession session = 
 				new OfflineCollaborationSession(
@@ -74,6 +76,16 @@ public class OfflineLensApplication implements IApplication {
 			session.doPutbackAndSave();
 		
 		return IApplication.EXIT_OK;
+	}
+
+	private UniqueIDSchemeFactory getIDProviderFactory() throws CoreException {
+		IConfigurationElement[] configurationElements = 
+				Platform.getExtensionRegistry().getConfigurationElementsFor("org.mondo.collaboration.security.lens.offline.cli.uniqueIDSchemeFactory");
+		for (IConfigurationElement contribution : configurationElements) {
+			Object executableExtension = contribution.createExecutableExtension("scheme-factory-class");
+			return (UniqueIDSchemeFactory) executableExtension;
+		}
+		return DefaultEMFUniqueIDFunctions.Factory.INSTANCE;
 	}
 
 	private ResourceSet loadModelRoots(List<String> paths) {
