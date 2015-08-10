@@ -14,15 +14,12 @@ package org.mondo.collaboration.security.lens.bx
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
 import java.util.Set
-import org.eclipse.incquery.runtime.api.IQuerySpecification
 import org.eclipse.incquery.runtime.api.IncQueryEngine
 import org.eclipse.incquery.runtime.evm.api.Activation
 import org.eclipse.incquery.runtime.evm.api.Context
 import org.eclipse.incquery.runtime.evm.api.RuleEngine
 import org.eclipse.incquery.runtime.evm.api.RuleSpecification
 import org.eclipse.incquery.runtime.evm.specific.RuleEngines
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.ConstantValue
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.mondo.collaboration.security.lens.arbiter.Asset
@@ -46,7 +43,7 @@ import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKe
 import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
 import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.Equality
 import org.apache.log4j.Logger
-import org.mondo.collaboration.security.lens.arbiter.SecurityQueries
+import org.mondo.collaboration.security.lens.arbiter.AuthorizationQueries
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -62,14 +59,14 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	@Accessors(PUBLIC_GETTER) User user
 	@Accessors(PUBLIC_GETTER) MondoLensScope scope
-	@Accessors(PUBLIC_GETTER) SecurityQueries securityQueries
+	@Accessors(PUBLIC_GETTER) AuthorizationQueries securityQueries
 	
 	new(MondoLensScope scope, User user) {
 		super(scope.manipulables, scope.queriables)
 		this.user = user
 		this.scope = scope
 		
-		this.securityQueries = new SecurityQueries(user)
+		this.securityQueries = new AuthorizationQueries(user)
 		
 		addRules
 		operationalize
@@ -231,7 +228,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		]
 	}
 	def QueryTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
-		securityQueries.explicitDenialQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
+		securityQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
 	}
 //		return new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
 //			'''«fullyQualifiedName».readDenied.«assetClass.simpleName»''',

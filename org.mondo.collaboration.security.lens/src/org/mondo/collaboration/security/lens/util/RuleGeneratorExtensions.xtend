@@ -39,6 +39,13 @@ import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import java.util.Arrays
 import com.google.common.collect.Lists
+import com.google.common.collect.Sets
+import java.util.Set
+import java.util.Map
+import org.eclipse.incquery.runtime.matchers.context.IInputKey
+import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint
+import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
+import java.util.List
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -69,52 +76,85 @@ public class RuleGeneratorExtensions {
 	}
 
 	// queries
-	public def composeQuery(String queryFullyQualifiedName, Iterable<? extends QueryTemplate>... templates) {
+	public def composeQuery(String queryFullyQualifiedName, Iterable<? extends QueryTemplate>... conjunctiveTemplates) {
+		val allTemplates = Iterables::concat(conjunctiveTemplates)
 		new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
 			queryFullyQualifiedName,
-			gatherParameters(templates)
+			gatherParameters(allTemplates)
 		) {
 			override protected doGetContainedBodies() throws QueryInitializationException {
-				singleBody(templates)
+				#{singleBody(allTemplates)}
 			}
 		})		
 	}
-	public def gatherParameters(Iterable<? extends QueryTemplate>... templates) {
-		val allTemplates = Iterables::concat(templates)
-		val setOfUniqueVariables = ImmutableSet::copyOf(Iterables::concat(allTemplates.map[variables]))
-		makePParameterList(setOfUniqueVariables)
+	public def composeDisjunctiveQuery(String queryFullyQualifiedName, Iterable<? extends QueryTemplate>... disjunctiveTemplates) {
+		new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
+			queryFullyQualifiedName,
+			gatherParameters(disjunctiveTemplates)
+		) {
+			override protected doGetContainedBodies() throws QueryInitializationException {
+				ImmutableSet.copyOf(disjunctiveTemplates.map[template | singleBody(template)])
+			}
+		})		
 	}
-	public def makePParameterList(Iterable<String>... uniqueVariables) {
-		ImmutableList.copyOf(Iterables::concat(uniqueVariables).map[new PParameter(it)])
+	public def gatherParameters(Iterable<? extends QueryTemplate>... disjunctiveTemplates) {
+		val setOfUniqueVariablesPerBody = disjunctiveTemplates.map[bodyTemplates | ImmutableSet::copyOf(Iterables::concat(bodyTemplates.map[variables])) as Set<String>]
+		val commonVariables = setOfUniqueVariablesPerBody.reduce [ x, y | Sets::intersection(x,y)]
+		makePParameterList(commonVariables)
 	}
-	public def singleBody(PQuery query, Iterable<? extends Procedure1<PBody>>... constrainers) {
-		val allConstrainers = Iterables::concat(constrainers)
+	public def makePParameterList(Iterable<String> uniqueVariables) {
+		ImmutableList.copyOf(uniqueVariables.map[new PParameter(it)])
+	}
+	public def singleBody(PQuery query, Iterable<? extends Procedure1<PBody>> constrainers) {
 		val body = new PBody(query)
 		
 		body.exportedParameters = query.parameters.map[ param | 
 			new ExportedParameter(body, body.getOrCreateVariableByName(param.name), param.name)
 		]
 		
-		allConstrainers.forEach[apply(body)]
+		constrainers.forEach[apply(body)]
 		
-		return #{body}
+		return body
 	}
 	
 	// constraints
-	public def QueryTemplate positiveCall(IQuerySpecification called, Iterable<String> actualParameterVariables) {
-		QueryTemplate::fromConstrainer(called.parameterNames) [ body |
+	public def QueryTemplate typeConstraint(IInputKey key, Iterable<String> variableNames) {
+		new ManipulableTemplate(key, variableNames.toList)
+	}
+	
+	
+	private def QueryTemplate positiveCall(PQuery called, Iterable<String> actualParameterVariables) {
+		QueryTemplate::fromConstrainer(actualParameterVariables) [ body |
 			val Object[] arguments = actualParameterVariables.map[name | body.getOrCreateVariableByName(name)]
-			new PositivePatternCall(body, new FlatTuple(arguments), called.internalQueryRepresentation)
+			new PositivePatternCall(body, new FlatTuple(arguments), called)
+		]
+	}
+	private def QueryTemplate positiveCall(PQuery called, Map<String, String> parameterSubstitutions) {
+		called.positiveCall(called.parameterNames.map[parameterSubstitutions.get(it)])
+	}
+	public def QueryTemplate positiveCall(IQuerySpecification called, Map<String, String> parameterSubstitutions) {
+		called.internalQueryRepresentation.positiveCall(parameterSubstitutions)
+	}
+	public def QueryTemplate positiveRecursiveCall(Map<String, String> parameterSubstitutions) {
+		QueryTemplate::fromConstrainer(parameterSubstitutions.values.toList) [ body |
+			body.pattern.positiveCall(parameterSubstitutions).apply(body)
 		]
 	}
 	public def QueryTemplate positiveCallKeepNames(IQuerySpecification called) {
-		called.positiveCall(called.parameterNames)
+		called.internalQueryRepresentation.positiveCall(called.parameterNames)
 	}
-	public def QueryTemplate negativeCall(IQuerySpecification called, Iterable<String> actualParameterVariables) {
+	
+	private def QueryTemplate negativeCall(PQuery called, Iterable<String> actualParameterVariables) {
 		QueryTemplate::fromConstrainer(Collections::emptyList) [ body |
 			val Object[] arguments = actualParameterVariables.map[name | body.getOrCreateVariableByName(name)]
-			new NegativePatternCall(body, new FlatTuple(arguments), called.internalQueryRepresentation)
+			new NegativePatternCall(body, new FlatTuple(arguments), called)
 		]
+	}
+	public def QueryTemplate negativeCall(IQuerySpecification called, Iterable<String> actualParameterVariables) {
+		called.internalQueryRepresentation.negativeCall(actualParameterVariables)
+	}
+	public def QueryTemplate negativeCall(IQuerySpecification called, Map<String, String> parameterSubstitutions) {
+		called.negativeCall(called.parameterNames.map[parameterSubstitutions.get(it)])
 	}
 	public def QueryTemplate negativeCallKeepNames(IQuerySpecification called) {
 		called.negativeCall(called.parameterNames)
