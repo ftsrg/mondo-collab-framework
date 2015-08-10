@@ -9,7 +9,6 @@
  - rethink permission implications: eObject unreadable --> contained elements unreadable
 
  - add obfuscation
- - reuse per-asset permission queries?
  - reuse resources.mapped for resourceRoot rule?
  
  - sane logging
@@ -39,6 +38,8 @@
  - address ecore-specific EFactory issue
  - test putback
  - fix container edge change
+ - rethink case where malicious user changes object class (while keeping the ID)
+ - reuse per-asset permission queries?
 
   
  APPENDIX 1 

@@ -46,6 +46,7 @@ import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKe
 import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
 import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.Equality
 import org.apache.log4j.Logger
+import org.mondo.collaboration.security.lens.arbiter.SecurityQueries
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -61,11 +62,14 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	@Accessors(PUBLIC_GETTER) User user
 	@Accessors(PUBLIC_GETTER) MondoLensScope scope
+	@Accessors(PUBLIC_GETTER) SecurityQueries securityQueries
 	
 	new(MondoLensScope scope, User user) {
 		super(scope.manipulables, scope.queriables)
 		this.user = user
 		this.scope = scope
+		
+		this.securityQueries = new SecurityQueries(user)
 		
 		addRules
 		operationalize
@@ -227,21 +231,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		]
 	}
 	def QueryTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
-		negativeCall(assetClass.readDeniedHelperPattern(assetVariables))
-	}
-	// TODO cache
-	def IQuerySpecification readDeniedHelperPattern(Class<? extends Asset> assetClass, String... assetVariables) {
-		composeQuery('''«fullyQualifiedName».readDenied.«assetClass.simpleName»''', 
-			#[QueryTemplate::fromConstrainer(assetVariables)[ body |
-				val Object[] variableArray = Iterables::concat(assetVariables, #[varUser, varJudgement]).map[body.getOrCreateVariableByName(it)]
-				new TypeConstraint(body, 
-					new FlatTuple(variableArray), 
-					new SecurityJudgementKey(OperationKind.READ, assetClass)
-				)
-				new ConstantValue(body, body.getOrCreateVariableByName(varUser), user)			
-				new ConstantValue(body, body.getOrCreateVariableByName(varJudgement), RuleType::DENY)
-			]]
-		)
+		securityQueries.explicitDenialQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
 	}
 //		return new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
 //			'''«fullyQualifiedName».readDenied.«assetClass.simpleName»''',
@@ -287,10 +277,6 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	static val varEAttribute = "eAttribute"
 	static val varGoldValue = "goldValue"
 	static val varFrontValue = "frontValue"
-	
-	static val varUser = "user"
-	static val varJudgement = "judgement"
-	
 	
 		
 }

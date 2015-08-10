@@ -42,7 +42,7 @@ public class RelationalRuleSpecification {
 			readAuthorization
 		)
 		val mapped = composeQuery('''«transformation.fullyQualifiedName».«name».mapped''',
-			#[positiveCall(goldReadable)], 
+			#[goldReadable.positiveCallKeepNames], 
 			mappingCondition, 
 			correspondence, 
 			front
@@ -50,24 +50,24 @@ public class RelationalRuleSpecification {
 		val getAddLHS = composeQuery('''«transformation.fullyQualifiedName».«name».get.add.lhs''',
 			mappingCondition,
 			#[
-				positiveCall(goldReadable), 
-				negativeCall(mapped)
+				goldReadable.positiveCallKeepNames, 
+				mapped.negativeCallKeepNames
 			]
 		)
 		val putbackRemoveLHS = composeQuery('''«transformation.fullyQualifiedName».«name».putback.remove.lhs''',
 			#[
-				positiveCall(goldReadable), 
-				negativeCall(mapped)
+				goldReadable.positiveCallKeepNames, 
+				mapped.negativeCallKeepNames
 			]
 		)
 		val putbackAddLHS = composeQuery('''«transformation.fullyQualifiedName».«name».putback.add.lhs''',
 			front, 
 			mappingCondition,
-			#[negativeCall(mapped)]
+			#[mapped.negativeCallKeepNames]
 		)
 		val getRemoveLHS = composeQuery('''«transformation.fullyQualifiedName».«name».get.remove.lhs''',
 			front, 
-			#[negativeCall(mapped)]
+			#[mapped.negativeCallKeepNames]
 		)
 		
 		return new RuleOperationalization(transformation, this) => [

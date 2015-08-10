@@ -37,6 +37,8 @@ import org.mondo.collaboration.security.lens.relational.RelationalTransformation
 import org.mondo.collaboration.security.lens.relational.RuleExecutionEnvironment
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
+import java.util.Arrays
+import com.google.common.collect.Lists
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -99,17 +101,23 @@ public class RuleGeneratorExtensions {
 	}
 	
 	// constraints
-	public def QueryTemplate positiveCall(IQuerySpecification called) {
+	public def QueryTemplate positiveCall(IQuerySpecification called, Iterable<String> actualParameterVariables) {
 		QueryTemplate::fromConstrainer(called.parameterNames) [ body |
-			val Object[] arguments = called.parameterNames.map[name | body.getOrCreateVariableByName(name)]
+			val Object[] arguments = actualParameterVariables.map[name | body.getOrCreateVariableByName(name)]
 			new PositivePatternCall(body, new FlatTuple(arguments), called.internalQueryRepresentation)
 		]
 	}
-	public def QueryTemplate negativeCall(IQuerySpecification called) {
+	public def QueryTemplate positiveCallKeepNames(IQuerySpecification called) {
+		called.positiveCall(called.parameterNames)
+	}
+	public def QueryTemplate negativeCall(IQuerySpecification called, Iterable<String> actualParameterVariables) {
 		QueryTemplate::fromConstrainer(Collections::emptyList) [ body |
-			val Object[] arguments = called.parameterNames.map[name | body.getOrCreateVariableByName(name)]
+			val Object[] arguments = actualParameterVariables.map[name | body.getOrCreateVariableByName(name)]
 			new NegativePatternCall(body, new FlatTuple(arguments), called.internalQueryRepresentation)
 		]
+	}
+	public def QueryTemplate negativeCallKeepNames(IQuerySpecification called) {
+		called.negativeCall(called.parameterNames)
 	}
 	
 }
