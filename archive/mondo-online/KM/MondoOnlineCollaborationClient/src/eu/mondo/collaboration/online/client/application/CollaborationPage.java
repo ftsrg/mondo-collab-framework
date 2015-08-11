@@ -53,6 +53,24 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 			buttonLeave.setHeight("30px");
 			addComponent(buttonLeave, "left: 27px; top: 5px;");
 			
+			Button buttonUndo = new Button("Undo"); 
+			buttonUndo.addClickListener(new Button.ClickListener() {
+				public void buttonClick(ClickEvent event) {
+					cc.undo();
+				}
+			});
+			buttonUndo.setHeight("30px");
+			addComponent(buttonUndo, "left: 27px; top: 40px;");
+			
+			Button buttonRedo= new Button("Redo"); 
+			buttonRedo.addClickListener(new Button.ClickListener() {
+				public void buttonClick(ClickEvent event) {
+					cc.redo();
+				} 
+			});
+			buttonRedo.setHeight("30px");
+			addComponent(buttonRedo, "left: 115px; top: 40px;");
+			
 			CollaborationComponent collabComponent = new CollaborationComponent(this);
 		
 			// Process a value input by the user from the client-side
@@ -64,7 +82,7 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 			    }
 			});
 			this.cc = collabComponent;
-			addComponent(this.cc, "top: 15px;");
+			addComponent(this.cc, "top: 45px;");
 			this.initialized = true;
 		}
 	}

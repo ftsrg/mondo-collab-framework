@@ -103,11 +103,10 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
 		var types = getElementTypes();
-
+		var excludedProperties = ["elementType", "shape", "radius", "style", "level"];
 		for(var property in element) {
-		    if(element.hasOwnProperty(property) && !isArray(element[property]) && property != "elementType"
-		    && property != "shape" && property != "radius"  && property != "style"
-	    	&& property != "level") {
+		    if(element.hasOwnProperty(property) && !isArray(element[property]) &&
+    		element[property] != null && excludedProperties.indexOf(property) == -1) {
 		    	var propLabel = property + ':';
 		    	var propValue = element[property];
 	    		if(typeof propValue["$ref"] !== "undefined") {
@@ -115,8 +114,6 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	    		}
 		    	var inputCell = $('<td/>');
 		    	var input = null;
-		    	console.log("yoyo");
-		    	console.log(element);
 		    	if(property == "type" && element['elementType'] != 2) {
 		    		input = $('<select/>').attr('id', property);
 		    		for(var i in types) {
@@ -244,4 +241,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	var isArray = function(variable) {
 		return (Object.prototype.toString.call(variable) === '[object Array]');
 	}
+	
+	
 };
+
