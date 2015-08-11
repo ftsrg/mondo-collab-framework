@@ -18,6 +18,7 @@
  - address ecore-specific EGenericType infinite loop (see Appendix 1)
  
  - more efficient isContainment in authorization queries (goldContainmentReference)
+ - more efficient hiddenAttribute in authorization queries (eClass-eAttribute matching)
  - more efficient arbiter data structures
  - more efficient arbiter role filtering (Set<User> + query for group)
  - use EVM Context & do code cosmetics on rule specification / etc 

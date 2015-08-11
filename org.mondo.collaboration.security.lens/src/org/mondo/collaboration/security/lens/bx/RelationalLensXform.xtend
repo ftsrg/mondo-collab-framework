@@ -66,7 +66,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		this.user = user
 		this.scope = scope
 		
-		this.securityQueries = new AuthorizationQueries(user)
+		this.securityQueries = scope.arbiter.instantiateSecurityQuerySpecificationsForUser(user)
 		
 		addRules
 		operationalize
@@ -100,7 +100,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	}
 	
 	public def getQueries() {
-		ImmutableSet::copyOf(Iterables::concat(ruleOperationalizations.map[queries]))
+		ImmutableSet::copyOf(Iterables::concat(securityQueries.allQueries, Iterables::concat(ruleOperationalizations.map[queries])))
 	}
 	
 	private RuleEngine ruleEngineForGet

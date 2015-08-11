@@ -11,41 +11,43 @@
 
 package org.mondo.collaboration.security.lens.util
 
+import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
+import com.google.common.collect.Lists
+import com.google.common.collect.Maps
+import com.google.common.collect.Sets
+import java.util.Arrays
 import java.util.Collections
+import java.util.List
+import java.util.Map
+import java.util.Set
 import org.eclipse.incquery.runtime.api.IPatternMatch
 import org.eclipse.incquery.runtime.api.IQuerySpecification
 import org.eclipse.incquery.runtime.evm.specific.Jobs
 import org.eclipse.incquery.runtime.evm.specific.Lifecycles
 import org.eclipse.incquery.runtime.evm.specific.Rules
 import org.eclipse.incquery.runtime.evm.specific.event.IncQueryActivationStateEnum
+import org.eclipse.incquery.runtime.matchers.context.IInputKey
 import org.eclipse.incquery.runtime.matchers.psystem.PBody
 import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExportedParameter
 import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.NegativePatternCall
 import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.PositivePatternCall
+import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint
 import org.eclipse.incquery.runtime.matchers.psystem.queries.PParameter
 import org.eclipse.incquery.runtime.matchers.psystem.queries.PQuery
 import org.eclipse.incquery.runtime.matchers.psystem.queries.QueryInitializationException
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.mondo.collaboration.security.lens.context.BaseMondoLensPQuery
 import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification
 import org.mondo.collaboration.security.lens.relational.ActionStep
+import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
 import org.mondo.collaboration.security.lens.relational.QueryTemplate
 import org.mondo.collaboration.security.lens.relational.RelationalTransformationSpecification
 import org.mondo.collaboration.security.lens.relational.RuleExecutionEnvironment
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
-import java.util.Arrays
-import com.google.common.collect.Lists
-import com.google.common.collect.Sets
-import java.util.Set
-import java.util.Map
-import org.eclipse.incquery.runtime.matchers.context.IInputKey
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint
-import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
-import java.util.List
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -130,8 +132,9 @@ public class RuleGeneratorExtensions {
 		]
 	}
 	private def QueryTemplate positiveCall(PQuery called, Map<String, String> parameterSubstitutions) {
-		called.positiveCall(called.parameterNames.map[parameterSubstitutions.get(it)])
+		called.positiveCall(substituteParameters(called, parameterSubstitutions))
 	}
+	
 	public def QueryTemplate positiveCall(IQuerySpecification called, Map<String, String> parameterSubstitutions) {
 		called.internalQueryRepresentation.positiveCall(parameterSubstitutions)
 	}
@@ -141,7 +144,7 @@ public class RuleGeneratorExtensions {
 		]
 	}
 	public def QueryTemplate positiveCallKeepNames(IQuerySpecification called) {
-		called.internalQueryRepresentation.positiveCall(called.parameterNames)
+		called.internalQueryRepresentation.positiveCall(called.internalQueryRepresentation.parameterNamesSafe)
 	}
 	
 	private def QueryTemplate negativeCall(PQuery called, Iterable<String> actualParameterVariables) {
@@ -154,10 +157,26 @@ public class RuleGeneratorExtensions {
 		called.internalQueryRepresentation.negativeCall(actualParameterVariables)
 	}
 	public def QueryTemplate negativeCall(IQuerySpecification called, Map<String, String> parameterSubstitutions) {
-		called.negativeCall(called.parameterNames.map[parameterSubstitutions.get(it)])
+		val pQuery = called.internalQueryRepresentation
+		pQuery.negativeCall(substituteParameters(pQuery, parameterSubstitutions))
 	}
 	public def QueryTemplate negativeCallKeepNames(IQuerySpecification called) {
-		called.negativeCall(called.parameterNames)
+		called.negativeCall(called.internalQueryRepresentation.parameterNamesSafe)
+	}
+	
+	private def substituteParameters(PQuery calledQuery, Map<String, String> parameterSubstitutions) {
+		val substitutionsCorrect = ImmutableSet::copyOf(calledQuery.parameterNamesSafe).equals(parameterSubstitutions.keySet)
+		if(!substitutionsCorrect) {
+			throw new IllegalArgumentException(
+				'''Parameters of query «calledQuery.fullyQualifiedName» are [«calledQuery.parameterNamesSafe.join(", ")»], ''' +
+				'''but called with substitutions {«parameterSubstitutions.entrySet.map['''«key» -> «value»'''].join(", ")»}.'''
+			)
+		}
+		calledQuery.parameterNamesSafe.map[parameterSubstitutions.get(it)]
+	}
+	
+	private def parameterNamesSafe(PQuery calledQuery) {
+		calledQuery.parameters.map[param | (param as PParameter).name]
 	}
 	
 }
