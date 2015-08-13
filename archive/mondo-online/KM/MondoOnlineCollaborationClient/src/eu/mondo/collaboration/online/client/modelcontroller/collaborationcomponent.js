@@ -38,15 +38,18 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		var data = extractRoot(model);
 		
 		var options = {
-			stabilize: true,
-	        hierarchicalRepulsion: {
-	            centralGravity: 0.1
+	        dragNodes: true,
+	        physics: {
+	        	barnesHut: {
+	        		gravitationalConstant: 0,
+	        		centralGravity: 0, 
+	        		springConstant: 0
+	        	}
 	        },
 	        smoothCurves: false,
-	        dragNodes: false,
-	        hierarchicalLayout: {
+	        /*hierarchicalLayout: {
 	            direction: "UD"
-	        },
+	        },*/
 			dataManipulation: {
 			    enabled: true,
 			    initiallyVisible: true
