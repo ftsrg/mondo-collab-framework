@@ -15,6 +15,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
@@ -42,6 +45,19 @@ public class EObjectCorrespondence {
 	 */
 	public interface UniqueIDSchemeFactory extends Function<URI, UniqueIDScheme> {}
 
+	/**
+	 * @return the unique ID provider factory registered via the extension point org.mondo.collaboration.security.lens.uniqueIDSchemeFactory
+	 */
+	public static UniqueIDSchemeFactory getRegisteredIDProviderFactory() throws CoreException {
+		IConfigurationElement[] configurationElements = 
+				Platform.getExtensionRegistry().getConfigurationElementsFor("org.mondo.collaboration.security.lens.uniqueIDSchemeFactory");
+		for (IConfigurationElement contribution : configurationElements) {
+			Object executableExtension = contribution.createExecutableExtension("scheme-factory-class");
+			return (UniqueIDSchemeFactory) executableExtension;
+		}
+		return DefaultEMFUniqueIDFunctions.Factory.INSTANCE;
+	}
+	
 	/**
 	 * Builds a correspondence table between two models based on unique identifiers.
 	 */

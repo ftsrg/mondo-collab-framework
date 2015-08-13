@@ -227,7 +227,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			val Object[] valueArray = assetVariables.map[name | variables.get(name)]
 			val authMatch = authDeniedQuery.newMatch(valueArray)
 			if (authDeniedMatcher.hasMatch(authMatch)) {
-				throw new RuntimeException('''No write authorization to «assetClass.simpleName» for «authMatch»''');
+				throw new RuntimeException('''User "«user.name»" has no authorization for writing «assetClass.simpleName» at «authMatch.prettyPrint»''');
 			}
 		]
 	}

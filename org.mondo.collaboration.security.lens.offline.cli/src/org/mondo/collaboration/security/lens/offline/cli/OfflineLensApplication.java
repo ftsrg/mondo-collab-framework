@@ -3,9 +3,6 @@ package org.mondo.collaboration.security.lens.offline.cli;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -14,7 +11,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.mondo.collaboration.security.lens.bx.OfflineCollaborationSession;
-import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions;
+import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.EMFUtil;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
@@ -59,7 +56,10 @@ public class OfflineLensApplication implements IApplication {
 		ResourceSet frontResourceSet 	= loadModelRoots(frontPaths); // TODO use resourceSetProvider?
 		Resource policyResource 		= loadPolicyModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
 		
-		final UniqueIDSchemeFactory uniqueIDSchemeFactory = getIDProviderFactory();
+		final UniqueIDSchemeFactory uniqueIDSchemeFactory = EObjectCorrespondence.getRegisteredIDProviderFactory();
+		
+		System.out.println();
+		System.out.println("[MondoOfflineCollaborationLens] Setting up lens...");
 		
 		OfflineCollaborationSession session = 
 				new OfflineCollaborationSession(
@@ -70,22 +70,23 @@ public class OfflineLensApplication implements IApplication {
 						uniqueIDSchemeFactory,
 						policyResource, 
 						userName);
-		if (performGet)
-			session.doGetAndSave();
-		else if (performPutback)
-			session.doPutbackAndSave();
-		
-		return IApplication.EXIT_OK;
-	}
 
-	private UniqueIDSchemeFactory getIDProviderFactory() throws CoreException {
-		IConfigurationElement[] configurationElements = 
-				Platform.getExtensionRegistry().getConfigurationElementsFor("org.mondo.collaboration.security.lens.offline.cli.uniqueIDSchemeFactory");
-		for (IConfigurationElement contribution : configurationElements) {
-			Object executableExtension = contribution.createExecutableExtension("scheme-factory-class");
-			return (UniqueIDSchemeFactory) executableExtension;
+		try {
+			System.out.println("[MondoOfflineCollaborationLens] Strating transformation...");
+			
+			if (performGet)
+				session.doGetAndSave();
+			else if (performPutback)
+				session.doPutbackAndSave();
+			
+			System.out.println("[MondoOfflineCollaborationLens] Done.");
+			return IApplication.EXIT_OK;
+		} catch (Exception ex) {
+			System.out.println("[MondoOfflineCollaborationLens] Aborted.");
+			ex.printStackTrace();
+			return -1;
 		}
-		return DefaultEMFUniqueIDFunctions.Factory.INSTANCE;
+		
 	}
 
 	private ResourceSet loadModelRoots(List<String> paths) {
