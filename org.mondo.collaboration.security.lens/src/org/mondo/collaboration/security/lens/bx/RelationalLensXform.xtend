@@ -14,20 +14,26 @@ package org.mondo.collaboration.security.lens.bx
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
 import java.util.Set
+import org.apache.log4j.Logger
 import org.eclipse.incquery.runtime.api.IncQueryEngine
 import org.eclipse.incquery.runtime.evm.api.Activation
 import org.eclipse.incquery.runtime.evm.api.Context
 import org.eclipse.incquery.runtime.evm.api.RuleEngine
 import org.eclipse.incquery.runtime.evm.api.RuleSpecification
 import org.eclipse.incquery.runtime.evm.specific.RuleEngines
+import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.Equality
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.mondo.collaboration.security.lens.arbiter.Asset
+import org.mondo.collaboration.security.lens.arbiter.AuthorizationQueries
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind
 import org.mondo.collaboration.security.lens.context.MondoLensScope
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey
+import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
 import org.mondo.collaboration.security.lens.context.keys.EObjectKey
 import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey
+import org.mondo.collaboration.security.lens.context.keys.ResourceKey
+import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey
 import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey
 import org.mondo.collaboration.security.lens.relational.ActionStep
 import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
@@ -38,12 +44,6 @@ import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
-import org.mondo.collaboration.security.lens.context.keys.ResourceKey
-import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey
-import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.Equality
-import org.apache.log4j.Logger
-import org.mondo.collaboration.security.lens.arbiter.AuthorizationQueries
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -59,14 +59,14 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	@Accessors(PUBLIC_GETTER) User user
 	@Accessors(PUBLIC_GETTER) MondoLensScope scope
-	@Accessors(PUBLIC_GETTER) AuthorizationQueries securityQueries
+	@Accessors(PUBLIC_GETTER) AuthorizationQueries authorizationQueries
 	
 	new(MondoLensScope scope, User user) {
 		super(scope.manipulables, scope.queriables)
 		this.user = user
 		this.scope = scope
 		
-		this.securityQueries = scope.arbiter.instantiateSecurityQuerySpecificationsForUser(user)
+		this.authorizationQueries = scope.arbiter.instantiateAuthorizationQuerySpecificationsForUser(user)
 		
 		addRules
 		operationalize
@@ -100,7 +100,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	}
 	
 	public def getQueries() {
-		ImmutableSet::copyOf(Iterables::concat(securityQueries.allQueries, Iterables::concat(ruleOperationalizations.map[queries])))
+		ImmutableSet::copyOf(Iterables::concat(authorizationQueries.allQueries, Iterables::concat(ruleOperationalizations.map[queries])))
 	}
 	
 	private RuleEngine ruleEngineForGet
@@ -120,10 +120,14 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	
 	private def createRuleEngine(Iterable<Set<RuleSpecification>> rules) {
-			val ruleEngine = RuleEngines::createIncQueryRuleEngine(IncQueryEngine::on(scope))
+			val ruleEngine = RuleEngines::createIncQueryRuleEngine(getIncQueryEngine())
 			ruleEngine.conflictResolver = priorityResolver
 			Iterables::concat(rules).forEach[rule | ruleEngine.addRule(rule)]
 			return ruleEngine
+	}
+	
+	def getIncQueryEngine() {
+		IncQueryEngine::on(scope)
 	}
 	
 	
@@ -217,18 +221,18 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	
 	def ActionStep checkWriteAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
+		val authDeniedQuery = authorizationQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::WRITE)
+		val authDeniedMatcher = authDeniedQuery.getMatcher(incQueryEngine)
 		return [
-			val Object[] valueArray = Iterables::concat(assetVariables.map[name | variables.get(name)], #[user, RuleType::DENY])
-			val seed = new FlatTuple(valueArray)
-			val secRelation = getQueriable(new SecurityJudgementKey(OperationKind.WRITE, assetClass))
-			val denyJudgements = secRelation.getTuplesForSeed(seed)
-			if (! denyJudgements.isEmpty) {
-				throw new RuntimeException('''No write authorization to «assetClass.simpleName» for «seed»''');
+			val Object[] valueArray = assetVariables.map[name | variables.get(name)]
+			val authMatch = authDeniedQuery.newMatch(valueArray)
+			if (authDeniedMatcher.hasMatch(authMatch)) {
+				throw new RuntimeException('''No write authorization to «assetClass.simpleName» for «authMatch»''');
 			}
 		]
 	}
 	def QueryTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
-		securityQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
+		authorizationQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
 	}
 //		return new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
 //			'''«fullyQualifiedName».readDenied.«assetClass.simpleName»''',
