@@ -28,17 +28,13 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	).html();
 	
 	var cc = this;
-	this.setModel = function(model) {
-		/*
-		if(!model) {
-			return false;
-		}
-		*/
+	
+	this.initModelDisplay = function(model) {
+		console.log("Initializing model display..");
 		cc.model = model;
 		var data = extractRoot(model);
 		
 		var options = {
-	        dragNodes: true,
 	        physics: {
 	        	barnesHut: {
 	        		gravitationalConstant: 0,
@@ -46,45 +42,94 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	        		springConstant: 0
 	        	}
 	        },
-	        smoothCurves: false,
-	        /*hierarchicalLayout: {
-	            direction: "UD"
-	        },*/
-			dataManipulation: {
-			    enabled: true,
-			    initiallyVisible: true
-			},
-			onAdd: function(newData, callback) {
-		        var newNode = {
-		        	elementType: 1,
-		        	parentName: "",
-		        	name: "",
-		        	type: "",
-		        	// id: newData.id,
-		        	label: "New element",
-		        	group: ""		        	
-		        }; 
-		        editDialog(newNode, true);
-		    },
-	        onEdit: function(nodeData, callback) {
-	        	var node = getElement(nodeData.id, data.nodes);
-	        	editDialog(node, false);
-	        },
-	        onEditEdge: function(edgeData, callback) {
-	        	// Coming soon... just like winter
-	        },
-	        onDelete: function(dataToDelete, callback) {
-	        	var nodeId = dataToDelete.nodes.shift();
-	        	var node = getElement(nodeId, data.nodes);
-	        	var deletionData = {
-	        		node: node
+	        edges: {
+	        	arrows: 'to',
+	        	smooth: {
+	        	      enabled: false
 	        	}
-	        	cc.deleteElement(deletionData);
-	        }
+	        },
+	        layout: {
+	        	hierarchical: {
+		            direction: "UD",
+		            levelSeparation: 50
+	        	}
+	        },
+			manipulation: {
+			    initiallyActive: true
+			}
+		};
+
+		var container = document.getElementById('workspace');
+		modelDisplay = new vis.Network(container, data, options);
+		
+		// save position of nodes
+		var positions = modelDisplay.getPositions();
+		cc.publishNodePositions(positions);
+	}
+	
+	this.setModel = function(model, positions) {
+		console.log("Updating model...");
+		/*
+		if(!model) {
+			return false;
+		}
+		*/
+		cc.model = model;
+		data = extractRoot(model);
+		
+		var options = {
+	        physics: {
+	        	barnesHut: {
+	        		gravitationalConstant: 0,
+	        		centralGravity: 0, 
+	        		springConstant: 0
+	        	}
+	        },
+	        layout: {
+	        	hierarchical: false
+        	},
+	        edges: {
+	        	arrows: 'to',
+	        	smooth: {
+	        	      enabled: false
+	        	}
+	        },
+			manipulation: {
+			    initiallyActive: true,
+				addNode: function(newData, callback) {
+			        var newNode = {
+			        	elementType: 1,
+			        	parentName: "",
+			        	name: "",
+			        	type: "",
+			        	// id: newData.id,
+			        	label: "New element",
+			        	group: ""		        	
+			        }; 
+			        editDialog(newNode, true);
+			    },
+		        editNode: function(nodeData, callback) {
+		        	var node = getElement(nodeData.id, data.nodes);
+		        	editDialog(node, false);
+		        },
+		        editEdge: function(edgeData, callback) {
+		        	// Coming soon... just like winter
+		        },
+		        deleteNode: function(dataToDelete, callback) {
+		        	var nodeId = dataToDelete.nodes.shift();
+		        	var node = getElement(nodeId, data.nodes);
+		        	var deletionData = {
+		        		node: node
+		        	}
+		        	cc.deleteElement(deletionData);
+		        }
+			}
 		}
 
 		var container = document.getElementById('workspace');
-		var network = new vis.Network(container, data, options);
+		modelDisplay = new vis.Network(container, data, options);
+		console.log(positions);
+		applyPositions(positions);
 	}
 	var getElement = function(id, stack) {
 		for(var i in stack) {
@@ -200,6 +245,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		currentLevel++;
 		var maxDepth = currentLevel; 
 		node.id = node.name;
+		node.label = node.name;
 		node.level = currentLevel;
 		addNodeStyle(node, type);
 		var model = {
@@ -245,6 +291,16 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		return (Object.prototype.toString.call(variable) === '[object Array]');
 	}
 	
-	
+	var applyPositions = function(positions) {
+		for(var i in positions) {
+			if(positions[i]) {
+				for(var nodeId in positions[i]) {
+					console.log(positions[i][nodeId]);
+					modelDisplay.moveNode(nodeId, positions[i][nodeId].x, positions[i][nodeId].y);
+				}
+			}
+		}
+		alert("check pos");
+	}
 };
 

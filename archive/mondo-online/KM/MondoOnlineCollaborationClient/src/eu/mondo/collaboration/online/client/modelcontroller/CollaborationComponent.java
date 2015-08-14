@@ -59,6 +59,13 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		getState().setModel(model);
 	}
 
+	public void setPositions(JSONArray positions) {
+		System.out.println("updating positions...");
+		getState().modelDisplayIsInitialized = true;
+		getState().positions = positions;
+		
+	}
+	
 	public JSONObject getModel() {
 		return getState().model;
 	}
@@ -68,13 +75,16 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		return (SharedState) super.getState();
 	}
 	
-	/*
-	private void initModelController(CollaborationComponent cc) {
+	public void setModelDisplayIsInitialized(boolean value) {
+		getState().modelDisplayIsInitialized = false;
 	}
-	*/
 	
 	private void updateModel(JSONObject newModel) {
 		this.ownerPage.publishModel(newModel);
+	}
+
+	private void publishPositions(JSONArray newPositions) {
+		this.ownerPage.publishPositions(newPositions);
 	}
 	
 	private List<String> getSubtreeIdentifiers(JSONObject object) {
@@ -279,6 +289,15 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				}
 			}
 		});
+		
+		addFunction("publishNodePositions", new JavaScriptFunction() {
+			@Override
+			public void call(JSONArray positions) throws JSONException {
+				getState().setPositions(positions);
+				getState().modelDisplayIsInitialized = true;
+				publishPositions(positions);
+			}
+		});
 	}
 	
 	public void addElement(JSONObject element, boolean saveOperation) throws JSONException {
@@ -337,39 +356,6 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		
 		getState().setModel(newModel);
 		updateModel(newModel);
-		/*
-		// delete node
-		JSONArray nodesInSharedModel = getState().model.getJSONArray("nodes");
-		JSONArray newNodes = new JSONArray();
-		for(int i = 0; i < nodesInSharedModel.length(); i++) {
-			JSONObject currentNode = nodesInSharedModel.getJSONObject(i);
-			if(!currentNode.get("id").equals(nodeId)) {
-				newNodes.put(currentNode);
-			}
-		}
-		
-		// delete edges
-		JSONArray edgesInSharedModel = getState().model.getJSONArray("edges");
-		JSONArray newEdges = new JSONArray();
-		for(int i = 0; i < edgesInSharedModel.length(); i++) {
-			JSONObject currentEdge = edgesInSharedModel.getJSONObject(i);
-			boolean goodToGo = true;
-			for(int j = 0; j < edgeIds.length(); j++){
-				if(currentEdge.get("id").equals(edgeIds.get(j))) {
-					goodToGo = false;
-					break;
-				}
-			}
-			if(goodToGo) {
-				newEdges.put(currentEdge);
-			}
-		}
-		newModel.put("nodes", newNodes);
-		newModel.put("edges", newEdges);
-		// System.out.println("Model after delete: " + newModel.toString());
-		getState().setModel(newModel);
-		updateModel(newModel);
-		*/
 	}
 	
 	public void undo() {

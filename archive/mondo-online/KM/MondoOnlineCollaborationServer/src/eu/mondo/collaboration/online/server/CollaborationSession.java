@@ -3,11 +3,12 @@ package eu.mondo.collaboration.online.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class CollaborationSession {
 
-	public static final int STATE_CLOSED = 1;
+	public static final int STATE_READY = 1;
 	public static final int STATE_OPEN = 2;
 	public static final int STATE_FINISHED = 3;
 	
@@ -15,7 +16,12 @@ public class CollaborationSession {
 	private String title;
 	private int state;
 	
+	private boolean positionsInitialized = false; 
+	
 	private JSONObject model;
+	
+	// node positions on the modelign gui
+	private JSONArray positions;
 	
 	private List<User> users;
 	
@@ -24,6 +30,7 @@ public class CollaborationSession {
 		this.title = title;
 		this.users = new ArrayList<User>();
 		this.state = state;
+		this.positions = new JSONArray();
 	}
 	
 	public String getId() {
@@ -61,13 +68,12 @@ public class CollaborationSession {
 	}
 	
 	public void finishSession() {
-		this.users.clear();
 		this.state = CollaborationSession.STATE_FINISHED;
 	}
 	
 	public static String getSessionStateString(int state) {
-		if(state == CollaborationSession.STATE_CLOSED) {
-			return "CLOSED";
+		if(state == CollaborationSession.STATE_READY) {
+			return "READY";
 		} else if(state == CollaborationSession.STATE_OPEN) {
 			return "OPEN";
 		} else if(state == CollaborationSession.STATE_FINISHED) {
@@ -77,8 +83,8 @@ public class CollaborationSession {
 	}
 	
 	public static int getSessionStateByString(String state) {
-		if(state == "CLOSED") {
-			return CollaborationSession.STATE_CLOSED;
+		if(state == "READY") {
+			return CollaborationSession.STATE_READY;
 		} else if(state == "OPEN") {
 			return CollaborationSession.STATE_OPEN;
 		} else if(state == "FINISHED") {
@@ -93,6 +99,22 @@ public class CollaborationSession {
 	
 	public void setModel(JSONObject newModel) {
 		this.model = newModel;
+	}
+	
+	public void setPositions(JSONArray newPositions) {
+		this.positions = newPositions;
+	}
+	
+	public JSONArray getPositions() {
+		return this.positions;
+	}
+
+	public void setPositionsInitialized(boolean value) {
+		this.positionsInitialized = value;
+	}
+	
+	public boolean isInitialized() {
+		return this.positionsInitialized;
 	}
 }
 

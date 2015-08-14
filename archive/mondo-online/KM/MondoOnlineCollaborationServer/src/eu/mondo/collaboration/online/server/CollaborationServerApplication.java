@@ -57,23 +57,7 @@ public class CollaborationServerApplication {
 		sessionsConnections = new HashMap<String, List<Session>>();
 		sessions = new ArrayList<CollaborationSession>();
 		Integer id = 0;
-		/*
-		String pathToResFolder = "D:\\Eclipse\\Eclipse_EE\\workspace_EE\\MondoOnlineCollaborationServer\\res";
-		final File folder = new File(pathToResFolder);
-		for (final File fileEntry : folder.listFiles()) {
-	        if (!fileEntry.isDirectory()) {
-	        	String modelPath = pathToResFolder + fileEntry.getName(); 
-	        	CollaborationSession newSession = new CollaborationSession(
-	        		id.toString(), 
-	        		fileEntry.getName(),
-	        		CollaborationSession.STATE_CLOSED
-	        	);
-	        	sessions.add(newSession);
-	        	sessionsConnections.put(id.toString(), new ArrayList<Session>());
-	        	id++;
-	        }
-		}
-		*/
+
 		try {
 			URL url = new URL("http://localhost:8070/services/modelHandler/getModels");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -91,7 +75,7 @@ public class CollaborationServerApplication {
 				CollaborationSession newSession = new CollaborationSession(
 	        		id.toString(), 
 	        		(String) currModel.get("name"),
-	        		CollaborationSession.STATE_CLOSED
+	        		CollaborationSession.STATE_READY
 	        	);
 				newSession.setModel(currModel.getJSONObject("model"));
 	        	sessions.add(newSession);
@@ -150,24 +134,53 @@ public class CollaborationServerApplication {
 					List<Session> conns = sessionsConnections.get(sessionId);
 					conns.add(connection);
 					sessionsConnections.put(sessionId, conns);
+					if(positionsInitialized(sessionId)) {
+						this.sendPositions(sessionId, connection);
+					}
 					this.sendModel(sessionId, connection);
 					this.publishUsers(sessionId);
 				}
 			} else if(operation.equals("getModel")) {
 				System.out.println("getModel...");
 				String sessionId = request.getString("sessionId");
+				if(this.positionsInitialized(sessionId)) {
+					this.sendPositions(sessionId, connection);
+				} 
 				this.sendModel(sessionId, connection);
 			} else if(operation.equals("publishModel")) {
 				System.out.println("publishModel...");
 				String sessionId = request.getString("sessionId");
 				String newModel = request.getString("model");
 				this.publishModel(sessionId, newModel);
+			} else if(operation.equals("savePositions")) {
+				System.out.println("savePositions...");
+				String sessionId = request.getString("sessionId");
+				String positions = request.getString("positions");
+				this.setPositions(sessionId, positions);
+				this.setPositionsInitialized(sessionId);
 			}
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}   
 	}
 	  
+	private void setPositionsInitialized(String sessionId) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				s.setPositionsInitialized(true);
+			}
+		}
+	}
+
+	private boolean positionsInitialized(String sessionId) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				return s.isInitialized();
+			}
+		}
+		return false;
+	}
+
 	private void publishUsers(String sessionId) {
 		try {
 			JSONObject request = new JSONObject();
@@ -341,6 +354,27 @@ public class CollaborationServerApplication {
 			e1.printStackTrace();
 		} 	
 	} 
+	
+	private void sendPositions(String sessionId, Session connection) {
+		try {
+			JSONArray positions = null;
+			for(CollaborationSession s: sessions) {
+				if(s.getId().equals(sessionId)) {
+					positions = s.getPositions();
+					break;
+				}
+			}
+			System.out.println("Send positions to: " + connection.getId());
+			
+			JSONObject request = new JSONObject();
+			request.put("operation", "updatePositions");
+			request.put("positions", positions);
+			this.sendRequestInParts(request, connection);
+			// connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		} 	
+	} 
  
 	private void sendRequestInParts(JSONObject request, Session connection) {
 		String messageToSend = request.toString();
@@ -458,10 +492,27 @@ public class CollaborationServerApplication {
 	    }
 	}
 
+	private void setPositions(String sessionId, String newPositions) {
+		try {
+			this.setPositions(sessionId, new JSONArray(newPositions));
+		} catch (JSONException e) {
+			e.printStackTrace();
+	    }
+	}
+	
 	private void setModel(String sessionId, JSONObject newModel) {
 		for(CollaborationSession s: sessions) {
 			if(s.getId().equals(sessionId)) {
 				s.setModel(newModel);
+				return;
+			}
+		}
+	}
+	
+	private void setPositions(String sessionId, JSONArray newPositions) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				s.setPositions(newPositions);
 				return;
 			}
 		}

@@ -3,6 +3,7 @@ package eu.mondo.collaboration.online.client.application;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class CollaborationSession {
@@ -15,16 +16,21 @@ public class CollaborationSession {
 	private String title;
 	private int state;
 	
+	private boolean positionsInitialized = false; 
+	
 	private JSONObject model;
 	
+	// node positions on the modelign gui
+	private JSONArray positions;
+	
 	private List<User> users;
-	private User leader;
 	
 	public CollaborationSession(String id, String title, int state) {
 		this.id = id;
 		this.title = title;
 		this.users = new ArrayList<User>();
 		this.state = state;
+		this.positions = new JSONArray();
 	}
 	
 	public String getId() {
@@ -95,13 +101,20 @@ public class CollaborationSession {
 		this.model = newModel;
 	}
 	
-	public void setLeader(User newLeader) {
-		this.leader = newLeader;
+	public void setPositions(JSONArray newPositions) {
+		this.positions = newPositions;
 	}
 	
-	public User getLeader() {
-		return this.leader;
+	public JSONArray getPositions() {
+		return this.positions;
+	}
+
+	public void setPositionsInitialized(boolean value) {
+		this.positionsInitialized = value;
+	}
+	
+	public boolean isInitialized() {
+		return this.positionsInitialized;
 	}
 }
 
- 

@@ -10,6 +10,7 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +43,11 @@ public class MondoWebsocketClient {
 				this.application.getCollaborationPage().setModel(
 					message.getJSONObject("model")
 				);
-	    		System.out.println("Model length: " + message.length());
+    		} else if(operation.equals("updatePositions")) {
+        		System.out.println("updatePositions...");
+				this.application.getCollaborationPage().setPositions(
+					message.getJSONArray("positions")
+				);
     		} else if(operation.equals("updateSessions")) {
         		System.out.println("updateSessions...");
 				this.application.getSessionSelectionPage().setSessionsList(
@@ -91,6 +96,22 @@ public class MondoWebsocketClient {
 		}
 	}
 
+	public void savePositions(String sessionId, JSONArray newPositions) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "savePositions");
+			request.put("positions", newPositions);
+			request.put("sessionId", sessionId);
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void loadOpenSessions() {
 		try {
 			JSONObject request = new JSONObject();

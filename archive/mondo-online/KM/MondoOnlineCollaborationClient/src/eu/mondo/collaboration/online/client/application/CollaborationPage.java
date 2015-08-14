@@ -89,7 +89,7 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		this.loadModel();
+		//this.loadModel();
 		
 	}
 
@@ -105,10 +105,21 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 		this.cc.setModel(jsonModel);
 	}
 
+	public void setPositions(JSONArray jsonPositions) {
+		this.cc.setPositions(jsonPositions);
+	}
+	
 	public void publishModel(JSONObject newModel) {
 		this.application.getWebsocketClient().publishModel(
 			this.sessionId,
 			newModel
+		);
+	}
+	
+	public void publishPositions(JSONArray newPositions) {
+		this.application.getWebsocketClient().savePositions(
+			this.sessionId,
+			newPositions
 		);
 	}
 	
@@ -122,6 +133,7 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 
 	private void leaveSession() {
 		this.removeComponent(this.titleLabel);
+		this.cc.setModelDisplayIsInitialized(false);
 		this.navigator.navigateTo(SessionSelectionPage.NAME);
 	}
 	
