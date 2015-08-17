@@ -21,7 +21,7 @@ public class CollaborationSession {
 	private JSONObject model;
 	
 	// node positions on the modelign gui
-	private JSONArray positions;
+	private JSONObject positions;
 	
 	private List<User> users;
 	
@@ -30,7 +30,7 @@ public class CollaborationSession {
 		this.title = title;
 		this.users = new ArrayList<User>();
 		this.state = state;
-		this.positions = new JSONArray();
+		this.positions = new JSONObject();
 	}
 	
 	public String getId() {
@@ -101,11 +101,11 @@ public class CollaborationSession {
 		this.model = newModel;
 	}
 	
-	public void setPositions(JSONArray newPositions) {
+	public void setPositions(JSONObject newPositions) {
 		this.positions = newPositions;
 	}
 	
-	public JSONArray getPositions() {
+	public JSONObject getPositions() {
 		return this.positions;
 	}
 

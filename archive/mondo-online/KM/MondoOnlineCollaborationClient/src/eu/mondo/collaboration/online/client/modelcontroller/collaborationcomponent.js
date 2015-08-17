@@ -64,7 +64,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		
 		// save position of nodes
 		var positions = modelDisplay.getPositions();
-		cc.publishNodePositions(positions);
+		cc.publishPositions(positions);
 	}
 	
 	this.setModel = function(model, positions) {
@@ -104,7 +104,9 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			        	type: "",
 			        	// id: newData.id,
 			        	label: "New element",
-			        	group: ""		        	
+			        	group: "",
+			        	x: newData.x,
+			        	y: newData.y
 			        }; 
 			        editDialog(newNode, true);
 			    },
@@ -128,8 +130,36 @@ collaborationLibrary.CollaborationComponent = function(component) {
 
 		var container = document.getElementById('workspace');
 		modelDisplay = new vis.Network(container, data, options);
-		console.log(positions);
+		modelDisplay.on("dragEnd", function (params) {
+			params.event = "[original event]";
+	        if(params.nodes.length > 0) {
+	        	var positionData = {
+	    			node: params.nodes.pop(),
+	    			newPosition: params.pointer.canvas
+	    		}
+	        	cc.alterNodePosition(positionData);
+	        } /*else {
+	        	viewPosition = modelDisplay.getViewPosition();
+	        	if(!viewScale) {
+	        		viewScale = modelDisplay.getScale();
+	        	}
+	        }*/
+	    });
 		applyPositions(positions);
+		/*
+		modelDisplay.on("zoom", function (params) {
+        	viewScale = modelDisplay.getScale();
+        	if(!viewPosition) {
+        		viewPosition = modelDisplay.getViewPosition();
+        	}
+	    });*/
+		
+/*	    if(typeof viewScale !== 'udnefined' && typeof viewPosition !== 'udnefined') {
+			modelDisplay.moveTo({
+				position: viewPosition,
+				scale: viewScale
+			});
+		}*/
 	}
 	var getElement = function(id, stack) {
 		for(var i in stack) {
@@ -151,7 +181,10 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
 		var types = getElementTypes();
-		var excludedProperties = ["elementType", "shape", "radius", "style", "level"];
+		var excludedProperties = ["elementType", "shape", "size", "style", "level"];
+		if(!isNewElement) {
+			excludedProperties.push("parentName");
+		} 
 		for(var property in element) {
 		    if(element.hasOwnProperty(property) && !isArray(element[property]) &&
     		element[property] != null && excludedProperties.indexOf(property) == -1) {
@@ -176,15 +209,18 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		    		input =	$('<input/>')
         				.attr('id', property)
         				.attr('value', propValue);
+		    			
 		    	}
 		    	if(input != null) {
 			    	inputCell.append(input);
-			    	propertiesTable.append(
-			        	$('<tr/>').append(
-			        		$('<td class="label"/>').text(propLabel),
-			        		inputCell
-			        	)
-			        );
+			    	var newRow = $('<tr/>').append(
+				        $('<td class="label"/>').text(propLabel),
+				        inputCell
+				    );
+			    	if(property == 'x' || property == 'y') {
+			    		newRow.hide();
+			    	}
+			    	propertiesTable.append(newRow);
 		    	}
 	    	}
 		}
@@ -230,7 +266,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		    if(root.hasOwnProperty(property) && isArray(root[property])) {
 		    	var children = root[property];
 		    	for(var i in children) {
-		    		var subModel = extractModel(children[i], property, currentLevel, depthTracker);
+		    		var subModel = extractModel(children[i], property, currentLevel, depthTracker, "");
 		    		model = mergeModels(model, subModel);
 		    	}
 		    	currentLevel = depthTracker.depth + 1;
@@ -240,13 +276,14 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	}
 	
 	// returns the node and its subtree
-	var extractModel = function(node, type, currentLevel, depthTracker) {
+	var extractModel = function(node, type, currentLevel, depthTracker, parentName) {
 		depthTracker.depth++;
 		currentLevel++;
 		var maxDepth = currentLevel; 
 		node.id = node.name;
 		node.label = node.name;
 		node.level = currentLevel;
+		node.parentName = parentName;
 		addNodeStyle(node, type);
 		var model = {
 			nodes: [node],
@@ -265,7 +302,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 						connectionType: "containment"
 					}
 					model.edges.push(newEdge);
-					var subModel = extractModel(setOfChildren[i], property, currentLevel, depthTracker);
+					var subModel = extractModel(setOfChildren[i], property, currentLevel, depthTracker, node.label);
 					model = mergeModels(model, subModel);
 					if(depthTracker.depth > maxDepth) {
 						maxDepth = depthTracker.depth;
@@ -292,15 +329,13 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	}
 	
 	var applyPositions = function(positions) {
-		for(var i in positions) {
-			if(positions[i]) {
-				for(var nodeId in positions[i]) {
-					console.log(positions[i][nodeId]);
-					modelDisplay.moveNode(nodeId, positions[i][nodeId].x, positions[i][nodeId].y);
-				}
+		if(positions) {
+			for(var nodeId in positions) {
+				console.log(positions[nodeId]);
+				modelDisplay.moveNode(nodeId, positions[nodeId].x, positions[nodeId].y);
 			}
 		}
-		alert("check pos");
+//		alert("check pos");
 	}
 };
 

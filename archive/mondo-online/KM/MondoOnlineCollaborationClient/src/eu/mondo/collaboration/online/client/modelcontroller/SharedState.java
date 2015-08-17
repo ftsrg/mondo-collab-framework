@@ -1,6 +1,5 @@
 package eu.mondo.collaboration.online.client.modelcontroller;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.vaadin.shared.ui.JavaScriptComponentState;
@@ -8,11 +7,13 @@ import com.vaadin.shared.ui.JavaScriptComponentState;
 public class SharedState extends JavaScriptComponentState {
     public String value;
     
+    public boolean modelTransferIsComplete = false;
+    
     public boolean modelDisplayIsInitialized = false;
     
     public JSONObject model;
     
-    public JSONArray positions;
+    public JSONObject positions = new JSONObject();
     
 	public void setValue(String value) {
 		this.value = value;
@@ -23,7 +24,7 @@ public class SharedState extends JavaScriptComponentState {
 		this.model = newModel;
 	}
 	
-	public void setPositions(JSONArray newPositions) {
+	public void setPositions(JSONObject newPositions) {
 		System.out.println("shared state setpositions - " + newPositions.toString());
 		this.positions = newPositions;
 	}

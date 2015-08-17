@@ -5,19 +5,19 @@ var addNodeStyle = function(node, type) {
 	} else if(type == "wtctrls") {
 		node.type = "wtctrls";
 		node.shape = "dot";
-		node.radius = 10;
+		node.size = 10;
 	} else if(type == "inputs") {
 		node.type = "inputs";
 		node.shape = "triangleDown";
-		node.radius = 10;
+		node.size = 10;
 	} else if(type == "outputs") {
 		node.type = "outputs";
 		node.shape = "triangle";
-		node.radius = 10;
+		node.size = 10;
 	} else if(type == "params") {
 		node.type = "params";
 		node.shape = "square";
-		node.radius = 10;
+		node.size = 5;
 	} /*else if(type == "faults") {
 		node.type = "Fault";
 		node.shape = "star";

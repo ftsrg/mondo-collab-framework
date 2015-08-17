@@ -105,8 +105,12 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 		this.cc.setModel(jsonModel);
 	}
 
-	public void setPositions(JSONArray jsonPositions) {
-		this.cc.setPositions(jsonPositions);
+	public void setPositions(JSONObject positions) {
+		this.cc.setPositions(positions);
+	}
+	
+	public void alterNodePosition(JSONObject nodeData) {
+		this.cc.alterNodePosition(nodeData, false);
 	}
 	
 	public void publishModel(JSONObject newModel) {
@@ -116,10 +120,17 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 		);
 	}
 	
-	public void publishPositions(JSONArray newPositions) {
-		this.application.getWebsocketClient().savePositions(
+	public void publishPositions(JSONObject newPositions) {
+		this.application.getWebsocketClient().publishPositions(
 			this.sessionId,
 			newPositions
+		);
+	}
+	
+	public void publishNodePosition(JSONObject nodeData) {
+		this.application.getWebsocketClient().publishNodePosition(
+			nodeData, 
+			this.sessionId
 		);
 	}
 	
@@ -134,6 +145,8 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 	private void leaveSession() {
 		this.removeComponent(this.titleLabel);
 		this.cc.setModelDisplayIsInitialized(false);
+		this.cc.setModelTransferComplete(false);
+		this.cc.clearUndoRedoStacks();
 		this.navigator.navigateTo(SessionSelectionPage.NAME);
 	}
 	
@@ -167,4 +180,10 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 	public boolean isInitialized() {
 		return this.initialized;
 	}
+
+	public void setModelTransferComplete(boolean value) {
+		this.cc.setModelTransferComplete(value);
+	}
+
+	
 }
