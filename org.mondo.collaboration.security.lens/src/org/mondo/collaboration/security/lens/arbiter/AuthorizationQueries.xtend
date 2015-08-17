@@ -13,10 +13,10 @@ package org.mondo.collaboration.security.lens.arbiter
 
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
-import com.google.common.collect.Maps
 import java.util.Collections
 import java.util.List
 import java.util.Map
+import java.util.Set
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.incquery.runtime.api.IQuerySpecification
 import org.eclipse.incquery.runtime.matchers.psystem.IExpressionEvaluator
@@ -24,7 +24,6 @@ import org.eclipse.incquery.runtime.matchers.psystem.IValueProvider
 import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
 import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.ConstantValue
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.xtend.lib.annotations.Data
 import org.mondo.collaboration.security.lens.arbiter.Asset.AttributeAsset
 import org.mondo.collaboration.security.lens.arbiter.Asset.ObjectAsset
 import org.mondo.collaboration.security.lens.arbiter.Asset.ReferenceAsset
@@ -36,7 +35,6 @@ import org.mondo.collaboration.security.lens.relational.QueryTemplate
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
-import java.util.Set
 
 /**
  * Queries for security checks.
@@ -65,9 +63,9 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 		
 		
 	private def Pair<Class<? extends Asset>, Map<OperationKind, IQuerySpecification>> prepareExplicitlyDeniedHelperPatterns(Class<? extends Asset> assetClass, String... assetVariables) {
-		assetClass -> Collections::unmodifiableMap(Maps::asMap(ImmutableSet::copyOf(OperationKind.values)) [
-			prepareExplicitRuleDecisionHelperPattern(assetClass, RuleType::DENY, assetVariables)
-		])
+		assetClass -> Collections::unmodifiableMap(newHashMap(OperationKind.values.map[ op |
+			op -> op.prepareExplicitRuleDecisionHelperPattern(assetClass, RuleType::DENY, assetVariables)
+		]))
 	}
 	
 	private def IQuerySpecification prepareExplicitRuleDecisionHelperPattern(OperationKind op, Class<? extends Asset> assetClass, RuleType judgement, String... assetVariables) {
