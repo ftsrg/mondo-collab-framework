@@ -2,11 +2,7 @@
  
  - clear "unrooted" set at the end of offline session
  
- - rethink permission implications: first_applicable: default is allow
  - rethink permission implications: deny/obfuscate R -> deny W, allow W -> allow R ? ---> validator?
- - rethink permission implications: read edge needs read src/trg, write edge needs write src/read trg (write trg if containment or has an eOpposite), read/write attribute needs read/write src?
- - rethink permission implications: unrooted elements are discarded
- - rethink permission implications: eObject unreadable --> contained elements unreadable
 
  - add obfuscation
  - reuse resources.mapped for resourceRoot rule?
@@ -42,6 +38,10 @@
  - fix container edge change
  - rethink case where malicious user changes object class (while keeping the ID)
  - reuse per-asset permission queries?
+ - rethink permission implications: first_applicable: default is allow
+ - rethink permission implications: read edge needs read src/trg, write edge needs write src/read trg (write trg if containment or has an eOpposite), read/write attribute needs read/write src?
+ - rethink permission implications: unrooted elements are discarded
+ - rethink permission implications: eObject unreadable --> contained elements unreadable
 
   
  APPENDIX 1 

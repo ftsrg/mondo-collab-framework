@@ -63,6 +63,7 @@ public class RuleGeneratorExtensions {
 		val allActions = Iterables::concat(actions)
 		val job = Jobs::newStatelessJob(IncQueryActivationStateEnum::APPEARED) [ match |
 			// TODO logger
+			System::out.println
 			System::out.println('''*** executing «ruleOp.rule.name» on «match»''')
 			val environment = transformation.initRHS(match)
 			allActions.forEach[apply(environment)]

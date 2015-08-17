@@ -49,6 +49,9 @@ public class EObjectCorrespondence {
 	 * @return the unique ID provider factory registered via the extension point org.mondo.collaboration.security.lens.uniqueIDSchemeFactory
 	 */
 	public static UniqueIDSchemeFactory getRegisteredIDProviderFactory() throws CoreException {
+		if (! Platform.isRunning()) {
+			throw new IllegalStateException("Platform not started yet.");
+		}
 		IConfigurationElement[] configurationElements = 
 				Platform.getExtensionRegistry().getConfigurationElementsFor("org.mondo.collaboration.security.lens.uniqueIDSchemeFactory");
 		for (IConfigurationElement contribution : configurationElements) {
