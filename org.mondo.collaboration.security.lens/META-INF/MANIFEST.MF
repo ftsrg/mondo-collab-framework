@@ -12,7 +12,8 @@ Require-Bundle: org.mondo.collaboration.security.macl.xtext;bundle-version="1.0.
  org.eclipse.xtend.lib;bundle-version="2.8.3",
  org.eclipse.incquery.patternlanguage.emf,
  org.mondo.collaboration.security.macl.xtext.rule,
- org.eclipse.core.runtime;bundle-version="3.11.0"
+ org.eclipse.core.runtime;bundle-version="3.11.0",
+ org.eclipse.viatra.modelobfuscator.runtime;bundle-version="0.7.0"
 Import-Package: org.apache.log4j;version="1.0.0"
 Export-Package: org.mondo.collaboration.security.lens.arbiter,
  org.mondo.collaboration.security.lens.context,

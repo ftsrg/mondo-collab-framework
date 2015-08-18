@@ -44,6 +44,13 @@ import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
+import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator
+import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
+import org.eclipse.incquery.runtime.matchers.psystem.PConstraint
+import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.PatternMatchCounter
+import org.eclipse.incquery.runtime.matchers.psystem.IExpressionEvaluator
+import org.eclipse.incquery.runtime.matchers.psystem.IValueProvider
+import org.eclipse.emf.ecore.EAttribute
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -59,12 +66,15 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	@Accessors(PUBLIC_GETTER) User user
 	@Accessors(PUBLIC_GETTER) MondoLensScope scope
+	@Accessors(PUBLIC_GETTER) DataTypeObfuscator<String> stringObfuscator
+
 	@Accessors(PUBLIC_GETTER) AuthorizationQueries authorizationQueries
 	
-	new(MondoLensScope scope, User user) {
+	new(MondoLensScope scope, User user, DataTypeObfuscator<String> stringObfuscator) {
 		super(scope.manipulables, scope.queriables)
 		this.user = user
 		this.scope = scope
+		this.stringObfuscator = stringObfuscator
 		
 		this.authorizationQueries = scope.arbiter.instantiateAuthorizationQuerySpecificationsForUser(user)
 		
@@ -207,9 +217,59 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
 			)
-			mappingCondition += QueryTemplate::fromConstrainer(#[varGoldValue, varFrontValue]) [ body | 
-				// TODO add obfuscation, move to security check
+			mappingCondition += QueryTemplate::fromConstrainer(#[]) [ body | 
+				// TODO add obfuscation
 				new Equality(body, body.getOrCreateVariableByName(varGoldValue), body.getOrCreateVariableByName(varFrontValue))
+				
+//				new PatternMatchCounter(body, 
+//					new FlatTuple(body.getOrCreateVariableByName(varGoldEObject), body.getOrCreateVariableByName(varEAttribute)), 
+//					authorizationQueries.effectivelyObfuscatedAttribute, 
+//					body.getOrCreateVariableByName(varIsObfuscated)
+//				) 
+//				new ExpressionEvaluation(body, new IExpressionEvaluator(){
+//					override evaluateExpression(IValueProvider provider) throws Exception {
+//						val feature = provider.getValue(varEAttribute)
+//						val isObfuscated = provider.getValue(varIsObfuscated)
+//						val goldValue = provider.getValue(varGoldValue)
+//						
+//						if (feature instanceof EAttribute && isObfuscated instanceof Number) {
+//							if (1 == (isObfuscated as Number).intValue && goldValue instanceof String)
+//								return stringObfuscator.obfuscateData(goldValue as String)
+//							else 
+//								return goldValue
+//						} else {
+//							return null
+//						}
+//					}
+//					override getInputParameterNames() {
+//						#[varEAttribute, varIsObfuscated, varGoldValue]
+//					}
+//					override getShortDescription() {
+//						'''Obfuscates gold value into front value'''
+//					}
+//				}, body.getOrCreateVariableByName(varFrontValue))
+//				new ExpressionEvaluation(body, new IExpressionEvaluator(){
+//					override evaluateExpression(IValueProvider provider) throws Exception {
+//						val feature = provider.getValue(varEAttribute)
+//						val isObfuscated = provider.getValue(varIsObfuscated)
+//						val frontValue = provider.getValue(varFrontValue)
+//						
+//						if (feature instanceof EAttribute && isObfuscated instanceof Number) {
+//							if (1 == (isObfuscated as Number).intValue && frontValue instanceof String)
+//								return stringObfuscator.restoreData(frontValue as String)
+//							else 
+//								return frontValue
+//						} else {
+//							return null
+//						}
+//					}
+//					override getInputParameterNames() {
+//						#[varEAttribute, varIsObfuscated, varFrontValue]
+//					}
+//					override getShortDescription() {
+//						'''Deobfuscates front value into gold value'''
+//					}
+//				}, body.getOrCreateVariableByName(varGoldValue))
 			]
 			front += new ManipulableTemplate(
 				EObjectAttributeKey.FRONT, #[varFrontEObject, varEAttribute, varFrontValue]
@@ -278,6 +338,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	static val varEAttribute = "eAttribute"
 	static val varGoldValue = "goldValue"
 	static val varFrontValue = "frontValue"
+	static val varIsObfuscated = "isObfuscated"
 	
 		
 }

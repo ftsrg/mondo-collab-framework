@@ -101,7 +101,7 @@ public class RuleGeneratorExtensions {
 		})		
 	}
 	public def gatherParameters(Iterable<? extends QueryTemplate>... disjunctiveTemplates) {
-		val setOfUniqueVariablesPerBody = disjunctiveTemplates.map[bodyTemplates | ImmutableSet::copyOf(Iterables::concat(bodyTemplates.map[variables])) as Set<String>]
+		val setOfUniqueVariablesPerBody = disjunctiveTemplates.map[bodyTemplates | ImmutableSet::copyOf(Iterables::concat(bodyTemplates.map[deducedVariables])) as Set<String>]
 		val commonVariables = setOfUniqueVariablesPerBody.reduce [ x, y | Sets::intersection(x,y)]
 		makePParameterList(commonVariables)
 	}

@@ -150,7 +150,7 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 		if (bobUser == null) 
 			throw new IllegalStateException("no bob found");
 		
-		RelationalLensXform lens = new RelationalLensXform(scope, bobUser);
+		RelationalLensXform lens = new RelationalLensXform(scope, bobUser, null);
 		return lens;
 	}
 
