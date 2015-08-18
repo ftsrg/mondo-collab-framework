@@ -143,7 +143,13 @@ public class CollaborationServerApplication {
 					this.sendPositions(sessionId, connection);
 				} 
 				this.sendModel(sessionId, connection);
-			} else if(operation.equals("publishModel")) {
+			} /*else if(operation.equals("modifyModel")) {
+				System.out.println("modifyModel...");
+				String sessionId = request.getString("sessionId");
+				if(this.setModel(sessionId, new JSONObject(newModel))) {
+					this.publishModification(sessionId, connection, newModel);
+				}
+			} */else if(operation.equals("publishModel")) {
 				System.out.println("publishModel...");
 				String sessionId = request.getString("sessionId");
 				String newModel = request.getString("model");

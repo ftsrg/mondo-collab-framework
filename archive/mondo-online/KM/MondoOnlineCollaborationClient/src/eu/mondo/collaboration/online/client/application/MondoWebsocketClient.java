@@ -232,8 +232,20 @@ public class MondoWebsocketClient {
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+	}
+
+	public void publishModification(String sessionId, JSONObject data) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "modifyModel");
+			request.put("sessionId", sessionId);
+			request.put("data", data);
+			System.out.println("Sending message to server: " + request.toString());
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

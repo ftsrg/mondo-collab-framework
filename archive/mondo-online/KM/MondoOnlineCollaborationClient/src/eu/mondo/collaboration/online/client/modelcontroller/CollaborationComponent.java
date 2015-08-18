@@ -189,20 +189,6 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		return null;
 	}
 	
-	private JSONObject updateNode(JSONObject original, JSONObject edited) {
-		String[] props = JSONObject.getNames(edited);
-		try {
-			for(String prop: props) {
-				original.put(prop, edited.get(prop));
-			} 
-			return original;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	private JSONObject tryToDeleteInSubtree(JSONObject node, JSONObject nodeToDelete) {
 		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
 		for(String identifier: subtreeIdentifiers) {
@@ -248,6 +234,20 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		return newArray;
 	}
 	
+	private JSONObject updateNode(JSONObject original, JSONObject edited) {
+		String[] props = JSONObject.getNames(edited);
+		try {
+			for(String prop: props) {
+				original.put(prop, edited.get(prop));
+			} 
+			return original;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public CollaborationComponent(CollaborationPage page) {
 		// initModelController(this);
 		this.ownerPage = page;
@@ -256,18 +256,9 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			@Override
 			public void call(JSONArray arguments) throws JSONException {
 				JSONObject element = arguments.getJSONObject(0);
-				System.out.println("Adding element - " + element.toString());
-				JSONObject newPosition = new JSONObject();
-				newPosition.put("x", element.get("x"));
-				newPosition.put("y", element.get("y"));
-				JSONObject nodePositionData = new JSONObject();
-				nodePositionData.put("node", element.get("name"));
-				nodePositionData.put("newPosition", newPosition);
-				element.remove("x");
-				element.remove("y");
 				addElement(element, true);
-				alterNodePosition(nodePositionData, false);
-				publishNodePosition(nodePositionData);
+				element.put("type", "add");
+				publishModification(element);
 			}
 		});
 		
@@ -275,9 +266,9 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			@Override
 			public void call(JSONArray arguments) throws JSONException {
 				JSONObject elements = arguments.getJSONObject(0);
-				JSONObject original = elements.getJSONObject("original");
-				JSONObject edited = elements.getJSONObject("edited");
-				editElement(original, edited, true);
+				editElement(elements, true);
+				elements.put("type", "edit");
+				publishModification(elements);
 			}
 		});
 		
@@ -288,7 +279,8 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				JSONObject data = arguments.getJSONObject(0);
 				JSONObject nodeToDelete = data.getJSONObject("node");
 				deleteElement(nodeToDelete, true);
-				
+				nodeToDelete.put("type", "delete");
+				publishModification(nodeToDelete);
 			}
 		});
 		
@@ -316,16 +308,26 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			public void call(JSONArray arguments) throws JSONException {
 				JSONObject nodeData = arguments.getJSONObject(0);
 				alterNodePosition(nodeData, true);
-				publishNodePosition(nodeData);
+				nodeData.put("type", "moveNode");
+				publishModification(nodeData);
 			}
 		});
 	}	
 	
-	private void publishNodePosition(JSONObject nodeData) {
-		this.ownerPage.publishNodePosition(nodeData);
+	private void publishModification(JSONObject data) {
+		this.ownerPage.publishModification(data);
 	}
-
+	
 	public void addElement(JSONObject element, boolean saveOperation) throws JSONException {
+		System.out.println("Adding element - " + element.toString());
+		JSONObject newPosition = new JSONObject();
+		newPosition.put("x", element.get("x"));
+		newPosition.put("y", element.get("y"));
+		JSONObject nodePositionData = new JSONObject();
+		nodePositionData.put("node", element.get("name"));
+		nodePositionData.put("newPosition", newPosition);
+		element.remove("x");
+		element.remove("y");
 		JSONObject newModel = getState().model;
 		System.out.println("add: " + element.toString());
 		System.out.println("Model: " + newModel);
@@ -342,18 +344,23 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			op.setNewValue(element);
 			op.setOperation("addElement");
 			undoStack.push(op);
-//			System.out.println("Print undo stack");
 			printUndoStack();
 		}
 		
 		getState().setModel(newModel);
-		publishModel(newModel);
+		alterNodePosition(nodePositionData, false);
+		// publishModel(newModel);
 	}
 	
-	public void editElement(JSONObject original, JSONObject edited, boolean saveOperation) throws JSONException {
+	public void editElement(JSONObject elements, boolean saveOperation) throws JSONException {
+		JSONObject original = elements.getJSONObject("original");
+		JSONObject edited = elements.getJSONObject("edited");
 		JSONObject newModel = getState().model;
 		newModel = tryToUpdateSubtree(newModel, original, edited);
-		
+		// alter set of positions as well
+		if(!original.getString("id").equals(edited.getString("id"))) {
+			renamePositionId(original, edited);
+		}
 		if(saveOperation) {
 			ExecutedOperation op = new ExecutedOperation();
 			op.setOldValue(original);
@@ -363,9 +370,20 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			printUndoStack();
 		}
 		getState().setModel(newModel);
-		publishModel(newModel);
+		// publishModel(newModel);
 	}
 	
+	private void renamePositionId(JSONObject original, JSONObject edited) {
+		try {
+			if(getState().positions.has(original.getString("id"))){
+				getState().positions.put(original.getString("id"), edited.getString("id"));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void deleteElement(JSONObject nodeToDelete, boolean saveOperation) throws JSONException {
 		// TODO validate action
 		JSONObject newModel = getState().model;
@@ -380,7 +398,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		}
 		
 		getState().setModel(newModel);
-		publishModel(newModel);
+		// publishModel(newModel);
 	}
 	
 	public void alterNodePosition(JSONObject nodeData, boolean saveOperation) {
@@ -431,14 +449,17 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 					break;
 				case "editElement":
 					// reverse
-					editElement(operationToUndo.getNewValue(), operationToUndo.getOldValue(), false);
+					JSONObject elements = new JSONObject();
+					elements.put("original", operationToUndo.getNewValue());
+					elements.put("edited", operationToUndo.getOldValue());
+					editElement(elements, false);
 					break;
 				case "deleteElement":
 					addElement(operationToUndo.getOldValue(), false);
 					break;
 				case "moveElement":
 					alterNodePosition(operationToUndo.getOldValue(), false);
-					publishNodePosition(operationToUndo.getOldValue());
+					publishModification(operationToUndo.getOldValue());
 					break;
 			}
 			System.out.println("Undoing: " + " op: " + operationToUndo.getOperation() + " | oldVal: " + operationToUndo.getOldValue() + 
@@ -462,14 +483,17 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 					break;
 				case "editElement":
 					// reverse
-					editElement(operationToRedo.getOldValue(), operationToRedo.getNewValue(), false);
+					JSONObject elements = new JSONObject();
+					elements.put("original", operationToRedo.getOldValue());
+					elements.put("edited", operationToRedo.getNewValue());
+					editElement(elements, false);
 					break;
 				case "deleteElement":
 					deleteElement(operationToRedo.getOldValue(), false);
 					break;
 				case "moveElement":
 					alterNodePosition(operationToRedo.getNewValue(), false);
-					publishNodePosition(operationToRedo.getNewValue());
+					publishModification(operationToRedo.getNewValue());
 					break;
 			}
 		} catch (JSONException e) {

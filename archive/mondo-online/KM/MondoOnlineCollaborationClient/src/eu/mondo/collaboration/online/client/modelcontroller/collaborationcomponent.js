@@ -76,7 +76,6 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		*/
 		cc.model = model;
 		data = extractRoot(model);
-		
 		var options = {
 	        physics: {
 	        	barnesHut: {
@@ -113,6 +112,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		        editNode: function(nodeData, callback) {
 		        	var node = getElement(nodeData.id, data.nodes);
 		        	editDialog(node, false);
+		        	callback(null);
 		        },
 		        editEdge: function(edgeData, callback) {
 		        	// Coming soon... just like winter

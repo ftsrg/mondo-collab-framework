@@ -16,8 +16,8 @@ var addNodeStyle = function(node, type) {
 		node.size = 10;
 	} else if(type == "params") {
 		node.type = "params";
-		node.shape = "square";
-		node.size = 5;
+		node.shape = "diamond";
+		node.size = 10;
 	} /*else if(type == "faults") {
 		node.type = "Fault";
 		node.shape = "star";

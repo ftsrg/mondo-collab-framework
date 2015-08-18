@@ -185,5 +185,10 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 		this.cc.setModelTransferComplete(value);
 	}
 
-	
+	public void publishModification(JSONObject data) {
+		this.application.getWebsocketClient().publishModification(
+			this.sessionId,
+			data
+		);
+	}
 }
