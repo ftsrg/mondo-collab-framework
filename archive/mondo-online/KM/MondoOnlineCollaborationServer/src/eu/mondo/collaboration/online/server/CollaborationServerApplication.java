@@ -136,6 +136,20 @@ public class CollaborationServerApplication {
 					this.publishUsers(sessionId);
 					this.notifyClient(connection);
 				}
+			} else if(operation.equals("leaveSession")) {
+				System.out.println("leaveSession...");
+				JSONObject user = request.getJSONObject("user");
+				User userToRemove = new User(
+					user.getString("name"),
+					user.getString("password")
+				);
+				String sessionId = request.getString("sessionId");
+				if(this.removeUserFromSession(userToRemove, sessionId)) {
+					List<Session> conns = sessionsConnections.get(sessionId);
+					conns.remove(connection);
+					sessionsConnections.put(sessionId, conns);
+					this.publishUsers(sessionId);
+				}
 			} else if(operation.equals("getModel")) {
 				System.out.println("getModel...");
 				String sessionId = request.getString("sessionId");
@@ -143,13 +157,16 @@ public class CollaborationServerApplication {
 					this.sendPositions(sessionId, connection);
 				} 
 				this.sendModel(sessionId, connection);
-			} /*else if(operation.equals("modifyModel")) {
+			} else if(operation.equals("modifyModel")) {
 				System.out.println("modifyModel...");
-				String sessionId = request.getString("sessionId");
-				if(this.setModel(sessionId, new JSONObject(newModel))) {
-					this.publishModification(sessionId, connection, newModel);
+				if(this.modifyModel(request)) {
+					this.publishModification(
+						request.getString("sessionId"), 
+						connection,
+						request.getJSONObject("data")
+					);
 				}
-			} */else if(operation.equals("publishModel")) {
+			} else if(operation.equals("publishModel")) {
 				System.out.println("publishModel...");
 				String sessionId = request.getString("sessionId");
 				String newModel = request.getString("model");
@@ -174,7 +191,56 @@ public class CollaborationServerApplication {
 			e1.printStackTrace();
 		}   
 	}
-	  
+
+
+	private void publishModification(String sessionId, Session source, JSONObject modificationData) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "modifyModel");
+			request.put("data", modificationData);
+			List<Session> conns = sessionsConnections.get(sessionId);
+			synchronized(conns) {
+				for(Session connection : conns) {
+					if(!source.getId().equals(connection.getId())) {
+						System.out.println("Sending modification data to: " + connection.getId());
+						this.sendRequestInParts(request, connection);
+					}
+				}
+		    } 
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean modifyModel(JSONObject request) {
+		try {
+			String sessionId = request.getString("sessionId");
+			for(CollaborationSession s: sessions) {
+				if(s.getId().equals(sessionId)) {
+					JSONObject results = ModelModifier.modifyModel(
+						s.getModel(), 
+						s.getPositions(), 
+						request.getJSONObject("data")
+					); 
+					if(results != null) {
+						Object newModel = results.get("model");
+						Object newPositions = results.get("positions");
+						if(!newModel.equals("none")) {
+							s.setModel((JSONObject) newModel);
+						}
+						if(!newPositions.equals("none")) {
+							s.setPositions((JSONObject) newPositions);
+						}
+					}
+					return true;
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	private void notifyClient(Session connection) {
 		try {
 			JSONObject request = new JSONObject();
@@ -283,12 +349,27 @@ public class CollaborationServerApplication {
 
 	private boolean addUserToSession(User newUser, String sessionId) {
 		for(CollaborationSession s: sessions) {
-			s.addUser(newUser);
-			return true;
+			if(s.getId().equals(sessionId)) {
+				s.addUser(newUser);
+				return true;
+			}
 		}
 		return false;
 	}
-
+	  
+	private boolean removeUserFromSession(User userToRemove, String sessionId) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				System.out.println("removing user - " + userToRemove.getUserName());
+				System.out.println(sessions.get(sessions.indexOf(s)).getUsers().size());
+				sessions.get(sessions.indexOf(s)).removeUser(userToRemove);
+				System.out.println(sessions.get(sessions.indexOf(s)).getUsers().size());
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private void publishSessions() {
 		try {
 			JSONObject request = new JSONObject();
@@ -432,7 +513,7 @@ public class CollaborationServerApplication {
 				}
 			}
 			System.out.println("Send positions to: " + connection.getId());
-			
+			System.out.println(positions.toString());
 			JSONObject request = new JSONObject();
 			request.put("operation", "updatePositions");
 			request.put("positions", positions);

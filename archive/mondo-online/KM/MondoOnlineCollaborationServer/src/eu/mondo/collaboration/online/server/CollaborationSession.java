@@ -50,11 +50,10 @@ public class CollaborationSession {
 	}
 	
 	public void removeUser(User userToRemove) {
-		// TODO is users.remove(userToRemove) enough?
 		for(User u: this.users) {
-			if(u.getUserId() == userToRemove.getUserId()) {
+			if(u.equals(userToRemove)) {
 				this.users.remove(u);
-				break;
+				break;	
 			}
 		}
 	}

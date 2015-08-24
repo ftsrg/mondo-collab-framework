@@ -9,8 +9,35 @@ import org.json.JSONObject;
 
 public class ModelModifier {
 
-	public static void addElement(JSONObject element, JSONObject model, JSONObject positions) throws JSONException {
-		System.out.println("Adding element - " + element.toString());
+	public static JSONObject modifyModel(JSONObject model, JSONObject positions, JSONObject modificationData) {
+		JSONObject results = null; 
+		try {
+			String type = modificationData.getString("type");
+			System.out.println("Executing modification on server: " + type);
+			switch(type) {
+				case "add":
+					results = addNode(modificationData, model, positions);
+					break;
+				case "edit":
+					results = editNode(modificationData, model, positions);
+					break;
+				case "delete":
+					results = deleteNode(modificationData, model);
+					break;
+				case "move":
+					results = moveNode(modificationData, positions);
+					break;
+				default:
+					System.out.println("Unknown modification type: " + type);
+					break;	
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return results;
+	}
+	
+	private static JSONObject addNode(JSONObject element, JSONObject model, JSONObject positions) throws JSONException {
 		JSONObject newPosition = new JSONObject();
 		newPosition.put("x", element.get("x"));
 		newPosition.put("y", element.get("y"));
@@ -20,8 +47,6 @@ public class ModelModifier {
 		element.remove("x");
 		element.remove("y");
 		JSONObject newModel = model;
-		System.out.println("add: " + element.toString());
-		System.out.println("Model: " + newModel);
 		// if root's child
 		if(!element.has("parentName") || element.getString("parentName").equals("")) {
 			// if no children with this type
@@ -29,15 +54,14 @@ public class ModelModifier {
 		} else {
 			newModel = tryToInsertIntoSubtree(newModel, element);
 		}
-		
-		JSONObject newPositions = alterNodePosition(nodePositionData, positions);
+		JSONObject newPositions = moveNode(nodePositionData, positions);
 		JSONObject result = new JSONObject();
 		result.put("model", newModel);
 		result.put("positions", newPositions);
-		// publishModel(newModel);
+		return result;
 	}
 	
-	public static JSONObject editElement(JSONObject elements, JSONObject model, JSONObject positions) throws JSONException {
+	private static JSONObject editNode(JSONObject elements, JSONObject model, JSONObject positions) throws JSONException {
 		JSONObject original = elements.getJSONObject("original");
 		JSONObject edited = elements.getJSONObject("edited");
 		JSONObject newModel = model;
@@ -51,8 +75,33 @@ public class ModelModifier {
 		}
 		JSONObject result = new JSONObject();
 		result.put("model", newModel);
-		result.put("positions", positions);
+		result.put("positions", newPositions);
 		return result;
+	}
+	
+	private static JSONObject deleteNode(JSONObject nodeToDelete, JSONObject model) throws JSONException {
+		// TODO validate action
+		JSONObject newModel = model;
+		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
+		JSONObject results = new JSONObject();
+		results.put("model", newModel);
+		results.put("positions", "none");
+		return results;
+	}
+	
+	private static JSONObject moveNode(JSONObject nodeData, JSONObject positions) {
+		JSONObject results = new JSONObject();
+		try {
+			positions.put(
+				nodeData.getString("node"), 
+				nodeData.getJSONObject("newPosition")
+			);
+			results.put("model", "none");
+			results.put("positions", positions);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return results;
 	}
 	
 	private static JSONObject renamePositionId(JSONObject original, JSONObject edited, JSONObject positions) {
@@ -65,29 +114,6 @@ public class ModelModifier {
 		}
 		return positions;
 	}
-
-	public static JSONObject deleteElement(JSONObject nodeToDelete, JSONObject model) throws JSONException {
-		// TODO validate action
-		JSONObject newModel = model;
-		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
-		return newModel;
-	}
-	
-	public static JSONObject alterNodePosition(JSONObject nodeData, JSONObject positions) {
-		System.out.println("alter node position - " + nodeData.toString());
-		System.out.println("node positions: " + positions.toString());
-		try {
-			positions.put(
-				nodeData.getString("node"), 
-				nodeData.getJSONObject("newPosition")
-			);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return positions;
-	}
-	
 
 	private static List<String> getSubtreeIdentifiers(JSONObject object) {
 		List<String> subtreeIdentifiers = new ArrayList<String>();
