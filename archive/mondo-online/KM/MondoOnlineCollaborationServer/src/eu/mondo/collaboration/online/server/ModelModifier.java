@@ -14,6 +14,7 @@ public class ModelModifier {
 		try {
 			String type = modificationData.getString("type");
 			System.out.println("Executing modification on server: " + type);
+			System.out.println("on " + modificationData.toString());
 			switch(type) {
 				case "add":
 					results = addNode(modificationData, model, positions);
@@ -48,7 +49,7 @@ public class ModelModifier {
 		element.remove("y");
 		JSONObject newModel = model;
 		// if root's child
-		if(!element.has("parentName") || element.getString("parentName").equals("")) {
+		if(!element.has("parentId") || element.getString("parentId").equals("")) {
 			// if no children with this type
 			newModel = connectElementToRootNode(newModel, element);
 		} else {
@@ -166,7 +167,7 @@ public class ModelModifier {
 				for(int i = 0; i < subtree.length(); i++) {
 					JSONObject currentNode = subtree.getJSONObject(i);
 					boolean success = false;
-					if(currentNode.getString("name").equals(element.getString("parentName"))) {
+					if(currentNode.getString("id").equals(element.getString("parentId"))) {
 						currentNode = connectElementToRootNode(currentNode, element);
 						node.getJSONArray(identifier).put(i, currentNode);
 						success = true;
@@ -196,7 +197,7 @@ public class ModelModifier {
 				for(int i = 0; i < subtree.length(); i++) {
 					JSONObject currentNode = subtree.getJSONObject(i);
 					boolean success = false;
-					if(currentNode.getString("name").equals(original.getString("name"))) {
+					if(currentNode.getString("id").equals(original.getString("id"))) {
 						currentNode = updateNode(currentNode, edited);
 						node.getJSONArray(identifier).put(i, currentNode);
 						success = true;
@@ -226,7 +227,7 @@ public class ModelModifier {
 				for(int i = 0; i < subtree.length(); i++) {
 					JSONObject currentNode = subtree.getJSONObject(i);
 					boolean success = false;
-					if(currentNode.getString("name").equals(nodeToDelete.getString("name"))) {
+					if(currentNode.getString("id").equals(nodeToDelete.getString("id"))) {
 						JSONArray newSubtree = removeItemFromJsonArray(subtree, i);
 						node.put(identifier, newSubtree);
 						success = true;

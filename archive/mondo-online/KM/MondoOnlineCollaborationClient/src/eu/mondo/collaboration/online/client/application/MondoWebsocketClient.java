@@ -46,6 +46,11 @@ public class MondoWebsocketClient {
 				this.application.getCollaborationPage().setModel(
 					message.getJSONObject("model")
 				);
+    		} else if(operation.equals("modifyModel")) {
+        		System.out.println("modifyModel...");
+				this.application.getCollaborationPage().modifyModel(
+					message.getJSONObject("data")
+				);
     		} else if(operation.equals("updatePositions")) {
         		System.out.println("updatePositions... - " + message.toString());
 				this.application.getCollaborationPage().setPositions(
@@ -53,7 +58,7 @@ public class MondoWebsocketClient {
 				);
     		} else if(operation.equals("updateNodePosition")) {
         		System.out.println("updateNodePosition...");
-				this.application.getCollaborationPage().alterNodePosition(
+				this.application.getCollaborationPage().moveNode(
 					message.getJSONObject("nodeData")
 				);
     		} else if(operation.equals("updateSessions")) {
@@ -120,7 +125,7 @@ public class MondoWebsocketClient {
 		}
 	}
 	
-	public void loadOpenSessions() {
+	public void loadAvailableSessions() {
 		try {
 			JSONObject request = new JSONObject();
 			request.put("operation", "getSessions");

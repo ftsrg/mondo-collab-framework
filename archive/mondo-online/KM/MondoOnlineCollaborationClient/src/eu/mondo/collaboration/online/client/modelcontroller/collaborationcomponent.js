@@ -98,7 +98,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 				addNode: function(newData, callback) {
 			        var newNode = {
 			        	elementType: 1,
-			        	parentName: "",
+			        	parentId: "",
 			        	name: "",
 			        	type: "",
 			        	// id: newData.id,
@@ -109,13 +109,17 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			        }; 
 			        editDialog(newNode, true);
 			    },
+			    addEdge: function(data, callback) {
+		        	console.log(data);
+		        	alert("EDGE YOLOOO")
+			    },
 		        editNode: function(nodeData, callback) {
 		        	var node = getElement(nodeData.id, data.nodes);
 		        	editDialog(node, false);
 		        	callback(null);
 		        },
 		        editEdge: function(edgeData, callback) {
-		        	// Coming soon... just like winter
+		        	// coming soon... just like winter
 		        },
 		        deleteNode: function(dataToDelete, callback) {
 		        	var nodeId = dataToDelete.nodes.shift();
@@ -137,7 +141,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	    			node: params.nodes.pop(),
 	    			newPosition: params.pointer.canvas
 	    		}
-	        	cc.alterNodePosition(positionData);
+	        	cc.moveNode(positionData);
 	        } /*else {
 	        	viewPosition = modelDisplay.getViewPosition();
 	        	if(!viewScale) {
@@ -181,9 +185,10 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
 		var types = getElementTypes();
-		var excludedProperties = ["elementType", "shape", "size", "style", "level"];
+		var excludedProperties = ["elementType", "shape", "size", "style", "level", "label", "color"];
 		if(!isNewElement) {
-			excludedProperties.push("parentName");
+			excludedProperties.push("parentId");
+			excludedProperties.push("type");
 		} 
 		for(var property in element) {
 		    if(element.hasOwnProperty(property) && !isArray(element[property]) &&
@@ -191,7 +196,8 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		    	var propLabel = property + ':';
 		    	var propValue = element[property];
 	    		if(typeof propValue["$ref"] !== "undefined") {
-	    			propValue = propValue["$ref"];
+	    			// propValue = propValue["$ref"];
+	    			continue;
 	    		}
 		    	var inputCell = $('<td/>');
 		    	var input = null;
@@ -254,6 +260,13 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	
 	// WTSpec -ific..  huehue :(
 	var extractRoot = function(root) {
+		if(typeof wtctrlReferences === 'undefined') {
+			wtctrlReferences = {
+				inputs: [],
+				outputs: [],
+				params: []
+			};
+		}
 		var depthTracker = {
 			depth: 0
 		}
@@ -263,6 +276,9 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			edges: []
 		}
 		for(var property in root) {
+			if(isWtctrlReference(property)) {
+				wtctrlReferences[property] = root[property];
+			}
 		    if(root.hasOwnProperty(property) && isArray(root[property])) {
 		    	var children = root[property];
 		    	for(var i in children) {
@@ -276,33 +292,44 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	}
 	
 	// returns the node and its subtree
-	var extractModel = function(node, type, currentLevel, depthTracker, parentName) {
+	var extractModel = function(node, type, currentLevel, depthTracker, parentId) {
 		depthTracker.depth++;
 		currentLevel++;
 		var maxDepth = currentLevel; 
-		node.id = node.name;
+		node.id = node.id;
 		node.label = node.name;
 		node.level = currentLevel;
-		node.parentName = parentName;
+		node.parentId = parentId;
 		addNodeStyle(node, type);
 		var model = {
 			nodes: [node],
 			edges: []
 		};
+		// connect wtctrl with their referenced inputs/outputs/params
 		for(var property in node) {
-		    if(node.hasOwnProperty(property) && isArray(node[property])) {
+			if(isWtctrlReference(property)) {
+				var index = parseInt(node[property]["$ref"].slice(-1));
+				var prop = property + "s";
+				var newEdge = {
+					from: node.name,
+					to: wtctrlReferences[prop][index].id,
+					color: wtctrlReferences[prop][index].color
+					//connectionType: "containment"
+				}
+				model.edges.push(newEdge);
+			} else if(node.hasOwnProperty(property) && isArray(node[property])) {
 		    	// process subtree
-		    	// note: at this point the property identifies the sub nodes' type
+		    	// note: at this point the property identifies the subnodes' type
 		    	var setOfChildren = node[property]; 
 		    	for(var i in setOfChildren) {
 					var newEdge = {
-						from: node.name,
-						to: setOfChildren[i].name,
+						from: node.id,
+						to: setOfChildren[i].id,
 						style: "arrow",
 						connectionType: "containment"
 					}
 					model.edges.push(newEdge);
-					var subModel = extractModel(setOfChildren[i], property, currentLevel, depthTracker, node.label);
+					var subModel = extractModel(setOfChildren[i], property, currentLevel, depthTracker, node.id);
 					model = mergeModels(model, subModel);
 					if(depthTracker.depth > maxDepth) {
 						maxDepth = depthTracker.depth;
@@ -335,7 +362,6 @@ collaborationLibrary.CollaborationComponent = function(component) {
 				modelDisplay.moveNode(nodeId, positions[nodeId].x, positions[nodeId].y);
 			}
 		}
-//		alert("check pos");
 	}
 };
 

@@ -86,154 +86,6 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		this.ownerPage.publishPositions(newPositions);
 	}
 	
-	private List<String> getSubtreeIdentifiers(JSONObject object) {
-		List<String> subtreeIdentifiers = new ArrayList<String>();
-		String[] names = JSONObject.getNames(object);
-		for(String name: names) {
-			Object property;
-			try {
-				property = object.get(name);
-				if(property instanceof JSONArray) {
-					subtreeIdentifiers.add(name);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return subtreeIdentifiers;
-	}
-	
-	private JSONObject connectElementToRootNode(JSONObject node, JSONObject element) {
-		try {
-			String type = element.getString("type");
-			String typeSetName = element.getString("type");
-			JSONObject newElement =  new JSONObject();
-			
-			// TODO set additional EMF properties
-			newElement.put("name", element.getString("name"));
-			
-			if(!node.has(typeSetName)) {
-				JSONArray newType = new JSONArray();
-				newType.put(newElement);
-				node.put(typeSetName, newType);
-			} else {
-				node.getJSONArray(typeSetName).put(newElement);
-			}
-			
-			return node;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	private JSONObject tryToInsertIntoSubtree(JSONObject node, JSONObject element) {
-		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
-		for(String identifier: subtreeIdentifiers) {
-			try {
-				JSONArray subtree = node.getJSONArray(identifier);
-				for(int i = 0; i < subtree.length(); i++) {
-					JSONObject currentNode = subtree.getJSONObject(i);
-					boolean success = false;
-					if(currentNode.getString("name").equals(element.getString("parentName"))) {
-						currentNode = connectElementToRootNode(currentNode, element);
-						node.getJSONArray(identifier).put(i, currentNode);
-						success = true;
-					} else {
-						currentNode = tryToInsertIntoSubtree(currentNode, element);
-						if(currentNode != null) {
-							success = true;
-						}
-					}
-					if(success) {
-						return node;
-					}
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
-	
-	private JSONObject tryToUpdateSubtree(JSONObject node, JSONObject original, JSONObject edited) {
-		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
-		for(String identifier: subtreeIdentifiers) {
-			try {
-				JSONArray subtree = node.getJSONArray(identifier);
-				for(int i = 0; i < subtree.length(); i++) {
-					JSONObject currentNode = subtree.getJSONObject(i);
-					boolean success = false;
-					if(currentNode.getString("name").equals(original.getString("name"))) {
-						currentNode = updateNode(currentNode, edited);
-						node.getJSONArray(identifier).put(i, currentNode);
-						success = true;
-					} else {
-						currentNode = tryToUpdateSubtree(currentNode, original, edited);
-						if(currentNode != null) {
-							success = true;
-						}
-					}
-					if(success) {
-						return node;
-					}
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
-	
-	private JSONObject tryToDeleteInSubtree(JSONObject node, JSONObject nodeToDelete) {
-		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
-		for(String identifier: subtreeIdentifiers) {
-			try {
-				JSONArray subtree = node.getJSONArray(identifier);
-				for(int i = 0; i < subtree.length(); i++) {
-					JSONObject currentNode = subtree.getJSONObject(i);
-					boolean success = false;
-					if(currentNode.getString("name").equals(nodeToDelete.getString("name"))) {
-						JSONArray newSubtree = removeItemFromJsonArray(subtree, i);
-						node.put(identifier, newSubtree);
-						success = true;
-					} else {
-						currentNode = tryToDeleteInSubtree(currentNode, nodeToDelete);
-						if(currentNode != null) {
-							success = true;
-						}
-					}
-					if(success) {
-						return node;
-					}
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
-	
-	private JSONArray removeItemFromJsonArray(JSONArray array, int index) {
-		JSONArray newArray = new JSONArray();
-		try {
-			for(int i = 0; i < array.length(); i++) {
-				if(i != index) {
-					newArray.put(array.get(i));
-				} 
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return newArray;
-	}
-	
 	private JSONObject updateNode(JSONObject original, JSONObject edited) {
 		String[] props = JSONObject.getNames(edited);
 		try {
@@ -303,12 +155,12 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			}
 		});
 		
-		addFunction("alterNodePosition", new JavaScriptFunction() {
+		addFunction("moveNode", new JavaScriptFunction() {
 			@Override
 			public void call(JSONArray arguments) throws JSONException {
 				JSONObject nodeData = arguments.getJSONObject(0);
-				alterNodePosition(nodeData, true);
-				nodeData.put("type", "moveNode");
+				moveNode(nodeData, true);
+				nodeData.put("type", "move");
 				publishModification(nodeData);
 			}
 		});
@@ -332,7 +184,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		System.out.println("add: " + element.toString());
 		System.out.println("Model: " + newModel);
 		// if root's child
-		if(!element.has("parentName") || element.getString("parentName").equals("")) {
+		if(!element.has("parentId") || element.getString("parentId").equals("")) {
 			// if no children with this type
 			newModel = connectElementToRootNode(newModel, element);
 		} else {
@@ -348,14 +200,14 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		}
 		
 		getState().setModel(newModel);
-		alterNodePosition(nodePositionData, false);
-		// publishModel(newModel);
+		moveNode(nodePositionData, false);
 	}
 	
 	public void editElement(JSONObject elements, boolean saveOperation) throws JSONException {
 		JSONObject original = elements.getJSONObject("original");
-		JSONObject edited = elements.getJSONObject("edited");
+		JSONObject edited = preserveUnmodifableAttributes(original, elements.getJSONObject("edited"));
 		JSONObject newModel = getState().model;
+//		setParentIdInChildren(edited, edited.getString("id"));
 		newModel = tryToUpdateSubtree(newModel, original, edited);
 		// alter set of positions as well
 		if(!original.getString("id").equals(edited.getString("id"))) {
@@ -370,16 +222,34 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			printUndoStack();
 		}
 		getState().setModel(newModel);
-		// publishModel(newModel);
 	}
 	
-	private void renamePositionId(JSONObject original, JSONObject edited) {
+	private JSONObject preserveUnmodifableAttributes(JSONObject original,
+			JSONObject edited) {
+		JSONObject tmp = new JSONObject();
 		try {
-			if(getState().positions.has(original.getString("id"))){
-				getState().positions.put(original.getString("id"), edited.getString("id"));
+			String[] properties = JSONObject.getNames(edited);
+			for(String prop : properties) {
+				tmp.put(prop, edited.get(prop));
+			}
+			properties = JSONObject.getNames(original);
+			for(String prop : properties) {
+				if(!tmp.has(prop)) {
+					tmp.put(prop, original.get(prop));
+				}
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return tmp;
+	}
+
+	private void renamePositionId(JSONObject original, JSONObject edited) {
+		try {
+			JSONObject pos = getState().positions.getJSONObject(original.getString("id"));
+			getState().positions.remove(original.getString("id"));
+			getState().positions.put(edited.getString("id"), pos);
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
@@ -388,7 +258,6 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		// TODO validate action
 		JSONObject newModel = getState().model;
 		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
-		System.out.println("YOLO MOYO - " + nodeToDelete.toString());
 		if(saveOperation) {
 			ExecutedOperation op = new ExecutedOperation();
 			op.setOldValue(nodeToDelete);
@@ -398,10 +267,9 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		}
 		
 		getState().setModel(newModel);
-		// publishModel(newModel);
 	}
 	
-	public void alterNodePosition(JSONObject nodeData, boolean saveOperation) {
+	public void moveNode(JSONObject nodeData, boolean saveOperation) {
 		System.out.println("alter node position - " + nodeData.toString());
 		System.out.println("node positions: " + getState().positions.toString());
 		try {
@@ -443,9 +311,12 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		}
 		ExecutedOperation operationToUndo = undoStack.pop();
 		try {
+			JSONObject modificationData = null;
 			switch(operationToUndo.getOperation()) {
 				case "addElement":
-					deleteElement(operationToUndo.getNewValue(), false);
+					modificationData = operationToUndo.getNewValue();
+					deleteElement(modificationData, false);
+					modificationData.put("type", "delete");
 					break;
 				case "editElement":
 					// reverse
@@ -453,14 +324,22 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 					elements.put("original", operationToUndo.getNewValue());
 					elements.put("edited", operationToUndo.getOldValue());
 					editElement(elements, false);
+					modificationData = elements;
+					modificationData.put("type", "edit");
 					break;
 				case "deleteElement":
-					addElement(operationToUndo.getOldValue(), false);
+					modificationData = operationToUndo.getOldValue();
+					addElement(modificationData, false);
+					modificationData.put("type", "add");
 					break;
 				case "moveElement":
-					alterNodePosition(operationToUndo.getOldValue(), false);
-					publishModification(operationToUndo.getOldValue());
+					modificationData = operationToUndo.getOldValue();
+					moveNode(modificationData, false);
+					modificationData.put("type", "move");
 					break;
+			}
+			if(modificationData != null) {
+				publishModification(modificationData);
 			}
 			System.out.println("Undoing: " + " op: " + operationToUndo.getOperation() + " | oldVal: " + operationToUndo.getOldValue() + 
 					" | new: " + operationToUndo.getNewValue());
@@ -477,9 +356,12 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		}
 		ExecutedOperation operationToRedo = redoStack.pop();
 		try {
+			JSONObject modificationData = null;
 			switch(operationToRedo.getOperation()) {
 				case "addElement":
-					addElement(operationToRedo.getNewValue(), false);
+					modificationData = operationToRedo.getNewValue();
+					addElement(modificationData, false);
+					modificationData.put("type", "add");
 					break;
 				case "editElement":
 					// reverse
@@ -487,14 +369,22 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 					elements.put("original", operationToRedo.getOldValue());
 					elements.put("edited", operationToRedo.getNewValue());
 					editElement(elements, false);
+					modificationData = elements;
+					modificationData.put("type", "edit");
 					break;
 				case "deleteElement":
 					deleteElement(operationToRedo.getOldValue(), false);
+					modificationData = operationToRedo.getOldValue();
+					modificationData.put("type", "delete");
 					break;
 				case "moveElement":
-					alterNodePosition(operationToRedo.getNewValue(), false);
-					publishModification(operationToRedo.getNewValue());
+					moveNode(operationToRedo.getNewValue(), false);
+					modificationData = operationToRedo.getNewValue();
+					modificationData.put("type", "move");
 					break;
+			}
+			if(modificationData != null) {
+				publishModification(modificationData);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -518,5 +408,200 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 	public void clearUndoRedoStacks() {
 		this.undoStack.clear();
 		this.redoStack.clear();
+	}
+
+	public void modifyModel(JSONObject modificationData) {
+		try {
+			String type = modificationData.getString("type");
+			System.out.println("executing operation: " + type + " on client.");
+			switch(type) {
+				case "add":
+					this.addElement(modificationData, false);
+					break;
+				case "edit":
+					this.editElement(modificationData, false);
+					break;
+				case "delete":
+					this.deleteElement(modificationData, false);
+					break;
+				case "move":
+					this.moveNode(modificationData, false);
+					break;
+				default:
+					System.out.println("Unknown operation: " + type);
+					break;
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
+	private List<String> getSubtreeIdentifiers(JSONObject object) {
+		List<String> subtreeIdentifiers = new ArrayList<String>();
+		String[] names = JSONObject.getNames(object);
+		for(String name: names) {
+			Object property;
+			try {
+				property = object.get(name);
+				if(property instanceof JSONArray) {
+					subtreeIdentifiers.add(name);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return subtreeIdentifiers;
+	}
+	
+	private JSONObject connectElementToRootNode(JSONObject node, JSONObject element) {
+		try {
+			String type = element.getString("type");
+			String typeSetName = element.getString("type");
+			JSONObject newElement =  new JSONObject();
+			
+			// TODO set additional EMF properties
+			newElement.put("name", element.getString("name"));
+			
+			if(!node.has(typeSetName)) {
+				JSONArray newType = new JSONArray();
+				newType.put(newElement);
+				node.put(typeSetName, newType);
+			} else {
+				node.getJSONArray(typeSetName).put(newElement);
+			}
+			
+			return node;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private JSONObject tryToInsertIntoSubtree(JSONObject node, JSONObject element) {
+		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
+		for(String identifier: subtreeIdentifiers) {
+			try {
+				JSONArray subtree = node.getJSONArray(identifier);
+				for(int i = 0; i < subtree.length(); i++) {
+					JSONObject currentNode = subtree.getJSONObject(i);
+					boolean success = false;
+					if(currentNode.getString("id").equals(element.getString("parentId"))) {
+						currentNode = connectElementToRootNode(currentNode, element);
+						node.getJSONArray(identifier).put(i, currentNode);
+						success = true;
+					} else {
+						currentNode = tryToInsertIntoSubtree(currentNode, element);
+						if(currentNode != null) {
+							success = true;
+						}
+					}
+					if(success) {
+						return node;
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private JSONObject tryToUpdateSubtree(JSONObject node, JSONObject original, JSONObject edited) {
+		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
+		for(String identifier: subtreeIdentifiers) {
+			try {
+				JSONArray subtree = node.getJSONArray(identifier);
+				for(int i = 0; i < subtree.length(); i++) {
+					JSONObject currentNode = subtree.getJSONObject(i);
+					boolean success = false;
+					if(currentNode.getString("id").equals(original.getString("id"))) {
+						currentNode = updateNode(currentNode, edited);
+						node.getJSONArray(identifier).put(i, currentNode);
+						success = true;
+					} else {
+						currentNode = tryToUpdateSubtree(currentNode, original, edited);
+						if(currentNode != null) {
+							success = true;
+						}
+					}
+					if(success) {
+						return node;
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private JSONObject tryToDeleteInSubtree(JSONObject node, JSONObject nodeToDelete) {
+		List<String> subtreeIdentifiers = getSubtreeIdentifiers(node);
+		for(String identifier: subtreeIdentifiers) {
+			try {
+				JSONArray subtree = node.getJSONArray(identifier);
+				for(int i = 0; i < subtree.length(); i++) {
+					JSONObject currentNode = subtree.getJSONObject(i);
+					boolean success = false;
+					if(currentNode.getString("name").equals(nodeToDelete.getString("name"))) {
+						JSONArray newSubtree = removeItemFromJsonArray(subtree, i);
+						node.put(identifier, newSubtree);
+						success = true;
+					} else {
+						currentNode = tryToDeleteInSubtree(currentNode, nodeToDelete);
+						if(currentNode != null) {
+							success = true;
+						}
+					}
+					if(success) {
+						return node;
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+//	
+//	private void setParentIdInChildren(JSONObject node, String parentId) {
+//		String[] identifiers = JSONObject.getNames(node);
+//		try {
+//			for(String identifier : identifiers) {
+//				JSONArray children = node.optJSONArray(identifier);
+//				if(children != null) {
+//					
+//						for(int i = 0; i < children.length(); i++) {
+//							children.getJSONObject(i).put("parentId", parentId);
+//						}
+//					node.put(identifier, children);
+//				}
+//			}
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+	
+	private JSONArray removeItemFromJsonArray(JSONArray array, int index) {
+		JSONArray newArray = new JSONArray();
+		try {
+			for(int i = 0; i < array.length(); i++) {
+				if(i != index) {
+					newArray.put(array.get(i));
+				} 
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return newArray;
 	}
 }

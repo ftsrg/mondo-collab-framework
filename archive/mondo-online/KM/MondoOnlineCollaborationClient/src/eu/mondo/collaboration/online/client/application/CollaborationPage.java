@@ -109,8 +109,8 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 		this.cc.setPositions(positions);
 	}
 	
-	public void alterNodePosition(JSONObject nodeData) {
-		this.cc.alterNodePosition(nodeData, false);
+	public void moveNode(JSONObject nodeData) {
+		this.cc.moveNode(nodeData, false);
 	}
 	
 	public void publishModel(JSONObject newModel) {
@@ -190,5 +190,9 @@ public class CollaborationPage extends AbsoluteLayout implements View {
 			this.sessionId,
 			data
 		);
+	}
+
+	public void modifyModel(JSONObject data) {
+		this.cc.modifyModel(data);
 	}
 }

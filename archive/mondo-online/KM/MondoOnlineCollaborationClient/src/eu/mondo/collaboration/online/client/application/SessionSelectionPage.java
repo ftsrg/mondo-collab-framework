@@ -57,9 +57,8 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 	}
 	*/
 	
-	private void loadOpenSessions() {
-		// not  open...
-		this.application.getWebsocketClient().loadOpenSessions();
+	private void loadSessions() {
+		this.application.getWebsocketClient().loadAvailableSessions();
 	}
 
 	public void setSessionsList(JSONArray jsonSessions) {
@@ -229,6 +228,6 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-		this.loadOpenSessions();
+		this.loadSessions();
 	}
 }

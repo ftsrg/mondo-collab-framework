@@ -30,8 +30,8 @@ function() {
     collaborationComponent.publishPositions = function(jsonData) {
     	connector.publishPositions(jsonData);
     }
-    collaborationComponent.alterNodePosition = function(jsonData) {
-    	connector.alterNodePosition(jsonData);
+    collaborationComponent.moveNode = function(jsonData) {
+    	connector.moveNode(jsonData);
     }
     //this.loadModel();
 }; 
