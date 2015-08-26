@@ -1,10 +1,7 @@
 package eu.mondo.collaboration.online.server;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -38,8 +35,6 @@ public class CollaborationServerApplication {
 	// assign connections to collaboration session IDs once they join it
 	private static HashMap<String, List<Session>> sessionsConnections;
 	
-	private JSONObject modelHeyhey;
-	
 	public CollaborationServerApplication() {
 		System.out.println("Initialize server...");
 		if(sessions == null) {
@@ -57,23 +52,7 @@ public class CollaborationServerApplication {
 		sessionsConnections = new HashMap<String, List<Session>>();
 		sessions = new ArrayList<CollaborationSession>();
 		Integer id = 0;
-		/*
-		String pathToResFolder = "D:\\Eclipse\\Eclipse_EE\\workspace_EE\\MondoOnlineCollaborationServer\\res";
-		final File folder = new File(pathToResFolder);
-		for (final File fileEntry : folder.listFiles()) {
-	        if (!fileEntry.isDirectory()) {
-	        	String modelPath = pathToResFolder + fileEntry.getName(); 
-	        	CollaborationSession newSession = new CollaborationSession(
-	        		id.toString(), 
-	        		fileEntry.getName(),
-	        		CollaborationSession.STATE_CLOSED
-	        	);
-	        	sessions.add(newSession);
-	        	sessionsConnections.put(id.toString(), new ArrayList<Session>());
-	        	id++;
-	        }
-		}
-		*/
+
 		try {
 			URL url = new URL("http://localhost:8070/services/modelHandler/getModels");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -91,7 +70,7 @@ public class CollaborationServerApplication {
 				CollaborationSession newSession = new CollaborationSession(
 	        		id.toString(), 
 	        		(String) currModel.get("name"),
-	        		CollaborationSession.STATE_CLOSED
+	        		CollaborationSession.STATE_READY
 	        	);
 				newSession.setModel(currModel.getJSONObject("model"));
 	        	sessions.add(newSession);
@@ -150,24 +129,184 @@ public class CollaborationServerApplication {
 					List<Session> conns = sessionsConnections.get(sessionId);
 					conns.add(connection);
 					sessionsConnections.put(sessionId, conns);
+					if(positionsInitialized(sessionId)) {
+						this.sendPositions(sessionId, connection);
+					}
 					this.sendModel(sessionId, connection);
+					this.publishUsers(sessionId);
+					this.notifyClient(connection);
+				}
+			} else if(operation.equals("leaveSession")) {
+				System.out.println("leaveSession...");
+				JSONObject user = request.getJSONObject("user");
+				User userToRemove = new User(
+					user.getString("name"),
+					user.getString("password")
+				);
+				String sessionId = request.getString("sessionId");
+				if(this.removeUserFromSession(userToRemove, sessionId)) {
+					List<Session> conns = sessionsConnections.get(sessionId);
+					conns.remove(connection);
+					sessionsConnections.put(sessionId, conns);
 					this.publishUsers(sessionId);
 				}
 			} else if(operation.equals("getModel")) {
 				System.out.println("getModel...");
 				String sessionId = request.getString("sessionId");
+				if(this.positionsInitialized(sessionId)) {
+					this.sendPositions(sessionId, connection);
+				} 
 				this.sendModel(sessionId, connection);
+			} else if(operation.equals("modifyModel")) {
+				System.out.println("modifyModel...");
+				if(this.modifyModel(request)) {
+					this.publishModification(
+						request.getString("sessionId"), 
+						connection,
+						request.getJSONObject("data")
+					);
+				}
 			} else if(operation.equals("publishModel")) {
 				System.out.println("publishModel...");
 				String sessionId = request.getString("sessionId");
 				String newModel = request.getString("model");
-				this.publishModel(sessionId, newModel);
+				if(this.setModel(sessionId, new JSONObject(newModel))) {
+					this.publishModel(sessionId, connection, newModel);
+				}
+			} else if(operation.equals("publishPositions")) {
+				System.out.println("publishPositions...");
+				String sessionId = request.getString("sessionId");
+				String positions = request.getString("positions");
+				this.setPositions(sessionId, positions);
+				this.setPositionsInitialized(sessionId);
+			} else if(operation.equals("publishNodePosition")) {
+				System.out.println("publishNodePosition...");
+				String sessionId = request.getString("sessionId");
+				JSONObject nodeData = new JSONObject(request.getString("nodeData"));
+				if(this.setNodePosition(sessionId, nodeData)) {
+					this.publishNodePosition(sessionId, connection, nodeData);
+				}
 			}
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}   
 	}
-	  
+
+
+	private void publishModification(String sessionId, Session source, JSONObject modificationData) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "modifyModel");
+			request.put("data", modificationData);
+			List<Session> conns = sessionsConnections.get(sessionId);
+			synchronized(conns) {
+				for(Session connection : conns) {
+					if(!source.getId().equals(connection.getId())) {
+						System.out.println("Sending modification data to: " + connection.getId());
+						this.sendRequestInParts(request, connection);
+					}
+				}
+		    } 
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean modifyModel(JSONObject request) {
+		try {
+			String sessionId = request.getString("sessionId");
+			for(CollaborationSession s: sessions) {
+				if(s.getId().equals(sessionId)) {
+					JSONObject results = ModelModifier.modifyModel(
+						s.getModel(), 
+						s.getPositions(), 
+						request.getJSONObject("data")
+					); 
+					if(results != null) {
+						Object newModel = results.get("model");
+						Object newPositions = results.get("positions");
+						if(!newModel.equals("none")) {
+							s.setModel((JSONObject) newModel);
+						}
+						if(!newPositions.equals("none")) {
+							s.setPositions((JSONObject) newPositions);
+						}
+					}
+					return true;
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private void notifyClient(Session connection) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "modelTransferComplete");
+			this.sendRequestInParts(request, connection);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void publishNodePosition(String sessionId, Session source, JSONObject nodeData) {
+		// publish node position only for those who are in the same collaboration session
+		List<Session> relevantConnections = sessionsConnections.get(sessionId);
+        // Iterate over the connected sessions
+		synchronized(relevantConnections){
+			System.out.println("Publishing new node position: " + nodeData);
+	    	// and broadcast the received message
+			for(Session conn : relevantConnections){
+				if(!conn.getId().equals(source.getId())) {
+					this.sendNodePosition(sessionId, conn, nodeData);
+				}
+			}
+	    } 
+	}
+
+	private void setPositionsInitialized(String sessionId) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				s.setPositionsInitialized(true);
+			}
+		}
+	}
+
+	private boolean positionsInitialized(String sessionId) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				return s.isInitialized();
+			}
+		}
+		return false;
+	}
+
+	private boolean setNodePosition(String sessionId, JSONObject nodeData) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				JSONObject positions = s.getPositions();
+				for(int i = 0; i < positions.length(); i++) {
+					try {
+						// the key is the id of the node
+						positions.put(
+							nodeData.getString("node"), 
+							nodeData.getJSONObject("newPosition")
+						);
+						s.setPositions(positions);
+						return true;
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 	private void publishUsers(String sessionId) {
 		try {
 			JSONObject request = new JSONObject();
@@ -178,7 +317,7 @@ public class CollaborationServerApplication {
 			synchronized(conns){
 				System.out.println("Publishing users: " + users.toString());
 				for(Session connection : conns){
-					System.out.println("Send sessions to: " + connection.getId());
+					System.out.println("Send users to: " + connection.getId());
 					this.sendRequestInParts(request, connection);
 					// connection.getBasicRemote().sendText(request.toString());
 				}
@@ -210,12 +349,27 @@ public class CollaborationServerApplication {
 
 	private boolean addUserToSession(User newUser, String sessionId) {
 		for(CollaborationSession s: sessions) {
-			s.addUser(newUser);
-			return true;
+			if(s.getId().equals(sessionId)) {
+				s.addUser(newUser);
+				return true;
+			}
 		}
 		return false;
 	}
-
+	  
+	private boolean removeUserFromSession(User userToRemove, String sessionId) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				System.out.println("removing user - " + userToRemove.getUserName());
+				System.out.println(sessions.get(sessions.indexOf(s)).getUsers().size());
+				sessions.get(sessions.indexOf(s)).removeUser(userToRemove);
+				System.out.println(sessions.get(sessions.indexOf(s)).getUsers().size());
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private void publishSessions() {
 		try {
 			JSONObject request = new JSONObject();
@@ -246,11 +400,6 @@ public class CollaborationServerApplication {
 		}
 		System.out.println("Sessions after: " + this.prepareSessionsToSend().toString());
 		return false;
-	}
-
-	private JSONObject getModelHeyhey() {
-		
-		return this.modelHeyhey;
 	}
 
 	private boolean finishSession(String sessionId) {
@@ -341,6 +490,39 @@ public class CollaborationServerApplication {
 			e1.printStackTrace();
 		} 	
 	} 
+	
+	private void sendNodePosition(String sessionId, Session conn, JSONObject nodeData) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "updateNodePosition");
+			request.put("nodeData", nodeData);
+			this.sendRequestInParts(request, conn);
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		} 
+		
+	}
+	
+	private void sendPositions(String sessionId, Session connection) {
+		try {
+			JSONObject positions = null;
+			for(CollaborationSession s: sessions) {
+				if(s.getId().equals(sessionId)) {
+					positions = s.getPositions();
+					break;
+				}
+			}
+			System.out.println("Send positions to: " + connection.getId());
+			System.out.println(positions.toString());
+			JSONObject request = new JSONObject();
+			request.put("operation", "updatePositions");
+			request.put("positions", positions);
+			this.sendRequestInParts(request, connection);
+			// connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		} 	
+	} 
  
 	private void sendRequestInParts(JSONObject request, Session connection) {
 		String messageToSend = request.toString();
@@ -364,47 +546,6 @@ public class CollaborationServerApplication {
 		    e.printStackTrace(System.err);
 		}
 		*/
-	}
-
-	private List<String> splitString(String text, int maxLengthOfPart) {
-		List<String> parts = new ArrayList<String>(); 
-		int currentIndex = 0;
-		int maxIndex = text.length() - 1;
-		while(currentIndex < maxIndex) {
-			int newIndex = currentIndex + maxLengthOfPart;
-			String part = null;
-			if(newIndex >= maxIndex) {
-				part = text.substring(currentIndex);
-				currentIndex = maxIndex;
-			} else {
-				part = text.substring(currentIndex, newIndex);
-				currentIndex = newIndex;
-			}
-			parts.add(part);
-		}
-		return parts;
-	}
-	
-	private void writeTextIntoFile(String text) {
-		BufferedWriter writer = null;
-        try {
-            //create a temporary file
-            File logFile = new File("someTextFile.txt");
-
-            // This will output the full path where the file will be written to...
-            System.out.println(logFile.getCanonicalPath());
-
-            writer = new BufferedWriter(new FileWriter(logFile));
-            writer.write(text);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                // Close the writer regardless of what happens...
-                writer.close();
-            } catch (Exception e) {
-            }
-        }
 	}
 	
 	private void sendSessions(Session connection) {
@@ -440,28 +581,43 @@ public class CollaborationServerApplication {
 		return null;
 	}
 
-	private void publishModel(String sessionId, String newModel) {
-		try {
-			this.setModel(sessionId, new JSONObject(newModel));
-			// publish model only for those who are in the same collaboration session
-			List<Session> relevantConnections = sessionsConnections.get(sessionId);
-	        // Iterate over the connected sessions
-			synchronized(relevantConnections){
-				System.out.println("Publishing model: " + newModel);
-		    	// and broadcast the received message
-				for(Session conn : relevantConnections){
+	private void publishModel(String sessionId, Session source, String newModel) {
+		// publish model only for those who are in the same collaboration session
+		List<Session> relevantConnections = sessionsConnections.get(sessionId);
+        // Iterate over the connected sessions
+		synchronized(relevantConnections){
+			System.out.println("Publishing model: " + newModel);
+	    	// and broadcast the received message
+			for(Session conn : relevantConnections){
+				if(!conn.getId().equals(source.getId())) {
 					this.sendModel(sessionId, conn);
 				}
-		    } 
+			}
+	    } 
+	}
+
+	private void setPositions(String sessionId, String newPositions) {
+		try {
+			this.setPositions(sessionId, new JSONObject(newPositions));
 		} catch (JSONException e) {
 			e.printStackTrace();
 	    }
 	}
-
-	private void setModel(String sessionId, JSONObject newModel) {
+	
+	private boolean setModel(String sessionId, JSONObject newModel) {
 		for(CollaborationSession s: sessions) {
 			if(s.getId().equals(sessionId)) {
 				s.setModel(newModel);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void setPositions(String sessionId, JSONObject newPositions) {
+		for(CollaborationSession s: sessions) {
+			if(s.getId().equals(sessionId)) {
+				s.setPositions(newPositions);
 				return;
 			}
 		}
@@ -472,211 +628,5 @@ public class CollaborationServerApplication {
 	    // Remove session from the connected sessions set
 		System.out.println("removing connection from websocket...");
 		connections.remove(connection);
-	}
-	
-	private JSONObject initializeModel() throws JSONException {
-		// load dummy model
-		JSONArray nodes = new JSONArray();
-		JSONArray edges = new JSONArray();
-		JSONArray newNodes = new JSONArray();
-		JSONArray newEdges = new JSONArray();
-		JSONObject newModel = new JSONObject();
-		
-		// System inputs
-		JSONObject input15 = this.createNode(
-			"SystemInput", "In15", "Input AI_15", "InputGroup1", 50, 400
-		);
-		JSONObject input2 = this.createNode(
-			"SystemInput", "In2", "Input AI_2", "InputGroup1", 50, 500
-		);
-		JSONObject input18 = this.createNode(
-			"SystemInput", "In18", "Input AI_18", "InputGroup1", 50, 600
-		);
-		JSONObject input48 = this.createNode(
-			"SystemInput", "In48", "Input AI_48", "InputGroup2", 150, 150
-		);
-		JSONObject input22 = this.createNode(
-			"SystemInput", "In22", "Input AI_22", "InputGroup2", 350, 150
-		);
-		JSONObject input73 = this.createNode(
-			"SystemInput", "In73", "Input AI_73", "InputGroup2", 550, 150
-		);
-		
-		nodes.put(input15);
-		nodes.put(input2);
-		nodes.put(input18);
-		nodes.put(input48);
-		nodes.put(input22);
-		nodes.put(input73);
-		
-		// Subsystems
-		JSONObject subSystem08 = this.createNode(
-			"SubSystem", "SubSystem08", "SubSystem 08", "SubGroup1", 230, 300
-		);
-		JSONObject subSystem08_02 = this.createNode(
-			"SubSystem", "SubSystem08_02", "SubSystem 08_02", "SubGroup1", 400, 500
-		);
-		JSONObject subSystem08_02_11 = this.createNode(
-			"SubSystem", "SubSystem08_02_11", "SubSystem 08_02_11", "SubGroup1", 300, 650
-		);
-		JSONObject subSystem17 = this.createNode(
-			"SubSystem", "SubSystem17", "SubSystem 17", "SubGroup2", 650, 550
-		);
-		nodes.put(subSystem08);
-		nodes.put(subSystem08_02);
-		nodes.put(subSystem08_02_11);
-		nodes.put(subSystem17);
-		
-		// control units
-		JSONObject ctrlUnit007 = this.createNode(
-			"CtrlUnit", "CtrlUnit007", "CtrlUnit_007", "SubGroup1", 250, 450
-		);
-		JSONObject ctrlUnit18 = this.createNode(
-			"CtrlUnit", "CtrlUnit18", "CtrlUnit_18", "SubGroup1", 400, 250
-		);
-		JSONObject ctrlUnit22 = this.createNode(
-			"CtrlUnit", "CtrlUnit22", "CtrlUnit_22", "SubGroup1", 450, 300
-		);
-		JSONObject ctrlUnit404 = this.createNode(
-			"CtrlUnit", "CtrlUnit404", "CtrlUnit_404", "SubGroup1", 500, 350
-		);
-		JSONObject ctrlUnit04 = this.createNode(
-			"CtrlUnit", "CtrlUnit04", "CtrlUnit_04", "SubGroup1", 270, 550
-		);
-		JSONObject ctrlUnit05 = this.createNode(
-			"CtrlUnit", "CtrlUnit05", "CtrlUnit_05", "SubGroup1", 500, 550
-		);
-		JSONObject ctrlUnit15 = this.createNode(
-			"CtrlUnit", "CtrlUnit15", "CtrlUnit_15", "SubGroup1", 500, 650
-		);
-		nodes.put(ctrlUnit007);
-		nodes.put(ctrlUnit18);
-		nodes.put(ctrlUnit22);
-		nodes.put(ctrlUnit404);
-		nodes.put(ctrlUnit04);
-		nodes.put(ctrlUnit05);
-		nodes.put(ctrlUnit15);
-		
-		// System outputs
-		JSONObject output007 = this.createNode(
-			"SystemOutput", "Out007", "Output DO_007", "OutputGroup1", 650, 250
-		);
-		JSONObject output18 = this.createNode(
-			"SystemOutput", "Out18", "Output DO_18", "OutputGroup1", 650, 350
-		);
-		JSONObject output22 = this.createNode(
-			"SystemOutput", "Out22", "Output DO_22", "OutputGroup2", 630, 450
-		);
-
-		nodes.put(output007);
-		nodes.put(output18);
-		nodes.put(output22);
-		
-		// System variables
-		JSONObject sysParam1 = this.createNode(
-			"SystemParam", "Param1", "Parameter 1", "ParamGroup1", 300, 700
-		);
-		JSONObject sysParam2 = this.createNode(
-			"SystemParam", "Param", "Parameter 2", "ParamGroup1", 450, 700
-		);
-		nodes.put(sysParam1);
-		nodes.put(sysParam2);
-		
-		// System variables
-		JSONObject sysVar1 = this.createNode(
-			"SystemVariable", "Var1", "Variable 1", "VarGroup1", 650, 700
-		);
-		JSONObject sysVar2 = this.createNode(
-			"SystemVariable", "Var2", "Variable 2", "VarGroup1", 750, 700
-		);
-		nodes.put(sysVar1);
-		nodes.put(sysVar2);
-		
-		// System faults
-		JSONObject sysFault1 = this.createNode(
-			"SystemFault", "Fault1", "Fault 1", "FaultGroup1", 500, 750
-		);
-		JSONObject sysFault2 = this.createNode(
-			"SystemFault", "Fault2", "Fault 2", "FaultGroup1", 600, 750
-		);
-		nodes.put(sysFault1);
-		nodes.put(sysFault2);
-		
-		JSONObject edge1 = this.createEdge(
-			"Contains", "Conn1", "SubSystem08", "CtrlUnit18", "Conn1", ""
-		);
-		JSONObject edge2 = this.createEdge(
-			"Contains", "Conn2", "SubSystem08", "CtrlUnit22", "Conn2", "SubGroup1"
-		);
-		JSONObject edge3 = this.createEdge(
-			"Contains", "Conn3", "SubSystem08", "CtrlUnit404", "Conn3", "SubGroup1"
-		);
-		JSONObject edge4 = this.createEdge(
-			"Contains", "Conn4", "SubSystem08", "SubSystem08_02", "Conn4", "SubGroup1"
-		);
-		JSONObject edge5 = this.createEdge(
-			"Contains", "Conn5", "SubSystem08_02", "CtrlUnit007", "Conn5", "SubGroup1"
-		);
-		JSONObject edge6 = this.createEdge(
-			"Contains", "Conn6", "SubSystem08_02", "CtrlUnit04", "Conn6", "SubGroup1"
-		);
-		JSONObject edge7 = this.createEdge(
-			"Contains", "Conn7", "SubSystem08_02", "CtrlUnit05", "Conn7", "SubGroup1"
-		);
-		JSONObject edge8 = this.createEdge(
-			"Contains", "Conn8", "SubSystem08_02", "SubSystem08_02_11", "Conn8", "SubGroup1"
-		);
-		JSONObject edge9 = this.createEdge(
-			"Contains", "Conn9", "SubSystem08_02_11", "CtrlUnit15", "Conn9", "SubGroup1"
-		);
-		edges.put(edge1);
-		edges.put(edge2);
-		edges.put(edge3);
-		edges.put(edge4);
-		edges.put(edge5);
-		edges.put(edge6);
-		edges.put(edge7);
-		edges.put(edge8);
-		edges.put(edge9);
-				
-		for(int i = 0; i < nodes.length(); i++) {
-			JSONObject node = nodes.getJSONObject(i);
-			node.put("elementType", 1);
-			newNodes.put(node);
-		}
-		
-		
-		for(int i = 0; i < edges.length(); i++) {
-			JSONObject edge = edges.getJSONObject(i);
-			edge.put("elementType", 2);
-			newEdges.put(edge);
-		}
-
-		newModel.put("nodes", newNodes);
-		newModel.put("edges", newEdges);
-
-		return newModel;
-	}
-	
-	private JSONObject createNode(String type, String id, String label, String group, int x, int y) throws JSONException {
-		JSONObject node = new JSONObject();
-		node.put("type", type);
-		node.put("id", id);
-		node.put("label", label);
-		node.put("group", group);
-		node.put("x", x);
-		node.put("y", y);
-		return node;
-	}
-	
-	private JSONObject createEdge(String type, String id, String from, String to, String name, String group) throws JSONException {
-		JSONObject edge = new JSONObject();
-		edge.put("type", type);
-		edge.put("id", id);
-		edge.put("from", from);
-		edge.put("to", to);
-		edge.put("name", name);
-		edge.put("group", group);
-		return edge;
 	}
 }

@@ -1,60 +1,78 @@
-#!/bin/sh
+#!/bin/bash
 
-# This script is responsible for executing a put back method of the lens.
-#  * First, it checks out the front and gold repositories to the $USER folder.
-#  * Second, it executes the put back of the lens (currently, a simple copy command will be executed)
-#  * Third, it clears the $USER folder. 
-#
-# Setting:
-#  * $URL          - provides the url of the svn repositories
-#  * $MASTER_REPOS - provides the url of the golden repository
-#  * $USER         - provides a directory, where the script has enough permission to create temporary files and folders
+# Post-commit script is responsible for execute the "get" method of our lens when commit occurs on the gold repository.
+# This hook has to be placed into the hooks directory of the gold repository.
+# For the configuration, set the following variables:
 
-# Hook argument provided by SVN
-REPOS="$1"
+URL='http://127.0.0.1' 				         #URL of the SVN repository provider (not ssh)
+TEMP='/home/vialpando/tempsvn'			   #Temporary directory, where the script has enough permisson to create and copy files
+FRONT_LIST="front1:alice" #front2:bob"		 #List of the front repositories - FRONT_LIST="repo1:userA repo2:userB repo3:userC ... repoN:userX"
+LENS_SCRIPT='/home/vialpando/Eclipse/Mondo/lens/run.sh' #Lens script location. This script executes the lens.
+
+JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+export PATH=$PATH:$JAVA_HOME
+
+EXTENSION="wtspec4m"                  # We execute the lens on each file with the given extension
+
+ADMIN_USER="admin"                    # Username of a user that has read and write permissions on all front repositories and on the gold repository
+ADMIN_PWD="admin"                     # Password of a user that has read and write permissions on all front repositories and on the gold repository
+
+GOLD_REPOS="$1"
 REV="$2"
-TXN_NAME="$3"
+TXN="$3"
 
-# Custom variables. You have to modify these ones.
-URL='http://localhost'
-MASTER_REPOS="$URL/svn/mondo-testrepo/"
-CLIENT_REPOS="$URL$REPOS@$REV"
-USER='/home/vialpando/tempsvn'
+GOLD_REPOS_URL="$URL/$GOLD_REPOS@$REV"
 
 set -e
 
-echo $MASTER_REPOS 1>&2
-echo $CLIENT_REPOS 1>&2
+TEMP_GOLD="$TEMP/tempGold$GOLD_REPOS"
+TEMP_FRONTS="$TEMP/tempFront/Additional"
 
-rm -rf $USER/*
-echo "initial clear ...... ok" 1>&2
+rm -rf $TEMP_FRONTS
 
-TEMP_ORIGIN="$USER/tempOrigin"
-TEMP_CLIENT="$USER/tempClient"
+if [ ! -d $TEMP_GOLD ]; then
+  svn checkout "$GOLD_REPOS_URL" "$TEMP_GOLD" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+  echo "gold checkout ..... ok" 1>&2
+fi
 
-svn checkout $MASTER_REPOS $TEMP_ORIGIN -q
-echo "origin checkout .... ok" 1>&2
+FILE_LIST="$(find $TEMP_GOLD -type f -name \*.$EXTENSION)"
 
-svn checkout $CLIENT_REPOS $TEMP_CLIENT -q
-echo "client checkout .... ok" 1>&2
+for entry in $FRONT_LIST; do
+  oldIFS=$IFS
+  IFS=':'
+  set x $entry
+  FRONT_REPOS="$2"
+  FRONT_USER="$3"
+  current="$TEMP_FRONTS/$2"
 
-cp -a $TEMP_CLIENT/* $TEMP_ORIGIN
-echo "copy content ....... ok" 1>&2
+  svn checkout "$URL/svn/$2" "$TEMP_FRONTS/$2" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+  echo "front checkout .... ok ($2)" 1>&2
 
-cd $TEMP_CLIENT
-MSG=$(svn log -r COMMITTED)
+  IFS="
+"
+  for gold in $FILE_LIST; do
+    front=${gold/$TEMP_GOLD/$current}
+    echo "asd $front" 1>&2
+    echo "execute lens ... ok ($gold)" 1>&2
+    $LENS_SCRIPT $FRONT_USER $gold $front '-performGet' $TEMP
+    echo "lens finished .. ok ($gold)" 1>&2
+  done
 
-cd $TEMP_ORIGIN
+  IFS="$oldIFS"
 
-svn add --force * --auto-props --parents --depth infinity -q
-echo "add files to svn ... ok" 1>&2
+  MSG=$(svnlook log -t $TXN $REPOS)
 
-echo "$MSG" 1>"svn-commit.tmp"
-svn commit -F svn-commit.tmp
-echo "commit files ....... ok" 1>&2
+  cd $current
 
-rm -rf $USER/*
+  svn add --force * --auto-props --parents --depth infinity -q
+  echo "add files to svn ... ok" 1>&2
+
+  echo "$MSG" 1>"svn-commit.tmp"
+  svn commit -F svn-commit.tmp
+
+done
+
+rm -rf $TEMP_FRONTS/*
+rm -rf $TEMP_GOLD/*
 echo "final clear ........ ok" 1>&2
 exit 0
-
-

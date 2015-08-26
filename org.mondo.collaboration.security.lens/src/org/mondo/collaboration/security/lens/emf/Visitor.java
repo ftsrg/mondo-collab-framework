@@ -91,7 +91,13 @@ class Visitor extends EMFVisitor {
 			updateFeature(modelIndexer.indexedEObjectReferences, source, feature, target);
 	}
 	private void updateFeature(LiveTable index, EObject source, EStructuralFeature feature, Object target) {
-		if (target!=null && feature.isChangeable() && !feature.isDerived() && (isNotification || source.eIsSet(feature))) {
+		if (
+				target!=null && 
+				!target.equals(feature.getDefaultValue()) && 
+				feature.isChangeable() && 
+				!feature.isDerived() && 
+				(isNotification || source.eIsSet(feature))
+		) {
 			Tuple t = new FlatTuple(source, feature, target);
 			updateIndex(index, t);
 		}

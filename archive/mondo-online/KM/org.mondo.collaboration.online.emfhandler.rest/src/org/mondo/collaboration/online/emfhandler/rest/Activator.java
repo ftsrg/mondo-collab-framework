@@ -1,10 +1,6 @@
 package org.mondo.collaboration.online.emfhandler.rest;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.osgi.framework.BundleActivator;

@@ -26,7 +26,7 @@ public class ManipulableTemplate extends QueryTemplate {
 		IInputKey key
 		List<String> argumentVariables
 		
-		override getVariables() {
+		override getDeducedVariables() {
 			argumentVariables
 		}
 		

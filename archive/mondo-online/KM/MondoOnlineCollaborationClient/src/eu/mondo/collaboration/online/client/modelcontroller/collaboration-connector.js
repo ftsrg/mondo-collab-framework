@@ -7,7 +7,14 @@ function() {
     
     // Handle changes from the server-side
     this.onStateChange = function() {
-    	collaborationComponent.setModel(this.getState().model);
+    	if(this.getState().modelTransferIsComplete) {
+	    	if(this.getState().modelDisplayIsInitialized) {
+	    		collaborationComponent.setModel(this.getState().model, this.getState().positions);
+	    	} else {
+	    		collaborationComponent.initModelDisplay(this.getState().model);
+	    	}
+	    	ccReady = true;
+    	}
     };
     
     var connector = this;
@@ -20,5 +27,11 @@ function() {
     collaborationComponent.deleteElement = function(jsonData) {
     	connector.deleteElement(jsonData);
     }
-    this.loadModel();
+    collaborationComponent.publishPositions = function(jsonData) {
+    	connector.publishPositions(jsonData);
+    }
+    collaborationComponent.moveNode = function(jsonData) {
+    	connector.moveNode(jsonData);
+    }
+    //this.loadModel();
 }; 

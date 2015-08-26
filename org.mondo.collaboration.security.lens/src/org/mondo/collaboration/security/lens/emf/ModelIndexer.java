@@ -128,7 +128,11 @@ public class ModelIndexer {
 
 	public boolean removeUnrooted(EObject element) {
 		boolean removed = unrootedObjects.remove(element);
-		if (removed) adapter.removeAdapter(element);
+		if (removed) {
+			adapter.removeAdapter(element);
+		} else { // not unrooted?
+    		removeFromContainment(element);
+		}
 		return removed;
 	}
 	/**
@@ -140,18 +144,7 @@ public class ModelIndexer {
 	    	try {
 	    		unrootedObjects.add(element);
 	    		
-	    		EObject eContainer = element.eContainer();
-	    		if (eContainer != null) {
-	    			EReference feature = element.eContainmentFeature();
-	    			if (feature.isMany())
-	    				((Collection<?>) eContainer.eGet(feature)).remove(element);
-	    			else
-	    				eContainer.eUnset(feature);
-	    		}
-	    		final Resource eResource = element.eResource();
-	    		if (eResource != null) {
-	    			eResource.getContents().remove(element);	    			
-	    		}
+	    		removeFromContainment(element);
 //	    		if (daisyChainedIndexer == null)
 //	    			targetContainmentReferenceList.add(element);
 //	    		else 
@@ -162,6 +155,21 @@ public class ModelIndexer {
     	} else {
     		addUnrooted(element);
     	}
+	}
+	
+	private void removeFromContainment(EObject element) {
+		EObject eContainer = element.eContainer();
+		if (eContainer != null) {
+			EReference feature = element.eContainmentFeature();
+			if (feature.isMany())
+				((Collection<?>) eContainer.eGet(feature)).remove(element);
+			else
+				eContainer.eUnset(feature);
+		}
+		final Resource eResource = element.eResource();
+		if (eResource != null) {
+			eResource.getContents().remove(element);	    			
+		}
 	}
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

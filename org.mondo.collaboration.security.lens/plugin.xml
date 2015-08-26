@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.mondo.collaboration.security.lens.uniqueIDSchemeFactory" 
+   		name="Mondo Collaboration Lens Unique ID Scheme Factory" 
+   		schema="schema/org.mondo.collaboration.security.lens.uniqueIDSchemeFactory.exsd"/>
+</plugin>
