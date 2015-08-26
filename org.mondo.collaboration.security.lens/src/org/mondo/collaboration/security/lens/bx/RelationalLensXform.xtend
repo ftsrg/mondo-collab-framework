@@ -217,7 +217,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
 			)
-			mappingCondition += QueryTemplate::fromConstrainer(#[]) [ body | 
+			mappingCondition += QueryTemplate::fromConstrainer(#[varGoldValue, varFrontValue]) [ body | 
 				// TODO add obfuscation
 				new Equality(body, body.getOrCreateVariableByName(varGoldValue), body.getOrCreateVariableByName(varFrontValue))
 				
