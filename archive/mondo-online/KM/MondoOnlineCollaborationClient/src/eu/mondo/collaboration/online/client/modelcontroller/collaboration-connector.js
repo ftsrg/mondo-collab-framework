@@ -33,5 +33,7 @@ function() {
     collaborationComponent.moveNode = function(jsonData) {
     	connector.moveNode(jsonData);
     }
-    //this.loadModel();
+    collaborationComponent.addEdge = function(jsonData) {
+    	connector.addEdge(jsonData);
+    }
 }; 

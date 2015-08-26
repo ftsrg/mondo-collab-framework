@@ -9,14 +9,25 @@ import org.json.JSONObject;
 
 public class ModelModifier {
 
+	private static List<String> basicElements = new ArrayList<String>();
+	
+	private static boolean initialized = false;
+	
 	public static JSONObject modifyModel(JSONObject model, JSONObject positions, JSONObject modificationData) {
+		if(!initialized) {
+			basicElements.add("outputs");
+			basicElements.add("inputs");
+			basicElements.add("params");
+			initialized = true;
+		}
+		
 		JSONObject results = null; 
 		try {
-			String type = modificationData.getString("type");
+			String type = modificationData.getString("modificationType");
 			System.out.println("Executing modification on server: " + type);
 			System.out.println("on " + modificationData.toString());
 			switch(type) {
-				case "add":
+				case "addNode":
 					results = addNode(modificationData, model, positions);
 					break;
 				case "edit":
@@ -28,6 +39,9 @@ public class ModelModifier {
 				case "move":
 					results = moveNode(modificationData, positions);
 					break;
+				case "addEdge":
+					results = addEdge(modificationData, model, positions);
+					break;
 				default:
 					System.out.println("Unknown modification type: " + type);
 					break;	
@@ -35,6 +49,7 @@ public class ModelModifier {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Modification results: " + results.toString());
 		return results;
 	}
 	
@@ -43,10 +58,8 @@ public class ModelModifier {
 		newPosition.put("x", element.get("x"));
 		newPosition.put("y", element.get("y"));
 		JSONObject nodePositionData = new JSONObject();
-		nodePositionData.put("node", element.get("name"));
+		nodePositionData.put("node", element.get("id"));
 		nodePositionData.put("newPosition", newPosition);
-		element.remove("x");
-		element.remove("y");
 		JSONObject newModel = model;
 		// if root's child
 		if(!element.has("parentId") || element.getString("parentId").equals("")) {
@@ -55,10 +68,10 @@ public class ModelModifier {
 		} else {
 			newModel = tryToInsertIntoSubtree(newModel, element);
 		}
-		JSONObject newPositions = moveNode(nodePositionData, positions);
+		JSONObject moveResult = moveNode(nodePositionData, positions);
 		JSONObject result = new JSONObject();
 		result.put("model", newModel);
-		result.put("positions", newPositions);
+		result.put("positions", moveResult.getJSONObject("positions"));
 		return result;
 	}
 	
@@ -99,10 +112,91 @@ public class ModelModifier {
 			);
 			results.put("model", "none");
 			results.put("positions", positions);
+			System.out.println("new positions on server: " + positions.toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return results;
+	}
+	
+	public static JSONObject addEdge(JSONObject newEdgeData, JSONObject model, JSONObject positions) {
+		System.out.println("New edge: " + newEdgeData.toString());
+		
+		try {
+			JSONObject sourceNode = newEdgeData.getJSONObject("sourceNode");
+			JSONObject targetNode = newEdgeData.getJSONObject("targetNode");
+			// basic element to wtctrl
+			if((basicElements.contains(sourceNode.getString("nodeType")) 
+			&& targetNode.getString("nodeType").equals("wtctrls"))) {
+				System.out.println("basic element to wtctrl");
+				addReferenceToWtctrl(targetNode, sourceNode, model, positions);
+			} else 
+			// wtctrl to basic element or subsystem
+			if(sourceNode.getString("nodeType").equals("wtctrls")
+			&& basicElements.contains(targetNode.getString("nodeType"))) {
+				System.out.println("wtctrl to basic element");
+			} else 
+			// wtctrl to subsystem
+			if(sourceNode.getString("nodeType").equals("wtctrls")
+			&& targetNode.getString("nodeType").equals("subsystems")) {
+				System.out.println("wtctrl to subsystem");
+				connectAsChildAndParent(sourceNode, targetNode, model, positions);
+			} else 
+			// subsystem to wtrctrl
+			if(sourceNode.getString("nodeType").equals("subsystems")
+			&& targetNode.getString("nodeType").equals("wtctrls")) {
+				System.out.println("subsystem to wtctrl");
+				connectAsChildAndParent(targetNode, sourceNode, model, positions);
+			} else
+			// subsystem to subsystem or wtctrl
+			if(sourceNode.getString("nodeType").equals("subsystems")
+			&& targetNode.getString("nodeType").equals("subsystems")) {
+				System.out.println("subsystem to subsystems");
+				//connectAsChildAndParent(targetNode, sourceNode);
+			} 
+			
+			JSONObject results = new JSONObject();
+			results.put("model", model);
+			results.put("positions", positions);
+			return results;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private static void addReferenceToWtctrl(JSONObject wtctrl, JSONObject referencedObject, JSONObject model, JSONObject positions) {
+		try {
+			deleteNode(wtctrl, model);
+			
+			String refObjectType = referencedObject.getString("nodeType");
+			String referenceString = "//@" + refObjectType + "." + referencedObject.getString("indexOfReferencedObject");
+			JSONObject ref = new JSONObject();
+			ref.put("$ref", referenceString);
+			wtctrl.put(refObjectType.substring(0, refObjectType.length() - 1), ref);
+			
+			JSONObject pos = positions.getJSONObject(wtctrl.getString("id"));
+			wtctrl.put("x", pos.getInt("x"));
+			wtctrl.put("y", pos.getInt("y"));
+			
+			addNode(wtctrl, model, positions);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private static void connectAsChildAndParent(JSONObject child, JSONObject parent, 
+			JSONObject model, JSONObject positions) throws JSONException {
+		deleteNode(child, model);
+		
+		child.put("parentId", parent.getString("id"));
+		
+		JSONObject pos = positions.getJSONObject(child.getString("id"));
+		child.put("x", pos.getInt("x"));
+		child.put("y", pos.getInt("y"));
+		addNode(child, model, positions);
 	}
 	
 	private static JSONObject renamePositionId(JSONObject original, JSONObject edited, JSONObject positions) {
@@ -136,13 +230,22 @@ public class ModelModifier {
 	
 	private static JSONObject connectElementToRootNode(JSONObject node, JSONObject element) {
 		try {
-			String type = element.getString("type");
-			String typeSetName = element.getString("type");
+			String typeSetName = element.getString("nodeType");
 			JSONObject newElement =  new JSONObject();
 			
 			// TODO set additional EMF properties
 			newElement.put("name", element.getString("name"));
-			
+			newElement.put("id", element.getString("id"));
+			System.out.println("YOMOKO " + element.toString());
+			if(element.has("input")) {
+				newElement.put("input", element.getJSONObject("input"));
+			}
+			if(element.has("output")) {
+				newElement.put("output", element.getJSONObject("output"));
+			}
+			if(element.has("param")) {
+				newElement.put("param", element.getJSONObject("param"));
+			}
 			if(!node.has(typeSetName)) {
 				JSONArray newType = new JSONArray();
 				newType.put(newElement);
