@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# Pre-commit script is responsible for execute the "put back" method of our lens when a client commits changes to a front repository.
+# This hook has to be placed in the into the hooks directory of every front repository.
+# For the configuration, set the following variables:
+
+URL='http://localhost' 				#URL of the SVN repository provider
+GOLD_REPOS="/svn/mondo-testrepo" 		#The name of the gold repository
+GOLD_REPOS_URL="$URL$GOLD_REPOS"		#URL of the gold repository
+TEMP='/home/vialpando/tempsvn'			#Temporary directory, where the script has enough permisson to create and copy files
+
+#Do not modify these variables - other scripts may depends on these settings
+TEMP_GOLD="$TEMP/tempGold/$GOLD_REPOS"
+TEMP_FRONT="$TEMP/tempFront/Current/$CURRENT_FRONT_REPOS"
+
+#Do not modify these variables - these variables comes from the svn call
+CURRENT_FRONT_REPOS="$1"
+CURRENT_FRONT_REPOS_URL="$URL$CURRENT_FRONT_REPOS"
+TXN="$2"
+
+set -e
+
+rm -rf $TEMP/*
+echo "initial clear ...... ok" 1>&2
+
+svn checkout $GOLD_REPOS_URL $TEMP_GOLD -q
+echo "gold checkout ...... ok" 1>&2
+
+svn checkout $CURRENT_FRONT_REPOS_URL $TEMP_FRONT -q
+echo "front checkout ..... ok" 1>&2
+
+changes=$(svnlook changed -t $TXN $CURRENT_FRONT_REPOS)
+MSG=$(svnlook log -t $TXN $CURRENT_FRONT_REPOS)
+echo "get changes ........ ok" 1>&2
+
+USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)
+
+counter=0
+for line in $changes; do
+   val=$(($counter % 2))
+   if [ $val = 0 ]
+   then
+       nextType=$line
+   fi
+   if [ $val = 1 ]
+   then
+   	nextChange=$line
+	if [ $nextType = "A" ] || [ $nextType = "U" ] || [ $nextType = "UU" ]
+	then
+	   case $nextChange in
+     		*/) mkdir -p "$TEMP_FRONT/$nextChange";;
+     		*) svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$TEMP_FRONT/$nextChange"
+        $LENS_SCRIPT $FRONT_USER "$TEMP_GOLD/$nextChange" "$TEMP_FRONT/$nextChange" '-performPutback' $TEMP;;
+	   esac
+        fi
+
+	if [ $nextType = "D" ]
+	then
+	   rm -rf "$TEMP_FONT/$nextChange"
+        fi
+   fi
+   counter=$((counter+1))
+done
+echo "update completed ... ok" 1>&2
+
+cd $TEMP_GOLD
+svn add --force * --auto-props --parents --depth infinity -q
+echo "add files to svn ... ok" 1>&2
+
+echo "$MSG" 1>"svn-commit.tmp"
+svn commit -F svn-commit.tmp
+echo "commit files ....... ok" 1>&2
+
+rm -rf $TEMP/*
+echo "final clear ........ ok" 1>&2
+
+exit 0
