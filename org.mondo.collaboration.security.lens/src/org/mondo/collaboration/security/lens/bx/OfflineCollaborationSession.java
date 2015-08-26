@@ -115,7 +115,7 @@ public class OfflineCollaborationSession {
         
 		MondoLensScope scope = new MondoLensScope(arbiter, goldIndexer, frontIndexer, correspondenceTables);
 		
-		return new RelationalLensXform(scope, user);
+		return new RelationalLensXform(scope, user, null);
 	}
 	
 	

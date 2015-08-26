@@ -15,9 +15,14 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
+import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
+import org.mondo.collaboration.security.lens.context.manipulables.DebuggableManipulableWrapper;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 
@@ -32,6 +37,7 @@ import com.google.common.collect.Multimaps;
  */
 public class EObjectCorrespondence {
 
+
 	/**
 	 * Assigns unique ID to objects for establishing correspondence. 
 	 * Never return null; return the argument if no ID is available.
@@ -43,6 +49,25 @@ public class EObjectCorrespondence {
 	public interface UniqueIDSchemeFactory extends Function<URI, UniqueIDScheme> {}
 
 	/**
+	 * @return the unique ID provider factory registered via the extension point org.mondo.collaboration.security.lens.uniqueIDSchemeFactory
+	 */
+	public static UniqueIDSchemeFactory getRegisteredIDProviderFactory() throws CoreException {
+		if (! Platform.isRunning()) {
+			throw new IllegalStateException("Platform not started yet.");
+		}
+		IConfigurationElement[] configurationElements = 
+				Platform.getExtensionRegistry().getConfigurationElementsFor(SCHEME_FACTORY_EXTENSION_POINT);
+		System.out.println("Found extensions to " + SCHEME_FACTORY_EXTENSION_POINT + ": " + configurationElements.length);
+		for (IConfigurationElement contribution : configurationElements) {
+			System.out.println("\t " + contribution.getDeclaringExtension().getUniqueIdentifier() + " --> " + contribution);
+			Object executableExtension = contribution.createExecutableExtension("scheme-factory-class");
+			return (UniqueIDSchemeFactory) executableExtension;
+		}
+		return DefaultEMFUniqueIDFunctions.Factory.INSTANCE;
+	}
+	private static final String SCHEME_FACTORY_EXTENSION_POINT = "org.mondo.collaboration.security.lens.uniqueIDSchemeFactory";
+	
+	/**
 	 * Builds a correspondence table between two models based on unique identifiers.
 	 */
 	public static LiveTable buildEObjectCorrespondenceTable(
@@ -52,6 +77,7 @@ public class EObjectCorrespondence {
 			UniqueIDScheme frontObjectToUniqueIdentifier) 
 	{
 		final LiveTable table = new LiveTable();
+		DebuggableManipulableWrapper manipulable = new DebuggableManipulableWrapper(table, CorrespondenceKey.EOBJECT);
 		
 		Map<Object, Collection<EObject>> goldIndex = 
 				Multimaps.index(goldIndexer.getAllEObjects(), goldObjectToUniqueIdentifier).asMap();
@@ -69,7 +95,7 @@ public class EObjectCorrespondence {
 				FlatTuple tuple = new FlatTuple(
 						golds.iterator().next(),
 						fronts.iterator().next());
-				table.updateTuple(tuple, true);
+				manipulable.assertTuple(tuple);
 			}
 		}
 		

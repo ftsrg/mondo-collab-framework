@@ -28,60 +28,142 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	).html();
 	
 	var cc = this;
-	this.setModel = function(model) {
+	
+	this.initModelDisplay = function(model) {
+		console.log("Initializing model display..");
+		cc.model = model;
+		var data = extractRoot(model);
+		
+		var options = {
+	        physics: {
+	        	barnesHut: {
+	        		gravitationalConstant: 0,
+	        		centralGravity: 0, 
+	        		springConstant: 0
+	        	}
+	        },
+	        edges: {
+	        	arrows: 'to',
+	        	smooth: {
+	        	      enabled: false
+	        	}
+	        },
+	        layout: {
+	        	hierarchical: {
+		            direction: "UD",
+		            levelSeparation: 50
+	        	}
+	        },
+			manipulation: {
+			    initiallyActive: true
+			}
+		};
+
+		var container = document.getElementById('workspace');
+		modelDisplay = new vis.Network(container, data, options);
+		
+		// save position of nodes
+		var positions = modelDisplay.getPositions();
+		cc.publishPositions(positions);
+	}
+	
+	this.setModel = function(model, positions) {
+		console.log("Updating model...");
 		/*
 		if(!model) {
 			return false;
 		}
 		*/
 		cc.model = model;
-		var data = extractRoot(model);
-		
+		data = extractRoot(model);
 		var options = {
-			stabilize: true,
-	        hierarchicalRepulsion: {
-	            centralGravity: 0.1
-	        },
-	        smoothCurves: false,
-	        dragNodes: false,
-	        hierarchicalLayout: {
-	            direction: "UD"
-	        },
-			dataManipulation: {
-			    enabled: true,
-			    initiallyVisible: true
-			},
-			onAdd: function(newData, callback) {
-		        var newNode = {
-		        	elementType: 1,
-		        	parentName: "",
-		        	name: "",
-		        	type: "",
-		        	// id: newData.id,
-		        	label: "New element",
-		        	group: ""		        	
-		        }; 
-		        editDialog(newNode, true);
-		    },
-	        onEdit: function(nodeData, callback) {
-	        	var node = getElement(nodeData.id, data.nodes);
-	        	editDialog(node, false);
-	        },
-	        onEditEdge: function(edgeData, callback) {
-	        	// Coming soon... just like winter
-	        },
-	        onDelete: function(dataToDelete, callback) {
-	        	var nodeId = dataToDelete.nodes.shift();
-	        	var node = getElement(nodeId, data.nodes);
-	        	var deletionData = {
-	        		node: node
+	        physics: {
+	        	barnesHut: {
+	        		gravitationalConstant: 0,
+	        		centralGravity: 0, 
+	        		springConstant: 0
 	        	}
-	        	cc.deleteElement(deletionData);
-	        }
+	        },
+	        layout: {
+	        	hierarchical: false
+        	},
+	        edges: {
+	        	arrows: 'to',
+	        	smooth: {
+	        	      enabled: false
+	        	}
+	        },
+			manipulation: {
+			    initiallyActive: true,
+				addNode: function(newData, callback) {
+			        var newNode = {
+			        	elementType: 1,
+			        	parentId: "",
+			        	name: "",
+			        	type: "",
+			        	// id: newData.id,
+			        	label: "New element",
+			        	group: "",
+			        	x: newData.x,
+			        	y: newData.y
+			        }; 
+			        editDialog(newNode, true);
+			    },
+			    addEdge: function(data, callback) {
+		        	console.log(data);
+		        	alert("EDGE YOLOOO")
+			    },
+		        editNode: function(nodeData, callback) {
+		        	var node = getElement(nodeData.id, data.nodes);
+		        	editDialog(node, false);
+		        	callback(null);
+		        },
+		        editEdge: function(edgeData, callback) {
+		        	// coming soon... just like winter
+		        },
+		        deleteNode: function(dataToDelete, callback) {
+		        	var nodeId = dataToDelete.nodes.shift();
+		        	var node = getElement(nodeId, data.nodes);
+		        	var deletionData = {
+		        		node: node
+		        	}
+		        	cc.deleteElement(deletionData);
+		        }
+			}
 		}
 
 		var container = document.getElementById('workspace');
-		var network = new vis.Network(container, data, options);
+		modelDisplay = new vis.Network(container, data, options);
+		modelDisplay.on("dragEnd", function (params) {
+			params.event = "[original event]";
+	        if(params.nodes.length > 0) {
+	        	var positionData = {
+	    			node: params.nodes.pop(),
+	    			newPosition: params.pointer.canvas
+	    		}
+	        	cc.moveNode(positionData);
+	        } /*else {
+	        	viewPosition = modelDisplay.getViewPosition();
+	        	if(!viewScale) {
+	        		viewScale = modelDisplay.getScale();
+	        	}
+	        }*/
+	    });
+		applyPositions(positions);
+		/*
+		modelDisplay.on("zoom", function (params) {
+        	viewScale = modelDisplay.getScale();
+        	if(!viewPosition) {
+        		viewPosition = modelDisplay.getViewPosition();
+        	}
+	    });*/
+		
+/*	    if(typeof viewScale !== 'udnefined' && typeof viewPosition !== 'udnefined') {
+			modelDisplay.moveTo({
+				position: viewPosition,
+				scale: viewScale
+			});
+		}*/
 	}
 	var getElement = function(id, stack) {
 		for(var i in stack) {
@@ -103,20 +185,22 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
 		var types = getElementTypes();
-
+		var excludedProperties = ["elementType", "shape", "size", "style", "level", "label", "color"];
+		if(!isNewElement) {
+			excludedProperties.push("parentId");
+			excludedProperties.push("type");
+		} 
 		for(var property in element) {
-		    if(element.hasOwnProperty(property) && !isArray(element[property]) && property != "elementType"
-		    && property != "shape" && property != "radius"  && property != "style"
-	    	&& property != "level") {
+		    if(element.hasOwnProperty(property) && !isArray(element[property]) &&
+    		element[property] != null && excludedProperties.indexOf(property) == -1) {
 		    	var propLabel = property + ':';
 		    	var propValue = element[property];
 	    		if(typeof propValue["$ref"] !== "undefined") {
-	    			propValue = propValue["$ref"];
+	    			// propValue = propValue["$ref"];
+	    			continue;
 	    		}
 		    	var inputCell = $('<td/>');
 		    	var input = null;
-		    	console.log("yoyo");
-		    	console.log(element);
 		    	if(property == "type" && element['elementType'] != 2) {
 		    		input = $('<select/>').attr('id', property);
 		    		for(var i in types) {
@@ -131,15 +215,18 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		    		input =	$('<input/>')
         				.attr('id', property)
         				.attr('value', propValue);
+		    			
 		    	}
 		    	if(input != null) {
 			    	inputCell.append(input);
-			    	propertiesTable.append(
-			        	$('<tr/>').append(
-			        		$('<td class="label"/>').text(propLabel),
-			        		inputCell
-			        	)
-			        );
+			    	var newRow = $('<tr/>').append(
+				        $('<td class="label"/>').text(propLabel),
+				        inputCell
+				    );
+			    	if(property == 'x' || property == 'y') {
+			    		newRow.hide();
+			    	}
+			    	propertiesTable.append(newRow);
 		    	}
 	    	}
 		}
@@ -173,6 +260,13 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	
 	// WTSpec -ific..  huehue :(
 	var extractRoot = function(root) {
+		if(typeof wtctrlReferences === 'undefined') {
+			wtctrlReferences = {
+				inputs: [],
+				outputs: [],
+				params: []
+			};
+		}
 		var depthTracker = {
 			depth: 0
 		}
@@ -182,10 +276,13 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			edges: []
 		}
 		for(var property in root) {
+			if(isWtctrlReference(property)) {
+				wtctrlReferences[property] = root[property];
+			}
 		    if(root.hasOwnProperty(property) && isArray(root[property])) {
 		    	var children = root[property];
 		    	for(var i in children) {
-		    		var subModel = extractModel(children[i], property, currentLevel, depthTracker);
+		    		var subModel = extractModel(children[i], property, currentLevel, depthTracker, "");
 		    		model = mergeModels(model, subModel);
 		    	}
 		    	currentLevel = depthTracker.depth + 1;
@@ -195,31 +292,44 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	}
 	
 	// returns the node and its subtree
-	var extractModel = function(node, type, currentLevel, depthTracker) {
+	var extractModel = function(node, type, currentLevel, depthTracker, parentId) {
 		depthTracker.depth++;
 		currentLevel++;
 		var maxDepth = currentLevel; 
-		node.id = node.name;
+		node.id = node.id;
+		node.label = node.name;
 		node.level = currentLevel;
+		node.parentId = parentId;
 		addNodeStyle(node, type);
 		var model = {
 			nodes: [node],
 			edges: []
 		};
+		// connect wtctrl with their referenced inputs/outputs/params
 		for(var property in node) {
-		    if(node.hasOwnProperty(property) && isArray(node[property])) {
+			if(isWtctrlReference(property)) {
+				var index = parseInt(node[property]["$ref"].slice(-1));
+				var prop = property + "s";
+				var newEdge = {
+					from: node.name,
+					to: wtctrlReferences[prop][index].id,
+					color: wtctrlReferences[prop][index].color
+					//connectionType: "containment"
+				}
+				model.edges.push(newEdge);
+			} else if(node.hasOwnProperty(property) && isArray(node[property])) {
 		    	// process subtree
-		    	// note: at this point the property identifies the sub nodes' type
+		    	// note: at this point the property identifies the subnodes' type
 		    	var setOfChildren = node[property]; 
 		    	for(var i in setOfChildren) {
 					var newEdge = {
-						from: node.name,
-						to: setOfChildren[i].name,
+						from: node.id,
+						to: setOfChildren[i].id,
 						style: "arrow",
 						connectionType: "containment"
 					}
 					model.edges.push(newEdge);
-					var subModel = extractModel(setOfChildren[i], property, currentLevel, depthTracker);
+					var subModel = extractModel(setOfChildren[i], property, currentLevel, depthTracker, node.id);
 					model = mergeModels(model, subModel);
 					if(depthTracker.depth > maxDepth) {
 						maxDepth = depthTracker.depth;
@@ -244,4 +354,14 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	var isArray = function(variable) {
 		return (Object.prototype.toString.call(variable) === '[object Array]');
 	}
+	
+	var applyPositions = function(positions) {
+		if(positions) {
+			for(var nodeId in positions) {
+				console.log(positions[nodeId]);
+				modelDisplay.moveNode(nodeId, positions[nodeId].x, positions[nodeId].y);
+			}
+		}
+	}
 };
+

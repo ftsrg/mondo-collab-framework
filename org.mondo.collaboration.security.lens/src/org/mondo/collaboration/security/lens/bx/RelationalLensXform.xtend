@@ -14,23 +14,26 @@ package org.mondo.collaboration.security.lens.bx
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
 import java.util.Set
-import org.eclipse.incquery.runtime.api.IQuerySpecification
+import org.apache.log4j.Logger
 import org.eclipse.incquery.runtime.api.IncQueryEngine
 import org.eclipse.incquery.runtime.evm.api.Activation
 import org.eclipse.incquery.runtime.evm.api.Context
 import org.eclipse.incquery.runtime.evm.api.RuleEngine
 import org.eclipse.incquery.runtime.evm.api.RuleSpecification
 import org.eclipse.incquery.runtime.evm.specific.RuleEngines
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.ConstantValue
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint
+import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.Equality
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.mondo.collaboration.security.lens.arbiter.Asset
+import org.mondo.collaboration.security.lens.arbiter.AuthorizationQueries
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind
 import org.mondo.collaboration.security.lens.context.MondoLensScope
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey
+import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
 import org.mondo.collaboration.security.lens.context.keys.EObjectKey
 import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey
+import org.mondo.collaboration.security.lens.context.keys.ResourceKey
+import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey
 import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey
 import org.mondo.collaboration.security.lens.relational.ActionStep
 import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
@@ -41,11 +44,13 @@ import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
-import org.mondo.collaboration.security.lens.context.keys.ResourceKey
-import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey
-import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.Equality
-import org.apache.log4j.Logger
+import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator
+import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
+import org.eclipse.incquery.runtime.matchers.psystem.PConstraint
+import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.PatternMatchCounter
+import org.eclipse.incquery.runtime.matchers.psystem.IExpressionEvaluator
+import org.eclipse.incquery.runtime.matchers.psystem.IValueProvider
+import org.eclipse.emf.ecore.EAttribute
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -61,11 +66,17 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	@Accessors(PUBLIC_GETTER) User user
 	@Accessors(PUBLIC_GETTER) MondoLensScope scope
+	@Accessors(PUBLIC_GETTER) DataTypeObfuscator<String> stringObfuscator
+
+	@Accessors(PUBLIC_GETTER) AuthorizationQueries authorizationQueries
 	
-	new(MondoLensScope scope, User user) {
+	new(MondoLensScope scope, User user, DataTypeObfuscator<String> stringObfuscator) {
 		super(scope.manipulables, scope.queriables)
 		this.user = user
 		this.scope = scope
+		this.stringObfuscator = stringObfuscator
+		
+		this.authorizationQueries = scope.arbiter.instantiateAuthorizationQuerySpecificationsForUser(user)
 		
 		addRules
 		operationalize
@@ -99,7 +110,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	}
 	
 	public def getQueries() {
-		ImmutableSet::copyOf(Iterables::concat(ruleOperationalizations.map[queries]))
+		ImmutableSet::copyOf(Iterables::concat(authorizationQueries.allQueries, Iterables::concat(ruleOperationalizations.map[queries])))
 	}
 	
 	private RuleEngine ruleEngineForGet
@@ -119,10 +130,14 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	
 	private def createRuleEngine(Iterable<Set<RuleSpecification>> rules) {
-			val ruleEngine = RuleEngines::createIncQueryRuleEngine(IncQueryEngine::on(scope))
+			val ruleEngine = RuleEngines::createIncQueryRuleEngine(getIncQueryEngine())
 			ruleEngine.conflictResolver = priorityResolver
 			Iterables::concat(rules).forEach[rule | ruleEngine.addRule(rule)]
 			return ruleEngine
+	}
+	
+	def getIncQueryEngine() {
+		IncQueryEngine::on(scope)
 	}
 	
 	
@@ -202,9 +217,59 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
 			)
-			mappingCondition += QueryTemplate::fromConstrainer(#[varGoldValue, varFrontValue]) [ body | 
-				// TODO add obfuscation, move to security check
+			mappingCondition += QueryTemplate::fromConstrainer(#[]) [ body | 
+				// TODO add obfuscation
 				new Equality(body, body.getOrCreateVariableByName(varGoldValue), body.getOrCreateVariableByName(varFrontValue))
+				
+//				new PatternMatchCounter(body, 
+//					new FlatTuple(body.getOrCreateVariableByName(varGoldEObject), body.getOrCreateVariableByName(varEAttribute)), 
+//					authorizationQueries.effectivelyObfuscatedAttribute, 
+//					body.getOrCreateVariableByName(varIsObfuscated)
+//				) 
+//				new ExpressionEvaluation(body, new IExpressionEvaluator(){
+//					override evaluateExpression(IValueProvider provider) throws Exception {
+//						val feature = provider.getValue(varEAttribute)
+//						val isObfuscated = provider.getValue(varIsObfuscated)
+//						val goldValue = provider.getValue(varGoldValue)
+//						
+//						if (feature instanceof EAttribute && isObfuscated instanceof Number) {
+//							if (1 == (isObfuscated as Number).intValue && goldValue instanceof String)
+//								return stringObfuscator.obfuscateData(goldValue as String)
+//							else 
+//								return goldValue
+//						} else {
+//							return null
+//						}
+//					}
+//					override getInputParameterNames() {
+//						#[varEAttribute, varIsObfuscated, varGoldValue]
+//					}
+//					override getShortDescription() {
+//						'''Obfuscates gold value into front value'''
+//					}
+//				}, body.getOrCreateVariableByName(varFrontValue))
+//				new ExpressionEvaluation(body, new IExpressionEvaluator(){
+//					override evaluateExpression(IValueProvider provider) throws Exception {
+//						val feature = provider.getValue(varEAttribute)
+//						val isObfuscated = provider.getValue(varIsObfuscated)
+//						val frontValue = provider.getValue(varFrontValue)
+//						
+//						if (feature instanceof EAttribute && isObfuscated instanceof Number) {
+//							if (1 == (isObfuscated as Number).intValue && frontValue instanceof String)
+//								return stringObfuscator.restoreData(frontValue as String)
+//							else 
+//								return frontValue
+//						} else {
+//							return null
+//						}
+//					}
+//					override getInputParameterNames() {
+//						#[varEAttribute, varIsObfuscated, varFrontValue]
+//					}
+//					override getShortDescription() {
+//						'''Deobfuscates front value into gold value'''
+//					}
+//				}, body.getOrCreateVariableByName(varGoldValue))
 			]
 			front += new ManipulableTemplate(
 				EObjectAttributeKey.FRONT, #[varFrontEObject, varEAttribute, varFrontValue]
@@ -216,32 +281,18 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	
 	def ActionStep checkWriteAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
+		val authDeniedQuery = authorizationQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::WRITE)
+		val authDeniedMatcher = authDeniedQuery.getMatcher(incQueryEngine)
 		return [
-			val Object[] valueArray = Iterables::concat(assetVariables.map[name | variables.get(name)], #[user, RuleType::DENY])
-			val seed = new FlatTuple(valueArray)
-			val secRelation = getQueriable(new SecurityJudgementKey(OperationKind.WRITE, assetClass))
-			val denyJudgements = secRelation.getTuplesForSeed(seed)
-			if (! denyJudgements.isEmpty) {
-				throw new RuntimeException('''No write authorization to «assetClass.simpleName» for «seed»''');
+			val Object[] valueArray = assetVariables.map[name | variables.get(name)]
+			val authMatch = authDeniedQuery.newMatch(valueArray)
+			if (authDeniedMatcher.hasMatch(authMatch)) {
+				throw new RuntimeException('''User "«user.name»" has no authorization for writing «assetClass.simpleName» at «authMatch.prettyPrint»''');
 			}
 		]
 	}
 	def QueryTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
-		negativeCall(assetClass.readDeniedHelperPattern(assetVariables))
-	}
-	// TODO cache
-	def IQuerySpecification readDeniedHelperPattern(Class<? extends Asset> assetClass, String... assetVariables) {
-		composeQuery('''«fullyQualifiedName».readDenied.«assetClass.simpleName»''', 
-			#[QueryTemplate::fromConstrainer(assetVariables)[ body |
-				val Object[] variableArray = Iterables::concat(assetVariables, #[varUser, varJudgement]).map[body.getOrCreateVariableByName(it)]
-				new TypeConstraint(body, 
-					new FlatTuple(variableArray), 
-					new SecurityJudgementKey(OperationKind.READ, assetClass)
-				)
-				new ConstantValue(body, body.getOrCreateVariableByName(varUser), user)			
-				new ConstantValue(body, body.getOrCreateVariableByName(varJudgement), RuleType::DENY)
-			]]
-		)
+		authorizationQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
 	}
 //		return new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
 //			'''«fullyQualifiedName».readDenied.«assetClass.simpleName»''',
@@ -287,10 +338,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	static val varEAttribute = "eAttribute"
 	static val varGoldValue = "goldValue"
 	static val varFrontValue = "frontValue"
-	
-	static val varUser = "user"
-	static val varJudgement = "judgement"
-	
+	static val varIsObfuscated = "isObfuscated"
 	
 		
 }

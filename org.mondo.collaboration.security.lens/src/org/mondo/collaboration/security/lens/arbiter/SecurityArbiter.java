@@ -356,6 +356,8 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		return policyQueryEngine;
 	} 
 
-	
+	public AuthorizationQueries instantiateAuthorizationQuerySpecificationsForUser(User user) {
+		return new AuthorizationQueries(user);
+	}
 	
 }

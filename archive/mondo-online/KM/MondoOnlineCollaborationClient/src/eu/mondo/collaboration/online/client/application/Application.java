@@ -106,7 +106,6 @@ public class Application extends UI {
 	public void leaveSession() {
 		navigator.navigateTo(SessionSelectionPage.NAME);
 		navigator.removeView(CollaborationPage.NAME);
-		this.collaborationPage = new CollaborationPage(navigator, this);
-		navigator.addView(CollaborationPage.NAME, this.collaborationPage);
+		this.collaborationPage = null;
 	}
 }

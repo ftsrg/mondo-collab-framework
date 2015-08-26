@@ -11,8 +11,9 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.mondo.collaboration.security.lens.bx.OfflineCollaborationSession;
-import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions;
-import org.mondo.collaboration.security.lens.correspondence.DefaultEMFUniqueIDFunctions.Factory;
+import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
+import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
+import org.mondo.collaboration.security.lens.emf.EMFUtil;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
 
 public class OfflineLensApplication implements IApplication {
@@ -55,8 +56,10 @@ public class OfflineLensApplication implements IApplication {
 		ResourceSet frontResourceSet 	= loadModelRoots(frontPaths); // TODO use resourceSetProvider?
 		Resource policyResource 		= loadPolicyModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
 		
-		// TODO unique ID provider factory?
-		final Factory uniqueIDSchemeFactory = DefaultEMFUniqueIDFunctions.Factory.INSTANCE;
+		final UniqueIDSchemeFactory uniqueIDSchemeFactory = EObjectCorrespondence.getRegisteredIDProviderFactory();
+		
+		System.out.println();
+		System.out.println("[MondoOfflineCollaborationLens] Setting up lens...");
 		
 		OfflineCollaborationSession session = 
 				new OfflineCollaborationSession(
@@ -67,12 +70,23 @@ public class OfflineLensApplication implements IApplication {
 						uniqueIDSchemeFactory,
 						policyResource, 
 						userName);
-		if (performGet)
-			session.doGetAndSave();
-		else if (performPutback)
-			session.doPutbackAndSave();
+
+		try {
+			System.out.println("[MondoOfflineCollaborationLens] Strating transformation...");
+			
+			if (performGet)
+				session.doGetAndSave();
+			else if (performPutback)
+				session.doPutbackAndSave();
+			
+			System.out.println("[MondoOfflineCollaborationLens] Done.");
+			return IApplication.EXIT_OK;
+		} catch (Exception ex) {
+			System.out.println("[MondoOfflineCollaborationLens] Aborted.");
+			ex.printStackTrace();
+			return -1;
+		}
 		
-		return IApplication.EXIT_OK;
 	}
 
 	private ResourceSet loadModelRoots(List<String> paths) {
@@ -90,7 +104,8 @@ public class OfflineLensApplication implements IApplication {
 		return getResourceAtPath(model, policyPath);
 	}
 	private Resource getResourceAtPath(ResourceSet model, String path) {
-		return model.getResource(URI.createFileURI(path), true);
+		final URI fileURI = URI.createFileURI(path);
+		return EMFUtil.getOrCreateResource(model, fileURI);
 	}
 	
 	private static String getSingletonCLIOptionValue(String[] argArray, String optionKey, String valuePlaceHolder) {

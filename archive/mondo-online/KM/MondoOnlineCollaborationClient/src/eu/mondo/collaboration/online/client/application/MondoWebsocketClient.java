@@ -10,6 +10,7 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,12 +38,29 @@ public class MondoWebsocketClient {
     		JSONObject message = new JSONObject(rawMessage);
     		String operation = message.getString("operation");
     		System.out.println("Operation: " + operation);
-    		if(operation.equals("updateModel")) {
+    		if(operation.equals("modelTransferComplete")) {
+    			System.out.println("modelTransferComplete...");
+    			this.application.getCollaborationPage().setModelTransferComplete(true);
+    		} else if(operation.equals("updateModel")) {
         		System.out.println("updateModel...");
 				this.application.getCollaborationPage().setModel(
 					message.getJSONObject("model")
 				);
-	    		System.out.println("Model length: " + message.length());
+    		} else if(operation.equals("modifyModel")) {
+        		System.out.println("modifyModel...");
+				this.application.getCollaborationPage().modifyModel(
+					message.getJSONObject("data")
+				);
+    		} else if(operation.equals("updatePositions")) {
+        		System.out.println("updatePositions... - " + message.toString());
+				this.application.getCollaborationPage().setPositions(
+					message.getJSONObject("positions")
+				);
+    		} else if(operation.equals("updateNodePosition")) {
+        		System.out.println("updateNodePosition...");
+				this.application.getCollaborationPage().moveNode(
+					message.getJSONObject("nodeData")
+				);
     		} else if(operation.equals("updateSessions")) {
         		System.out.println("updateSessions...");
 				this.application.getSessionSelectionPage().setSessionsList(
@@ -91,7 +109,23 @@ public class MondoWebsocketClient {
 		}
 	}
 
-	public void loadOpenSessions() {
+	public void publishPositions(String sessionId, JSONObject newPositions) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "publishPositions");
+			request.put("positions", newPositions);
+			request.put("sessionId", sessionId);
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadAvailableSessions() {
 		try {
 			JSONObject request = new JSONObject();
 			request.put("operation", "getSessions");
@@ -171,5 +205,52 @@ public class MondoWebsocketClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+	}
+
+	public void publishNodePosition(JSONObject nodeData, String sessionId) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "publishNodePosition");
+			request.put("nodeData", nodeData);
+			request.put("sessionId", sessionId);
+			System.out.println("Sending message to server: " + request.toString());
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	public void leaveSession(User user, String sessionId) {
+		try {
+			JSONObject jsonUser = new JSONObject();
+			jsonUser.put("name", user.getUserName());
+			jsonUser.put("password", user.getPassword());
+			JSONObject request = new JSONObject();
+			request.put("operation", "leaveSession");
+			request.put("sessionId", sessionId);
+			request.put("user", jsonUser);
+			System.out.println("Sending message to server: " + request.toString());
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+	}
+
+	public void publishModification(String sessionId, JSONObject data) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "modifyModel");
+			request.put("sessionId", sessionId);
+			request.put("data", data);
+			System.out.println("Sending message to server: " + request.toString());
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -1,23 +1,18 @@
 var addNodeStyle = function(node, type) {
+	node.shape = "box";
+	
 	if(type == "subsystems") {
-		node.type = "subsystems";
-		node.shape = "box";
+		node.color = {background: "rgb(227, 86, 48)", border: "black"};
 	} else if(type == "wtctrls") {
-		node.type = "wtctrls";
-		node.shape = "dot";
-		node.radius = 10;
+		node.color = {background: "rgb(46, 208, 20)", border: "black"};
 	} else if(type == "inputs") {
-		node.type = "inputs";
-		node.shape = "triangleDown";
-		node.radius = 10;
+		node.color = {background: "rgb(22, 212, 178)", border: "black"};
 	} else if(type == "outputs") {
-		node.type = "outputs";
-		node.shape = "triangle";
-		node.radius = 10;
+		node.color = {background: "rgb(224, 198, 163)", border: "black"};
 	} else if(type == "params") {
-		node.type = "params";
-		node.shape = "square";
-		node.radius = 10;
+		node.color = {background: "rgb(68, 134, 255)", border: "black"};
+	} else if(type == "alarms") {
+		node.color = {background: "rgb(255, 255, 0)", border: "black"};
 	} /*else if(type == "faults") {
 		node.type = "Fault";
 		node.shape = "star";
@@ -34,6 +29,19 @@ var addNodeStyle = function(node, type) {
 }
 
 var getElementTypes = function() {
-	var types = ["subsystems", "wtctrls", "inputs", "outputs", "params" /*, "Fault", "Variable", "Timer"*/];
+	var types = ["subsystems", "wtctrls", "inputs", "outputs", "params", "alarms" /*, "Fault", "Variable", "Timer"*/];
 	return types;
+}
+
+var getWtctrlReferenceTypes = function() {
+	var types = ["inputs", "outputs", "params", "input", "output", "param"];
+	return types;
+}
+
+var isWtctrlReference = function(property) {
+	var types = getWtctrlReferenceTypes();
+	if(types.indexOf(property) != -1) {
+		return true;
+	}
+	return false;
 }

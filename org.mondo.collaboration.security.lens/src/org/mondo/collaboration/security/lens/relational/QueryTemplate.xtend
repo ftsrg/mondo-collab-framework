@@ -18,12 +18,12 @@ import org.eclipse.incquery.runtime.matchers.psystem.PBody
  * Generates constraints into rule precondition patterns, also exposing the variables to which it can bind value.
  */
 public abstract class QueryTemplate implements Procedure1<PBody> {
-	public abstract def Iterable<String> getVariables()
+	public abstract def Iterable<String> getDeducedVariables()
 	
-	public static def QueryTemplate fromConstrainer(Iterable<String> variableNames, Procedure1<PBody> constrainer) {
+	public static def QueryTemplate fromConstrainer(Iterable<String> deducedVariableNames, Procedure1<PBody> constrainer) {
 		return new QueryTemplate() {
-			override getVariables() {
-				variableNames
+			override getDeducedVariables() {
+				deducedVariableNames
 			}
 			override apply(PBody p) {
 				constrainer.apply(p)

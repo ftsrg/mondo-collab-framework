@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
+import org.mondo.collaboration.security.lens.emf.EMFUtil;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 
 /**
@@ -40,6 +41,8 @@ public class ResourceManipulator extends BaseEMFManipulable {
 		
 		//resource.getContents().clear();
 		resource.unload();
+		// TODO delete file if file resource?
+
 		//root.getResources().remove(resource);
 		return tuple;
 	}
@@ -51,8 +54,8 @@ public class ResourceManipulator extends BaseEMFManipulable {
 		if (relativeURI == null || seed.get(0) != null) 
 			throw new IllegalArgumentException(seed.toString());
 		
-		URI uri = model.getUriRelativiser().relativePathToURI(relativeURI);
-		Resource resource = root.getResource(uri, true);
+		URI resourceURI = model.getUriRelativiser().relativePathToURI(relativeURI);
+		Resource resource = EMFUtil.getOrCreateResource(root, resourceURI);
 		return new FlatTuple(resource, relativeURI);
 	}
 
