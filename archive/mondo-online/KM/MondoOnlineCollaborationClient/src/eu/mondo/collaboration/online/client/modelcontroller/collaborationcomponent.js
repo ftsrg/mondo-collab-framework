@@ -32,6 +32,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	this.initModelDisplay = function(model) {
 		console.log("Initializing model display..");
 		cc.model = model;
+		wtctrlReferences = initWtctrlReferences();
 		var initialData = extractRoot(model);
 		
 		var options = {
@@ -69,6 +70,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	
 	this.setModel = function(model, positions) {
 		console.log("Updating model...");
+		wtctrlReferences = initWtctrlReferences();
 		/*
 		if(!model) {
 			return false;
@@ -139,9 +141,11 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		        deleteNode: function(deletionData, callback) {
 		        	var nodeId = deletionData.nodes.shift();
 		        	var node = getElement(nodeId, modelData.nodes);
-		        	var deletionData = {
-		        		node: node
+		        	var deletionData = {};
+		        	if(isWtctrlReference(node.nodeType)) {
+		        		node.indexOfReferencedObject = getIndexOfReferencedElement(node, wtctrlReferences);
 		        	}
+		        	deletionData.node = node;
 		        	cc.deleteElement(deletionData);
 		        }
 			}
@@ -257,13 +261,6 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	
 	// WTSpec -ific..  huehue :(
 	var extractRoot = function(root) {
-		if(typeof wtctrlReferences === 'undefined') {
-			wtctrlReferences = {
-				inputs: [],
-				outputs: [],
-				params: []
-			};
-		}
 		var depthTracker = {
 			depth: 0
 		}
@@ -272,10 +269,20 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			nodes: [],
 			edges: []
 		}
+
+		if(typeof root["inputs"] !== "undefined") {
+			wtctrlReferences["inputs"] = root["inputs"];
+		}
+		if(typeof root["outputs"] !== "undefined") {
+			wtctrlReferences["outputs"] = root["outputs"];
+		}
+		if(typeof root["params"] !== "undefined") {
+			wtctrlReferences["params"] = root["params"];
+		}
 		for(var property in root) {
-			if(isWtctrlReference(property)) {
-				wtctrlReferences[property] = root[property];
-			}
+//			if(isWtctrlReference(property)) {
+//				wtctrlReferences[property] = root[property];
+//			}
 		    if(root.hasOwnProperty(property) && isArray(root[property])) {
 		    	var children = root[property];
 		    	for(var i in children) {
@@ -290,6 +297,10 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	
 	// returns the node and its subtree
 	var extractModel = function(node, nodeType, currentLevel, depthTracker, parentId) {
+
+		if(typeof wtctrlReferences === 'undefined') {
+			wtctrlReferences = initWtctrlReferences();
+		}
 		depthTracker.depth++;
 		currentLevel++;
 		var maxDepth = currentLevel; 
@@ -308,6 +319,10 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			if(isWtctrlReference(property)) {
 				var index = parseInt(node[property]["$ref"].slice(-1));
 				var prop = property + "s";
+				console.log(wtctrlReferences);
+				console.log(prop);
+				console.log(index);
+				alert();
 				var newEdge = {
 					from: node.id,
 					to: wtctrlReferences[prop][index].id,
@@ -364,7 +379,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	
 	// for inputs, outputs and params
 	var getIndexOfReferencedElement = function(node, wtctrlReferences) {
-		var index = null;
+		var index = -1;
 		for(var i in wtctrlReferences[node.nodeType]) {
 			if(wtctrlReferences[node.nodeType][i].id == node.id) {
 				index = i;
@@ -407,5 +422,13 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			return true;
 		}
 		return false;
+	}
+	
+	var initWtctrlReferences = function() {
+		return {
+			inputs: [],
+			outputs: [],
+			params: []
+		};
 	}
 };

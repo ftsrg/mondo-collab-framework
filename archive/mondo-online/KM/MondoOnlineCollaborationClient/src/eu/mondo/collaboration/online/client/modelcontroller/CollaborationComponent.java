@@ -280,13 +280,17 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			ExecutedOperation op = new ExecutedOperation();
 			op.setOldValue(nodeToDelete);
 			op.setOperation("deleteElement");
+			if(this.basicElements.contains(nodeToDelete.getString("nodeType"))) {
+				//updateWtctrlsReferences(nodeToDelete);
+				op.setNote("reference");
+			}
 			undoStack.push(op);
 			printUndoStack();
 		}
 		
 		getState().setModel(newModel);
 	}
-	
+
 	public void moveNode(JSONObject nodeData, boolean saveOperation) {
 		System.out.println("alter node position - " + nodeData.toString());
 		System.out.println("node positions: " + getState().positions.toString());
@@ -330,41 +334,72 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		try {
 			JSONObject sourceNode = newEdgeData.getJSONObject("sourceNode");
 			JSONObject targetNode = newEdgeData.getJSONObject("targetNode");
-		
+
+			ExecutedOperation op = new ExecutedOperation();	
+			
 			// basic element to wtctrl
 			if((this.basicElements.contains(sourceNode.getString("nodeType")) 
 			&& targetNode.getString("nodeType").equals("wtctrls"))) {
+				System.out.println("basic element to wtctrl");
+				op.setOldValue(targetNode);
 				addReferenceToWtctrl(targetNode, sourceNode);
+				JSONObject newData = new JSONObject();
+				newData.put("child", targetNode);
+				newData.put("parent", sourceNode);
+				op.setNewValue(newData);
+				op.setNote("reference");
 			} else 
 			// wtctrl to basic element or subsystem
 			if(sourceNode.getString("nodeType").equals("wtctrls")
 			&& this.basicElements.contains(targetNode.getString("nodeType"))) {
 				System.out.println("wtctrl to basic element");
+				op.setOldValue(sourceNode);
+				addReferenceToWtctrl(sourceNode, targetNode);
+				JSONObject newData = new JSONObject();
+				newData.put("child", sourceNode);
+				newData.put("parent", targetNode);
+				op.setNewValue(newData);
+				op.setNote("reference");
 			} else 
 			// wtctrl to subsystem
 			if(sourceNode.getString("nodeType").equals("wtctrls")
 			&& targetNode.getString("nodeType").equals("subsystems")) {
 				System.out.println("wtctrl to subsystem");
-				connectWtctrlAndSubsystem(sourceNode, targetNode);
+				op.setOldValue(sourceNode);
+				connectAsChildAndParent(sourceNode, targetNode);
+				JSONObject newData = new JSONObject();
+				newData.put("child", sourceNode);
+				newData.put("parent", targetNode);
+				op.setNewValue(newData);
+				op.setNote("subsystem");
 			} else 
 			// subsystem to wtrctrl
 			if(sourceNode.getString("nodeType").equals("subsystems")
 			&& targetNode.getString("nodeType").equals("wtctrls")) {
 				System.out.println("subsystem to wtctrl");
-				connectWtctrlAndSubsystem(targetNode, sourceNode);
+				op.setOldValue(targetNode);
+				connectAsChildAndParent(targetNode, sourceNode);
+				JSONObject newData = new JSONObject();
+				newData.put("child", targetNode);
+				newData.put("parent", sourceNode);
+				op.setNewValue(newData);
+				op.setNote("subsystem");
 			} else
-			// subsystem to subsystem or wtctrl
+			// subsystem to subsystem (the source will be the parent)
 			if(sourceNode.getString("nodeType").equals("subsystems")
 			&& targetNode.getString("nodeType").equals("subsystems")) {
 				System.out.println("subsystem to subsystems");
-				//connectWtctrlAndSubsystem(targetNode, sourceNode);
+				op.setOldValue(targetNode);
+				connectAsChildAndParent(targetNode, sourceNode);
+				JSONObject newData = new JSONObject();
+				newData.put("child", targetNode);
+				newData.put("parent", sourceNode);
+				op.setNewValue(newData);
+				op.setNote("subsystem");
 			} else {
 				return false;
 			}
-			
 			if(saveOperation) {
-				ExecutedOperation op = new ExecutedOperation();	
-				op.setNewValue(newEdgeData);
 				op.setOperation("addEdge");
 				undoStack.push(op);
 				printUndoStack();
@@ -397,13 +432,16 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		}
 	}
 
-	private void connectWtctrlAndSubsystem(JSONObject wtctrl, JSONObject subsystem) throws JSONException {
-		deleteElement(wtctrl, false);
-		wtctrl.put("parentId", subsystem.getString("id"));
-		JSONObject pos = getState().positions.getJSONObject(wtctrl.getString("id"));
-		wtctrl.put("x", pos.getInt("x"));
-		wtctrl.put("y", pos.getInt("y"));
-		addElement(wtctrl, false);
+	private void connectAsChildAndParent(JSONObject child, JSONObject parent) throws JSONException {
+		deleteElement(child, false);
+		
+		child.put("parentId", parent.getString("id"));
+		
+		JSONObject pos = getState().positions.getJSONObject(child.getString("id"));
+		child.put("x", pos.getInt("x"));
+		child.put("y", pos.getInt("y"));
+		
+		addElement(child, false);
 	}
 
 	public void undo() {
@@ -411,6 +449,8 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			return;
 		}
 		ExecutedOperation operationToUndo = undoStack.pop();
+		System.out.println("Undoing: " + " op: " + operationToUndo.getOperation() + " | oldVal: " + operationToUndo.getOldValue() + 
+				" | new: " + operationToUndo.getNewValue());
 		try {
 			JSONObject modificationData = null;
 			switch(operationToUndo.getOperation()) {
@@ -438,12 +478,36 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 					moveNode(modificationData, false);
 					modificationData.put("modificationType", "move");
 					break;
+				case "addEdge":
+					JSONObject newData = operationToUndo.getNewValue();
+					JSONObject oldValue = operationToUndo.getOldValue();
+					if(operationToUndo.getNote().equals("reference")) {
+						JSONObject newValue = newData.getJSONObject("child");
+						JSONObject _elements = new JSONObject();
+						_elements.put("original", newValue);
+						_elements.put("edited", oldValue);
+						editElement(_elements, false);
+						modificationData = _elements;
+						modificationData.put("modificationType", "edit");
+					} else if(operationToUndo.getNote().equals("subsystem")) {
+						JSONObject nodeToReset = newData.getJSONObject("child"); 
+						deleteElement(nodeToReset, false);
+						nodeToReset.put("modificationType", "delete");
+						publishModification(nodeToReset);
+						
+						modificationData = operationToUndo.getOldValue();
+						JSONObject pos = getState().positions.getJSONObject(modificationData.getString("id"));
+						modificationData.put("x", pos.getInt("x"));
+						modificationData.put("y", pos.getInt("y"));
+						addElement(modificationData, false);
+						modificationData.put("modificationType", "addNode");
+					}
+					break;
 			}
 			if(modificationData != null) {
 				publishModification(modificationData);
 			}
-			System.out.println("Undoing: " + " op: " + operationToUndo.getOperation() + " | oldVal: " + operationToUndo.getOldValue() + 
-					" | new: " + operationToUndo.getNewValue());
+			
 			redoStack.push(operationToUndo);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -482,6 +546,15 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 					moveNode(operationToRedo.getNewValue(), false);
 					modificationData = operationToRedo.getNewValue();
 					modificationData.put("modificationType", "move");
+					break;
+				case "addEdge":
+					JSONObject newData = operationToRedo.getNewValue();
+					JSONObject newEdgeData = new JSONObject();
+					newEdgeData.put("sourceNode", newData.getJSONObject("parent"));
+					newEdgeData.put("targetNode", newData.getJSONObject("child"));
+					addEdge(newEdgeData, false);
+					modificationData = newEdgeData;
+					modificationData.put("modificationType", "addEdge");
 					break;
 			}
 			if(modificationData != null) {
@@ -565,18 +638,8 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			String typeSetName = element.getString("nodeType");
 			JSONObject newElement =  new JSONObject();
 			
-			// TODO set additional EMF properties
-			newElement.put("name", element.getString("name"));
-			newElement.put("id", element.getString("id"));
-			if(element.has("input")) {
-				newElement.put("input", element.getJSONObject("input"));
-			}
-			if(element.has("output")) {
-				newElement.put("output", element.getJSONObject("output"));
-			}
-			if(element.has("param")) {
-				newElement.put("param", element.getJSONObject("param"));
-			}
+			copyWTSpecificProperties(element, newElement);
+			
 			if(!node.has(typeSetName)) {
 				JSONArray newType = new JSONArray();
 				newType.put(newElement);
@@ -662,7 +725,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				for(int i = 0; i < subtree.length(); i++) {
 					JSONObject currentNode = subtree.getJSONObject(i);
 					boolean success = false;
-					if(currentNode.getString("name").equals(nodeToDelete.getString("name"))) {
+					if(currentNode.getString("id").equals(nodeToDelete.getString("id"))) {
 						JSONArray newSubtree = removeItemFromJsonArray(subtree, i);
 						node.put(identifier, newSubtree);
 						success = true;
@@ -683,9 +746,46 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		}
 		return null;
 	}
+/*
+	// updates wtctrls that reference the object of type input/output/param
+	// and all those that reference an object of the same type with a higher index
+	private void updateWtctrlsReferences(JSONObject object, JSONObject model) {
+		try {
+			int indexToRemove = Integer.parseInt(object.getString("indexOfReferencedObject"));
+			String type = object.getString("nodeType"); 
+			JSONObject updatedModel = new JSONObject(model.toString());
+			
+			for(String attr : JSONObject.getNames(updatedModel)) {
+				if(attr.equals("wtctrls")) {
+					JSONArray wtctrls = updatedModel.getJSONArray(attr);
+					for(int i = 0; i < wtctrls.length(); i++) {
+						if(wtctrls.getJSONObject(i).has(type)) {
+							String stringToCheck = wtctrls.getJSONObject(i).getJSONObject(type).getString("$ref");
+							int referencedIndex = Integer.parseInt(stringToCheck.substring(stringToCheck.indexOf(".") + 1));
+							if(referencedIndex == indexToRemove) {
+								wtctrls.getJSONObject(i).remove(type);
+							} else if(referencedIndex > indexToRemove) {
+								int newIndex = referencedIndex - 1;
+								String replacement = stringToCheck.replaceAll(
+									stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
+									newIndex + ""
+								);
+								wtctrls.getJSONObject(i).put(type, replacement);
+							}
+						}
+					}
+				} else if(attr.equals("subsystems")) {
+					updateWtctrlsReferences(object, updatedModel);
+				}
+			}
+			model = updatedModel;
+		} catch (NumberFormatException | JSONException e) {
+			e.printStackTrace();
+		} 
+		
+	}*/
 	
-	
-private JSONArray removeItemFromJsonArray(JSONArray array, int index) {
+	private JSONArray removeItemFromJsonArray(JSONArray array, int index) {
 		JSONArray newArray = new JSONArray();
 		try {
 			for(int i = 0; i < array.length(); i++) {
@@ -698,5 +798,53 @@ private JSONArray removeItemFromJsonArray(JSONArray array, int index) {
 			e.printStackTrace();
 		}
 		return newArray;
+	}
+	
+	private void copyWTSpecificProperties(JSONObject from, JSONObject to) {
+		try {
+			List<String> attributes = getWTSpecificProperties(from.getString("nodeType"));
+			for(String attr : attributes) {
+				if(from.has(attr)) {
+					to.put(attr, from.get(attr));
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private List<String> getWTSpecificProperties(String type) {
+		List<String> properties = new ArrayList<String>();
+		properties.add("name");
+		properties.add("id");
+		switch(type) {
+			case "subsystems": 
+				properties.add("subsystems");
+				properties.add("wtctrls");
+				break;
+			case "wtctrls": 
+				properties.add("type");
+				properties.add("cycle");
+				properties.add("order");
+				properties.add("enabled");
+				properties.add("input");
+				properties.add("output");
+				properties.add("param");
+				break;
+			case "inputs": 
+				break;
+			case "outputs": 
+				break;
+			case "params": 
+				properties.add("value");
+				break;
+			case "alarms": 
+				properties.add("activated");
+				break;
+			default:
+				properties.clear();
+				break;	
+		}
+		return properties;
 	}
 }

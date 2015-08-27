@@ -53,12 +53,12 @@ public class Application extends UI {
 
 			this.loginPage = new LoginPage(navigator, this);
 			this.sessionSelectionPage = new SessionSelectionPage(navigator, this);
-			this.collaborationPage = new CollaborationPage(navigator, this);
+			//this.collaborationPage = new CollaborationPage(navigator, this);
 	
 			// Create and register the views
 			navigator.addView(LoginPage.NAME, loginPage);
 			navigator.addView(SessionSelectionPage.NAME, sessionSelectionPage);
-			navigator.addView(CollaborationPage.NAME, collaborationPage);
+			//navigator.addView(CollaborationPage.NAME, collaborationPage);
 			System.out.println("Client init Done!");
 			navigator.navigateTo(LoginPage.NAME);
 	        setPollInterval(1000);
@@ -107,5 +107,10 @@ public class Application extends UI {
 		navigator.navigateTo(SessionSelectionPage.NAME);
 		navigator.removeView(CollaborationPage.NAME);
 		this.collaborationPage = null;
+	}
+
+	public void initCollaborationPage() {
+		collaborationPage = new CollaborationPage(navigator, this);
+		navigator.addView(CollaborationPage.NAME, collaborationPage);
 	}
 }

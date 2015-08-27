@@ -135,6 +135,7 @@ public class ModelModifier {
 			if(sourceNode.getString("nodeType").equals("wtctrls")
 			&& basicElements.contains(targetNode.getString("nodeType"))) {
 				System.out.println("wtctrl to basic element");
+				addReferenceToWtctrl(sourceNode, targetNode, model, positions);
 			} else 
 			// wtctrl to subsystem
 			if(sourceNode.getString("nodeType").equals("wtctrls")
@@ -152,7 +153,7 @@ public class ModelModifier {
 			if(sourceNode.getString("nodeType").equals("subsystems")
 			&& targetNode.getString("nodeType").equals("subsystems")) {
 				System.out.println("subsystem to subsystems");
-				//connectAsChildAndParent(targetNode, sourceNode);
+				connectAsChildAndParent(targetNode, sourceNode, model, positions);
 			} 
 			
 			JSONObject results = new JSONObject();
@@ -201,7 +202,7 @@ public class ModelModifier {
 	
 	private static JSONObject renamePositionId(JSONObject original, JSONObject edited, JSONObject positions) {
 		try {
-			if(positions.has(original.getString("id"))){
+			if(positions.has(original.getString("id"))) {
 				positions.put(original.getString("id"), edited.getString("id"));
 			}
 		} catch (JSONException e) {
@@ -234,18 +235,7 @@ public class ModelModifier {
 			JSONObject newElement =  new JSONObject();
 			
 			// TODO set additional EMF properties
-			newElement.put("name", element.getString("name"));
-			newElement.put("id", element.getString("id"));
-			System.out.println("YOMOKO " + element.toString());
-			if(element.has("input")) {
-				newElement.put("input", element.getJSONObject("input"));
-			}
-			if(element.has("output")) {
-				newElement.put("output", element.getJSONObject("output"));
-			}
-			if(element.has("param")) {
-				newElement.put("param", element.getJSONObject("param"));
-			}
+			copyWTSpecificProperties(element, newElement);
 			if(!node.has(typeSetName)) {
 				JSONArray newType = new JSONArray();
 				newType.put(newElement);
@@ -381,4 +371,52 @@ public class ModelModifier {
 		return null;
 	}
 	
+	
+	private static void copyWTSpecificProperties(JSONObject from, JSONObject to) {
+		try {
+			List<String> attributes = getWTSpecificProperties(from.getString("nodeType"));
+			for(String attr : attributes) {
+				if(from.has(attr)) {
+					to.put(attr, from.get(attr));
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static List<String> getWTSpecificProperties(String type) {
+		List<String> properties = new ArrayList<String>();
+		properties.add("name");
+		properties.add("id");
+		switch(type) {
+			case "subsystems": 
+				properties.add("subsystems");
+				properties.add("wtctrls");
+				break;
+			case "wtctrls": 
+				properties.add("type");
+				properties.add("cycle");
+				properties.add("order");
+				properties.add("enabled");
+				properties.add("input");
+				properties.add("output");
+				properties.add("param");
+				break;
+			case "inputs": 
+				break;
+			case "outputs": 
+				break;
+			case "params": 
+				properties.add("value");
+				break;
+			case "alarms": 
+				properties.add("activated");
+				break;
+			default:
+				properties.clear();
+				break;	
+		}
+		return properties;
+	}
 }

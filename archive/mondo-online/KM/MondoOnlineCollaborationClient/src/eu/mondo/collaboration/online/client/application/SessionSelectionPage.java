@@ -40,23 +40,6 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		setSizeFull();
 	}
 	
-	/*
-	private List<CollaborationSession> getSessions() {
-		String pathToResFolder = "D:\\Eclipse\\Eclipse_EE\\workspace_EE\\MondoOnlineCollaborationClient\\res";
-		final File folder = new File(pathToResFolder);
-		List<CollaborationSession> sessions = new ArrayList<CollaborationSession>();
-		int id = 0;
-		for (final File fileEntry : folder.listFiles()) {
-	        if (!fileEntry.isDirectory()) {
-	        	String modelPath = pathToResFolder + fileEntry.getName(); 
-	        	sessions.add(new CollaborationSession(id, fileEntry.getName(), modelPath));
-	        	id++;
-	        }
-	    }
-		return sessions;
-	}
-	*/
-	
 	private void loadSessions() {
 		this.application.getWebsocketClient().loadAvailableSessions();
 	}
@@ -87,8 +70,8 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 			this.application.getUI().getSession().unlock();
 		}
 
-		// Panel sessionSelection = this.initSessionsView();
 		this.initSessionsView();
+		// Panel sessionSelection = this.initSessionsView();
 		//addComponent(sessionSelection); //, "left: 10px; top: 40px;");
 		
 	}
@@ -212,6 +195,7 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 	}
 
 	protected void joinSession(String sessionId, String title) {
+		this.application.initCollaborationPage();
 		this.application.getWebsocketClient().joinSession(
 			this.application.getUser(), 
 			sessionId
