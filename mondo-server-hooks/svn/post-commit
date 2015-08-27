@@ -6,7 +6,7 @@
 
 URL='http://127.0.0.1' 				         #URL of the SVN repository provider (not ssh)
 TEMP='/home/vialpando/tempsvn'			   #Temporary directory, where the script has enough permisson to create and copy files
-FRONT_LIST="front1:alice" #front2:bob"		 #List of the front repositories - FRONT_LIST="repo1:userA repo2:userB repo3:userC ... repoN:userX"
+FRONT_LIST="svn/front1:alice" #front2:bob"		 #List of the front repositories - FRONT_LIST="repo1:userA repo2:userB repo3:userC ... repoN:userX"
 LENS_SCRIPT='/home/vialpando/Eclipse/Mondo/lens/run.sh' #Lens script location. This script executes the lens.
 
 JAVA_HOME="/usr/lib/jvm/java-8-oracle"
@@ -27,13 +27,17 @@ set -e
 
 TEMP_GOLD="$TEMP/tempGold$GOLD_REPOS"
 TEMP_FRONTS="$TEMP/tempFront/Additional"
+TEMP_CURRENT="$TEMP/tempFront/Current"
 
+rm -rf $TEMP_GOLD # Just for debugging
 rm -rf $TEMP_FRONTS
 
 if [ ! -d $TEMP_GOLD ]; then
   svn checkout "$GOLD_REPOS_URL" "$TEMP_GOLD" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
   echo "gold checkout ..... ok" 1>&2
 fi
+
+echo "find $TEMP_GOLD -type f -name \*.$EXTENSION" 1>&2
 
 FILE_LIST="$(find $TEMP_GOLD -type f -name \*.$EXTENSION)"
 
@@ -44,32 +48,35 @@ for entry in $FRONT_LIST; do
   FRONT_REPOS="$2"
   FRONT_USER="$3"
   current="$TEMP_FRONTS/$2"
+  # If this is not the current repo
+  if [ ! -d $TEMP_CURRENT/$2 ]; then
+    svn checkout "$URL/$2" "$TEMP_FRONTS/$2" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+    echo "front checkout .... ok ($2)" 1>&2
 
-  svn checkout "$URL/svn/$2" "$TEMP_FRONTS/$2" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
-  echo "front checkout .... ok ($2)" 1>&2
+    rsync -av --exclude=".svn" $TEMP_GOLD/* $TEMP_FRONTS/$2
 
-  IFS="
+    IFS="
 "
-  for gold in $FILE_LIST; do
-    front=${gold/$TEMP_GOLD/$current}
-    echo "asd $front" 1>&2
-    echo "execute lens ... ok ($gold)" 1>&2
-    $LENS_SCRIPT $FRONT_USER $gold $front '-performGet' $TEMP
-    echo "lens finished .. ok ($gold)" 1>&2
-  done
+    for gold in $FILE_LIST; do
+      front=${gold/$TEMP_GOLD/$current}
+      echo "asd $front" 1>&2
+      echo "execute lens ... ok ($gold)" 1>&2
+      $LENS_SCRIPT $FRONT_USER $gold $front '-performGet' $TEMP
+      echo "lens finished .. ok ($gold)" 1>&2
+    done
 
-  IFS="$oldIFS"
+    IFS="$oldIFS"
 
-  MSG=$(svnlook log -t $TXN $REPOS)
+    MSG=$(svnlook log -r $REV $GOLD_REPOS)
 
-  cd $current
+    cd $current
 
-  svn add --force * --auto-props --parents --depth infinity -q
-  echo "add files to svn ... ok" 1>&2
+    svn add --force * --auto-props --parents --depth infinity -q
+    echo "add files to svn ... ok" 1>&2
 
-  echo "$MSG" 1>"svn-commit.tmp"
-  svn commit -F svn-commit.tmp
-
+    echo "$MSG" 1>"svn-commit.tmp"
+    svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+  fi
 done
 
 rm -rf $TEMP_FRONTS/*
