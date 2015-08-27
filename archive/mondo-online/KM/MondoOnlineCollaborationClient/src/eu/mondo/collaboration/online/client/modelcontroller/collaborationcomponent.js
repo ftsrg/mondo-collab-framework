@@ -32,7 +32,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	this.initModelDisplay = function(model) {
 		console.log("Initializing model display..");
 		cc.model = model;
-		var data = extractRoot(model);
+		var initialData = extractRoot(model);
 		
 		var options = {
 	        physics: {
@@ -60,7 +60,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		};
 
 		var container = document.getElementById('workspace');
-		modelDisplay = new vis.Network(container, data, options);
+		modelDisplay = new vis.Network(container, initialData, options);
 		
 		// save position of nodes
 		var positions = modelDisplay.getPositions();
@@ -75,7 +75,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		}
 		*/
 		cc.model = model;
-		data = extractRoot(model);
+		modelData = extractRoot(model);
 		var options = {
 	        physics: {
 	        	barnesHut: {
@@ -100,30 +100,45 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			        	elementType: 1,
 			        	parentId: "",
 			        	name: "",
-			        	type: "",
-			        	// id: newData.id,
+			        	nodeType: "",
+			        	id: newData.id,
 			        	label: "New element",
-			        	group: "",
+			        	// group: "",
 			        	x: newData.x,
 			        	y: newData.y
 			        }; 
 			        editDialog(newNode, true);
 			    },
-			    addEdge: function(data, callback) {
-		        	console.log(data);
-		        	alert("EDGE YOLOOO")
+			    addEdge: function(edgeData, callback) {
+			    	var sourceNode = getElement(edgeData.from, modelData.nodes);
+			    	var targetNode = getElement(edgeData.to, modelData.nodes);
+			    	if(connectionIsValid(sourceNode, targetNode)) {
+			    		if(isWtctrlReference(sourceNode.nodeType)) {
+			    			sourceNode.indexOfReferencedObject = 
+			    				getIndexOfReferencedElement(sourceNode, wtctrlReferences);
+			    		} else if(isWtctrlReference(targetNode.nodeType)) {
+			    			targetNode.indexOfReferencedObject = 
+			    				getIndexOfReferencedElement(targetNode, wtctrlReferences);
+			    		}
+			    		var newEdgeData = {
+			    			sourceNode: sourceNode,
+			    			targetNode: targetNode
+			    		};
+			    		cc.addEdge(newEdgeData);
+			    	}
+		        	callback(null);
 			    },
 		        editNode: function(nodeData, callback) {
-		        	var node = getElement(nodeData.id, data.nodes);
+		        	var node = getElement(nodeData.id, modelData.nodes);
 		        	editDialog(node, false);
 		        	callback(null);
 		        },
 		        editEdge: function(edgeData, callback) {
 		        	// coming soon... just like winter
 		        },
-		        deleteNode: function(dataToDelete, callback) {
-		        	var nodeId = dataToDelete.nodes.shift();
-		        	var node = getElement(nodeId, data.nodes);
+		        deleteNode: function(deletionData, callback) {
+		        	var nodeId = deletionData.nodes.shift();
+		        	var node = getElement(nodeId, modelData.nodes);
 		        	var deletionData = {
 		        		node: node
 		        	}
@@ -133,7 +148,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		}
 
 		var container = document.getElementById('workspace');
-		modelDisplay = new vis.Network(container, data, options);
+		modelDisplay = new vis.Network(container, modelData, options);
 		modelDisplay.on("dragEnd", function (params) {
 			params.event = "[original event]";
 	        if(params.nodes.length > 0) {
@@ -142,28 +157,9 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	    			newPosition: params.pointer.canvas
 	    		}
 	        	cc.moveNode(positionData);
-	        } /*else {
-	        	viewPosition = modelDisplay.getViewPosition();
-	        	if(!viewScale) {
-	        		viewScale = modelDisplay.getScale();
-	        	}
-	        }*/
+	        } 
 	    });
 		applyPositions(positions);
-		/*
-		modelDisplay.on("zoom", function (params) {
-        	viewScale = modelDisplay.getScale();
-        	if(!viewPosition) {
-        		viewPosition = modelDisplay.getViewPosition();
-        	}
-	    });*/
-		
-/*	    if(typeof viewScale !== 'udnefined' && typeof viewPosition !== 'udnefined') {
-			modelDisplay.moveTo({
-				position: viewPosition,
-				scale: viewScale
-			});
-		}*/
 	}
 	var getElement = function(id, stack) {
 		for(var i in stack) {
@@ -174,21 +170,15 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		return null;
 	}
 	
-	var closeEditDialog = function() {
-		$("#editDialogContainer #cancelButton").unbind("click");
-		$("#editDialogContainer #saveButton").unbind("click");
-		$('#editDialogContainer').hide();
-		$('#editPropertiesTable').empty();
-	}
 	// prepare pop-up function for editing nodes
 	var editDialog = function(element, isNewElement) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
-		var types = getElementTypes();
+		var nodeTypes = getNodeTypes();
 		var excludedProperties = ["elementType", "shape", "size", "style", "level", "label", "color"];
 		if(!isNewElement) {
 			excludedProperties.push("parentId");
-			excludedProperties.push("type");
+			excludedProperties.push("nodeType");
 		} 
 		for(var property in element) {
 		    if(element.hasOwnProperty(property) && !isArray(element[property]) &&
@@ -201,15 +191,15 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	    		}
 		    	var inputCell = $('<td/>');
 		    	var input = null;
-		    	if(property == "type" && element['elementType'] != 2) {
+		    	if(property == "nodeType" && element['elementType'] != 2) {
 		    		input = $('<select/>').attr('id', property);
-		    		for(var i in types) {
-		    			input.append($('<option>' + types[i] + '</option>')
-	    					.attr('value', types[i])
+		    		for(var i in nodeTypes) {
+		    			input.append($('<option>' + nodeTypes[i] + '</option>')
+	    					.attr('value', nodeTypes[i])
 		    			);
 		    		}
-		    		if(element.type != "") {
-		    			input.val(element.type);
+		    		if(element.nodeTypes != "") {
+		    			input.val(element.nodeTypes);
 		    		}
 		    	} else {
 		    		input =	$('<input/>')
@@ -237,7 +227,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			});
 			editedElement["elementType"] = element["elementType"];
 			if(element["elementType"] == 1) {
-				editedElement["type"] = $('#editPropertiesTable select').val();
+				editedElement["nodeType"] = $('#editPropertiesTable select').val();
 			}
 
 			if(isNewElement) {
@@ -256,6 +246,13 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			closeEditDialog();
 		});
 		$('#editDialogContainer').show();
+	}
+	
+	var closeEditDialog = function() {
+		$("#editDialogContainer #cancelButton").unbind("click");
+		$("#editDialogContainer #saveButton").unbind("click");
+		$('#editDialogContainer').hide();
+		$('#editPropertiesTable').empty();
 	}
 	
 	// WTSpec -ific..  huehue :(
@@ -292,15 +289,16 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	}
 	
 	// returns the node and its subtree
-	var extractModel = function(node, type, currentLevel, depthTracker, parentId) {
+	var extractModel = function(node, nodeType, currentLevel, depthTracker, parentId) {
 		depthTracker.depth++;
 		currentLevel++;
 		var maxDepth = currentLevel; 
-		node.id = node.id;
+		// node.id = node.id;
 		node.label = node.name;
 		node.level = currentLevel;
 		node.parentId = parentId;
-		addNodeStyle(node, type);
+		node.nodeType = nodeType;
+		addNodeStyle(node, nodeType);
 		var model = {
 			nodes: [node],
 			edges: []
@@ -311,7 +309,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 				var index = parseInt(node[property]["$ref"].slice(-1));
 				var prop = property + "s";
 				var newEdge = {
-					from: node.name,
+					from: node.id,
 					to: wtctrlReferences[prop][index].id,
 					color: wtctrlReferences[prop][index].color
 					//connectionType: "containment"
@@ -363,5 +361,51 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			}
 		}
 	}
-};
+	
+	// for inputs, outputs and params
+	var getIndexOfReferencedElement = function(node, wtctrlReferences) {
+		var index = null;
+		for(var i in wtctrlReferences[node.nodeType]) {
+			if(wtctrlReferences[node.nodeType][i].id == node.id) {
+				index = i;
+				break;
+			}
+		}
+		return index;
+	}
 
+	var connectionIsValid = function(sourceNode, targetNode) {
+		var basicElements = ["outputs", "inputs", "params"]
+		var allowedForSubsystems = ["subsystems", "wtctrls"];
+		var allowedForWtctrls = basicElements.concat(["subsystems"]);
+		
+		var isValid = false;
+		
+		if((basicElements.indexOf(sourceNode.nodeType) != -1 && targetNode.nodeType == "wtctrls") 
+		|| (sourceNode.nodeType == "wtctrls" && allowedForWtctrls.indexOf(targetNode.nodeType) != -1)
+		|| (sourceNode.nodeType == "subsystems" && allowedForSubsystems.indexOf(targetNode.nodeType) != -1)) {
+			isValid = true;
+		} else {
+			alert(sourceNode.nodeType + " may not be connected to " + targetNode.nodeType);
+		}
+		return isValid;
+	}
+	
+	var getNodeTypes = function() {
+		var types = ["subsystems", "wtctrls", "inputs", "outputs", "params", "alarms" /*, "Fault", "Variable", "Timer"*/];
+		return types;
+	}
+
+	var getWtctrlReferenceTypes = function() {
+		var types = ["inputs", "outputs", "params", "input", "output", "param"];
+		return types;
+	}
+
+	var isWtctrlReference = function(property) {
+		var types = getWtctrlReferenceTypes();
+		if(types.indexOf(property) != -1) {
+			return true;
+		}
+		return false;
+	}
+};
