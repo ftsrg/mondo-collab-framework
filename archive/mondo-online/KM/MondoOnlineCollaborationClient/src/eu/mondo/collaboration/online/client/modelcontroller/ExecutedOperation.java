@@ -1,11 +1,13 @@
 package eu.mondo.collaboration.online.client.modelcontroller;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ExecutedOperation {
 	private JSONObject oldValue;
 	private JSONObject newValue;
+	private JSONArray additionalData;
 	private String operation;
 	private String note;
 	
@@ -25,6 +27,14 @@ public class ExecutedOperation {
 		}
 	}
 	
+	public void setAdditionalData(JSONArray data) {
+		try {
+			this.additionalData = new JSONArray(data.toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void setOperation(String _operation) {
 		this.operation = _operation;
 	}
@@ -39,6 +49,10 @@ public class ExecutedOperation {
 	
 	public JSONObject getNewValue() {
 		return this.newValue;
+	}
+	
+	public JSONArray getAdditionalData() {
+		return this.additionalData;
 	}
 	
 	public String getOperation() {

@@ -61,12 +61,20 @@ public class ModelModifier {
 		nodePositionData.put("node", element.get("id"));
 		nodePositionData.put("newPosition", newPosition);
 		JSONObject newModel = model;
+		JSONArray wtctrlsToRestore = null;
+		if(element.has("wtctrlsToRestore")) {
+			wtctrlsToRestore = element.getJSONArray("wtctrlsToRestore");
+			element.remove("wtctrlsToRestore");
+		}
 		// if root's child
 		if(!element.has("parentId") || element.getString("parentId").equals("")) {
 			// if no children with this type
 			newModel = connectElementToRootNode(newModel, element);
 		} else {
 			newModel = tryToInsertIntoSubtree(newModel, element);
+		}
+		if(wtctrlsToRestore != null) {
+			newModel = updateWtctrlsReferences(element, newModel, "add", wtctrlsToRestore, model);
 		}
 		JSONObject moveResult = moveNode(nodePositionData, positions);
 		JSONObject result = new JSONObject();
@@ -97,6 +105,11 @@ public class ModelModifier {
 		// TODO validate action
 		JSONObject newModel = model;
 		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
+		boolean isBasic = basicElements.contains(nodeToDelete.getString("nodeType"));
+		if(isBasic) {
+			JSONArray nothing = new JSONArray();
+			newModel = updateWtctrlsReferences(nodeToDelete, newModel, "delete", nothing, model);
+		}
 		JSONObject results = new JSONObject();
 		results.put("model", newModel);
 		results.put("positions", "none");
@@ -342,6 +355,96 @@ public class ModelModifier {
 		return null;
 	}
 	
+	// updates wtctrls that reference the object of type input/output/param
+	// and all those that reference an object of the same type with a higher index
+	private static JSONObject updateWtctrlsReferences(JSONObject object, JSONObject subModel, String operation, JSONArray wtctrlsToRestore, JSONObject wholeModel) {
+		try {
+			int indexOfReferredObject = Integer.parseInt(object.getString("indexOfReferencedObject"));
+			String type = object.getString("nodeType");
+			type = type.substring(0, type.length() - 1);
+			JSONObject updatedModel = new JSONObject(subModel.toString());
+			
+			for(String attr : JSONObject.getNames(updatedModel)) {
+				if(attr.equals("wtctrls")) {
+					JSONArray wtctrls = updatedModel.getJSONArray(attr);
+					for(int i = 0; i < wtctrls.length(); i++) {
+						if(wtctrls.getJSONObject(i).has(type)) {
+							String stringToCheck = wtctrls.getJSONObject(i).getJSONObject(type).getString("$ref");
+							int referencedIndex = Integer.parseInt(stringToCheck.substring(stringToCheck.indexOf(".") + 1));
+							if(operation.equals("delete")) {
+								if(referencedIndex == indexOfReferredObject) {
+									wtctrlsToRestore.put(new JSONObject(wtctrls.getJSONObject(i).toString()));
+									wtctrls.getJSONObject(i).remove(type);
+								} else if(referencedIndex > indexOfReferredObject) {
+									int newIndex = referencedIndex - 1;
+									String replacement = stringToCheck.replaceAll(
+										stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
+										newIndex + ""
+									);
+									wtctrls.getJSONObject(i).getJSONObject(type).put("$ref", replacement);
+								}
+							}/* else if(operation.equals("add")) {
+								int newIndex = referencedIndex + 1;
+								if(referencedIndex == indexOfReferredObject) {
+									String replacement = stringToCheck.replaceAll(
+										stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
+										newIndex + ""
+									);
+									wtctrls.getJSONObject(i).getJSONObject(type).put("$ref", replacement);
+								} 
+							}*/
+						} else if(operation.equals("add")) {
+							JSONObject wtctrlToRestore = getWtctrlById(
+								wtctrlsToRestore, 
+								wtctrls.getJSONObject(i).getString("id")
+							);
+							if(wtctrlToRestore != null) {
+								int newIndex = getNumberOfElements(type + "s", wholeModel) - 1;
+								String refString = "//@" + type + "s." + newIndex;
+								JSONObject newRef = new JSONObject();
+								newRef.put("$ref", refString);
+								wtctrlToRestore.put(type, newRef);
+								wtctrls.put(i, wtctrlToRestore);
+							}
+						}
+					}
+					updatedModel.put("wtctrls", wtctrls);
+				} else if(attr.equals("subsystems")) {
+					JSONArray subsystems = updatedModel.getJSONArray(attr);
+					for(int i = 0; i < subsystems.length(); i++) {
+						JSONObject updatedSubsys = updateWtctrlsReferences(
+							object, 
+							subsystems.getJSONObject(i), 
+							operation, 
+							wtctrlsToRestore,
+							wholeModel
+						);
+						subsystems.put(i, updatedSubsys);
+					}
+					updatedModel.put("subsystems", subsystems);
+				}
+			}
+			return updatedModel;
+		} catch (NumberFormatException | JSONException e) {
+			e.printStackTrace();
+		} 
+		return subModel;
+	}
+	
+	private static JSONObject getWtctrlById(JSONArray wtctrlsToRestore, String id) {
+		try {
+			for(int i = 0; i < wtctrlsToRestore.length(); i++) {
+				JSONObject current = wtctrlsToRestore.getJSONObject(i);
+				if(wtctrlsToRestore.getJSONObject(i).getString("id").equals(id)) {
+					return current;
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	private static JSONArray removeItemFromJsonArray(JSONArray array, int index) {
 		JSONArray newArray = new JSONArray();
 		try {
@@ -383,6 +486,18 @@ public class ModelModifier {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static int getNumberOfElements(String typeName, JSONObject model) {
+		int num = 0;
+		try {
+			if(model.has(typeName)) {
+				num = model.getJSONArray(typeName).length();
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return num;
 	}
 	
 	private static List<String> getWTSpecificProperties(String type) {

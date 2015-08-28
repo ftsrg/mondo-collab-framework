@@ -179,9 +179,8 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		var propertiesTable = $('#editPropertiesTable'); 
 		propertiesTable.empty();
 		var nodeTypes = getNodeTypes();
-		var excludedProperties = ["elementType", "shape", "size", "style", "level", "label", "color"];
+		var excludedProperties = ["elementType", "shape", "size", "style", "level", "label", "color", "parentId"];
 		if(!isNewElement) {
-			excludedProperties.push("parentId");
 			excludedProperties.push("nodeType");
 		} 
 		for(var property in element) {
@@ -319,10 +318,10 @@ collaborationLibrary.CollaborationComponent = function(component) {
 			if(isWtctrlReference(property)) {
 				var index = parseInt(node[property]["$ref"].slice(-1));
 				var prop = property + "s";
-				console.log(wtctrlReferences);
-				console.log(prop);
-				console.log(index);
-				alert();
+//				console.log(wtctrlReferences);
+//				console.log(prop);
+//				console.log(index);
+//				alert();
 				var newEdge = {
 					from: node.id,
 					to: wtctrlReferences[prop][index].id,

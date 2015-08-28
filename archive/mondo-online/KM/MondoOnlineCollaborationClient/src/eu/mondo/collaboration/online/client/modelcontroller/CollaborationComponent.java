@@ -201,6 +201,11 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		JSONObject newModel = getState().model;
 		System.out.println("add: " + element.toString());
 		System.out.println("Model: " + newModel);
+		JSONArray wtctrlsToRestore = null;
+		if(element.has("wtctrlsToRestore")) {
+			wtctrlsToRestore = element.getJSONArray("wtctrlsToRestore");
+			element.remove("wtctrlsToRestore");
+		}
 		// if root's child
 		if(!element.has("parentId") || element.getString("parentId").equals("")) {
 			// if no children with this type
@@ -216,8 +221,14 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			undoStack.push(op);
 			printUndoStack();
 		}
-		
+		if(wtctrlsToRestore != null) {
+			newModel = updateWtctrlsReferences(element, newModel, "add", wtctrlsToRestore);
+		}
 		getState().setModel(newModel);
+		if(wtctrlsToRestore != null) {
+			element.put("wtctrlsToRestore", wtctrlsToRestore);
+		}
+		
 		moveNode(nodePositionData, false);
 	}
 	
@@ -276,18 +287,22 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		// TODO validate action
 		JSONObject newModel = getState().model;
 		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
+		boolean isBasic = this.basicElements.contains(nodeToDelete.getString("nodeType"));
+		JSONArray wtctrlsToRestore = new JSONArray();
+		if(isBasic) {
+			newModel = updateWtctrlsReferences(nodeToDelete, newModel, "delete", wtctrlsToRestore);
+		}
 		if(saveOperation) {
 			ExecutedOperation op = new ExecutedOperation();
 			op.setOldValue(nodeToDelete);
 			op.setOperation("deleteElement");
-			if(this.basicElements.contains(nodeToDelete.getString("nodeType"))) {
-				//updateWtctrlsReferences(nodeToDelete);
+			if(isBasic) {
 				op.setNote("reference");
+				op.setAdditionalData(wtctrlsToRestore);
 			}
 			undoStack.push(op);
 			printUndoStack();
 		}
-		
 		getState().setModel(newModel);
 	}
 
@@ -317,7 +332,6 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 //				System.out.println("Print undo stack");
 				printUndoStack();
 			}
-			System.out.println("positions PUt " + nodeData.toString());
 			getState().positions.put(
 				nodeData.getString("node"), 
 				nodeData.getJSONObject("newPosition")
@@ -470,6 +484,12 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 					break;
 				case "deleteElement":
 					modificationData = operationToUndo.getOldValue();
+					if(operationToUndo.getNote().equals("reference")) {
+						modificationData.put("wtctrlsToRestore", operationToUndo.getAdditionalData());
+						JSONObject pos = getState().positions.getJSONObject(modificationData.getString("id"));
+						modificationData.put("x", pos.getInt("x"));
+						modificationData.put("y", pos.getInt("y"));
+					}
 					addElement(modificationData, false);
 					modificationData.put("modificationType", "addNode");
 					break;
@@ -746,13 +766,14 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		}
 		return null;
 	}
-/*
+
 	// updates wtctrls that reference the object of type input/output/param
 	// and all those that reference an object of the same type with a higher index
-	private void updateWtctrlsReferences(JSONObject object, JSONObject model) {
+	private JSONObject updateWtctrlsReferences(JSONObject object, JSONObject model, String operation, JSONArray wtctrlsToRestore) {
 		try {
-			int indexToRemove = Integer.parseInt(object.getString("indexOfReferencedObject"));
-			String type = object.getString("nodeType"); 
+			int indexOfReferredObject = Integer.parseInt(object.getString("indexOfReferencedObject"));
+			String type = object.getString("nodeType");
+			type = type.substring(0, type.length() - 1);
 			JSONObject updatedModel = new JSONObject(model.toString());
 			
 			for(String attr : JSONObject.getNames(updatedModel)) {
@@ -762,29 +783,79 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 						if(wtctrls.getJSONObject(i).has(type)) {
 							String stringToCheck = wtctrls.getJSONObject(i).getJSONObject(type).getString("$ref");
 							int referencedIndex = Integer.parseInt(stringToCheck.substring(stringToCheck.indexOf(".") + 1));
-							if(referencedIndex == indexToRemove) {
-								wtctrls.getJSONObject(i).remove(type);
-							} else if(referencedIndex > indexToRemove) {
-								int newIndex = referencedIndex - 1;
-								String replacement = stringToCheck.replaceAll(
-									stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
-									newIndex + ""
-								);
-								wtctrls.getJSONObject(i).put(type, replacement);
+							if(operation.equals("delete")) {
+								if(referencedIndex == indexOfReferredObject) {
+									wtctrlsToRestore.put(new JSONObject(wtctrls.getJSONObject(i).toString()));
+									wtctrls.getJSONObject(i).remove(type);
+								} else if(referencedIndex > indexOfReferredObject) {
+									int newIndex = referencedIndex - 1;
+									String replacement = stringToCheck.replaceAll(
+										stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
+										newIndex + ""
+									);
+									wtctrls.getJSONObject(i).getJSONObject(type).put("$ref", replacement);
+								}
+							} /*else if(operation.equals("add")) {
+								int newIndex = referencedIndex + 1;
+								if(referencedIndex == indexOfReferredObject) {
+									String replacement = stringToCheck.replaceAll(
+										stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
+										newIndex + ""
+									);
+									wtctrls.getJSONObject(i).getJSONObject(type).put("$ref", replacement);
+								} 
+							}*/
+						} else if(operation.equals("add")){
+							JSONObject wtctrlToRestore = getWtctrlById(
+								wtctrlsToRestore, 
+								wtctrls.getJSONObject(i).getString("id")
+							);
+							if(wtctrlToRestore != null) {
+								int newIndex = getNumberOfElements(type + "s") - 1;
+								String refString = "//@" + type + "s." + newIndex;
+								JSONObject newRef = new JSONObject();
+								newRef.put("$ref", refString);
+								wtctrlToRestore.put(type, newRef);
+								wtctrls.put(i, wtctrlToRestore);
 							}
 						}
 					}
+					updatedModel.put("wtctrls", wtctrls);
 				} else if(attr.equals("subsystems")) {
-					updateWtctrlsReferences(object, updatedModel);
+					JSONArray subsystems = updatedModel.getJSONArray(attr);
+					for(int i = 0; i < subsystems.length(); i++) {
+						JSONObject updatedSubsys = updateWtctrlsReferences(
+							object, 
+							subsystems.getJSONObject(i), 
+							operation, 
+							wtctrlsToRestore
+						);
+						subsystems.put(i, updatedSubsys);
+					}
+					updatedModel.put("subsystems", subsystems);
 				}
 			}
-			model = updatedModel;
+			return updatedModel;
 		} catch (NumberFormatException | JSONException e) {
 			e.printStackTrace();
 		} 
-		
-	}*/
+		return model;
+	}
 	
+	private JSONObject getWtctrlById(JSONArray wtctrlsToRestore, String id) {
+		try {
+			for(int i = 0; i < wtctrlsToRestore.length(); i++) {
+				JSONObject current = wtctrlsToRestore.getJSONObject(i);
+				if(wtctrlsToRestore.getJSONObject(i).getString("id").equals(id)) {
+					return current;
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	private JSONArray removeItemFromJsonArray(JSONArray array, int index) {
 		JSONArray newArray = new JSONArray();
 		try {
@@ -811,6 +882,19 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private int getNumberOfElements(String typeName) {
+		int num = 0;
+		try {
+			if(getState().model.has(typeName)) {
+				num = getState().model.getJSONArray(typeName).length();
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return num;
 	}
 	
 	private List<String> getWTSpecificProperties(String type) {

@@ -159,7 +159,7 @@ public class CollaborationServerApplication {
 				this.sendModel(sessionId, connection);
 			} else if(operation.equals("modifyModel")) {
 				System.out.println("modifyModel...");
-				if(this.modifyModel(request)) {
+				if(this.modifyModel(new JSONObject(request.toString()))) {
 					this.publishModification(
 						request.getString("sessionId"), 
 						connection,
