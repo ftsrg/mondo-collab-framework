@@ -58,6 +58,13 @@ public class Activator implements BundleActivator {
 		} else {
 			System.out.println("Missing definition of temporary folder path from \"modelspath.properties\" file.");
 		}
+		
+		String _repositoryUrl = rb.getString("repository_url");
+		String _workingCopyPath = rb.getString("working_copy_path");
+		String _username = rb.getString("username");
+		String _password = rb.getString("password");
+		OnlineResource.getSVNHandler().setSVNConnectionDetails(_repositoryUrl, _workingCopyPath, _username, _password);
+		OnlineResource.getSVNHandler().init();
 	}
 
 	/*

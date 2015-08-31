@@ -285,12 +285,12 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 	public void deleteElement(JSONObject nodeToDelete, boolean saveOperation) throws JSONException {
 		// TODO validate action
 		JSONObject newModel = getState().model;
-		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
 		boolean isBasic = this.basicElements.contains(nodeToDelete.getString("nodeType"));
 		JSONArray wtctrlsToRestore = new JSONArray();
 		if(isBasic) {
 			newModel = updateWtctrlsReferences(nodeToDelete, newModel, "delete", wtctrlsToRestore);
 		}
+		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
 		if(saveOperation) {
 			ExecutedOperation op = new ExecutedOperation();
 			op.setOldValue(nodeToDelete);
@@ -485,10 +485,10 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 					modificationData = operationToUndo.getOldValue();
 					if(operationToUndo.getNote().equals("reference")) {
 						modificationData.put("wtctrlsToRestore", operationToUndo.getAdditionalData());
-						JSONObject pos = getState().positions.getJSONObject(modificationData.getString("id"));
-						modificationData.put("x", pos.getInt("x"));
-						modificationData.put("y", pos.getInt("y"));
 					}
+					JSONObject pos = getState().positions.getJSONObject(modificationData.getString("id"));
+					modificationData.put("x", pos.getInt("x"));
+					modificationData.put("y", pos.getInt("y"));
 					addElement(modificationData, false);
 					modificationData.put("modificationType", "addNode");
 					break;
@@ -515,9 +515,9 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 						publishModification(nodeToReset);
 						
 						modificationData = operationToUndo.getOldValue();
-						JSONObject pos = getState().positions.getJSONObject(modificationData.getString("id"));
-						modificationData.put("x", pos.getInt("x"));
-						modificationData.put("y", pos.getInt("y"));
+						JSONObject pos2 = getState().positions.getJSONObject(modificationData.getString("id"));
+						modificationData.put("x", pos2.getInt("x"));
+						modificationData.put("y", pos2.getInt("y"));
 						addElement(modificationData, false);
 						modificationData.put("modificationType", "addNode");
 					}
@@ -539,6 +539,8 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 			return;
 		}
 		ExecutedOperation operationToRedo = redoStack.pop();
+		System.out.println("Redoing: " + " op: " + operationToRedo.getOperation() + " | oldVal: " + operationToRedo.getOldValue() + 
+				" | new: " + operationToRedo.getNewValue());
 		try {
 			JSONObject modificationData = null;
 			switch(operationToRedo.getOperation()) {
@@ -770,7 +772,6 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 	// and all those that reference an object of the same type with a higher index
 	private JSONObject updateWtctrlsReferences(JSONObject object, JSONObject model, String operation, JSONArray wtctrlsToRestore) {
 		try {
-			int indexOfReferredObject = Integer.parseInt(object.getString("indexOfReferencedObject"));
 			String type = object.getString("nodeType");
 			type = type.substring(0, type.length() - 1);
 			JSONObject updatedModel = new JSONObject(model.toString());
@@ -779,31 +780,27 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				if(attr.equals("wtctrls")) {
 					JSONArray wtctrls = updatedModel.getJSONArray(attr);
 					for(int i = 0; i < wtctrls.length(); i++) {
+						int indexOfReferredObject = 0;
+						if(operation.equals("delete")) {
+							indexOfReferredObject = getIndexOfObjectInType(object);
+							System.out.println("INDEX TO DELETE: " + indexOfReferredObject);
+						}
 						if(wtctrls.getJSONObject(i).has(type)) {
 							String stringToCheck = wtctrls.getJSONObject(i).getJSONObject(type).getString("$ref");
-							int referencedIndex = Integer.parseInt(stringToCheck.substring(stringToCheck.indexOf(".") + 1));
+							int currentReferencedIndex = Integer.parseInt(stringToCheck.substring(stringToCheck.indexOf(".") + 1));
 							if(operation.equals("delete")) {
-								if(referencedIndex == indexOfReferredObject) {
+								if(currentReferencedIndex == indexOfReferredObject) {
 									wtctrlsToRestore.put(new JSONObject(wtctrls.getJSONObject(i).toString()));
 									wtctrls.getJSONObject(i).remove(type);
-								} else if(referencedIndex > indexOfReferredObject) {
-									int newIndex = referencedIndex - 1;
+								} else if(currentReferencedIndex > indexOfReferredObject) {
+									int newIndex = currentReferencedIndex - 1;
 									String replacement = stringToCheck.replaceAll(
 										stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
 										newIndex + ""
 									);
 									wtctrls.getJSONObject(i).getJSONObject(type).put("$ref", replacement);
 								}
-							} /*else if(operation.equals("add")) {
-								int newIndex = referencedIndex + 1;
-								if(referencedIndex == indexOfReferredObject) {
-									String replacement = stringToCheck.replaceAll(
-										stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
-										newIndex + ""
-									);
-									wtctrls.getJSONObject(i).getJSONObject(type).put("$ref", replacement);
-								} 
-							}*/
+							} 
 						} else if(operation.equals("add")){
 							JSONObject wtctrlToRestore = getWtctrlById(
 								wtctrlsToRestore, 
@@ -841,6 +838,24 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 		return model;
 	}
 	
+	private int getIndexOfObjectInType(JSONObject object) {
+		try {
+			String type = object.getString("nodeType");
+			String id = object.getString("id");
+			JSONObject model = getState().model;
+			if(model.has(type)) {
+				for(int i = 0; i < model.getJSONArray(type).length(); i++) {
+					if(model.getJSONArray(type).getJSONObject(i).getString("id").equals(id)) {
+						return i;
+					}
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
 	private JSONObject getWtctrlById(JSONArray wtctrlsToRestore, String id) {
 		try {
 			for(int i = 0; i < wtctrlsToRestore.length(); i++) {
@@ -864,7 +879,6 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 				} 
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return newArray;
@@ -884,7 +898,7 @@ public class CollaborationComponent extends AbstractJavaScriptComponent {
 	}
 	
 	private int getNumberOfElements(String typeName) {
-		int num = 0;
+		int num = -1;
 		try {
 			if(getState().model.has(typeName)) {
 				num = getState().model.getJSONArray(typeName).length();

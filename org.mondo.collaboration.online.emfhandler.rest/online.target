@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="EMF Rest Running Platform" sequenceNumber="62">
+<?pde version="3.8"?><target name="EMF Rest Running Platform" sequenceNumber="63">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.11.0.v20150601-0402"/>
@@ -22,6 +22,10 @@
 <unit id="com.fasterxml.jackson.core.jackson-databind" version="2.5.0.v201504151636"/>
 <unit id="com.fasterxml.jackson.core.jackson-core" version="2.5.0.v201504151636"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150519210750/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.tmatesoft.svnkit.feature.group" version="1.8.10.r10446_v20150526_1454"/>
+<repository location="http://eclipse.svnkit.com/1.8.x"/>
 </location>
 </locations>
 <environment>

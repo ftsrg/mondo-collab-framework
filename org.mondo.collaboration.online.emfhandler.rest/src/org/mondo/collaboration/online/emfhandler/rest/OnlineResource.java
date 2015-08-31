@@ -33,7 +33,12 @@ public class OnlineResource {
 	public static String inputFolderPath;
 	public static String outputFolderPath;
 	public static String tmpFolderPath;
+	
+	public static String repositoryUrl;
+	public static String username;
+	public static String password;
 
+	private static SVNHandler svn = new SVNHandler();
 	
 	@GET
 	@Path("/getModels")
@@ -143,33 +148,8 @@ public class OnlineResource {
             e.printStackTrace();
         } 
 	}
-	/*
-	// EClass attribute of json objects have to be the first attribute
-	private JSONObject workaroundEClassBug(JSONObject obj) {
-		try {
-			Map mapObj = new LinkedHashMap();
-			mapObj.put("eClass", (String) obj.get("eClass"));
-			obj.remove("eClass");
-			for(String attr : JSONObject.getNames(obj)) {
-				if(obj.get(attr) instanceof JSONArray) {
-					JSONArray fixedArray = new JSONArray();
-					JSONArray arrToFix = obj.getJSONArray(attr);
-					for(int i = 0; i < arrToFix.length(); i++) {
-						Object currObj = arrToFix.get(i); 
-						if(currObj instanceof JSONObject) {
-							currObj = workaroundEClassBug((JSONObject) currObj);
-						}
-						fixedArray.put(currObj);
-					}
-					mapObj.put(attr, fixedArray);
-				} else {
-					mapObj.put(attr, obj.get(attr));
-				}
-			}
-			return (JSONObject) mapObj;
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}*/
+	
+	public static SVNHandler getSVNHandler() {
+		return svn;
+	}
 }

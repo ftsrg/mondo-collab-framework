@@ -11,6 +11,11 @@ public class ExecutedOperation {
 	private String operation;
 	private String note;
 	
+	public ExecutedOperation() {
+		this.operation = "";
+		this.note = "";
+	}
+	
 	public void setOldValue(JSONObject _oldValue) {
 		try {
 			this.oldValue = new JSONObject(_oldValue.toString());

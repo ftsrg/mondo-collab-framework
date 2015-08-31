@@ -70,6 +70,7 @@ collaborationLibrary.CollaborationComponent = function(component) {
 	
 	this.setModel = function(model, positions) {
 		console.log("Updating model...");
+		
 		wtctrlReferences = initWtctrlReferences();
 		/*
 		if(!model) {
@@ -142,9 +143,9 @@ collaborationLibrary.CollaborationComponent = function(component) {
 		        	var nodeId = deletionData.nodes.shift();
 		        	var node = getElement(nodeId, modelData.nodes);
 		        	var deletionData = {};
-		        	if(isWtctrlReference(node.nodeType)) {
-		        		node.indexOfReferencedObject = getIndexOfReferencedElement(node, wtctrlReferences);
-		        	}
+//		        	if(isWtctrlReference(node.nodeType)) {
+//		        		node.indexOfReferencedObject = getIndexOfReferencedElement(node, wtctrlReferences);
+//		        	}
 		        	deletionData.node = node;
 		        	cc.deleteElement(deletionData);
 		        }

@@ -104,12 +104,12 @@ public class ModelModifier {
 	private static JSONObject deleteNode(JSONObject nodeToDelete, JSONObject model) throws JSONException {
 		// TODO validate action
 		JSONObject newModel = model;
-		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
 		boolean isBasic = basicElements.contains(nodeToDelete.getString("nodeType"));
 		if(isBasic) {
 			JSONArray nothing = new JSONArray();
 			newModel = updateWtctrlsReferences(nodeToDelete, newModel, "delete", nothing, model);
 		}
+		newModel = tryToDeleteInSubtree(newModel, nodeToDelete);
 		JSONObject results = new JSONObject();
 		results.put("model", newModel);
 		results.put("positions", "none");
@@ -359,7 +359,7 @@ public class ModelModifier {
 	// and all those that reference an object of the same type with a higher index
 	private static JSONObject updateWtctrlsReferences(JSONObject object, JSONObject subModel, String operation, JSONArray wtctrlsToRestore, JSONObject wholeModel) {
 		try {
-			int indexOfReferredObject = Integer.parseInt(object.getString("indexOfReferencedObject"));
+			int indexOfReferredObject = getIndexOfObjectInType(object, wholeModel);
 			String type = object.getString("nodeType");
 			type = type.substring(0, type.length() - 1);
 			JSONObject updatedModel = new JSONObject(subModel.toString());
@@ -370,29 +370,20 @@ public class ModelModifier {
 					for(int i = 0; i < wtctrls.length(); i++) {
 						if(wtctrls.getJSONObject(i).has(type)) {
 							String stringToCheck = wtctrls.getJSONObject(i).getJSONObject(type).getString("$ref");
-							int referencedIndex = Integer.parseInt(stringToCheck.substring(stringToCheck.indexOf(".") + 1));
+							int currentReferencedIndex = Integer.parseInt(stringToCheck.substring(stringToCheck.indexOf(".") + 1));
 							if(operation.equals("delete")) {
-								if(referencedIndex == indexOfReferredObject) {
+								if(currentReferencedIndex == indexOfReferredObject) {
 									wtctrlsToRestore.put(new JSONObject(wtctrls.getJSONObject(i).toString()));
 									wtctrls.getJSONObject(i).remove(type);
-								} else if(referencedIndex > indexOfReferredObject) {
-									int newIndex = referencedIndex - 1;
+								} else if(currentReferencedIndex > indexOfReferredObject) {
+									int newIndex = currentReferencedIndex - 1;
 									String replacement = stringToCheck.replaceAll(
 										stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
 										newIndex + ""
 									);
 									wtctrls.getJSONObject(i).getJSONObject(type).put("$ref", replacement);
 								}
-							}/* else if(operation.equals("add")) {
-								int newIndex = referencedIndex + 1;
-								if(referencedIndex == indexOfReferredObject) {
-									String replacement = stringToCheck.replaceAll(
-										stringToCheck.substring(stringToCheck.indexOf(".") + 1), 
-										newIndex + ""
-									);
-									wtctrls.getJSONObject(i).getJSONObject(type).put("$ref", replacement);
-								} 
-							}*/
+							}
 						} else if(operation.equals("add")) {
 							JSONObject wtctrlToRestore = getWtctrlById(
 								wtctrlsToRestore, 
@@ -429,6 +420,23 @@ public class ModelModifier {
 			e.printStackTrace();
 		} 
 		return subModel;
+	}
+	
+	private static int getIndexOfObjectInType(JSONObject object, JSONObject model) {
+		try {
+			String type = object.getString("nodeType");
+			String id = object.getString("id");
+			if(model.has(type)) {
+				for(int i = 0; i < model.getJSONArray(type).length(); i++) {
+					if(model.getJSONArray(type).getJSONObject(i).getString("id").equals(id)) {
+						return i;
+					}
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	private static JSONObject getWtctrlById(JSONArray wtctrlsToRestore, String id) {
@@ -489,7 +497,7 @@ public class ModelModifier {
 	}
 	
 	private static int getNumberOfElements(String typeName, JSONObject model) {
-		int num = 0;
+		int num = -1;
 		try {
 			if(model.has(typeName)) {
 				num = model.getJSONArray(typeName).length();
