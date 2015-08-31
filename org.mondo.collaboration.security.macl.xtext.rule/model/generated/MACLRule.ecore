@@ -18,8 +18,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Rule">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//RuleType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rights" eType="#//RuleRights"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contraint" eType="#//RuleConstraint"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="roles" unique="false" upperBound="-1"
         eType="#//Role"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" eType="ecore:EClass platform:/resource/org.eclipse.incquery.patternlanguage/model/generated/PatternLanguage.ecore#//Pattern"/>
@@ -40,6 +40,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ObjectBind" eSuperTypes="#//Bind">
     <eStructuralFeatures xsi:type="ecore:EReference" name="object" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleConstraint">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//RuleType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rights" eType="#//RuleRights"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="RuleRights">
     <eLiterals name="Read" literal="R"/>

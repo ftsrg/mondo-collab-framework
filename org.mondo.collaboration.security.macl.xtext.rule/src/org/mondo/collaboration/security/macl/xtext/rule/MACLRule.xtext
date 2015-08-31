@@ -23,7 +23,7 @@ Group:
 ;	
 	
 Rule:
-	'rule' name=ID type=RuleType rights=RuleRights 'to' roles+=[Role](',' roles+=[Role])*
+	'rule' name=ID contraint=RuleConstraint 'to' roles+=[Role](',' roles+=[Role])*
 	'{'		
 		'query' pattern=[iql::Pattern|STRING] ';'?
 		bindings+=Binding*
@@ -49,6 +49,10 @@ ValueBind:
 
 ObjectBind:
 	'object' object=[ecore::EObject]
+;
+
+RuleConstraint:
+	type=RuleType rights=RuleRights | 'obfuscate'
 ;
 
 enum RuleRights:

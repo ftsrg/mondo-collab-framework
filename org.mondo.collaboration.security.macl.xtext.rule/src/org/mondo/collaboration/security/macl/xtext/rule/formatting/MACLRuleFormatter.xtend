@@ -57,6 +57,6 @@ class MACLRuleFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(0, 1, 2).before(ML_COMMENTRule)
 		c.setLinewrap(0, 1, 1).after(ML_COMMENTRule)
 		
-		c.setLinewrap().before(ruleAccess.leftCurlyBracketKeyword_7);
+		c.setLinewrap().before(ruleAccess.leftCurlyBracketKeyword_6);
 	}
 }
