@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
+import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
@@ -49,6 +50,7 @@ public class OfflineCollaborationSession {
 	private final UniqueIDSchemeFactory uniqueIDFactory;
 	private final Resource policyResource;
 	private final String userName;
+	private DataTypeObfuscator<String> stringObfuscator;
 	
 	private final RelationalLensXform lens;
 	
@@ -65,7 +67,9 @@ public class OfflineCollaborationSession {
 			URI goldConfinementURI, ResourceSet goldResourceSet, 
 			URI frontConfinementURI, ResourceSet frontResourceSet,
 			EObjectCorrespondence.UniqueIDSchemeFactory uniqueIDFactory,
-			Resource policyResource, String userName) throws IncQueryException {
+			Resource policyResource, 
+			String userName,
+			DataTypeObfuscator<String> stringObfuscator) throws IncQueryException {
 		super();
 		this.goldConfinementURI = goldConfinementURI;
 		this.goldResourceSet = goldResourceSet;
@@ -74,6 +78,7 @@ public class OfflineCollaborationSession {
 		this.uniqueIDFactory = uniqueIDFactory;
 		this.policyResource = policyResource;
 		this.userName = userName;
+		this.stringObfuscator = stringObfuscator;
 		
 		this.lens = setupLens();
 	}
@@ -115,7 +120,7 @@ public class OfflineCollaborationSession {
         
 		MondoLensScope scope = new MondoLensScope(arbiter, goldIndexer, frontIndexer, correspondenceTables);
 		
-		return new RelationalLensXform(scope, user, null);
+		return new RelationalLensXform(scope, user, stringObfuscator);
 	}
 	
 	

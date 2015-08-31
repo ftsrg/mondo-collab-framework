@@ -50,8 +50,6 @@ import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Binding;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Group;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Role;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Rule;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleRights;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.ValueBind;
 
@@ -67,7 +65,7 @@ import com.google.common.collect.Table;
  * 
  * <p> For each {@link OperationKind} and subclass of {@link Asset}, the table returned by {@link #getResultsAsLiveTable(OperationKind, Class)}
  *   will contain tuples conforming to the schema ( asset-tuple ; role ; judgement ), where
- *   'asset-tuple' identifies the asset (see {@link Asset#toTuple()}), role is a user/group, and judgement is the {@link RuleType} of the prevailing judgement. 
+ *   'asset-tuple' identifies the asset (see {@link Asset#toTuple()}), role is a user/group, and judgement is the {@link AccessControlVerdict} of the prevailing judgement. 
  *   
  * <p> Note that no entry is created for the default case, when no security rules match at all. 
  * 
@@ -218,16 +216,19 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 
 	
 	/**
-	 * @return null if no rules applicable, or the 'type' of the most prioritized applicable rule otherwise
+	 * @return null if no rules applicable, or the verdict of the most prioritized applicable rule otherwise
 	 */
-	public RuleType getPrevailingJudgement(OperationKind op, Role role, Asset asset) {
+	public AccessControlVerdict getPrevailingJudgement(OperationKind op, Role role, Asset asset) {
 		Set<SecurityRuleJudgement> judgements = getConflictingJudgements(op, role, asset);
-		return getPrevailingJudgementInternal(judgements);
+		return getPrevailingJudgementInternal(judgements, op);
 	}
 
-	private RuleType getPrevailingJudgementInternal(Set<SecurityRuleJudgement> judgements) {
+	private AccessControlVerdict getPrevailingJudgementInternal(Set<SecurityRuleJudgement> judgements, OperationKind op) {
 		if (judgements.isEmpty()) return null;
-		return judgements.iterator().next().getRule().getType();
+		
+		final SecurityRuleJudgement relevantJudgement = judgements.iterator().next();
+		Map<OperationKind, AccessControlVerdict> interpretedRule = AccessControlVerdict.interpret(relevantJudgement.getRule());
+		return interpretedRule.get(op);
 	}
 
 	public Set<SecurityRuleJudgement> getConflictingJudgements(OperationKind op, Role role, Asset asset) {
@@ -259,13 +260,6 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	private LiveTable getResultsAsLiveTable(OperationKind op, Class<? extends Asset> assetClass) {
 		return results.get(op).get(assetClass);
 	}
-
-	private EnumMap<RuleRights, Set<OperationKind>> rightsToOps = new EnumMap<>(RuleRights.class);
-	{
-		rightsToOps.put(RuleRights.READ, ImmutableSet.of(OperationKind.READ));
-		rightsToOps.put(RuleRights.WRITE, ImmutableSet.of(OperationKind.WRITE));
-		rightsToOps.put(RuleRights.READ_WRITE, ImmutableSet.of(OperationKind.READ, OperationKind.WRITE));
-	}
 	
 	private void reactToMatchUpdate(IPatternMatch match, Rule rule, boolean isAddition) {
 		// filter according to binding, only ValueBindings are supported now, only as string
@@ -279,7 +273,8 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		
 		Set<? extends Asset> assets = assetFactories.get(rule).apply(match);
 		for (Asset asset : assets) {	
-			for (OperationKind op : rightsToOps.get(rule.getRights())) {
+			Map<OperationKind, AccessControlVerdict> interpretation = AccessControlVerdict.interpret(rule);
+			for (OperationKind op : interpretation.keySet()) {
 				for (Role role : rule.getRoles()) {
 					updateJudgement(op, role, asset, new SecurityRuleJudgement(rule, asset, match), isAddition);
 				}				
@@ -309,7 +304,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 			currentRights.get(op).put(role, asset, judgements);
 		}
 		
-		RuleType oldPrevailing = getPrevailingJudgementInternal(judgements);
+		AccessControlVerdict oldPrevailing = getPrevailingJudgementInternal(judgements, op);
 		if (addition) {
 			judgements.add(judgement);
 		} else {
@@ -317,7 +312,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 			if (judgements.isEmpty())
 				currentRights.get(op).remove(role, asset);
 		}
-		RuleType newPrevailing = getPrevailingJudgementInternal(judgements);
+		AccessControlVerdict newPrevailing = getPrevailingJudgementInternal(judgements, op);
 		
 		if (oldPrevailing != newPrevailing) {
 			if (oldPrevailing != null) 
@@ -328,8 +323,8 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		
 	}
 	
-	private void updateResults(OperationKind op, Role role, Asset asset, RuleType prevailing, boolean isAddition) {
-		Tuple resultTuple = new LeftInheritanceTuple(asset.toTuple(), new Object[]{role, prevailing});
+	private void updateResults(OperationKind op, Role role, Asset asset, AccessControlVerdict prevailingVerdict, boolean isAddition) {
+		Tuple resultTuple = new LeftInheritanceTuple(asset.toTuple(), new Object[]{role, prevailingVerdict});
 		
 		LiveTable table = getResultsAsLiveTable(op, asset.getClass());
 		table.updateTuple(resultTuple, isAddition);
