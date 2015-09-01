@@ -47,6 +47,47 @@ public class CollaborationServerApplication {
 		}
 	}
 	
+	private void loadModelsForUser(String userName, String password, Session source) {
+		URL url;
+		try {
+			JSONObject user = new JSONObject();
+			user.put("userName", userName);
+			user.put("password", password);
+			String userString = user.toString();
+			url = new URL("http://localhost:8070/services/modelHandler/getModelsForUser");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.addRequestProperty("userData", userString);
+			conn.setRequestMethod("POST");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Length", "" + Integer.toString(userString.getBytes().length));
+			
+			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			wr.writeBytes(userString);
+			wr.flush();
+			wr.close();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line;
+			line = br.readLine();
+			JSONArray modelsData = new JSONArray(line);
+			System.out.println("Available models for [" + userName + "]");
+			JSONObject request = new JSONObject();
+			request.put("operation", "avaialbleModelsForuser");
+			request.put("models", modelsData);
+			System.out.println("Send available models to: " + source.getId());
+			this.sendRequestInParts(request, source);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (ProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void initSessions() throws MalformedURLException {
 		System.out.println("Initalizing sessions...");
 		sessionsConnections = new HashMap<String, List<Session>>();
@@ -186,6 +227,13 @@ public class CollaborationServerApplication {
 				if(this.setNodePosition(sessionId, nodeData)) {
 					this.publishNodePosition(sessionId, connection, nodeData);
 				}
+			} else if(operation.equals("getAvailableModelsForUser")) {
+				System.out.println("getAvailableModelsForUser...");
+				loadModelsForUser(
+					request.getString("userName"), 
+					request.getString("password"), 
+					connection
+				);
 			}
 		} catch (JSONException e1) {
 			e1.printStackTrace();
@@ -457,7 +505,7 @@ public class CollaborationServerApplication {
 			br.close();
 			System.out.println("Service response: " + line);
 			conn.disconnect();
-
+			
 			System.out.println("Model saved.");
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
@@ -467,7 +515,6 @@ public class CollaborationServerApplication {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	private void sendModel(String sessionId, Session connection) {

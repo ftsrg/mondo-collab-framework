@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -34,12 +36,25 @@ public class OnlineResource {
 	public static String outputFolderPath;
 	public static String tmpFolderPath;
 	
+	public static String workingCopyPath;
 	public static String repositoryUrl;
 	public static String username;
 	public static String password;
 
 	private static SVNHandler svn = new SVNHandler();
 	
+	@POST
+	@Path("/getModelsForUser")
+	@Produces("apllication/json")
+	public String getModels2(String userData) throws Exception {
+		JSONObject user = new JSONObject(userData);
+		String userName = user.getString("userName");
+		System.out.println("Retrieving models for user: " + userName);
+		svn.initNewSVNClientManager(userName, user.getString("password"));
+		svn.checkoutOrUpdate(userName);
+		return svn.loadRepositoryStructure(userName).toString();
+	}
+
 	@GET
 	@Path("/getModels")
 	@Produces("application/json")

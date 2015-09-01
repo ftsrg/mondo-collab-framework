@@ -1,6 +1,8 @@
 package org.mondo.collaboration.online.client.application;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -12,12 +14,12 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Tree;
 
 @StyleSheet({ 
 	"app://VAADIN/client/MondoOnline.css" 
@@ -31,6 +33,8 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 	private Application application;
 
 	private List<CollaborationSession> sessions;
+	
+	private JSONArray availableModels;
 	
 	public SessionSelectionPage(final Navigator navigator, Application application) {
 		System.out.println("Construct SessionSelectionPage");
@@ -56,7 +60,6 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 				this.sessions.add(newSession);
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.updateSessionsView();
@@ -213,5 +216,81 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		this.loadSessions();
+		this.getAvailableModelsForUser();
+	}
+
+	private void getAvailableModelsForUser() {
+		this.application.getWebsocketClient().getAvailableModelsForUser(
+			this.application.getUser().getUserName(),
+			this.application.getUser().getPassword()
+		);
+	}
+
+	public void setAvailableSessions(JSONArray availableModels) {
+		System.out.println("Available sessions: ");
+		this.availableModels = availableModels;
+		try {
+			for(int i = 0; i < availableModels.length(); i++) {
+				System.out.println(availableModels.getString(i));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		setModelsTreeView();
+	}
+
+	private void setModelsTreeView() {
+		Tree tree = new Tree("Available models");
+		List<String> sortedListOfModels = getAvailableModelsListSorted();
+		for(String path : sortedListOfModels) {
+			// WARNING if the client runs on another platform than the EMF Handler separator may differ
+			String[] partsOfPath = path.split(File.separator);
+			
+			String prev = null;
+			for(String part : partsOfPath) {
+				if(prev != null) {
+					part = prev + File.separator + part;
+				}
+				if(!part.endsWith(".wtspec4m")) {
+					if(tree.getItem(part) == null) {
+						System.out.println("Adding folder [" + part + "] to tree view.");
+						tree.addItem(part);
+						if(prev != null) {
+							tree.setParent(part, prev);
+						}
+					}
+					prev = part;
+				} else { 
+					part = part.replace(".wtspec4m", "");
+					tree.addItem(part);
+					if(prev != null) {
+						tree.setParent(part, prev);
+					}
+		            tree.setChildrenAllowed(part, false);
+				}
+			}
+		}	
+		for(Object itemId: tree.getItemIds()) {
+			tree.expandItem(itemId);
+		}
+		addComponent(tree, "left: 10px; top: 50px;");
+	}
+
+	private List<String> getAvailableModelsListSorted() {
+		List<String> modelsList = new ArrayList<String>();
+		try {
+			for(int i = 0; i < this.availableModels.length(); i++) {
+				modelsList.add(this.availableModels.getString(i));
+			}
+			modelsList.sort(new Comparator<String> () {
+			    @Override
+			    public int compare(String a, String b) {
+			        return a.compareTo(b);
+			    }
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return modelsList;
 	}
 }

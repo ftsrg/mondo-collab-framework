@@ -61,10 +61,10 @@ public class Activator implements BundleActivator {
 		
 		String _repositoryUrl = rb.getString("repository_url");
 		String _workingCopyPath = rb.getString("working_copy_path");
-		String _username = rb.getString("username");
-		String _password = rb.getString("password");
-		OnlineResource.getSVNHandler().setSVNConnectionDetails(_repositoryUrl, _workingCopyPath, _username, _password);
+		OnlineResource.getSVNHandler().setRepositoryUrl(_repositoryUrl);
+		OnlineResource.getSVNHandler().setWorkingCopyPath(_workingCopyPath);
 		OnlineResource.getSVNHandler().init();
+		OnlineResource.workingCopyPath = _workingCopyPath;
 	}
 
 	/*

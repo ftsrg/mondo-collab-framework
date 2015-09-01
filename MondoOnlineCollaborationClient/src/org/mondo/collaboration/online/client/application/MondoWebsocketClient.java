@@ -62,10 +62,10 @@ public class MondoWebsocketClient {
 					message.getJSONObject("nodeData")
 				);
     		} else if(operation.equals("updateSessions")) {
-        		System.out.println("updateSessions...");
-				this.application.getSessionSelectionPage().setSessionsList(
-					message.getJSONArray("sessions")
-				);
+//        		System.out.println("updateSessions...");
+//				this.application.getSessionSelectionPage().setSessionsList(
+//					message.getJSONArray("sessions")
+//				);
     		} else if(operation.equals("updateUsers")) {
         		System.out.println("updateUsers...");
 				this.application.getCollaborationPage().setUsersList(
@@ -74,6 +74,11 @@ public class MondoWebsocketClient {
     		} else if(operation.equals("leaveSession")) {
         		System.out.println("leaveSession...");
 				this.application.leaveSession();
+    		} else if(operation.equals("avaialbleModelsForuser")) {
+        		System.out.println("avaialbleModelsForuser...");
+				this.application.getSessionSelectionPage().setAvailableSessions(
+					message.getJSONArray("models")
+				);
     		}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -124,21 +129,6 @@ public class MondoWebsocketClient {
 			e.printStackTrace();
 		}
 	}
-	
-	public void loadAvailableSessions() {
-		try {
-			JSONObject request = new JSONObject();
-			request.put("operation", "getSessions");
-			System.out.println("Sending message to server: " + request.toString());
-			this.connection.getBasicRemote().sendText(request.toString());
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-	}
 
 	public void getModel(String sessionId) {
 		System.out.println("sessionId -- " + sessionId);
@@ -149,6 +139,21 @@ public class MondoWebsocketClient {
 			System.out.println("Sending message to server: " + request.toString());
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	public void loadAvailableSessions() {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "getSessions");
+			System.out.println("Sending message to server: " + request.toString());
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -247,6 +252,19 @@ public class MondoWebsocketClient {
 			request.put("operation", "modifyModel");
 			request.put("sessionId", sessionId);
 			request.put("data", data);
+			System.out.println("Sending message to server: " + request.toString());
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void getAvailableModelsForUser(String userName, String password) {
+		try {
+			JSONObject request = new JSONObject();
+			request.put("operation", "getAvailableModelsForUser");
+			request.put("userName", userName);
+			request.put("password", password);
 			System.out.println("Sending message to server: " + request.toString());
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException | IOException e) {
