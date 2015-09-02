@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.mondo.collaboration.security.mpbl.xtext/src-gen"
+    editDirectory="/org.mondo.collaboration.security.mpbl.xtext.edit/src" editorDirectory="/org.mondo.collaboration.security.mpbl.xtext.editor/src"
+    modelPluginID="org.mondo.collaboration.security.mpbl.xtext" forceOverwrite="true"
+    modelName="MondoPropertyBasedLocking" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="6.0" copyrightFields="false" editPluginID="org.mondo.collaboration.security.mpbl.xtext.edit"
+    editorPluginID="org.mondo.collaboration.security.mpbl.xtext.editor" runtimeVersion="2.11"
+    usedGenPackages="platform:/resource/org.eclipse.incquery.patternlanguage/model/generated/PatternLanguage.genmodel#//patternLanguage">
+  <genPackages prefix="MondoPropertyBasedLocking" basePackage="org.mondo.collaboration.security.mpbl.xtext"
+      disposableProviderFactory="true" fileExtensions="mpbl" ecorePackage="MondoPropertyBasedLocking.ecore#/">
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//PropertyBasedLockingModel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//PropertyBasedLockingModel/roles"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//PropertyBasedLockingModel/locks"/>
+    </genClasses>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//Role">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MondoPropertyBasedLocking.ecore#//Role/name"/>
+    </genClasses>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//User"/>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//Group">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Group/users"/>
+    </genClasses>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//Lock">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Lock/pattern"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Lock/bindings"/>
+    </genClasses>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//Binding">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Binding/param"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Binding/value"/>
+    </genClasses>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//Bind"/>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//RoleBind">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//RoleBind/role"/>
+    </genClasses>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//ValueBind">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MondoPropertyBasedLocking.ecore#//ValueBind/value"/>
+    </genClasses>
+    <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//ObjectBind">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//ObjectBind/object"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
