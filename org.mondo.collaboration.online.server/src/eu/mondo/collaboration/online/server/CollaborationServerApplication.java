@@ -149,9 +149,7 @@ public class CollaborationServerApplication {
 			} else if(operation.equals("startSession")) {
 				System.out.println("startSession...");
 				String sessionId = request.getString("sessionId");
-				if(this.startSession(sessionId)) {
-					this.publishSessions();
-				}
+				this.startSession(sessionId);
 			} else if(operation.equals("finishSession")) {
 				System.out.println("finishSession...");
 				String sessionId = request.getString("sessionId");
@@ -439,15 +437,40 @@ public class CollaborationServerApplication {
 	}
 
 	private boolean startSession(String sessionId) {
-		System.out.println("Sessions before :" + this.prepareSessionsToSend().toString());
-		for(CollaborationSession s: sessions) {
-			if(s.getId().equals(sessionId)) {
-				s.startSession();
-				return true;
-			}
-		}
-		System.out.println("Sessions after: " + this.prepareSessionsToSend().toString());
-		return false;
+//		System.out.println("Sessions before :" + this.prepareSessionsToSend().toString());
+//		for(CollaborationSession s: sessions) {
+//			if(s.getId().equals(sessionId)) {
+//				s.startSession();
+//				return true;
+//			}
+//		}
+		try {
+			// TODO check if already started 
+			URL url = new URL("http://localhost:8070/services/modelHandler/loadModel");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.addRequestProperty("sessionId", sessionId);
+			conn.setRequestMethod("POST");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Length", "" + Integer.toString(sessionId.getBytes().length));
+			
+			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			wr.writeBytes(sessionId);
+			wr.flush();
+			wr.close();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line;
+			line = br.readLine();
+			br.close();
+			System.out.println("Service response: " + line);
+			conn.disconnect();
+		} catch (ProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return true;
 	}
 
 	private boolean finishSession(String sessionId) {
@@ -508,7 +531,6 @@ public class CollaborationServerApplication {
 			
 			System.out.println("Model saved.");
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (ProtocolException e) {
 			e.printStackTrace();

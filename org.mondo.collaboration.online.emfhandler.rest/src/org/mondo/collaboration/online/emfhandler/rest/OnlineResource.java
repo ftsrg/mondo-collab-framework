@@ -55,6 +55,15 @@ public class OnlineResource {
 		return svn.loadRepositoryStructure(userName).toString();
 	}
 
+	@POST
+	@Path("/loadModel")
+	@Produces("application/json")
+	public String loadModel(String sessionId) throws Exception {
+		System.out.println("Load model: " + sessionId);
+//		return parseEMFModelToJSON(sessionId);
+		return "";
+	}
+	
 	@GET
 	@Path("/getModels")
 	@Produces("application/json")

@@ -30,6 +30,7 @@ public class Application extends UI {
 	
 	private LoginPage loginPage;
 	private SessionSelectionPage sessionSelectionPage;
+	private StartNewSessionPage startNewSessionPage;
 	private CollaborationPage collaborationPage;
 	
 	@WebServlet(value = "/*", asyncSupported = true)
@@ -53,11 +54,13 @@ public class Application extends UI {
 
 			this.loginPage = new LoginPage(navigator, this);
 			this.sessionSelectionPage = new SessionSelectionPage(navigator, this);
+			this.startNewSessionPage = new StartNewSessionPage(navigator, this);
 			//this.collaborationPage = new CollaborationPage(navigator, this);
 	
 			// Create and register the views
 			navigator.addView(LoginPage.NAME, loginPage);
 			navigator.addView(SessionSelectionPage.NAME, sessionSelectionPage);
+			navigator.addView(StartNewSessionPage.NAME, startNewSessionPage);
 			//navigator.addView(CollaborationPage.NAME, collaborationPage);
 			System.out.println("Client init Done!");
 			navigator.navigateTo(LoginPage.NAME);
@@ -103,6 +106,10 @@ public class Application extends UI {
 		return this.sessionSelectionPage;
 	}
 
+	public StartNewSessionPage getStartNewSessionPage() {
+		return this.startNewSessionPage;
+	}
+	
 	public void leaveSession() {
 		navigator.navigateTo(SessionSelectionPage.NAME);
 		navigator.removeView(CollaborationPage.NAME);

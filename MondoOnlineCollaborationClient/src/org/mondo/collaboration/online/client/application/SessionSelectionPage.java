@@ -1,8 +1,6 @@
 package org.mondo.collaboration.online.client.application;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -19,7 +17,6 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Tree;
 
 @StyleSheet({ 
 	"app://VAADIN/client/MondoOnline.css" 
@@ -137,21 +134,22 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		});
 		buttonStartSession.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				Object rowId = sessionsTable.getValue();
-				if(rowId != null) {
-					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
-					int state = CollaborationSession.getSessionStateByString(
-						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
-					);
-					if(state == CollaborationSession.STATE_READY) {
-						application.getUser().addSessionId(sessionId);
-						startSession(sessionId);
-					} else {
-						Notification.show("Selected session is not in closed state.");
-					}
-				} else {
-					Notification.show("Please select a session");
-				}
+				navigateToStartNewSessionPage();
+//				Object rowId = sessionsTable.getValue();
+//				if(rowId != null) {
+//					String sessionId = ((String) sessionsTable.getContainerProperty(rowId, "ID").getValue());
+//					int state = CollaborationSession.getSessionStateByString(
+//						(String) sessionsTable.getContainerProperty(rowId, "State").getValue()
+//					);
+//					if(state == CollaborationSession.STATE_READY) {
+//						application.getUser().addSessionId(sessionId);
+//						startSession(sessionId);
+//					} else {
+//						Notification.show("Selected session is not in closed state.");
+//					}
+//				} else {
+//					Notification.show("Please select a session");
+//				}
 			}
 		});
 		buttonFinishSession.addClickListener(new Button.ClickListener() {
@@ -213,84 +211,12 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		this.navigator.navigateTo(LoginPage.NAME);
 	}
 	
+	private void navigateToStartNewSessionPage() {
+		this.navigator.navigateTo(StartNewSessionPage.NAME);
+	}
+	
 	@Override
 	public void enter(ViewChangeEvent event) {
 		this.loadSessions();
-		this.getAvailableModelsForUser();
-	}
-
-	private void getAvailableModelsForUser() {
-		this.application.getWebsocketClient().getAvailableModelsForUser(
-			this.application.getUser().getUserName(),
-			this.application.getUser().getPassword()
-		);
-	}
-
-	public void setAvailableSessions(JSONArray availableModels) {
-		System.out.println("Available sessions: ");
-		this.availableModels = availableModels;
-		try {
-			for(int i = 0; i < availableModels.length(); i++) {
-				System.out.println(availableModels.getString(i));
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		setModelsTreeView();
-	}
-
-	private void setModelsTreeView() {
-		Tree tree = new Tree("Available models");
-		List<String> sortedListOfModels = getAvailableModelsListSorted();
-		for(String path : sortedListOfModels) {
-			// WARNING if the client runs on another platform than the EMF Handler separator may differ
-			String[] partsOfPath = path.split(File.separator);
-			
-			String prev = null;
-			for(String part : partsOfPath) {
-				if(prev != null) {
-					part = prev + File.separator + part;
-				}
-				if(!part.endsWith(".wtspec4m")) {
-					if(tree.getItem(part) == null) {
-						System.out.println("Adding folder [" + part + "] to tree view.");
-						tree.addItem(part);
-						if(prev != null) {
-							tree.setParent(part, prev);
-						}
-					}
-					prev = part;
-				} else { 
-					part = part.replace(".wtspec4m", "");
-					tree.addItem(part);
-					if(prev != null) {
-						tree.setParent(part, prev);
-					}
-		            tree.setChildrenAllowed(part, false);
-				}
-			}
-		}	
-		for(Object itemId: tree.getItemIds()) {
-			tree.expandItem(itemId);
-		}
-		addComponent(tree, "left: 10px; top: 50px;");
-	}
-
-	private List<String> getAvailableModelsListSorted() {
-		List<String> modelsList = new ArrayList<String>();
-		try {
-			for(int i = 0; i < this.availableModels.length(); i++) {
-				modelsList.add(this.availableModels.getString(i));
-			}
-			modelsList.sort(new Comparator<String> () {
-			    @Override
-			    public int compare(String a, String b) {
-			        return a.compareTo(b);
-			    }
-			});
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return modelsList;
 	}
 }

@@ -62,10 +62,10 @@ public class MondoWebsocketClient {
 					message.getJSONObject("nodeData")
 				);
     		} else if(operation.equals("updateSessions")) {
-//        		System.out.println("updateSessions...");
-//				this.application.getSessionSelectionPage().setSessionsList(
-//					message.getJSONArray("sessions")
-//				);
+        		System.out.println("updateSessions...");
+				this.application.getSessionSelectionPage().setSessionsList(
+					message.getJSONArray("sessions")
+				);
     		} else if(operation.equals("updateUsers")) {
         		System.out.println("updateUsers...");
 				this.application.getCollaborationPage().setUsersList(
@@ -76,7 +76,7 @@ public class MondoWebsocketClient {
 				this.application.leaveSession();
     		} else if(operation.equals("avaialbleModelsForuser")) {
         		System.out.println("avaialbleModelsForuser...");
-				this.application.getSessionSelectionPage().setAvailableSessions(
+				this.application.getStartNewSessionPage().setAvailableSessions(
 					message.getJSONArray("models")
 				);
     		}
