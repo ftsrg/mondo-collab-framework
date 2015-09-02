@@ -218,58 +218,57 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
 			)
 			mappingCondition += QueryTemplate::fromConstrainer(#[varGoldValue, varFrontValue]) [ body | 
-				// TODO add obfuscation
-				new Equality(body, body.getOrCreateVariableByName(varGoldValue), body.getOrCreateVariableByName(varFrontValue))
-				
-//				new PatternMatchCounter(body, 
-//					new FlatTuple(body.getOrCreateVariableByName(varGoldEObject), body.getOrCreateVariableByName(varEAttribute)), 
-//					authorizationQueries.effectivelyObfuscatedAttribute, 
-//					body.getOrCreateVariableByName(varIsObfuscated)
-//				) 
-//				new ExpressionEvaluation(body, new IExpressionEvaluator(){
-//					override evaluateExpression(IValueProvider provider) throws Exception {
-//						val feature = provider.getValue(varEAttribute)
-//						val isObfuscated = provider.getValue(varIsObfuscated)
-//						val goldValue = provider.getValue(varGoldValue)
-//						
-//						if (feature instanceof EAttribute && isObfuscated instanceof Number) {
-//							if (1 == (isObfuscated as Number).intValue && goldValue instanceof String)
-//								return stringObfuscator.obfuscateData(goldValue as String)
-//							else 
-//								return goldValue
-//						} else {
-//							return null
-//						}
-//					}
-//					override getInputParameterNames() {
-//						#[varEAttribute, varIsObfuscated, varGoldValue]
-//					}
-//					override getShortDescription() {
-//						'''Obfuscates gold value into front value'''
-//					}
-//				}, body.getOrCreateVariableByName(varFrontValue))
-//				new ExpressionEvaluation(body, new IExpressionEvaluator(){
-//					override evaluateExpression(IValueProvider provider) throws Exception {
-//						val feature = provider.getValue(varEAttribute)
-//						val isObfuscated = provider.getValue(varIsObfuscated)
-//						val frontValue = provider.getValue(varFrontValue)
-//						
-//						if (feature instanceof EAttribute && isObfuscated instanceof Number) {
-//							if (1 == (isObfuscated as Number).intValue && frontValue instanceof String)
-//								return stringObfuscator.restoreData(frontValue as String)
-//							else 
-//								return frontValue
-//						} else {
-//							return null
-//						}
-//					}
-//					override getInputParameterNames() {
-//						#[varEAttribute, varIsObfuscated, varFrontValue]
-//					}
-//					override getShortDescription() {
-//						'''Deobfuscates front value into gold value'''
-//					}
-//				}, body.getOrCreateVariableByName(varGoldValue))
+//				new Equality(body, body.getOrCreateVariableByName(varGoldValue), body.getOrCreateVariableByName(varFrontValue))
+				new PatternMatchCounter(body, 
+					new FlatTuple(body.getOrCreateVariableByName(varGoldEObject), body.getOrCreateVariableByName(varEAttribute)), 
+					authorizationQueries.effectivelyObfuscatedAttribute.internalQueryRepresentation, 
+					body.getOrCreateVariableByName(varIsObfuscated)
+				) 
+				new ExpressionEvaluation(body, new IExpressionEvaluator(){
+					override evaluateExpression(IValueProvider provider) throws Exception {
+						val feature = provider.getValue(varEAttribute)
+						val isObfuscated = provider.getValue(varIsObfuscated)
+						val goldValue = provider.getValue(varGoldValue)
+						
+						if (feature instanceof EAttribute && isObfuscated instanceof Number) {
+							if (1 == (isObfuscated as Number).intValue && goldValue instanceof String)
+								return stringObfuscator.obfuscateData(goldValue as String)
+							else 
+								return goldValue
+						} else {
+							return null
+						}
+					}
+					override getInputParameterNames() {
+						#[varEAttribute, varIsObfuscated, varGoldValue]
+					}
+					override getShortDescription() {
+						'''Obfuscates gold value into front value'''
+					}
+				}, body.getOrCreateVariableByName(varFrontValue))
+				new ExpressionEvaluation(body, new IExpressionEvaluator(){
+					override evaluateExpression(IValueProvider provider) throws Exception {
+						val feature = provider.getValue(varEAttribute)
+						val isObfuscated = provider.getValue(varIsObfuscated)
+						val frontValue = provider.getValue(varFrontValue)
+						
+						if (feature instanceof EAttribute && isObfuscated instanceof Number) {
+							if (1 == (isObfuscated as Number).intValue && frontValue instanceof String)
+								// there is no putback of obfuscated attributes, this could be ignored
+								return stringObfuscator.restoreData(frontValue as String) 
+							else 
+								return frontValue
+						} else {
+							return null
+						}
+					}
+					override getInputParameterNames() {
+						#[varEAttribute, varIsObfuscated, varFrontValue]
+					}
+					override getShortDescription() {
+						'''Deobfuscates front value into gold value'''
+					}
+				}, body.getOrCreateVariableByName(varGoldValue))
 			]
 			front += new ManipulableTemplate(
 				EObjectAttributeKey.FRONT, #[varFrontEObject, varEAttribute, varFrontValue]

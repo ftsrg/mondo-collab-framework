@@ -57,18 +57,18 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 		prepareExplicitlyDeniedHelperPatterns(ReferenceAsset, varSrc, varEReference, varTrg),
 		prepareExplicitlyDeniedHelperPatterns(AttributeAsset, varEObject, varEAttribute)
 	}
-//	@Accessors(PUBLIC_GETTER) 
-//	val explicitObfuscateQuery = 
-//		prepareExplicitRuleDecisionHelperPattern(OperationKind::READ, AttributeAsset, RuleType::OBFUSCATE, varEObject, varEAttribute)
+	@Accessors(PUBLIC_GETTER) 
+	val explicitObfuscateQuery = 
+		prepareExplicitRuleDecisionHelperPattern(OperationKind::READ, AttributeAsset, AccessControlVerdict::OBFUSCATED, varEObject, varEAttribute)
 		
 		
 	private def Pair<Class<? extends Asset>, Map<OperationKind, IQuerySpecification>> prepareExplicitlyDeniedHelperPatterns(Class<? extends Asset> assetClass, String... assetVariables) {
 		assetClass -> Collections::unmodifiableMap(newHashMap(OperationKind.values.map[ op |
-			op -> op.prepareExplicitRuleDecisionHelperPattern(assetClass, RuleType::DENY, assetVariables)
+			op -> op.prepareExplicitRuleDecisionHelperPattern(assetClass, AccessControlVerdict::DENIED, assetVariables)
 		]))
 	}
 	
-	private def IQuerySpecification prepareExplicitRuleDecisionHelperPattern(OperationKind op, Class<? extends Asset> assetClass, RuleType judgement, String... assetVariables) {
+	private def IQuerySpecification prepareExplicitRuleDecisionHelperPattern(OperationKind op, Class<? extends Asset> assetClass, AccessControlVerdict judgement, String... assetVariables) {
 		composeQuery('''«fullyQualifiedName».«op».explicitly.«judgement».«assetClass.simpleName»''', 
 			#[QueryTemplate::fromConstrainer(assetVariables)[ body |
 				typeConstraint(new SecurityJudgementKey(op, assetClass), Iterables::concat(assetVariables, #[varUser, varJudgement])).apply(body)
@@ -146,14 +146,15 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 				effectivelyHiddenAttribute.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
 			]
 		)	
-//	private val IQuerySpecification effectivelyObfuscatedAttribute = 
-//		composeQuery('''«fullyQualifiedName».«OperationKind::READ».effectivelyObfuscated.«AttributeAsset.simpleName»''',
-//			#[
-//				effectivelyHiddenAttribute
-//					.negativeCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute}),
-//				explicitObfuscateQuery.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
-//			]
-//		)	
+	@Accessors(PUBLIC_GETTER) 
+	private val IQuerySpecification effectivelyObfuscatedAttribute = 
+		composeQuery('''«fullyQualifiedName».«OperationKind::READ».effectivelyObfuscated.«AttributeAsset.simpleName»''',
+			#[
+				effectivelyHiddenAttribute
+					.negativeCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute}),
+				explicitObfuscateQuery.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
+			]
+		)	
 		
 	private val IQuerySpecification effectivelyHiddenReference = 
 		composeDisjunctiveQuery('''«fullyQualifiedName».«OperationKind::READ».effectivelyDenied.«ReferenceAsset.simpleName»''',
@@ -206,8 +207,8 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 	@Accessors(PUBLIC_GETTER)
 	val Set<IQuerySpecification> allQueries = ImmutableSet::copyOf(Iterables::concat(
 		Iterables::concat(explicitDenialQuery.values.map[values]),
-		Iterables::concat(effectivelyDeniedQuery.values.map[values])
-		// TODO obfuscate
+		Iterables::concat(effectivelyDeniedQuery.values.map[values]),
+		ImmutableSet::of(explicitObfuscateQuery, effectivelyObfuscatedAttribute)
 	))
 	 
 		

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="EMF Rest Running Platform" sequenceNumber="63">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.0.v20150601-0402"/>
+<repository location="http://download.eclipse.org/releases/mars/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.eclipsesource.jaxrs.provider.security.feature.feature.group" version="2.2.0.201506221200"/>
+<unit id="com.eclipsesource.jaxrs.provider.moxy.feature.feature.group" version="2.2.0.201506221200"/>
+<unit id="com.eclipsesource.jaxrs.connector.feature.feature.group" version="5.0.0.201506221200"/>
+<unit id="com.eclipsesource.jaxrs.provider.multipart.feature.feature.group" version="2.2.0.201506221200"/>
+<unit id="com.eclipsesource.jaxrs.provider.sse.feature.feature.group" version="2.2.0.201506221200"/>
+<unit id="com.eclipsesource.jaxrs.provider.gson.feature.feature.group" version="2.3.0.201506221200"/>
+<repository location="http://hstaudacher.github.io/osgi-jax-rs-connector"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.11.0.v20150602-1417"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.5"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.5.0.v201504151636"/>
+<unit id="com.fasterxml.jackson.core.jackson-core" version="2.5.0.v201504151636"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150519210750/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.tmatesoft.svnkit.feature.group" version="1.8.10.r10446_v20150526_1454"/>
+<repository location="http://eclipse.svnkit.com/1.8.x"/>
+</location>
+</locations>
+<environment>
+<os>linux</os>
+<ws>gtk</ws>
+<arch>x86_64</arch>
+<nl>en_US</nl>
+</environment>
+<launcherArgs>
+<vmArgs>-Dosgi.requiredJavaVersion=1.7 -XX:MaxPermSize=256m -Xms256m -Xmx1024m</vmArgs>
+</launcherArgs>
+</target>
