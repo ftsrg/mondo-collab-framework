@@ -28,7 +28,6 @@ public class LoginPage extends AbsoluteLayout implements View {
 		addComponent(panel, "left: 20px; top: 20px;");
 
 		CustomLayout custom = new CustomLayout("loginPage");
-		// custom.addStyleName("customlayoutexample");
 
 		panel.setContent(custom);
 		

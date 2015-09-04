@@ -30,8 +30,8 @@ public class User {
 	}
 	
 	public static boolean usersEqual(User u1, User u2) {
-		if(u1.name == u2.name
-		&& u1.id == u2.id) {
+		if(u1.name.equals(u2.name)
+		&& u1.id.equals(u2.id)) {
 			return true;
 		}
 		return false;

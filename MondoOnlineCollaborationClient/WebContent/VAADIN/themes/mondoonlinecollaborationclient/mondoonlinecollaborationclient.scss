@@ -32,4 +32,27 @@
 @mixin mondoonlinecollaborationclient {
   @include valo;
   // Insert your own theme rules here
+  
+	#popup_commitMessage {
+		width: 20em;
+		height: 12em;
+	}
+
+	// popup on Session Selection page
+	#button_cancel {
+		margin-top: 7em;
+		margin-left: 0.4em;
+	}
+	
+	#button_proceed {
+		margin-top: 7em;
+		margin-left: 13.7em;
+	}
+	
+	#text_commitMsg {
+		margin-top: 0.3em;
+		margin-left: 0.5em;
+		width: 19em;
+		height: 6em;
+	}  
 }

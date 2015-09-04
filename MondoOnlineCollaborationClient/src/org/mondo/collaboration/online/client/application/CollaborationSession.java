@@ -116,5 +116,9 @@ public class CollaborationSession {
 	public boolean isInitialized() {
 		return this.positionsInitialized;
 	}
+	
+	public void setState(int _state) {
+		this.state = _state;
+	}
 }
 

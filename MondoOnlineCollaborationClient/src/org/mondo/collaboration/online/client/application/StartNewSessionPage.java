@@ -4,9 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.data.Item;
@@ -66,14 +68,19 @@ public class StartNewSessionPage extends AbsoluteLayout implements View {
 		this.buttonStartSession.setId("button_start");
 		this.buttonStartSession.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				String selectedId = (String) tree.getValue();
-				if(selectedId.endsWith(".wtspec4m")) {
-					startSession(selectedId);
+				String selectedModelPath = (String) tree.getValue();
+				if(selectedModelPath.endsWith(".wtspec4m")) {
+					startSession(selectedModelPath);
 				} 
 			}
 		});
 		addComponent(this.buttonStartSession);
 		addComponent(this.loadingSign);
+
+		Panel treeViewContainer = new Panel();
+		treeViewContainer.setId("panel_treeViewContainer");
+		treeViewContainer.setContent(this.availableModelsTree);
+		addComponent(treeViewContainer);
 	}
 
 	@Override	
@@ -82,10 +89,22 @@ public class StartNewSessionPage extends AbsoluteLayout implements View {
 		getAvailableModelsForUser();
 	}
 
-	private void startSession(String selectedId) {
-		System.out.println("Starting session for model: " + selectedId);
-		this.application.getWebsocketClient().startSession(selectedId);
-		this.navigator.navigateTo(SessionSelectionPage.NAME);
+	private void startSession(String selectedModelPath) {
+		try {
+			System.out.println("Starting session for model: " + selectedModelPath);
+			availableModelsTree.removeAllItems();
+			JSONObject jsonUser = new JSONObject();
+			jsonUser.put("name", this.application.getUser().getUserName());
+			jsonUser.put("id", this.application.getUser().getUserName());
+			this.application.getWebsocketClient().startSession(
+				selectedModelPath,
+				jsonUser
+			);
+			this.navigator.navigateTo(SessionSelectionPage.NAME);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	private void getAvailableModelsForUser() {
@@ -109,11 +128,10 @@ public class StartNewSessionPage extends AbsoluteLayout implements View {
 	}
 
 	private void setModelsTreeView(JSONArray availableModels) {
-		availableModelsTree.removeAllItems();
 		List<String> sortedListOfModels = sortAvailableModels(availableModels);
 		for(String path : sortedListOfModels) {
 			// WARNING if the client runs on another platform than the EMF Handler separator may differ
-			String[] partsOfPath = path.split(File.separator);
+			String[] partsOfPath = path.split(Pattern.quote(File.separator));
 			
 			String prevId = null;
 			for(String part : partsOfPath) {
@@ -129,10 +147,6 @@ public class StartNewSessionPage extends AbsoluteLayout implements View {
 				prevId = newId;
 			}
 		}	
-		Panel treeViewContainer = new Panel();
-		treeViewContainer.setId("panel_treeViewContainer");
-		treeViewContainer.setContent(this.availableModelsTree);
-		addComponent(treeViewContainer);
 	}
 
 	private List<String> sortAvailableModels(JSONArray availableModels) {
