@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Server
+Bundle-SymbolicName: org.mondo.collaboration.security.mpbl.server
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.mondo.collaboration.security.mpbl.server.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.mondo.collaboration.security.mpbl.xtext;bundle-version="1.0.0",
+ org.eclipse.incquery.patternlanguage.emf
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.incquery.patternlanguage.patternLanguage
