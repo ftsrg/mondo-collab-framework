@@ -24,7 +24,7 @@ Group:
 
 	
 Lock:
-	'lock { ''query' pattern=[iql::Pattern|STRING] 'bind' bindings+=Binding '}'
+	owner=[Role] 'lock' '{' 'query' pattern=[iql::Pattern|STRING] 'bind' bindings+=Binding '}'
 ;
 
 Binding:

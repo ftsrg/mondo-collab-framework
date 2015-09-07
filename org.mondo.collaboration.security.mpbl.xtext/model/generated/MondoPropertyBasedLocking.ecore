@@ -17,6 +17,7 @@
         eType="#//User"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Lock">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="owner" eType="#//Role"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" eType="ecore:EClass platform:/resource/org.eclipse.incquery.patternlanguage/model/generated/PatternLanguage.ecore#//Pattern"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="bindings" upperBound="-1"
         eType="#//Binding" containment="true"/>

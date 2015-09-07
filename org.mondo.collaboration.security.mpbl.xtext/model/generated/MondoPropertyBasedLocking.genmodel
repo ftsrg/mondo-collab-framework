@@ -21,6 +21,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Group/users"/>
     </genClasses>
     <genClasses ecoreClass="MondoPropertyBasedLocking.ecore#//Lock">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Lock/owner"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Lock/pattern"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MondoPropertyBasedLocking.ecore#//Lock/bindings"/>
     </genClasses>
