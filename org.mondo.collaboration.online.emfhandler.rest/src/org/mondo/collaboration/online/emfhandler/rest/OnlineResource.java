@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,8 +39,6 @@ public class OnlineResource {
 	
 	public static String workingCopyPath;
 	public static String repositoryUrl;
-	public static String username;
-	public static String password;
 
 	private static SVNHandler svn = new SVNHandler();
 	
@@ -55,6 +54,14 @@ public class OnlineResource {
 		return svn.loadRepositoryStructure(userName).toString();
 	}
 
+	@POST
+	@Path("/loadModel")
+	@Produces("application/json")
+	public String loadModel(String selectedModelPath) throws Exception {
+		System.out.println("Load model: " + selectedModelPath);
+		return parseEMFModelToJSON(selectedModelPath);
+	}
+	
 	@GET
 	@Path("/getModels")
 	@Produces("application/json")
@@ -64,6 +71,57 @@ public class OnlineResource {
 		return this.modelsInJson.toString();
 	}
 
+	private String parseEMFModelToJSON(String relativeModelPath) {
+		System.out.println("Parse emf model: " + relativeModelPath);
+		String filePath = workingCopyPath + relativeModelPath;
+		final File modelFile = new File(filePath);
+		String modelName = relativeModelPath.substring(
+			relativeModelPath.lastIndexOf(File.separator) + 1, 
+			relativeModelPath.indexOf(".wtspec4m")
+		);
+		Integer id = 0;
+		
+	    // Obtain a new resource set
+	    ResourceSet resourceSet = new ResourceSetImpl();
+	    Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("json", new JsonResourceFactory());
+	    
+	    Map<String, Object> options = new HashMap<String, Object>();
+	    options.put(EMFJs.OPTION_INDENT_OUTPUT, false);
+	    options.put(EMFJs.OPTION_SERIALIZE_TYPE, true);
+	    try {
+		    if(!modelFile.exists()) {
+				System.out.println(modelFile.getCanonicalPath() + " not found.");
+		    	return "";
+		    }
+	    	
+		    // Get the resource
+		    Resource resource = resourceSet.getResource(URI
+		        .createURI("file:///" + filePath), true);
+		    
+		    String jsonFileName = "MondoModelHandler/tmp/" + modelName + ".json";
+		    Resource jsonResource = resourceSet.createResource(URI.createURI(jsonFileName));
+		    
+		    EObject WTRoot = (EObject) resource.getContents().get(0);
+		    jsonResource.getContents().add(WTRoot);
+		    String model = null;
+		    try {
+				jsonResource.save(options);
+				BufferedReader inputStream = new BufferedReader(new FileReader(jsonFileName));
+				model = inputStream.readLine();
+				JSONObject jsonModel = new JSONObject();
+				jsonModel.put("name", modelName);
+				jsonModel.put("model", new JSONObject(model));
+				inputStream.close();
+				return jsonModel.toString();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+	    } catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "failed";
+	}
+	
 	private void loadModelAsResource() throws JSONException {
 		System.out.println("Reading them models...");
 		this.modelsInJson = new JSONArray();
@@ -118,15 +176,15 @@ public class OnlineResource {
 	@POST
 	@Path("/persistModel")
 	@Produces("application/json")
-	public String persistModel(String modelDataString) throws Exception {
+	public String persistModel(String saveDetailsString) throws Exception {
 		System.out.println("Model handler service / persist model...");
-		System.out.println(modelDataString);
-		JSONObject modelData = new JSONObject(modelDataString);
+		System.out.println(saveDetailsString);
+		JSONObject saveDetails = new JSONObject(saveDetailsString);
 		
-		String jsonFileName = modelData.getString("title") + ".json";
+		String jsonFileName = saveDetails.getString("title") + ".json";
 		String jsonPath = OnlineResource.tmpFolderPath + jsonFileName;
 		
-		createJsonFile(jsonPath, modelData.getJSONObject("model").toString());
+		createJsonFile(jsonPath, saveDetails.getJSONObject("model").toString());
 		
 	    // Obtain a new resource set
 	    ResourceSet resourceSet = new ResourceSetImpl();
@@ -140,8 +198,8 @@ public class OnlineResource {
 	    URI uri = URI.createURI("file:///" + jsonPath, false);
 	    Resource jsonResource = resourceSet.getResource(uri, true);
 	    jsonResource.load(loadOptions);
-	    
-	    String wtspecFileName = "file:///" + OnlineResource.outputFolderPath + modelData.getString("title") + ".wtspec4m";
+	    JSONObject user = saveDetails.getJSONObject("user");
+	    String wtspecFileName = "file:///" + workingCopyPath + user.getString("name") + File.separator + saveDetails.getString("modelPath");
 	    Resource wtspecResource = resourceSet.createResource(URI.createURI(wtspecFileName));
 	    
 	    Map<String, Object> saveOptions = new HashMap<String, Object>();
@@ -151,6 +209,7 @@ public class OnlineResource {
 	    EObject WTSystem = (EObject) jsonResource.getContents().get(0);
 	    wtspecResource.getContents().add(WTSystem);
 	    wtspecResource.save(saveOptions);
+	    svn.commit(user.getString("name"), saveDetails.getString("commitMessage"));
 		return "succes";
 	}
 	

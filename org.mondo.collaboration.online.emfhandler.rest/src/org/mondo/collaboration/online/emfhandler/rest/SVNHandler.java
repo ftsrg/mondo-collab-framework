@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -13,8 +14,10 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNCommitPacket;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import org.tmatesoft.svn.core.wc2.SvnCommitPacket;
 
 public class SVNHandler {
 
@@ -46,11 +49,6 @@ public class SVNHandler {
 		}
 	}
 	
-//	public void setSVNConnectionDetails(String repositoryUrl, String workingCopyPath, String username, String password) {
-//		this.repositoryUrl = repositoryUrl;
-//		this.workingCopyPath = workingCopyPath;
-//	}
-	
 	public void setRepositoryUrl(String newUrl) {
 		this.repositoryUrl = newUrl;
 	}
@@ -72,6 +70,17 @@ public class SVNHandler {
 		    boolean isRecursive = true;
 		    long revisionNumber = updateClient.doCheckout(url, destPath, null, null, isRecursive);
 		    System.out.println("Success! [Revision: " + revisionNumber + "]");
+		} catch (SVNException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void commit(String userName, String commitMessage) {
+		System.out.println("Committing user repo: " + userName + ", message: [" + commitMessage + "]");
+		File[] files = {new File(this.workingCopyPath + File.separator + userName)};
+		try {
+			svnClients.get(userName).getCommitClient()
+				.doCommit(files, false, commitMessage, false, true);
 		} catch (SVNException e) {
 			e.printStackTrace();
 		}

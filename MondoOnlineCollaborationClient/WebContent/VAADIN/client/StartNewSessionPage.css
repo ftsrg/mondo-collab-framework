@@ -1,0 +1,23 @@
+#label_availableModels {
+	font-size: 2em;
+	color: #ff8400;
+	font-weight: initial;
+	margin-left: 1em; 
+	margin-top: 0.3em;
+}
+
+#panel_treeViewContainer {
+	height: 30em;
+	margin-left: 1em; 
+	margin-top: 3.5em;
+}
+
+#button_start {
+	margin-top: 34em;
+	margin-left: 27.6em;
+}
+
+#loadingSign {
+	margin-top: 1.35em;
+	margin-left: 18.5em;
+}

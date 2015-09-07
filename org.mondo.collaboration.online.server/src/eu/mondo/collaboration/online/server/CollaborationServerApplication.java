@@ -32,11 +32,14 @@ public class CollaborationServerApplication {
 	
 	private static List<CollaborationSession> sessions;
 	
+	private static HashMap<String, String> sessionIdsToModelPaths;
+	
 	// assign connections to collaboration session IDs once they join it
 	private static HashMap<String, List<Session>> sessionsConnections;
 	
 	public CollaborationServerApplication() {
 		System.out.println("Initialize server...");
+		sessionIdsToModelPaths = new HashMap<String, String>();
 		if(sessions == null) {
 			System.out.println("Load models...");
 			try {
@@ -93,39 +96,6 @@ public class CollaborationServerApplication {
 		sessionsConnections = new HashMap<String, List<Session>>();
 		sessions = new ArrayList<CollaborationSession>();
 		Integer id = 0;
-
-		try {
-			URL url = new URL("http://localhost:8070/services/modelHandler/getModels");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setDoInput(true);
-			conn.setDoOutput(false);
-			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String line;
-			line = br.readLine();
-			JSONArray modelz = new JSONArray(line);
-			System.out.println("modelz size: " + modelz.length());
-			for(int i = 0; i < modelz.length(); i++) {
-				JSONObject currModel = modelz.getJSONObject(i);
-				System.out.println(currModel.toString());
-				CollaborationSession newSession = new CollaborationSession(
-	        		id.toString(), 
-	        		(String) currModel.get("name"),
-	        		CollaborationSession.STATE_READY
-	        	);
-				newSession.setModel(currModel.getJSONObject("model"));
-	        	sessions.add(newSession);
-	        	sessionsConnections.put(id.toString(), new ArrayList<Session>());
-	        	id++;
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (ProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Sessions initialized.");
 	}
 
 	@OnOpen
@@ -148,16 +118,14 @@ public class CollaborationServerApplication {
 				this.sendSessions(connection);
 			} else if(operation.equals("startSession")) {
 				System.out.println("startSession...");
-				String sessionId = request.getString("sessionId");
-				if(this.startSession(sessionId)) {
-					this.publishSessions();
-				}
+				String selectedModel = request.getString("selectedModel");
+				this.startSession(selectedModel, request.getJSONObject("leader"), connection);
 			} else if(operation.equals("finishSession")) {
 				System.out.println("finishSession...");
 				String sessionId = request.getString("sessionId");
-				if(this.finishSession(sessionId)) {
-					this.publishSessions();
-				}
+				String commitMessage = request.getString("commitMessage");
+				JSONObject user = request.getJSONObject("user");
+				finishSession(sessionId, commitMessage, user);
 			} else if(operation.equals("joinSession")) {
 				System.out.println("joinSession...");
 				JSONObject user = request.getJSONObject("user");
@@ -438,19 +406,67 @@ public class CollaborationServerApplication {
 		
 	}
 
-	private boolean startSession(String sessionId) {
-		System.out.println("Sessions before :" + this.prepareSessionsToSend().toString());
-		for(CollaborationSession s: sessions) {
-			if(s.getId().equals(sessionId)) {
-				s.startSession();
-				return true;
+	private boolean startSession(String selectedModelPath, JSONObject jsonLeader, Session source) {
+		try {
+			// TODO check if already started 
+			URL url = new URL("http://localhost:8070/services/modelHandler/loadModel");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.addRequestProperty("selectedModelPath", selectedModelPath);
+			conn.setRequestMethod("POST");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Length", "" + Integer.toString(selectedModelPath.getBytes().length));
+			
+			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			wr.writeBytes(selectedModelPath);
+			wr.flush();
+			wr.close();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String modelData;
+			modelData = br.readLine();
+			br.close();
+			System.out.println("Service response: " + modelData);
+			conn.disconnect();
+			
+			if(modelData.equals("failed")) {
+				System.out.println("Failed to load model." );
+			} else {
+				JSONObject jsonModelData = new JSONObject(modelData);
+				String sessionId = sessions.size() + "";
+				String sessionName = jsonModelData.getString("name");
+				
+				CollaborationSession newSession = new CollaborationSession(
+					sessionId, 
+					sessionName, 
+					CollaborationSession.STATE_OPEN
+				);
+				newSession.setModel(jsonModelData.getJSONObject("model"));
+				sessions.add(newSession);
+	        	sessionsConnections.put(sessionId, new ArrayList<Session>());
+				JSONObject newJsonSession = new JSONObject();
+				newJsonSession.put("name", sessionName); 
+				newJsonSession.put("model", jsonModelData.getJSONObject("model")); 
+				
+				sessionIdsToModelPaths.put(sessionId, selectedModelPath);
+				
+				JSONObject request = new JSONObject();
+				request.put("operation", "newSession");
+				request.put("collaborationSession", newJsonSession);
+				request.put("leader", jsonLeader);
+				broadcastRequest(request, null);
 			}
-		}
-		System.out.println("Sessions after: " + this.prepareSessionsToSend().toString());
-		return false;
+		} catch (ProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		return true;
 	}
 
-	private boolean finishSession(String sessionId) {
+	private boolean finishSession(String sessionId, String commitMessage, JSONObject user) {
 		for(CollaborationSession s: sessions) {
 			if(s.getId().equals(sessionId)) {
 				// kick users
@@ -466,29 +482,37 @@ public class CollaborationServerApplication {
 						e.printStackTrace();
 					} 
 			    } 
-				persistModel(sessionId, s.getTitle(), s.getModel());
+				persistModel(sessionId, s.getTitle(), s.getModel(), commitMessage, user);
 				s.finishSession();
+				try {
+					JSONObject request = new JSONObject();
+					request.put("operation", "finishSession");
+					request.put("sessionId", sessionId);
+					broadcastRequest(request, null);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private void persistModel(String sessionId, String title, JSONObject model) {
+	private void persistModel(String sessionId, String title, JSONObject model, String commitMessage, JSONObject user)  {
 		System.out.println("Persisting model...");
 		try {
 			JSONObject postData = new JSONObject();
 			postData.put("id", sessionId);
 			postData.put("title", title);
 			postData.put("model", model);
-
+			postData.put("commitMessage", commitMessage);
+			postData.put("modelPath", sessionIdsToModelPaths.get(sessionId));
+			postData.put("user", user);
 			String postDataString = postData.toString();
 			
 			URL url = new URL("http://localhost:8070/services/modelHandler/persistModel");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.addRequestProperty("id", sessionId);
-			conn.addRequestProperty("title", title);
-			conn.addRequestProperty("model", model.toString());
 			conn.setRequestMethod("POST");
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
@@ -500,15 +524,12 @@ public class CollaborationServerApplication {
 			wr.close();
 			
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String line;
-			line = br.readLine();
+			String modelData;
+			modelData = br.readLine();
 			br.close();
-			System.out.println("Service response: " + line);
+			System.out.println("Service response: " + modelData);
 			conn.disconnect();
-			
-			System.out.println("Model saved.");
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (ProtocolException e) {
 			e.printStackTrace();
@@ -574,25 +595,6 @@ public class CollaborationServerApplication {
 	private void sendRequestInParts(JSONObject request, Session connection) {
 		String messageToSend = request.toString();
 		connection.getAsyncRemote().sendText(messageToSend);
-		/*
-		int maxLengthOfParts = 2000;
-		List<String> messageParts = splitString(messageToSend, maxLengthOfParts);
-		try
-		{
-			for(int partIndex = 0; partIndex < messageParts.size(); partIndex++) {
-				String part = messageParts.get(partIndex);
-				boolean isLast = false;
-				if(partIndex + 1 == messageParts.size()) {
-					isLast = true;
-				}
-				connection.getBasicRemote().sendText(part, isLast);
-			}
-		}
-		catch (IOException e)
-		{
-		    e.printStackTrace(System.err);
-		}
-		*/
 	}
 	
 	private void sendSessions(Session connection) {
@@ -675,5 +677,17 @@ public class CollaborationServerApplication {
 	    // Remove session from the connected sessions set
 		System.out.println("removing connection from websocket...");
 		connections.remove(connection);
+	}
+	
+	private void broadcastRequest(JSONObject request, Session exception) {
+		synchronized(connections){
+			System.out.println("Broadcasting request: " + request.toString());
+	    	// and broadcast the received message
+			for(Session conn : connections){
+				if(exception == null || !conn.getId().equals(exception.getId())) {
+					this.sendRequestInParts(request, conn);
+				}
+			}
+	    } 
 	}
 }

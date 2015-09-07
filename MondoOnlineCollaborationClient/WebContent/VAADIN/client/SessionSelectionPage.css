@@ -1,0 +1,24 @@
+#table_sessions {
+	margin-left: 2em; 
+	margin-top: 2em;
+}
+
+#button_logout {
+	margin-top: 20em;
+	margin-left: 2em;
+}
+
+#button_joinSession {
+	margin-top: 20em;
+	margin-left: 8em;
+}
+
+#button_startSession {
+	margin-top: 20em;
+	margin-left: 16em;
+}
+
+#button_finishSession {
+	margin-top: 20em;
+	margin-left: 24.5em;
+}

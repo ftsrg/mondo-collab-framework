@@ -62,10 +62,10 @@ public class MondoWebsocketClient {
 					message.getJSONObject("nodeData")
 				);
     		} else if(operation.equals("updateSessions")) {
-//        		System.out.println("updateSessions...");
-//				this.application.getSessionSelectionPage().setSessionsList(
-//					message.getJSONArray("sessions")
-//				);
+        		System.out.println("updateSessions...");
+				this.application.getSessionSelectionPage().setSessionsList(
+					message.getJSONArray("sessions")
+				);
     		} else if(operation.equals("updateUsers")) {
         		System.out.println("updateUsers...");
 				this.application.getCollaborationPage().setUsersList(
@@ -76,8 +76,19 @@ public class MondoWebsocketClient {
 				this.application.leaveSession();
     		} else if(operation.equals("avaialbleModelsForuser")) {
         		System.out.println("avaialbleModelsForuser...");
-				this.application.getSessionSelectionPage().setAvailableSessions(
+				this.application.getStartNewSessionPage().setAvailableSessions(
 					message.getJSONArray("models")
+				);
+    		} else if(operation.equals("newSession")) {
+        		System.out.println("newSession...");
+				this.application.getSessionSelectionPage().addSession(
+					message.getJSONObject("collaborationSession"),
+					message.getJSONObject("leader")
+				);
+    		} else if(operation.equals("finishSession")) {
+    			System.out.println("finishSession...");
+				this.application.getSessionSelectionPage().finishSession(
+					message.getString("sessionId")
 				);
     		}
 		} catch (JSONException e) {
@@ -181,33 +192,33 @@ public class MondoWebsocketClient {
 		} 
 	}
 
-	public void startSession(String sessionId) {
+	public void startSession(String selectedModel, JSONObject jsonUser) {
 		try {
 			JSONObject request = new JSONObject();
 			request.put("operation", "startSession");
-			request.put("sessionId", sessionId);
+			request.put("selectedModel", selectedModel);
+			request.put("leader", jsonUser);
 			System.out.println("Sending message to server: " + request.toString());
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
 
-	public void finishSession(String sessionId) {
+	public void finishSession(String sessionId, String commitMessage, JSONObject user) {
 		try {
 			JSONObject request = new JSONObject();
 			request.put("operation", "finishSession");
 			request.put("sessionId", sessionId);
+			request.put("commitMessage", commitMessage);
+			request.put("user", user);
 			System.out.println("Sending message to server: " + request.toString());
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
