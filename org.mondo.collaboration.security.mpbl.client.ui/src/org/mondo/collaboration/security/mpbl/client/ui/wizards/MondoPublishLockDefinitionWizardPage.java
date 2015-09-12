@@ -10,8 +10,14 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.xtext.resource.XtextResource;
@@ -20,10 +26,13 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.eclipse.xtext.xbase.ui.editor.XbaseEditor;
 import org.mondo.collaboration.security.mpbl.client.ui.ImageDescriptorCollection;
 
+import swing2swt.layout.BorderLayout;
+
 public class MondoPublishLockDefinitionWizardPage extends WizardPage {
 
     private TreeViewer tree;
     private PatternModel model;
+    private String description;
     
     /**
      * Create the wizard.
@@ -44,8 +53,30 @@ public class MondoPublishLockDefinitionWizardPage extends WizardPage {
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
         setControl(container);
-        container.setLayout(new FillLayout(SWT.HORIZONTAL));
+        container.setLayout(new BorderLayout(0, 0));
 
+        Composite composite = new Composite(container, SWT.NONE);
+        composite.setLayoutData(BorderLayout.NORTH);
+        composite.setLayout(new FillLayout(SWT.HORIZONTAL));
+        
+        GridLayout layout = new GridLayout();
+        composite.setLayout(layout);
+        layout.numColumns = 2;
+        
+        Label desc = new Label(composite, SWT.RIGHT);
+        desc.setText("Description");
+        
+        Text descField = new Text(composite, SWT.None);
+        descField.addModifyListener(new ModifyListener() {
+            
+            @Override
+            public void modifyText(ModifyEvent e) {
+                description = descField.getText();
+            }
+        });
+        
+        descField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
         tree = new TreeViewer(container, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         tree.setContentProvider(new PatternContentProvider());
         tree.setLabelProvider(new PatternLabelProvider());
@@ -68,12 +99,13 @@ public class MondoPublishLockDefinitionWizardPage extends WizardPage {
                 model = (PatternModel) root;
                 if(model.getPatterns().isEmpty())
                     setPageComplete(false);
-                setPageComplete(true);
+                else
+                    setPageComplete(true);
                 tree.setInput(root);
             }
         }
     }
-
+    
     private class PatternContentProvider implements ITreeContentProvider {
 
         @Override
@@ -162,5 +194,9 @@ public class MondoPublishLockDefinitionWizardPage extends WizardPage {
 
     public PatternModel getModel() {
         return model;
+    }
+    
+    public String getDesc() {
+        return description;
     }
 }

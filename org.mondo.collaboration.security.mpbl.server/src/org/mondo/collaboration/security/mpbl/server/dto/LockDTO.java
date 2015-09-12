@@ -23,22 +23,16 @@ public class LockDTO implements Serializable {
     private String lockId;                          // identifies the lock
     private String password;                        // password of the current user
     private String frontRepository;                 // URL of the front repository
+    private String description;                     // description of the lock definition
  
-    public LockDTO(PatternModel lockDefinitionModel, String user, String password, String frontRepository) {
+    public LockDTO(PatternModel lockDefinitionModel, String user, String password, String description, String frontRepository) {
         this.lockDefinitionModel = lockDefinitionModel;
         this.user = user;
         this.password = password;
+        this.description = description;
         this.frontRepository = frontRepository;
     }
     
-    public LockDTO(PatternModel pattern, String lockId, String resourcePath, String user, String patternId) {
-        this.lockDefinitionModel = pattern;
-        this.lockId = lockId;
-        this.resourcePath = resourcePath;
-        this.user = user;
-        this.lockDefinitionId = patternId;
-    }
-
     public PatternModel getLockDefinitionModel() {
         return lockDefinitionModel;
     }
@@ -69,5 +63,9 @@ public class LockDTO implements Serializable {
     
     public String getFrontRepository() {
         return frontRepository;
+    }
+    
+    public String getDescription() {
+        return description;
     }
 }

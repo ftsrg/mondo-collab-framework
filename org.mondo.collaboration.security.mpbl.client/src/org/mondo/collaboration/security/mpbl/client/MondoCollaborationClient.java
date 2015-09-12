@@ -24,10 +24,11 @@ public class MondoCollaborationClient {
             PatternModel model, 
             String username, 
             String password,
+            String description,
             String frontRepository) {
         
         return PropertyBasedLockingServer.instance()
-                .publishLockDefinition(new LockDTO(model, username, password, frontRepository));
+                .publishLockDefinition(new LockDTO(model, username, password, description, frontRepository));
     }
 
     public void lock() {

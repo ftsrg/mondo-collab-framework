@@ -10,6 +10,7 @@ public class MondoPublishLockDefinitionWizard extends Wizard {
 
     String username;
     String password;
+    String description;
     PatternModel model;
     
     public MondoPublishLockDefinitionWizard() {
@@ -30,6 +31,7 @@ public class MondoPublishLockDefinitionWizard extends Wizard {
         username = loginPage.getUser();
         password = loginPage.getPassword();
         model = publishPage.getModel();
+        description = publishPage.getDesc();
         
         return true;
     }
@@ -48,6 +50,10 @@ public class MondoPublishLockDefinitionWizard extends Wizard {
 
     public String getFrontRepository() {
         return loginPage.getFrontRepository();
+    }
+    
+    public String getDesc() {
+        return description;
     }
     
 }

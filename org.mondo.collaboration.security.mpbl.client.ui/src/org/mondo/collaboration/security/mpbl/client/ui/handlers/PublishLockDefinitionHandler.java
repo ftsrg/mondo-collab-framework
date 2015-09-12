@@ -29,12 +29,13 @@ public class PublishLockDefinitionHandler extends AbstractHandler {
             final String password = wizard.getPassword();
             final PatternModel model = wizard.getModel();
             final String front = wizard.getFrontRepository();
+            final String desc = wizard.getDesc();
             
             Job job = new Job("Publishing Lock Definition") {
 
                 @Override
                 protected IStatus run(IProgressMonitor monitor) {
-                    ResponseLockDTO response = MondoCollaborationClient.instance().publishLockDefinition(model, username, password, front);
+                    ResponseLockDTO response = MondoCollaborationClient.instance().publishLockDefinition(model, username, password, desc, front);
                     if(response.isSuccess())
                         return Status.OK_STATUS;
                     return new Status(Status.ERROR, Activator.PLUGIN_ID, response.getMessage());
