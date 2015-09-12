@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.mondo.collaboration.security.mpbl.client"
+         name="MONDO Reposiroty Client Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.mondo.collaboration.security.mpbl.client.MondoClientProjectNature">
+         </run>
+      </runtime>
+   </extension>
+
+</plugin>
