@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
@@ -42,67 +44,88 @@ public class PropertyBasedLockingServer implements IPropertyBasedLockingServer {
     final String adminPassword = System.getProperty("adminPassword");
     final String tempFolder = System.getProperty("tempFolder");
 
-    final String SVN_CHECKOUT_COMMAND = "svn checkout %s/%s %s --username %s --password %s--quiet --non-interactive";
-    final String SVN_ADD_COMMAND = "svn add --force %s/* --auto-props --parents --depth infinity -q";
-    final String SVN_COMMIT_COMMAND = "svn commit %s/* -M %s --username %s --password %s --quiet --non-interactive";
+    final String SVN_CHECKOUT_COMMAND = "svn checkout %s/%s %s/%s --username %s --password %s --quiet --non-interactive";
+    final String SVN_ADD_COMMAND = "svn add --force %s --auto-props --parents --depth infinity -q";
+    final String SVN_COMMIT_COMMAND = "svn commit %s -m \"%s\" --username %s --password %s --quiet --non-interactive";
     final String SVN_DELETE_COMMAND = "svn delete %s";
+    final String SVN_LIST_COMMAND = "svn list %s@0 --username %s --password %s --non-interactive";
 
-    private PropertyBasedLockingServer() {
-        EMFPatternLanguageStandaloneSetup.doSetup();
-        MondoPropertyBasedLockingStandaloneSetup.doSetup();
+    private PropertyBasedLockingServer(boolean offline) {
+//        if (offline) {
+            EMFPatternLanguageStandaloneSetup.doSetup();
+            MondoPropertyBasedLockingStandaloneSetup.doSetup();
+//        }
+    }
+
+    public static PropertyBasedLockingServer instanceOffline() {
+        if (INSTANCE == null) {
+            INSTANCE = new PropertyBasedLockingServer(true);
+        }
+        return INSTANCE;
     }
 
     public static PropertyBasedLockingServer instance() {
         if (INSTANCE == null) {
-            INSTANCE = new PropertyBasedLockingServer();
+            INSTANCE = new PropertyBasedLockingServer(false);
         }
         return INSTANCE;
     }
 
     @Override
-    public ResponseLockDTO publishLock(LockDTO lock) {
+    public ResponseLockDTO publishLockDefinition(LockDTO lock) {
+        ResponseLockDTO result = validateUser(lock.getUser(), lock.getPassword(), lock.getFrontRepository());
+        if(!result.isSuccess())
+            return result;
+        
         checkoutGoldRepository();
 
-        String fileName = calculateFileName(lock.getLockDefinitionId());
+        String fileName = calculateFileName();
 
         // all the patterns will be stored in the root of the gold repository
         serialize(lock.getLockDefinitionModel(),
-                Paths.get(tempFolder, goldRepoPath, ".pbl-patterns", fileName + ".eiq"));
+                Paths.get(tempFolder, goldRepoPath, ".pbl-patterns", lock.getUser(), fileName + ".eiq"));
 
         commitGoldRepository("New lock definition published");
         cleanup();
 
-        return new ResponseLockDTO(true);
+        return new ResponseLockDTO(true, "");
     }
 
     @Override
     public ResponseLockDTO unpublishLock(LockDTO lock) {
+        ResponseLockDTO result = validateUser(lock.getUser(), lock.getPassword(), lock.getFrontRepository());
+        if(!result.isSuccess())
+            return result;
+        
         checkoutGoldRepository();
 
-        String fileName = calculateFileName(lock.getLockDefinitionId());
+        String fileName = calculateFileName();
         // all the patterns are stored in the root of the gold repository
-        deletePattern(Paths.get(tempFolder, goldRepoPath, ".pbl-patterns", fileName + ".eiq"));
+        deletePattern(Paths.get(tempFolder, goldRepoPath, ".pbl-patterns", lock.getUser(), fileName + ".eiq"));
 
         commitGoldRepository("Existing lock definition unpublished");
         cleanup();
 
-        return new ResponseLockDTO(true);
+        return new ResponseLockDTO(true, "");
     }
 
     @Override
     public ResponseLockDTO lock(LockDTO lock) {
-
+        ResponseLockDTO result = validateUser(lock.getUser(), lock.getPassword(), lock.getFrontRepository());
+        if(!result.isSuccess())
+            return result;
+        
         checkoutGoldRepository();
 
-        String lockDefinitionFileName = calculateFileName(lock.getLockDefinitionId());
-        Path lockDefinitionOriginalPath = Paths.get(tempFolder, goldRepoPath, ".pbl-patterns",
+        String lockDefinitionFileName = lock.getLockDefinitionId();
+        Path lockDefinitionOriginalPath = Paths.get(tempFolder, goldRepoPath, ".pbl-patterns", lock.getUser(),
                 lockDefinitionFileName + ".eiq");
         Path lockDefinitionResourcePath = Paths.get(tempFolder, goldRepoPath, lock.getResourcePath(),
                 lockDefinitionFileName + ".eiq");
         try {
             Files.copy(lockDefinitionOriginalPath.toFile(), lockDefinitionResourcePath.toFile());
         } catch (IOException e) {
-            return new ResponseLockDTO(false);
+            return new ResponseLockDTO(false, "");
         }
         String lockId = UUID.randomUUID().toString();
         Path lockPath = Paths.get(tempFolder, goldRepoPath, lock.getResourcePath(), lockId + ".mpbl");
@@ -116,6 +139,10 @@ public class PropertyBasedLockingServer implements IPropertyBasedLockingServer {
 
     @Override
     public ResponseLockDTO unlock(LockDTO lock) {
+        ResponseLockDTO result = validateUser(lock.getUser(), lock.getPassword(), lock.getFrontRepository());
+        if(!result.isSuccess())
+            return result;
+        
         checkoutGoldRepository();
 
         Path lockPath = Paths.get(tempFolder, goldRepoPath, lock.getResourcePath(), lock.getLockId() + ".mpbl");
@@ -124,16 +151,17 @@ public class PropertyBasedLockingServer implements IPropertyBasedLockingServer {
         commitGoldRepository("Lock removed");
         cleanup();
 
-        return new ResponseLockDTO(true);
+        return new ResponseLockDTO(true, "");
     }
 
     private boolean checkoutGoldRepository() {
         try {
-            String cmd = String.format(SVN_CHECKOUT_COMMAND, svnURL, goldRepoPath, tempFolder, adminUser,
+            String cmd = String.format(SVN_CHECKOUT_COMMAND, svnURL, goldRepoPath, tempFolder, goldRepoPath, adminUser,
                     adminPassword);
-            int exitValue = Runtime.getRuntime().exec(cmd).exitValue();
-            return exitValue == 0;
-        } catch (IOException e) {
+            Process process = Runtime.getRuntime().exec(cmd);
+            process.waitFor();
+            return process.exitValue() == 0;
+        } catch (IOException | InterruptedException e) {
             return false;
         }
     }
@@ -141,17 +169,20 @@ public class PropertyBasedLockingServer implements IPropertyBasedLockingServer {
     private boolean commitGoldRepository(String message) {
         try {
             String cmd = String.format(SVN_ADD_COMMAND, Paths.get(tempFolder, goldRepoPath).toString());
-            if (Runtime.getRuntime().exec(cmd).exitValue() != 0)
+            Process process = Runtime.getRuntime().exec(cmd);
+            process.waitFor();
+            if (process.exitValue() != 0)
                 return false;
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             return false;
         }
         try {
             String cmd = String.format(SVN_COMMIT_COMMAND, Paths.get(tempFolder, goldRepoPath).toString(), message,
                     adminUser, adminPassword);
-            int exitValue = Runtime.getRuntime().exec(cmd).exitValue();
-            return exitValue == 0;
-        } catch (IOException e) {
+            Process process = Runtime.getRuntime().exec(cmd);
+            process.waitFor();
+            return process.exitValue() == 0;
+        } catch (IOException | InterruptedException e) {
             return false;
         }
     }
@@ -167,7 +198,7 @@ public class PropertyBasedLockingServer implements IPropertyBasedLockingServer {
         try {
             resource.save(Collections.emptyMap());
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -192,11 +223,14 @@ public class PropertyBasedLockingServer implements IPropertyBasedLockingServer {
         }
     }
 
-    private String calculateFileName(String description) {
-        return Normalizer.normalize(description, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "")
-                .replaceAll(" ", "_").toLowerCase();
-    }
+//    private String calculateFileName(String description) {
+//        return Normalizer.normalize(description, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "")
+//                .replaceAll(" ", "_").toLowerCase();
+//    }
 
+    private String calculateFileName() {
+        return "lockDefinition" + new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
+    }
     public static boolean delete(File file) {
 
         File[] flist = null;
@@ -231,18 +265,19 @@ public class PropertyBasedLockingServer implements IPropertyBasedLockingServer {
         Collection<Pattern> lockDefinitions = Lists.newArrayList();
         File lockDefinitionFolder = Paths.get(tempFolder, goldRepoPath, ".pbl-patterns").toFile();
         File[] files = lockDefinitionFolder.listFiles(new FilenameFilter() {
-            
+
             @Override
             public boolean accept(File dir, String name) {
                 return name.endsWith(".eiq");
             }
         });
-        
+
         for (File file : files) {
             PatternModel model = loadLockDefinition(file);
-            lockDefinitions.addAll(model.getPatterns().stream().filter(new PublicPatternPredicate()).collect(Collectors.toList()));
+            lockDefinitions.addAll(
+                    model.getPatterns().stream().filter(new PublicPatternPredicate()).collect(Collectors.toList()));
         }
-        
+
         cleanup();
         return new ResponseLockDefinitionQueryDTO(lockDefinitions);
     }
@@ -252,27 +287,38 @@ public class PropertyBasedLockingServer implements IPropertyBasedLockingServer {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     private PatternModel loadLockDefinition(File file) {
         ResourceSetImpl resourceSet = new ResourceSetImpl();
         Resource resource = resourceSet.getResource(URI.createFileURI(file.getPath().toString()), true);
         return (PatternModel) resource.getContents().get(0);
     }
-    
+
     private class PublicPatternPredicate implements Predicate<Pattern> {
 
         @Override
         public boolean test(Pattern t) {
             return t.getModifiers().stream().anyMatch(new PublicModidiferPredicate());
         }
-        
+
         private class PublicModidiferPredicate implements Predicate<Modifiers> {
 
             @Override
             public boolean test(Modifiers t) {
                 return !t.isPrivate();
             }
-            
+
+        }
+    }
+
+    private ResponseLockDTO validateUser(String username, String password, String front) {
+        try {
+            String cmd = String.format(SVN_LIST_COMMAND, front, username, password);
+            Process process = Runtime.getRuntime().exec(cmd);
+            process.waitFor();
+            return new ResponseLockDTO(process.exitValue() == 0, "Invalid user credentials");
+        } catch (IOException | InterruptedException e) {
+            return new ResponseLockDTO(false, "Unhandled execption occurred");
         }
     }
 }

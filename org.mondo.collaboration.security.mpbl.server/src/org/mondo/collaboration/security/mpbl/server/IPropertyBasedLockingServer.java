@@ -20,7 +20,7 @@ public interface IPropertyBasedLockingServer {
      * @param lock
      * @return
      */
-    public ResponseLockDTO publishLock(LockDTO lock);
+    public ResponseLockDTO publishLockDefinition(LockDTO lock);
 
     /**
      * Removes a published IncQuery pattern from the available lock definitions. If an existing lock definition uses

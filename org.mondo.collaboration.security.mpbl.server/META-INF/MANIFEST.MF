@@ -11,3 +11,5 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.incquery.patternlanguage.patternLanguage
+Export-Package: org.mondo.collaboration.security.mpbl.server.dto,
+ org.mondo.collaboration.security.mpbl.server.impl

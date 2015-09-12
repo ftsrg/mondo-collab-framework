@@ -2,7 +2,6 @@ package org.mondo.collaboration.security.mpbl.server.dto;
 
 import java.io.Serializable;
 
-import org.eclipse.incquery.patternlanguage.patternLanguage.Pattern;
 import org.eclipse.incquery.patternlanguage.patternLanguage.PatternModel;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
@@ -22,8 +21,17 @@ public class LockDTO implements Serializable {
     private String lockDefinitionId;                // identifies the lock definition
     private PropertyBasedLockingModel lockModel;    // describes the lock with bindings
     private String lockId;                          // identifies the lock
-
-    public LockDTO(PatternModel pattern, Pattern lockPattern, String lockId, String resourcePath, String user, String patternId) {
+    private String password;                        // password of the current user
+    private String frontRepository;                 // URL of the front repository
+ 
+    public LockDTO(PatternModel lockDefinitionModel, String user, String password, String frontRepository) {
+        this.lockDefinitionModel = lockDefinitionModel;
+        this.user = user;
+        this.password = password;
+        this.frontRepository = frontRepository;
+    }
+    
+    public LockDTO(PatternModel pattern, String lockId, String resourcePath, String user, String patternId) {
         this.lockDefinitionModel = pattern;
         this.lockId = lockId;
         this.resourcePath = resourcePath;
@@ -53,5 +61,13 @@ public class LockDTO implements Serializable {
     
     public String getUser() {
         return user;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public String getFrontRepository() {
+        return frontRepository;
     }
 }
