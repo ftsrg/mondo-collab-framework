@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.mondo.collaboration.security.mpbl.client.ui.handlers.ProjectNatureUpdater"
+            commandId="org.mondo.collaboration.security.mpbl.client.ui.addnature">
+      </handler>
+      <handler
+            class="org.mondo.collaboration.security.mpbl.client.ui.handlers.ProjectNatureUpdater"
+            commandId="org.mondo.collaboration.security.mpbl.client.ui.removenature">
+      </handler>
+      <handler
+            class="org.mondo.collaboration.security.mpbl.client.ui.handlers.PublishLockDefinitionHandler"
+            commandId="org.mondo.collaboration.security.mpbl.client.ui.publishlock">
+      </handler>
+      <handler
+            class="org.mondo.collaboration.security.mpbl.client.ui.handlers.UnpublishLockDefinitionHandler"
+            commandId="org.mondo.collaboration.security.mpbl.client.ui.unpublish">
+      </handler>
+      <handler
+            class="org.mondo.collaboration.security.mpbl.client.ui.handlers.LockHandler"
+            commandId="org.mondo.collaboration.security.mpbl.client.ui.lock">
+      </handler>
+      <handler
+            class="org.mondo.collaboration.security.mpbl.client.ui.handlers.UnlockHandler"
+            commandId="org.mondo.collaboration.security.mpbl.client.ui.unlock">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="org.mondo.collaboration.security.mpbl.client.ui.removenature"
+               icon="icons/16.png"
+               label="Remove Mondo-Locking nature"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <iterate>
+                  <adapt
+                        type="org.eclipse.core.resources.mapping.ResourceMapping">
+                     <test
+                           args="org.mondo.collaboration.security.mpbl.client,true"
+                           property="org.eclipse.core.resources.projectPersistentProperty">
+                     </test>
+                  </adapt>
+               </iterate>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="org.mondo.collaboration.security.mpbl.client.ui.addnature"
+               icon="icons/16.png"
+               label="Add Mondo-Locking nature"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <iterate>
+                  <adapt
+                        type="org.eclipse.core.resources.mapping.ResourceMapping">
+                     <or>
+                        <test
+                              args="org.mondo.collaboration.security.mpbl.client,false"
+                              property="org.eclipse.core.resources.projectPersistentProperty">
+                        </test>
+                        <not>
+                           <test
+                                 args="org.mondo.collaboration.security.mpbl.client"
+                                 property="org.eclipse.core.resources.projectPersistentProperty">
+                           </test>
+                        </not>
+                     </or>
+                  </adapt>
+               </iterate>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <menu
+               id="org.eclipse.incquery.tooling.ui.navigator.popup"
+               label="EMF-IncQuery">
+            <command
+                   commandId="org.mondo.collaboration.security.mpbl.client.ui.publishlock"
+	               icon="icons/cloud-upload-16.png"
+	               label="Publish Definition (Mondo)"
+	               style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="org.eclipse.incquery.tooling.ui.eiq.file">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="additions"
+                  visible="true">
+            </separator>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:#TextEditorContext?after=group.edit">
+         <command
+               commandId="org.mondo.collaboration.security.mpbl.client.ui.publishlock"
+               icon="icons/cloud-upload-16.png"
+               label="Publish Definition (Mondo)"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeEditorId">
+                  <equals
+                        value="org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguage">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.mondo.collaboration.security.mpbl.client.ui.addnature"
+            name="Add Mondo-Locking nature command">
+      </command>
+      <command
+            id="org.mondo.collaboration.security.mpbl.client.ui.removenature"
+            name="Remove Mondo-Locking nature command">
+      </command>
+      <command
+            id="org.mondo.collaboration.security.mpbl.client.ui.publishlock"
+            name="Publish Mondo Lock Definition">
+      </command>
+      <command
+            id="org.mondo.collaboration.security.mpbl.client.ui.unpublish"
+            name="Unpublish Mondo Lock Definition">
+      </command>
+      <command
+            id="org.mondo.collaboration.security.mpbl.client.ui.lock"
+            name="Create Mondo Lock">
+      </command>
+      <command
+            id="org.mondo.collaboration.security.mpbl.client.ui.unlock"
+            name="Remove Mondo Lock">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.eclipse.team.svn.ui.ResourceContributions"
+            objectClass="org.eclipse.core.resources.mapping.ResourceMapping">
+         <enablement>
+           <and>
+	           <adapt type="org.eclipse.core.resources.mapping.ResourceMapping">
+	              <test property="org.eclipse.core.resources.projectPersistentProperty" args="org.eclipse.team.core.repository,org.eclipse.team.svn.core.svnnature" />
+	           </adapt>
+			   <adapt type="org.eclipse.core.resources.mapping.ResourceMapping">
+	              <test property="org.eclipse.core.resources.projectPersistentProperty" args="org.mondo.collaboration.security.mpbl.client,true" />
+	           </adapt>
+		   </and>
+         </enablement> 
+         <action
+               class="org.mondo.collaboration.security.mpbl.client.ui.actions.UnlockAction"
+               definitionId="org.mondo.collaboration.security.mpbl.client.ui.unlock"
+               icon="icons/92-16.png"
+               menubarPath="team.main/group5"
+               id="org.mondo.collaboration.security.mpbl.client.ui.actions.unlock"
+               label="Unlock... (Mondo)">
+         </action>
+         <action
+               class="org.mondo.collaboration.security.mpbl.client.ui.actions.LockAction"
+               definitionId="org.mondo.collaboration.security.mpbl.client.ui.lock"
+               icon="icons/91-16.png"
+               menubarPath="team.main/group5"
+               id="org.mondo.collaboration.security.mpbl.client.ui.actions.lock"
+               label="Lock... (Mondo)">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.mondo.collaboration.security.mpbl.client.ui.wizards.MondoPreferencePage"
+            id="org.mondo.collaboration.security.mpbl.client.ui.page"
+            name="Mondo Client">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.eclipse.incquery.tooling.ui.eiq.file">
+         <with
+               variable="selection">
+            <iterate
+                  ifEmpty="false">
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+                  <test
+                        property="org.eclipse.core.resources.name"
+                        value="*.eiq">
+                  </test>
+               </adapt>
+            </iterate>
+         </with>
+      </definition>
+    </extension>
+</plugin>
