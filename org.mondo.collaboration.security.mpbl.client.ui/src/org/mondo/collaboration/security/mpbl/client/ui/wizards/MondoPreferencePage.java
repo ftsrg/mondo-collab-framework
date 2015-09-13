@@ -18,13 +18,14 @@ import org.mondo.collaboration.security.mpbl.client.ui.Activator;
 
 public class MondoPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    public final String MONDO_PREFIX = "org.mondo.collaboration.security.mpbl.client";
-    public final String MONDO_ADDRESSES_PROPERTY = MONDO_PREFIX + ".addresses";
-    public final String MONDO_EXTENSIONS_PROPERTY = MONDO_PREFIX + ".extenstions";
-    public final String MONDO_TEMP_PROPERTY = MONDO_PREFIX + ".temp";
-    public final String MONDO_ENABLE_PROPERTY = MONDO_PREFIX + ".enable-lock";
-    public final String MONDO_DELAY_PROPERTY = MONDO_PREFIX + ".delay";
-
+    public static final String MONDO_PREFIX = "org.mondo.collaboration.security.mpbl.client";
+    public static final String MONDO_ADDRESSES_PROPERTY = MONDO_PREFIX + ".addresses";
+    public static final String MONDO_EXTENSIONS_PROPERTY = MONDO_PREFIX + ".extenstions";
+    public static final String MONDO_TEMP_PROPERTY = MONDO_PREFIX + ".temp";
+    public static final String MONDO_ENABLE_PROPERTY = MONDO_PREFIX + ".enable-lock";
+    public static final String MONDO_DELAY_PROPERTY = MONDO_PREFIX + ".delay";
+    public static final String separator = ";";
+    
     private IPreferenceStore store;
     private StringListEditor serverAddress;
     private StringListEditor extensions;
@@ -74,10 +75,8 @@ public class MondoPreferencePage extends FieldEditorPreferencePage implements IW
         store.setDefault(MONDO_TEMP_PROPERTY, "../temp");
     }
     
-    private class StringListEditor extends ListEditor {
+    public class StringListEditor extends ListEditor {
 
-        public static final char separator = ';';
-        
         public StringListEditor(String name, String labelText, Composite parent) {
             init(name, labelText);
             createControl(parent);

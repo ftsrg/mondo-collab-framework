@@ -14,7 +14,10 @@ Require-Bundle: org.eclipse.ui,
  org.mondo.collaboration.security.mpbl.client,
  org.mondo.collaboration.security.mpbl.server,
  org.eclipse.team.svn.ui,
- org.eclipse.team.svn.core
+ org.eclipse.team.svn.core,
+ org.eclipse.core.expressions;bundle-version="3.5.0",
+ org.eclipse.ui.ide;bundle-version="3.11.0",
+ org.eclipse.ui.forms;bundle-version="3.6.200"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

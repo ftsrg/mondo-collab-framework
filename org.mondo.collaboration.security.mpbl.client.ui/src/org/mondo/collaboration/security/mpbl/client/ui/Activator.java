@@ -1,6 +1,8 @@
 package org.mondo.collaboration.security.mpbl.client.ui;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.mondo.collaboration.security.mpbl.client.ui.wizards.MondoPreferencePage;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -27,7 +29,15 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-	}
+		IPreferenceStore store = plugin.getPreferenceStore();
+		
+        store.setDefault(MondoPreferencePage.MONDO_ADDRESSES_PROPERTY, "http://mt.bme.hu/mondo");
+        store.setDefault(MondoPreferencePage.MONDO_DELAY_PROPERTY, 10000);
+        store.setDefault(MondoPreferencePage.MONDO_ENABLE_PROPERTY, true);
+        store.setDefault(MondoPreferencePage.MONDO_EXTENSIONS_PROPERTY, "ecore;xmi;wtspec4m");
+        store.setDefault(MondoPreferencePage.MONDO_TEMP_PROPERTY, "../temp");
+        
+  	}
 
 	/*
 	 * (non-Javadoc)

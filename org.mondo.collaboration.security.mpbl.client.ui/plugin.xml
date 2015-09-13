@@ -22,6 +22,11 @@
       <handler
             class="org.mondo.collaboration.security.mpbl.client.ui.handlers.LockHandler"
             commandId="org.mondo.collaboration.security.mpbl.client.ui.lock">
+         <enabledWhen>
+            <reference
+                  definitionId="org.mondo.collaboration.security.mpbl.client.ui.reference1">
+            </reference>
+         </enabledWhen>
       </handler>
       <handler
             class="org.mondo.collaboration.security.mpbl.client.ui.handlers.UnlockHandler"
@@ -159,23 +164,13 @@
             adaptable="true"
             id="org.eclipse.team.svn.ui.ResourceContributions"
             objectClass="org.eclipse.core.resources.mapping.ResourceMapping">
-         <enablement>
-           <and>
-	           <adapt type="org.eclipse.core.resources.mapping.ResourceMapping">
-	              <test property="org.eclipse.core.resources.projectPersistentProperty" args="org.eclipse.team.core.repository,org.eclipse.team.svn.core.svnnature" />
-	           </adapt>
-			   <adapt type="org.eclipse.core.resources.mapping.ResourceMapping">
-	              <test property="org.eclipse.core.resources.projectPersistentProperty" args="org.mondo.collaboration.security.mpbl.client,true" />
-	           </adapt>
-		   </and>
-         </enablement> 
          <action
                class="org.mondo.collaboration.security.mpbl.client.ui.actions.UnlockAction"
                definitionId="org.mondo.collaboration.security.mpbl.client.ui.unlock"
                icon="icons/92-16.png"
-               menubarPath="team.main/group5"
                id="org.mondo.collaboration.security.mpbl.client.ui.actions.unlock"
-               label="Unlock... (Mondo)">
+               label="Unlock... (Mondo)"
+               menubarPath="team.main/group5">
          </action>
          <action
                class="org.mondo.collaboration.security.mpbl.client.ui.actions.LockAction"
@@ -185,6 +180,30 @@
                id="org.mondo.collaboration.security.mpbl.client.ui.actions.lock"
                label="Lock... (Mondo)">
          </action>
+         <enablement>
+            <and>
+               <adapt
+                     type="org.eclipse.core.resources.mapping.ResourceMapping">
+                  <test
+                        args="org.eclipse.team.core.repository,org.eclipse.team.svn.core.svnnature"
+                        property="org.eclipse.core.resources.projectPersistentProperty">
+                  </test>
+               </adapt>
+               <adapt
+                     type="org.eclipse.core.resources.mapping.ResourceMapping">
+                  <test
+                        args="org.mondo.collaboration.security.mpbl.client,true"
+                        property="org.eclipse.core.resources.projectPersistentProperty">
+                  </test>
+               </adapt>
+				   <!--<with 
+	                  variable="org.mondo.collaboration.security.mpbl.client.ui.ext.enabled"> 
+	               <equals 
+	                     value="true"> 
+	               </equals> 
+	            </with> -->
+            </and>
+         </enablement>
       </objectContribution>
    </extension>
    <extension
@@ -214,4 +233,17 @@
          </with>
       </definition>
     </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart"
+            id="org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart"
+            name="Locking (MONDO)">
+      </view>
+      <view
+            class="org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart"
+            id="org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart"
+            name="Locking (MONDO)">
+      </view>
+   </extension>
 </plugin>
