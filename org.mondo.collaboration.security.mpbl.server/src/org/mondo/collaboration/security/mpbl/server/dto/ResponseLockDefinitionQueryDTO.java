@@ -1,18 +1,18 @@
 package org.mondo.collaboration.security.mpbl.server.dto;
 
-import java.util.Collection;
+import java.util.Map;
 
-import org.eclipse.incquery.patternlanguage.patternLanguage.Pattern;
+import org.eclipse.incquery.patternlanguage.emf.eMFPatternLanguage.PatternModel;
 
 public class ResponseLockDefinitionQueryDTO {
 
-    private Collection<Pattern> lockDefinitions;
+    private Map<String,PatternModel> lockDefinitions;
 
-    public ResponseLockDefinitionQueryDTO(Collection<Pattern> lockDefinitions) {
+    public ResponseLockDefinitionQueryDTO(Map<String,PatternModel> lockDefinitions) {
         this.lockDefinitions = lockDefinitions;
     }
 
-    public Collection<Pattern> getLockDefinitions() {
+    public Map<String,PatternModel> getLockDefinitions() {
         return lockDefinitions;
     }
 }

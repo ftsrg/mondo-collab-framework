@@ -236,14 +236,16 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            allowMultiple="false"
+            category="org.mondo.collaboration.security.mpbl.client.ui"
             class="org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart"
+            icon="icons/91-16.png"
             id="org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart"
             name="Locking (MONDO)">
       </view>
-      <view
-            class="org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart"
-            id="org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart"
-            name="Locking (MONDO)">
-      </view>
+      <category
+            id="org.mondo.collaboration.security.mpbl.client.ui"
+            name="Mondo">
+      </category>
    </extension>
 </plugin>

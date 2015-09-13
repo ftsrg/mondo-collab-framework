@@ -1,5 +1,6 @@
 package org.mondo.collaboration.security.mpbl.client.ui.actions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,14 +8,22 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.incquery.patternlanguage.emf.eMFPatternLanguage.PatternModel;
+import org.eclipse.incquery.patternlanguage.patternLanguage.Pattern;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
@@ -22,8 +31,12 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.FileEditorInput;
+import org.mondo.collaboration.security.mpbl.client.MondoCollaborationClient;
 import org.mondo.collaboration.security.mpbl.client.ui.Activator;
+import org.mondo.collaboration.security.mpbl.client.ui.views.LockViewPart;
 import org.mondo.collaboration.security.mpbl.client.ui.wizards.MondoPreferencePage;
+
+import com.google.common.collect.Lists;
 
 public class LockAction implements IActionDelegate {
 
@@ -88,6 +101,54 @@ public class LockAction implements IActionDelegate {
 
     private void processFile(IFile file) throws PartInitException {
         openEditor(file);
+        openView(file);
+    }
+
+    private void openView(IFile file) throws PartInitException {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        LockViewPart view = (LockViewPart) page.showView(LockViewPart.ID);
+        
+        Combo comboDefinition = view.getComboDefinition();
+        
+        
+        Combo comboGroup = view.getComboGroup();
+        comboGroup.setItems(MondoCollaborationClient.instance().getDefinitions().keySet().toArray(new String[0]));
+        comboGroup.addSelectionListener(new SelectionListener() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int index = comboGroup.getSelectionIndex();
+                String item = comboGroup.getItem(index);
+                PatternModel model = MondoCollaborationClient.instance().getDefinitions().get(item);
+                if(model == null) {
+                    comboDefinition.setItems(new String[0]);
+                }
+                else {
+                    ArrayList<String> list = Lists.newArrayList();
+                    for(Pattern pattern : model.getPatterns()) {
+                        list.add(pattern.getName());
+                    }
+                    comboDefinition.setItems(list.toArray(new String[0]));
+                }
+            }
+            
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                int index = comboGroup.getSelectionIndex();
+                String item = comboGroup.getItem(index);
+                PatternModel model = MondoCollaborationClient.instance().getDefinitions().get(item);
+                if(model == null) {
+                    comboDefinition.setItems(new String[0]);
+                }
+                else {
+                    ArrayList<String> list = Lists.newArrayList();
+                    for(Pattern pattern : model.getPatterns()) {
+                        list.add(pattern.getName());
+                    }
+                    comboDefinition.setItems(list.toArray(new String[0]));
+                }
+            }
+        });
     }
 
     private void openEditor(IFile file) throws PartInitException {
