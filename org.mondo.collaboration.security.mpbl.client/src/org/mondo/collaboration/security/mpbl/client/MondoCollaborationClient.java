@@ -43,9 +43,11 @@ public class MondoCollaborationClient {
     }
 
     public Map<String, PatternModel> getDefinitions() {
-        ResponseLockDefinitionQueryDTO response = PropertyBasedLockingServer.instance()
-                .queryLockDefinitions(new LockDefinitionQueryDTO());
-        definitions = response.getLockDefinitions();
+        if (definitions == null) {
+            ResponseLockDefinitionQueryDTO response = PropertyBasedLockingServer.instance()
+                    .queryLockDefinitions(new LockDefinitionQueryDTO());
+            definitions = response.getLockDefinitions();
+        }
         return definitions;
     }
 
