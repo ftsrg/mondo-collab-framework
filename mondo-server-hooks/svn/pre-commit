@@ -4,10 +4,10 @@
 # This hook has to be placed in the into the hooks directory of every front repository.
 # For the configuration, set the following variables:
 
-URL='http://localhost' 				#URL of the SVN repository provider
-GOLD_REPOS="svn/gold" 		#The name of the gold repository
-GOLD_REPOS_URL="$URL/$GOLD_REPOS"		#URL of the gold repository
-TEMP='/home/vialpando/tempsvn'			#Temporary directory, where the script has enough permisson to create and copy files
+URL='http://localhost' 				        #URL of the SVN repository provider
+GOLD_REPOS="svn/gold" 		            #The name of the gold repository
+GOLD_REPOS_URL="$URL/$GOLD_REPOS"		  #URL of the gold repository
+TEMP='/home/vialpando/Eclipse/Mondo/example/tempsvn'			  #Temporary directory, where the script has enough permisson to create and copy files
 
 EXTENSION="wtspec4m"                  # We execute the lens on each file with the given extension
 
@@ -18,32 +18,67 @@ LENS_SCRIPT='/home/vialpando/Eclipse/Mondo/lens/run.sh' #Lens script location. T
 JAVA_HOME="/usr/lib/jvm/java-8-oracle"
 export PATH=$PATH:$JAVA_HOME
 
-#Do not modify these variables - other scripts may depends on these settings
-TEMP_GOLD="$TEMP/tempGold/$GOLD_REPOS"
-TEMP_FRONT="$TEMP/tempFront/Current/$CURRENT_FRONT_REPOS"
-
 #Do not modify these variables - these variables comes from the svn call
 CURRENT_FRONT_REPOS="$1"
 CURRENT_FRONT_REPOS_URL="$URL$CURRENT_FRONT_REPOS"
 TXN="$2"
 
-set -e
-
-rm -rf $TEMP/*
-echo "initial clear ...... ok" 1>&2
-
-svn checkout $GOLD_REPOS_URL $TEMP_GOLD -q --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
-echo "gold checkout ...... ok" 1>&2
-
-svn checkout $CURRENT_FRONT_REPOS_URL $TEMP_FRONT -q --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
-echo "front checkout ..... ok" 1>&2
-
-changes=$(svnlook changed -t $TXN $CURRENT_FRONT_REPOS)
-MSG=$(svnlook log -t $TXN $CURRENT_FRONT_REPOS)
-echo "get changes ........ ok" 1>&2
-
+#Do not modify these variables - other scripts may depends on these settings
+TEMP_GOLD="$TEMP/tempGold/$GOLD_REPOS"
+TEMP_FRONT="$TEMP/tempFront/Current$CURRENT_FRONT_REPOS"
 FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)
 
+LOG="$TEMP/.log"
+
+timestamp() {
+  date +"%Y-%m-%d_%H-%M-%S"
+}
+
+log() {
+  echo "$(timestamp) $1" 1>>$LOG
+}
+
+log "-------------------------------------------------------"
+log "Executing Pre-commit"
+log "Parameters"
+log "      TXN $TXN"
+log "      URL $URL"
+log "      GOLD_REPOS $GOLD_REPOS"
+log "      GOLD_REPOS_URL $GOLD_REPOS_URL"
+log "      CURRENT_REPOS $CURRENT_FRONT_REPOS"
+log "      CURRENT_REPOS_URL $CURRENT_FRONT_REPOS_URL"
+log "      TEMP $TEMP"
+log "      LENS_SCRIPT $LENS_SCRIPT"
+log "      JAVA_HOME $JAVA_HOME"
+log "      EXTENSION $EXTENSION"
+log "      ADMIN_USER $ADMIN_USER"
+log "      ADMIN_PWD $ADMIN_PWD"
+log "      TEMP_GOLD $TEMP_GOLD"
+log "      TEMP_FRONT $TEMP_FRONT"
+log "      FRONT_USER $FRONT_USER"
+set -e
+
+if [ "$FRONT_USER" = "$ADMIN_USER" ]; then
+  log "Admin was the committer. Nothing to do right now"
+  log "-------------------------------------------------------"
+  exit 0
+fi
+
+log "Clear temp folder - $TEMP"
+rm -rf $TEMP/*
+
+log "Checkout gold - from $GOLD_REPOS_URL to $TEMP_GOLD"
+svn checkout $GOLD_REPOS_URL $TEMP_GOLD -q --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+
+log "Get change list"
+changes=$(svnlook changed -t $TXN $CURRENT_FRONT_REPOS)
+
+log "Get commit message"
+MSG=$(svnlook log -t $TXN $CURRENT_FRONT_REPOS)
+
+mkdir -p $TEMP_FRONT
+
+log "Start iterating over the changes"
 counter=0
 for line in $changes; do
    val=$(($counter % 2))
@@ -54,33 +89,52 @@ for line in $changes; do
    if [ $val = 1 ]
    then
    	nextChange=$line
-	if [ $nextType = "A" ] || [ $nextType = "U" ] || [ $nextType = "UU" ]
-	then
-	   case $nextChange in
-     		*/) mkdir -p "$TEMP_FRONT/$nextChange";;
-     		*) svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$TEMP_FRONT/$nextChange"
-        $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP;;
-	   esac
-        fi
+    log "     -> Change: $nextType $nextChange"
+  	if [ $nextType = "A" ] || [ $nextType = "U" ] || [ $nextType = "UU" ]
+  	then
+  	   case $nextChange in
+       		*/)
+          log "     -> Action: Create Dir $TEMP_GOLD/$nextChange"
+          mkdir -p "$TEMP_GOLD/$nextChange"
+          ;;
+       		*)
+          log "     -> Action: Copy Content $TEMP_FRONT/$nextChange"
+          svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$TEMP_FRONT/$nextChange"
+          if [[ $nextChange =~ .${EXTENSION}$ ]]
+          then
+            log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
+            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP
+          else
+            log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
+            cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange
+          fi
+          ;;
+  	   esac
+    fi
 
-	if [ $nextType = "D" ]
-	then
-	   rm -rf "$TEMP_FONT/$nextChange"
-        fi
+  	if [ $nextType = "D" ]
+  	then
+      log "     -> Action: Delete $TEMP_GOLD/$nextChange"
+      rm -rf "$TEMP_GOLD/$nextChange"
+    fi
    fi
    counter=$((counter+1))
 done
-echo "update completed ... ok" 1>&2
 
+log "Step into the gold folder"
 cd $TEMP_GOLD
+
+log "Add changes to SVN"
 svn add --force * --auto-props --parents --depth infinity -q
-echo "add files to svn ... ok" 1>&2
 
+log "Store commit message"
 echo "$MSG" 1>"svn-commit.tmp"
+
+log "Commit changes to the gold"
 svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
-echo "commit files ....... ok" 1>&2
 
-rm -rf $TEMP/*
-echo "final clear ........ ok" 1>&2
+log "Remove temporary files"
+#rm -rf $TEMP/*
 
+log "Pre-commit finished successfully"
 exit 0
