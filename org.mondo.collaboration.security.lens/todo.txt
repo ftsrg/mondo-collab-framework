@@ -1,23 +1,21 @@
  TODO
- 
- - clear "unrooted" set at the end of offline session
- 
- - rethink permission implications: deny/obfuscate R -> deny W, allow W -> allow R ? ---> validator?
-
- - add obfuscation
- - reuse resources.mapped for resourceRoot rule?
- 
+  
  - sane logging
  - uniform security exception (for write checking and resource URIs)
  - allow for locking check (not part of Resource?)
  
- - address ecore-specific EGenericType infinite loop (see Appendix 1)
+ - better management of obfuscator seeds 
+ - rethink permission implications: deny/obfuscate R -> deny W, allow W -> allow R ? ---> validator?
+ 
+ - reuse resources.mapped for resourceRoot rule?
  
  - more efficient isContainment in authorization queries (goldContainmentReference)
  - more efficient hiddenAttribute in authorization queries (eClass-eAttribute matching)
  - more efficient arbiter data structures
  - more efficient arbiter role filtering (Set<User> + query for group)
  - use EVM Context & do code cosmetics on rule specification / etc 
+ 
+ - address ecore-specific EGenericType infinite loop (see Appendix 1)
  
  - multiple policy conflict resolution strategies?
  - user equivalence classes based on read permissions
@@ -42,6 +40,7 @@
  - rethink permission implications: read edge needs read src/trg, write edge needs write src/read trg (write trg if containment or has an eOpposite), read/write attribute needs read/write src?
  - rethink permission implications: unrooted elements are discarded
  - rethink permission implications: eObject unreadable --> contained elements unreadable
+ - add obfuscation
 
   
  APPENDIX 1 

@@ -87,7 +87,7 @@ public class OfflineLensApplication implements IApplication {
 						stringObfuscator);
 
 		try {
-			System.out.println("[MondoOfflineCollaborationLens] Strating transformation...");
+			System.out.println("[MondoOfflineCollaborationLens] Starting transformation...");
 			
 			if (performGet)
 				session.doGetAndSave();

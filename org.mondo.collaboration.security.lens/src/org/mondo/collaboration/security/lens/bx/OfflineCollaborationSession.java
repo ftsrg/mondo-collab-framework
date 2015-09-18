@@ -59,8 +59,10 @@ public class OfflineCollaborationSession {
 	 * @param goldResourceSet the gold model
 	 * @param frontConfinementURI the writable area in the folder hierarchy for the front model
 	 * @param frontResourceSet the front model
+	 * @param uniqueIDFactory the scheme for identifying model elements
 	 * @param policyResource the resource of the policy model
 	 * @param userName the name of the user for which the offline map is conducted
+	 * @param stringObfuscator the attribute obfuscator seeded for the specific user
 	 * @throws IncQueryException 
 	 */
 	public OfflineCollaborationSession(
