@@ -27,6 +27,11 @@ import org.eclipse.incquery.runtime.base.api.NavigationHelper;
 import org.eclipse.incquery.runtime.base.comprehension.EMFModelComprehension;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey;
+import org.mondo.collaboration.security.lens.context.keys.EObjectKey;
+import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey;
+import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
+import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 
@@ -89,18 +94,34 @@ public class ModelIndexer {
 //	public Resource getDummyResource() {
 //		return dummyResource;
 //	}
+	
+	/**
+	 * @see ResourceKey
+	 */
 	public ILiveRelation getIndexedResources() {
 		return indexedResources;
 	}
+	/**
+	 * @see ResourceRootContentsKey
+	 */
 	public ILiveRelation getIndexedResourceRootContents() {
 		return indexedResourceRootContents;
 	}
+	/**
+	 * @see EObjectKey
+	 */
 	public ILiveRelation getIndexedEObjects() {
 		return indexedEObjects;
 	}
+	/**
+	 * @see EObjectReferenceKey
+	 */
 	public ILiveRelation getIndexedEObjectReferences() {
 		return indexedEObjectReferences;
 	}
+	/**
+	 * @see EObjectAttributeKey
+	 */
 	public ILiveRelation getIndexedEObjectAttributes() {
 		return indexedEObjectAttributes;
 	} 

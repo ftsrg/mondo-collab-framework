@@ -94,13 +94,14 @@ public class OnlineCollaborationSession {
 	 * @author Bergmann Gabor
 	 *
 	 */
-	class Leg {
+	public class Leg {
 		private final String userName;
 		private DataTypeObfuscator<String> stringObfuscator;
 		
 		private final URI frontConfinementURI;
 		private final ResourceSet frontResourceSet;
 		
+		private MondoLensScope scope;
 		private final RelationalLensXform lens;
 
 		/**
@@ -159,7 +160,7 @@ public class OnlineCollaborationSession {
 	        Map<CorrespondenceKey, LiveTable> correspondenceTables = new EnumMap<CorrespondenceKey, LiveTable>(CorrespondenceKey.class);
 	        correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
 	        
-			MondoLensScope scope = new MondoLensScope(arbiter, goldIndexer, frontIndexer, correspondenceTables);
+			scope = new MondoLensScope(arbiter, goldIndexer, frontIndexer, correspondenceTables);
 			
 			return new RelationalLensXform(scope, user, stringObfuscator);
 		}
@@ -199,6 +200,12 @@ public class OnlineCollaborationSession {
 		public ResourceSet getFrontResourceSet() {
 			return frontResourceSet;
 		}
+
+		public MondoLensScope getScope() {
+			return scope;
+		}
+
+
 		
 	}
 	
