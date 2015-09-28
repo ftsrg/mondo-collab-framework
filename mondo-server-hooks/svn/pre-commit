@@ -15,6 +15,8 @@ ADMIN_USER="admin"                    # Username of a user that has read and wri
 ADMIN_PWD="admin"                     # Password of a user that has read and write permissions on all front repositories and on the gold repository
 LENS_SCRIPT='/home/vialpando/Eclipse/Mondo/lens/run.sh' #Lens script location. This script executes the lens.
 
+CONFIG="config.cfg"
+
 JAVA_HOME="/usr/lib/jvm/java-8-oracle"
 export PATH=$PATH:$JAVA_HOME
 
@@ -57,6 +59,9 @@ log "      TEMP_GOLD $TEMP_GOLD"
 log "      TEMP_FRONT $TEMP_FRONT"
 log "      FRONT_USER $FRONT_USER"
 set -e
+
+log "Load config"
+source $CONFIG
 
 if [ "$FRONT_USER" = "$ADMIN_USER" ]; then
   log "Admin was the committer. Nothing to do right now"
@@ -103,7 +108,7 @@ for line in $changes; do
           if [[ $nextChange =~ .${EXTENSION}$ ]]
           then
             log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
-            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP
+            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix
           else
             log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
             cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange

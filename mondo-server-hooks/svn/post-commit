@@ -82,7 +82,8 @@ for entry in $FRONT_LIST; do
     log "        synchronizing the source tree"
     log "           rsync -av --exclude='.svn' $TEMP_GOLD/ $TEMP_FRONTS/$2"
     rsync -av --exclude=".svn" $TEMP_GOLD/ $TEMP_FRONTS/$2
-
+    log "        load related config file: $2.cfg"
+    source "$2.cfg"
     IFS="
 "
     log "        start iterating over the model files"
@@ -95,7 +96,7 @@ for entry in $FRONT_LIST; do
       log "        ->     $gold"
       log "        ->     $front"
       log "        ->     '-performGet' $TEMP"
-      $LENS_SCRIPT $FRONT_USER $gold $front '-performGet' $TEMP
+      $LENS_SCRIPT $FRONT_USER $gold $front '-performGet' $TEMP $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix
       log "        ->   execution finished"
     done
 
