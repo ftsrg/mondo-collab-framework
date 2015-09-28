@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.viatra.dse.merge.ui.interpreter">
+      <configuration
+            interpreter="org.eclipse.viatra.dse.merge.ui.subversive.SvnInterpreter">
+      </configuration>
+   </extension>
+   <extension
+         point="org.eclipse.viatra.dse.merge.ui.interpreter">
+      <configuration></configuration>
+   </extension>
+
+</plugin>
