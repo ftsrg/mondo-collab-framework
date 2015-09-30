@@ -25,30 +25,30 @@ public class Activator implements BundleActivator {
 		registration = bundleContext.registerService(OnlineResource.class, new OnlineResource(), null);
 		
 		ResourceBundle rb = ResourceBundle.getBundle("modelspath");
-		String inputPath = rb.getString("input_path");
-		String outputPath = rb.getString("output_path");
+//		String inputPath = rb.getString("input_path");
+//		String outputPath = rb.getString("output_path");
+//		
+//		if(!inputPath.equals("") && inputPath != null) {
+//			if(!new File(inputPath).exists()) {
+//				System.out.println("Path \"" + inputPath + "\" does not exist.");
+//				return;
+//			}
+//			OnlineResource.inputFolderPath = inputPath;
+//		} else {
+//			System.out.println("Missing definition of input models' folder path from \"modelspath.properties\" file.");
+//		}
+//		
+//		if(!outputPath.equals("") && outputPath != null) {
+//			if(!new File(outputPath).exists()) {
+//				System.out.println("Path \"" + outputPath + "\" does not exist.");
+//				return;
+//			}
+//			OnlineResource.outputFolderPath = outputPath;
+//		} else {
+//			System.out.println("Missing definition of output models' folder from \"modelspath.properties\" file.");
+//		}
+
 		String tmpPath = rb.getString("temporary_folder_path");
-		
-		if(!inputPath.equals("") && inputPath != null) {
-			if(!new File(inputPath).exists()) {
-				System.out.println("Path \"" + inputPath + "\" does not exist.");
-				return;
-			}
-			OnlineResource.inputFolderPath = inputPath;
-		} else {
-			System.out.println("Missing definition of input models' folder path from \"modelspath.properties\" file.");
-		}
-		
-		if(!outputPath.equals("") && outputPath != null) {
-			if(!new File(outputPath).exists()) {
-				System.out.println("Path \"" + outputPath + "\" does not exist.");
-				return;
-			}
-			OnlineResource.outputFolderPath = outputPath;
-		} else {
-			System.out.println("Missing definition of output models' folder from \"modelspath.properties\" file.");
-		}
-		
 		if(!tmpPath.equals("") && tmpPath != null) {
 			if(!new File(tmpPath).exists()) {
 				System.out.println("Path \"" + tmpPath + "\" does not exist.");

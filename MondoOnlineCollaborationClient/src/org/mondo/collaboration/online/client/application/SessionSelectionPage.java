@@ -255,7 +255,7 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		this.navigator.navigateTo(StartNewSessionPage.NAME);
 	}
 	
-	public void addSession(JSONObject jsonSession, JSONObject jsonUser) {
+	public void addSession(JSONObject jsonSession, String userName) {
 		try {
 			CollaborationSession newSession = new CollaborationSession(
 				sessions.size() + "", 
@@ -273,7 +273,7 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 				state
 				}, rowNum
 			);
-			User leader = new User(jsonUser.getString("name"), "");
+			User leader = new User(userName, "");
 			if(this.application.getUser() == null) {
 				return;
 			}

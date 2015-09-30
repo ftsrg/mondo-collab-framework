@@ -93,12 +93,11 @@ public class StartNewSessionPage extends AbsoluteLayout implements View {
 		try {
 			System.out.println("Starting session for model: " + selectedModelPath);
 			availableModelsTree.removeAllItems();
-			JSONObject jsonUser = new JSONObject();
-			jsonUser.put("name", this.application.getUser().getUserName());
-			jsonUser.put("id", this.application.getUser().getUserName());
+			JSONObject startSessionData = new JSONObject();
+			startSessionData.put("modelPath", selectedModelPath);
+			startSessionData.put("userId", this.application.getUser().getUserId());
 			this.application.getWebsocketClient().startSession(
-				selectedModelPath,
-				jsonUser
+				startSessionData
 			);
 			this.navigator.navigateTo(SessionSelectionPage.NAME);
 		} catch (JSONException e) {

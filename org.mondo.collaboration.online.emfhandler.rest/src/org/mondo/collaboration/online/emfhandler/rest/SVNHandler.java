@@ -87,7 +87,7 @@ public class SVNHandler {
 	}
 	
 	public String getWorkingCopyPathByUserId(String userName) {
-		return this.workingCopyPath + File.separator + userName;
+		return this.workingCopyPath + userName;
 	}
 	
 	public JSONArray loadRepositoryStructure(String userName) {

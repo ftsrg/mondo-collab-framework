@@ -118,8 +118,8 @@ public class CollaborationServerApplication {
 				this.sendSessions(connection);
 			} else if(operation.equals("startSession")) {
 				System.out.println("startSession...");
-				String selectedModel = request.getString("selectedModel");
-				this.startSession(selectedModel, request.getJSONObject("leader"), connection);
+				JSONObject sessionData = request.getJSONObject("startSessionData");
+				this.startSession(sessionData, connection);
 			} else if(operation.equals("finishSession")) {
 				System.out.println("finishSession...");
 				String sessionId = request.getString("sessionId");
@@ -406,19 +406,18 @@ public class CollaborationServerApplication {
 		
 	}
 
-	private boolean startSession(String selectedModelPath, JSONObject jsonLeader, Session source) {
+	private boolean startSession(JSONObject sessionData, Session source) {
 		try {
 			// TODO check if already started 
 			URL url = new URL("http://localhost:8070/services/modelHandler/loadModel");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.addRequestProperty("selectedModelPath", selectedModelPath);
 			conn.setRequestMethod("POST");
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("Content-Length", "" + Integer.toString(selectedModelPath.getBytes().length));
+			conn.setRequestProperty("Content-Length", "" + Integer.toString(sessionData.toString().getBytes().length));
 			
 			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-			wr.writeBytes(selectedModelPath);
+			wr.writeBytes(sessionData.toString());
 			wr.flush();
 			wr.close();
 			
@@ -448,12 +447,12 @@ public class CollaborationServerApplication {
 				newJsonSession.put("name", sessionName); 
 				newJsonSession.put("model", jsonModelData.getJSONObject("model")); 
 				
-				sessionIdsToModelPaths.put(sessionId, selectedModelPath);
+				sessionIdsToModelPaths.put(sessionId, sessionData.getString("modelPath"));
 				
 				JSONObject request = new JSONObject();
 				request.put("operation", "newSession");
 				request.put("collaborationSession", newJsonSession);
-				request.put("leader", jsonLeader);
+				request.put("leader", sessionData.getString("userId"));
 				broadcastRequest(request, null);
 			}
 		} catch (ProtocolException e) {

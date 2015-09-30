@@ -48,7 +48,8 @@ public class Application extends UI {
 			navigator = new Navigator(this, this); 
 			this.websocketClient = new MondoWebsocketClient(this);
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-	        String uri = "ws://localhost:8080/org.mondo.collaboration.online.server/mondoonlineserver";
+			// TODO set glassfish port configurable
+	        String uri = "ws://localhost:8081/org.mondo.collaboration.online.server/mondoonlineserver";
 			container.connectToServer(this.websocketClient, URI.create(uri));
 			System.out.println("Connection established!");
 

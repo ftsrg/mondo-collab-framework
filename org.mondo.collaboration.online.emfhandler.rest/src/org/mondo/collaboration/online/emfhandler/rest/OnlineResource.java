@@ -57,7 +57,10 @@ public class OnlineResource {
 	@POST
 	@Path("/loadModel")
 	@Produces("application/json")
-	public String loadModel(String selectedModelPath) throws Exception {
+	public String loadModel(String sessionDataString) throws Exception {
+		JSONObject sessionData = new JSONObject(sessionDataString);
+		String userId = sessionData.getString("userId");
+		String selectedModelPath = svn.getWorkingCopyPathByUserId(userId) + File.separator + sessionData.getString("modelPath");
 		System.out.println("Load model: " + selectedModelPath);
 		return parseEMFModelToJSON(selectedModelPath);
 	}
@@ -71,13 +74,12 @@ public class OnlineResource {
 		return this.modelsInJson.toString();
 	}
 
-	private String parseEMFModelToJSON(String relativeModelPath) {
-		System.out.println("Parse emf model: " + relativeModelPath);
-		String filePath = workingCopyPath + relativeModelPath;
-		final File modelFile = new File(filePath);
-		String modelName = relativeModelPath.substring(
-			relativeModelPath.lastIndexOf(File.separator) + 1, 
-			relativeModelPath.indexOf(".wtspec4m")
+	private String parseEMFModelToJSON(String modelPath) {
+		System.out.println("Parse emf model: " + modelPath);
+		final File modelFile = new File(modelPath);
+		String modelName = modelPath.substring(
+			modelPath.lastIndexOf(File.separator) + 1, 
+			modelPath.indexOf(".wtspec4m")
 		);
 		Integer id = 0;
 		
@@ -96,7 +98,7 @@ public class OnlineResource {
 	    	
 		    // Get the resource
 		    Resource resource = resourceSet.getResource(URI
-		        .createURI("file:///" + filePath), true);
+		        .createURI("file:///" + modelPath), true);
 		    
 		    String jsonFileName = "MondoModelHandler/tmp/" + modelName + ".json";
 		    Resource jsonResource = resourceSet.createResource(URI.createURI(jsonFileName));

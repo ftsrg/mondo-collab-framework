@@ -83,7 +83,7 @@ public class MondoWebsocketClient {
         		System.out.println("newSession...");
 				this.application.getSessionSelectionPage().addSession(
 					message.getJSONObject("collaborationSession"),
-					message.getJSONObject("leader")
+					message.getString("leader")
 				);
     		} else if(operation.equals("finishSession")) {
     			System.out.println("finishSession...");
@@ -192,12 +192,11 @@ public class MondoWebsocketClient {
 		} 
 	}
 
-	public void startSession(String selectedModel, JSONObject jsonUser) {
+	public void startSession(JSONObject startSessionData) {
 		try {
 			JSONObject request = new JSONObject();
 			request.put("operation", "startSession");
-			request.put("selectedModel", selectedModel);
-			request.put("leader", jsonUser);
+			request.put("startSessionData", startSessionData);
 			System.out.println("Sending message to server: " + request.toString());
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException e1) {
