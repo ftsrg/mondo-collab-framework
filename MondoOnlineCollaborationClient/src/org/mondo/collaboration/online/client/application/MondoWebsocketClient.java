@@ -39,60 +39,50 @@ public class MondoWebsocketClient {
     		String operation = message.getString("operation");
     		System.out.println("Operation: " + operation);
     		if(operation.equals("modelTransferComplete")) {
-    			System.out.println("modelTransferComplete...");
     			this.application.getCollaborationPage().setModelTransferComplete(true);
     		} else if(operation.equals("updateModel")) {
-        		System.out.println("updateModel...");
 				this.application.getCollaborationPage().setModel(
 					message.getJSONObject("model")
 				);
     		} else if(operation.equals("modifyModel")) {
-        		System.out.println("modifyModel...");
 				this.application.getCollaborationPage().modifyModel(
 					message.getJSONObject("data")
 				);
     		} else if(operation.equals("updatePositions")) {
-        		System.out.println("updatePositions... - " + message.toString());
 				this.application.getCollaborationPage().setPositions(
 					message.getJSONObject("positions")
 				);
     		} else if(operation.equals("updateNodePosition")) {
-        		System.out.println("updateNodePosition...");
 				this.application.getCollaborationPage().moveNode(
 					message.getJSONObject("nodeData")
 				);
     		} else if(operation.equals("updateSessions")) {
-        		System.out.println("updateSessions...");
 				this.application.getSessionSelectionPage().setSessionsList(
 					message.getJSONArray("sessions")
 				);
     		} else if(operation.equals("updateUsers")) {
-        		System.out.println("updateUsers...");
 				this.application.getCollaborationPage().setUsersList(
 					message.getJSONArray("users")
 				);
     		} else if(operation.equals("leaveSession")) {
-        		System.out.println("leaveSession...");
 				this.application.leaveSession();
     		} else if(operation.equals("avaialbleModelsForuser")) {
-        		System.out.println("avaialbleModelsForuser...");
 				this.application.getStartNewSessionPage().setAvailableSessions(
 					message.getJSONArray("models")
 				);
     		} else if(operation.equals("newSession")) {
-        		System.out.println("newSession...");
 				this.application.getSessionSelectionPage().addSession(
 					message.getJSONObject("collaborationSession"),
 					message.getString("leader")
 				);
     		} else if(operation.equals("finishSession")) {
-    			System.out.println("finishSession...");
 				this.application.getSessionSelectionPage().finishSession(
 					message.getString("sessionId")
 				);
+    		} else if(operation.equals("checkoutFailed")) {
+    			this.application.getStartNewSessionPage().checkoutFailed();
     		}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -157,21 +147,6 @@ public class MondoWebsocketClient {
 		} 
 	}
 	
-	public void loadAvailableSessions() {
-		try {
-			JSONObject request = new JSONObject();
-			request.put("operation", "getSessions");
-			System.out.println("Sending message to server: " + request.toString());
-			this.connection.getBasicRemote().sendText(request.toString());
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-	}
-
 	public void joinSession(User user, String sessionId) {
 		try {
 			JSONObject jsonUser = new JSONObject();
@@ -278,6 +253,19 @@ public class MondoWebsocketClient {
 			System.out.println("Sending message to server: " + request.toString());
 			this.connection.getBasicRemote().sendText(request.toString());
 		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getSessions() {
+		try {
+			System.out.println("Retreiving sessions for client.");
+			JSONObject request = new JSONObject();
+			request.put("operation", "getSessions");
+			this.connection.getBasicRemote().sendText(request.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}

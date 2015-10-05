@@ -43,13 +43,11 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		initSessionsView();
 	}
 	
-	private void loadSessions() {
-		this.application.getWebsocketClient().loadAvailableSessions();
-	}
-
 	public void setSessionsList(JSONArray jsonSessions) {
 		this.sessions.clear();
+		getUI().getSession().lock();
 		this.sessionsTable.removeAllItems();
+		getUI().getSession().unlock();
 		try {
 			for(int i = 0; i < jsonSessions.length(); i++) {
 				String id = jsonSessions.getJSONObject(i).getString("id");
@@ -57,31 +55,22 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 				int state = jsonSessions.getJSONObject(i).getInt("state");
 				CollaborationSession newSession = new CollaborationSession(id, title, state);
 				this.sessions.add(newSession);
-				this.sessionsTable.addItem(new Object[]{
-					id, 
-					title,
-					state
-					}, this.sessions.size() - 1
-				);
+				getUI().getSession().lock();
+				try {
+					this.sessionsTable.addItem(new Object[]{
+							id, 
+							title,
+							CollaborationSession.getSessionStateString(state)
+							}, this.sessions.size() - 1
+						);
+				} finally {
+				  getUI().getSession().unlock();
+				}
+				
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void updateSessionsView() {
-		
-//		this.application.getUI().getSession().lock();
-//		try {
-//			this.removeAllComponents();
-//		} finally {
-//			this.application.getUI().getSession().unlock();
-//		}
-//
-//		this.initSessionsView();
-		// Panel sessionSelection = this.initSessionsView();
-		//addComponent(sessionSelection); //, "left: 10px; top: 40px;");
-		
 	}
 	
 	private void initSessionsView() {
@@ -94,18 +83,6 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 		this.sessionsTable.addContainerProperty("Name", String.class, null);
 		this.sessionsTable.addContainerProperty("State", String.class, null);
 		this.sessionsTable.setSelectable(true);
-		
-//		int rowNum = 2;
-//		for(CollaborationSession s: this.sessions) {
-//			String state = CollaborationSession.getSessionStateString(s.getState());
-//			this.sessionsTable.addItem(new Object[]{
-//				s.getId(), 
-//				s.getTitle(), 
-//				state
-//				}, rowNum
-//			);
-//			rowNum++;
-//		}
 
 		// custom.addComponent(this.sessionsTable, "sessionsTable");
 		Button buttonLogout = new Button("Log out"); 
@@ -288,6 +265,7 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
+		this.application.getWebsocketClient().getSessions();
 	}
 
 	public void finishSession(String sessionId) {
@@ -298,6 +276,5 @@ public class SessionSelectionPage extends AbsoluteLayout implements View {
 				session.finishSession();
 			}
 		}
-		
 	}
 }
