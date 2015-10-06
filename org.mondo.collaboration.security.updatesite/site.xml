@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.mondo.collaboration.security.macl.feature_1.0.0.201510061558.jar" id="org.mondo.collaboration.security.macl.feature" version="1.0.0.201510061558">
+      <category name="security_access"/>
+   </feature>
+   <feature url="features/org.mondo.collaboration.security.mbpl.feature_1.0.0.201510061558.jar" id="org.mondo.collaboration.security.mbpl.feature" version="1.0.0.201510061558">
+      <category name="locking"/>
+   </feature>
+   <category-def name="security_access" label="Security Access"/>
+   <category-def name="locking" label="Model Based Locking"/>
+</site>
