@@ -16,7 +16,17 @@
   </properties>
 
   <modules>
+    <module>org.mondo.collaboration.security.macl.xtext</module>
+    <module>org.mondo.collaboration.security.macl.xtext.ui</module>
+    <module>org.mondo.collaboration.security.macl.xtext.rule</module>
+    <module>org.mondo.collaboration.security.macl.xtext.rule.ui</module>
     <module>org.mondo.collaboration.security.lens</module>
+    <module>org.mondo.collaboration.security.lens.offline.cli</module>
+    <module>org.mondo.collaboration.security.mpbl.xtext</module>
+    <module>org.mondo.collaboration.security.mpbl.xtext.ui</module>
+    <module>org.mondo.collaboration.security.mpbl.client</module>
+    <module>org.mondo.collaboration.security.mpbl.client.ui</module>
+    <module>org.mondo.collaboration.security.mpbl.server</module>
     <module>org.mondo.collaboration.security.targetplatform</module>
   </modules>
 
@@ -38,7 +48,7 @@
           <target>
             <artifact>
               <groupId>org.mondo.collaboration.security</groupId>
-              <artifactId>org.mondo.collaboration.security.targetplatform</artifactId>
+              <artifactId>targetplatform</artifactId>
               <version>1.0.0-SNAPSHOT</version>
             </artifact>
           </target>
