@@ -13,13 +13,18 @@
     <tycho.version>0.23.0</tycho.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <jacoco.version>0.7.0.201403182114</jacoco.version>
+		<jacoco.targetdir>${project.basedir}/../../target</jacoco.targetdir>
+		<xtend.compiler.version>2.9.0.beta3</xtend.compiler.version>
   </properties>
 
   <modules>
+    <module>org.mondo.collaboration.security.targetplatform</module>
     <module>org.mondo.collaboration.security.macl.xtext</module>
     <module>org.mondo.collaboration.security.macl.xtext.ui</module>
     <module>org.mondo.collaboration.security.macl.xtext.rule</module>
     <module>org.mondo.collaboration.security.macl.xtext.rule.ui</module>
+    <!--
     <module>org.mondo.collaboration.security.lens</module>
     <module>org.mondo.collaboration.security.lens.offline.cli</module>
     <module>org.mondo.collaboration.security.mpbl.xtext</module>
@@ -27,13 +32,13 @@
     <module>org.mondo.collaboration.security.mpbl.client</module>
     <module>org.mondo.collaboration.security.mpbl.client.ui</module>
     <module>org.mondo.collaboration.security.mpbl.server</module>
-    <module>org.mondo.collaboration.security.targetplatform</module>
+  -->
   </modules>
 
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
-      
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
@@ -49,7 +54,7 @@
           <target>
             <artifact>
               <groupId>org.mondo.collaboration.security</groupId>
-              <artifactId>targetplatform</artifactId>
+              <artifactId>org.mondo.collaboration.security.targetplatform</artifactId>
               <version>1.0.0-SNAPSHOT</version>
             </artifact>
           </target>
