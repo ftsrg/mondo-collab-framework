@@ -21,5 +21,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.mondo.collaboration.security.macl.xtext.rule.ui,
  org.mondo.collaboration.security.macl.xtext.rule.ui.contentassist,
  org.mondo.collaboration.security.macl.xtext.rule.ui.contentassist.antlr,
- org.mondo.collaboration.security.macl.xtext.rule.ui.quickfix
+ org.mondo.collaboration.security.macl.xtext.rule.ui.quickfix,
+ org.mondo.collaboration.security.macl.xtext.rule.ui.contentassist.antlr.internal
 Bundle-Activator: org.mondo.collaboration.security.macl.xtext.rule.ui.internal.MACLRuleActivator
