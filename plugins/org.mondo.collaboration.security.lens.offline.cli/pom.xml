@@ -8,7 +8,9 @@
     <groupId>org.mondo.collaboration.security</groupId>
     <artifactId>org.mondo.collaboration.security</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../../releng/org.mondo.collaboration.security.parent/pom.xml</relativePath>
   </parent>
+  <groupId>org.mondo.collaboration.security</groupId>
   <artifactId>org.mondo.collaboration.security.lens.offline.cli</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>

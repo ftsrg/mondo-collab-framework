@@ -11,234 +11,167 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tycho-version>0.23.0</tycho-version>
+    <tycho.extras.version>${tycho-version}</tycho.extras.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <xtend-version>2.9.0.beta3</xtend-version>
+    <xtend-version>2.8.4</xtend-version>
+    <java.version>1.8</java.version>
+    <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+    <jacoco.version>0.7.0.201403182114</jacoco.version>
+		<jacoco.targetdir>${project.basedir}/../../target</jacoco.targetdir>
   </properties>
 
   <modules>
     <module>../../releng/org.mondo.collaboration.security.targetplatform</module>
+    <module>../../plugins/org.mondo.collaboration.security.lens</module>
+    <module>../../plugins/org.mondo.collaboration.security.lens.offline.cli</module>
     <module>../../plugins/org.mondo.collaboration.security.macl.xtext.rule</module>
     <module>../../plugins/org.mondo.collaboration.security.macl.xtext.rule.ui</module>
-    <!--
     <module>../../plugins/org.mondo.collaboration.security.macl.xtext</module>
     <module>../../plugins/org.mondo.collaboration.security.macl.xtext.ui</module>
-    <module>org.mondo.collaboration.security.lens</module>
-    <module>org.mondo.collaboration.security.lens.offline.cli</module>
-    <module>org.mondo.collaboration.security.mpbl.xtext</module>
-    <module>org.mondo.collaboration.security.mpbl.xtext.ui</module>
-    <module>org.mondo.collaboration.security.mpbl.client</module>
-    <module>org.mondo.collaboration.security.mpbl.client.ui</module>
-    <module>org.mondo.collaboration.security.mpbl.server</module>
-  -->
+    <module>../../plugins/org.mondo.collaboration.security.mpbl.xtext</module>
+    <module>../../plugins/org.mondo.collaboration.security.mpbl.xtext.ui</module>
+    <module>../../plugins/org.mondo.collaboration.security.mpbl.client</module>
+    <module>../../plugins/org.mondo.collaboration.security.mpbl.client.ui</module>
+    <module>../../plugins/org.mondo.collaboration.security.mpbl.server</module>
+    <module>../../features/org.mondo.collaboration.security.macl.feature</module>
+    <module>../../features/org.mondo.collaboration.security.mpbl.feature</module>
+    <module>../../releng/org.mondo.collaboration.security.updatesite</module>
   </modules>
 
   <build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho-version}</version>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.1</version>
+      <configuration>
+        <compilerVersion>${java.version}</compilerVersion>
+        <source>${java.version}</source>
+        <target>${java.version}</target>
+      </configuration>
+    </plugin>
+    <plugin>
+      <groupId>org.eclipse.tycho</groupId>
+      <artifactId>tycho-maven-plugin</artifactId>
+      <version>${tycho-version}</version>
+      <extensions>true</extensions>
+      <configuration>
+        <compilerVersion>${java.version}</compilerVersion>
+        <source>${java.version}</source>
+        <target>${java.version}</target>
+      </configuration>
+    </plugin>
+    <plugin>
+      <groupId>org.eclipse.tycho</groupId>
+      <artifactId>target-platform-configuration</artifactId>
+      <version>${tycho-version}</version>
+      <configuration>
+        <target>
+          <artifact>
+            <groupId>org.mondo.collaboration.security</groupId>
+            <artifactId>org.mondo.collaboration.security.targetplatform</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+          </artifact>
+        </target>
+      </configuration>
+    </plugin>
+    <plugin>
+      <groupId>org.eclipse.tycho</groupId>
+      <artifactId>tycho-source-plugin</artifactId>
+      <version>${tycho-version}</version>
+      <executions>
+        <execution>
+          <id>plugin-source</id>
+          <goals>
+            <goal>plugin-source</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+  <pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <compilerVersion>${java.version}</compilerVersion>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <environments>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <version>${tycho-version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+        <version>${tycho-version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.xtend</groupId>
+        <artifactId>xtend-maven-plugin</artifactId>
+        <version>${xtend-version}</version>
+        <configuration>
+          <!-- need to prefix by basedir to generate to currently built module -->
+          <outputDirectory>${basedir}/xtend-gen</outputDirectory>
+          <javaSourceVersion>${java.version}</javaSourceVersion>
+        </configuration>
+      </plugin>
+      <plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
 				<configuration>
-					<resolver>p2</resolver>
-					<pomDependencies>consider</pomDependencies>
-					<environments>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-					<target>
-						<artifact>
-							<groupId>org.mondo.collaboration.security</groupId>
-							<artifactId>org.mondo.collaboration.security.targetplatform</artifactId>
-							<version>1.0.0-SNAPSHOT</version>
-						</artifact>
-					</target>
+					<destFile>${jacoco.targetdir}/jacoco.exec</destFile>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-director-plugin</artifactId>
-				<version>${tycho-version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-source-plugin</artifactId>
-				<version>${tycho-version}</version>
 				<executions>
 					<execution>
-						<id>attach-source</id>
 						<goals>
-							<goal>plugin-source</goal>
+							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!-- TYCHO -->
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-compiler-plugin</artifactId>
-					<version>${tycho-version}</version>
-					<configuration>
-						<encoding>${project.build.sourceEncoding}</encoding>
-						<excludeResources>
-							<exludeResource>**/*.xtend</exludeResource>
-						</excludeResources>
-					</configuration>
-				</plugin>
-				<!-- enable source bundle generation -->
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-surefire-plugin</artifactId>
-					<version>${tycho-version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-repository</artifactId>
-					<version>${tycho-version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>maven-osgi-test-plugin</artifactId>
-					<version>${tycho-version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-repository-plugin</artifactId>
-					<version>${tycho-version}</version>
-				</plugin>
-				<!-- APACHE MAVEN PLUGINS -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.4.1</version>
-					<configuration>
-						<encoding>${project.build.sourceEncoding}</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.7</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.9</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.4.1</version>
-					<configuration>
-						<filesets>
-							<fileset>
-								<directory>${basedir}/xtend-gen</directory>
-								<includes>
-									<include>**</include>
-								</includes>
-								<excludes>
-									<exclude>.gitignore</exclude>
-								</excludes>
-							</fileset>
-							<fileset>
-								<directory>${basedir}/src-gen</directory>
-								<includes>
-									<include>**</include>
-								</includes>
-								<excludes>
-									<exclude>.gitignore</exclude>
-								</excludes>
-							</fileset>
-							<fileset>
-								<directory>${basedir}/emf-gen</directory>
-								<includes>
-									<include>**</include>
-								</includes>
-								<excludes>
-									<exclude>.gitignore</exclude>
-								</excludes>
-							</fileset>
-						</filesets>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.3</version>
-					<executions>
-						<execution>
-							<id>add-source</id>
-							<phase>generate-sources</phase>
-							<goals>
-								<goal>add-source</goal>
-							</goals>
-							<configuration>
-								<sources>
-									<source>${project.build.directory}/src-gen</source>
-								</sources>
-								<sources>
-									<source>${project.build.directory}/emf-gen</source>
-								</sources>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.xtend</groupId>
-					<artifactId>xtend-maven-plugin</artifactId>
-					<version>${xtend-version}</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>compile</goal>
-							</goals>
-							<configuration>
-								<!-- need to prefix by basedir to generate to currently built module -->
-								<outputDirectory>${basedir}/xtend-gen</outputDirectory>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+  </pluginManagement>
+</build>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>sonatype</id>
@@ -250,7 +183,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-		<!-- Fornax Workflow Runner plugin -->		
+		<!-- Fornax Workflow Runner plugin -->
 	</pluginRepositories>
 
 	<profiles>

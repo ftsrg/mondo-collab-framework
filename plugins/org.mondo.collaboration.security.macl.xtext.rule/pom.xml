@@ -42,7 +42,7 @@
     				<version>3.5.1</version>
     				<configuration>
     					<workflowEngine>mwe2</workflowEngine>
-    					<workflowDescriptor>src/org/mondo/collaborion/security/macl/xtext/rule/GenerateMACLRule.mwe2</workflowDescriptor>
+    					<workflowDescriptor>src/org/mondo/collaboration/security/macl/xtext/rule/GenerateMACLRule.mwe2</workflowDescriptor>
     				</configuration>
     				<executions>
     					<execution>

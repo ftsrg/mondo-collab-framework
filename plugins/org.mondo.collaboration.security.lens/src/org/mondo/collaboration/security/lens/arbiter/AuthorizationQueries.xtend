@@ -13,7 +13,6 @@ package org.mondo.collaboration.security.lens.arbiter
 
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
-import java.util.Collections
 import java.util.List
 import java.util.Map
 import java.util.Set
@@ -33,8 +32,9 @@ import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey
 import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey
 import org.mondo.collaboration.security.lens.relational.QueryTemplate
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
+import org.mondo.collaboration.security.lens.util.EnumWrapper
+import java.util.Collections
 
 /**
  * Queries for security checks.
@@ -63,7 +63,8 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 		
 		
 	private def Pair<Class<? extends Asset>, Map<OperationKind, IQuerySpecification>> prepareExplicitlyDeniedHelperPatterns(Class<? extends Asset> assetClass, String... assetVariables) {
-		assetClass -> Collections::unmodifiableMap(newHashMap(OperationKind.values.map[ op |
+		val x = EnumWrapper.myValues
+		assetClass -> Collections::unmodifiableMap(newHashMap(x.map[ op |
 			op -> op.prepareExplicitRuleDecisionHelperPattern(assetClass, AccessControlVerdict::DENIED, assetVariables)
 		]))
 	}

@@ -23,5 +23,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.mondo.collaboration.security.macl.xtext.ui.quickfix,
  org.mondo.collaboration.security.macl.xtext.ui.contentassist,
  org.mondo.collaboration.security.macl.xtext.ui.internal,
- org.mondo.collaboration.security.macl.xtext.ui.contentassist.antlr
+ org.mondo.collaboration.security.macl.xtext.ui.contentassist.antlr,
+ org.mondo.collaboration.security.macl.xtext.ui.contentassist.antlr.internal
 Bundle-Activator: org.mondo.collaboration.security.macl.xtext.ui.internal.AccessControlLanguageActivator
