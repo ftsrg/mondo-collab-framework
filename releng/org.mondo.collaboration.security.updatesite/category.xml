@@ -3,7 +3,7 @@
    <feature url="features/org.mondo.collaboration.security.mpbl.feature_1.0.0.qualifier.jar" id="org.mondo.collaboration.security.mpbl.feature" version="1.0.0.qualifier">
       <category name="org.mondo.collaboration.security"/>
    </feature>
-   <feature url="features/org.mondo.collaboration.security.mpbl.feature_1.0.0.qualifier.jar" id="org.mondo.collaboration.security.mpbl.feature" version="1.0.0.qualifier">
+   <feature url="features/org.mondo.collaboration.security.macl.feature_1.0.0.qualifier.jar" id="org.mondo.collaboration.security.macl.feature" version="1.0.0.qualifier">
       <category name="org.mondo.collaboration.security"/>
    </feature>
    <category-def name="org.mondo.collaboration.security" label="MONDO Collaboration"/>
