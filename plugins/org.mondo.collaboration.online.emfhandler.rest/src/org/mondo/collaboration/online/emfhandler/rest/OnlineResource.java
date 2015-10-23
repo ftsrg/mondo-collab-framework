@@ -50,8 +50,11 @@ public class OnlineResource {
 		String userName = user.getString("userName");
 		System.out.println("Retrieving models for user: " + userName);
 		svn.initNewSVNClientManager(userName, user.getString("password"));
-		svn.checkoutOrUpdate(userName);
-		return svn.loadRepositoryStructure(userName).toString();
+		if(svn.checkoutOrUpdate(userName)) {
+			return svn.loadRepositoryStructure(userName).toString();
+		} else {
+			return "CHECKOUT_FAILED";
+		}
 	}
 
 	@POST

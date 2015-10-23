@@ -73,6 +73,12 @@ public class CollaborationServerApplication {
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line;
 			line = br.readLine();
+			if(line.equals("CHECKOUT_FAILED")) {
+				JSONObject request = new JSONObject();
+				request.put("operation", "checkoutFailed");
+				this.sendRequestInParts(request, source);
+				return;
+			}
 			JSONArray modelsData = new JSONArray(line);
 			System.out.println("Available models for [" + userName + "]");
 			JSONObject request = new JSONObject();

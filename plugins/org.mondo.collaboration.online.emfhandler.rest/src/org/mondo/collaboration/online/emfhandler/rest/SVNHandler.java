@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.tmatesoft.svn.core.SVNAuthenticationException;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
@@ -57,7 +58,7 @@ public class SVNHandler {
 		this.workingCopyPath = newPath;
 	}
 	
-	public void checkoutOrUpdate(String userName) {
+	public boolean checkoutOrUpdate(String userName) {
 		System.out.println("Checking out/updating repository from url [" + repositoryUrl + "] for user [" + userName + "]");
 		SVNUpdateClient updateClient = svnClients.get(userName).getUpdateClient();
 	
@@ -70,8 +71,10 @@ public class SVNHandler {
 		    boolean isRecursive = true;
 		    long revisionNumber = updateClient.doCheckout(url, destPath, null, null, isRecursive);
 		    System.out.println("Success! [Revision: " + revisionNumber + "]");
+		    return true;
 		} catch (SVNException e) {
-			e.printStackTrace();
+			System.out.println("Failed to retreive repository for [" + userName + "]");
+			return false;
 		}
 	}
 	

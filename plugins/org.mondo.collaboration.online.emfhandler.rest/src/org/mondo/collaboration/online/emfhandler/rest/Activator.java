@@ -24,7 +24,7 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		registration = bundleContext.registerService(OnlineResource.class, new OnlineResource(), null);
 		
-		ResourceBundle rb = ResourceBundle.getBundle("modelspath");
+		ResourceBundle rb = ResourceBundle.getBundle("config");
 //		String inputPath = rb.getString("input_path");
 //		String outputPath = rb.getString("output_path");
 //		

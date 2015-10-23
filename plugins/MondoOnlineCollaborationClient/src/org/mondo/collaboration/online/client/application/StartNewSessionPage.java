@@ -20,6 +20,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressBar;
@@ -103,7 +104,6 @@ public class StartNewSessionPage extends AbsoluteLayout implements View {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private void getAvailableModelsForUser() {
@@ -188,5 +188,10 @@ public class StartNewSessionPage extends AbsoluteLayout implements View {
 	private void loadingStateOff() {
 		this.loadingSign.setVisible(false);
 		this.buttonStartSession.setVisible(true);
+	}
+
+	public void checkoutFailed() {
+		Notification.show("Checkout failed with the provided credentials.", Notification.Type.WARNING_MESSAGE);
+		this.navigator.navigateTo(SessionSelectionPage.NAME);
 	}
 }
