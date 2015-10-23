@@ -1,0 +1,109 @@
+[INFO] Scanning for projects...
+[INFO] Computing target platform for MavenProject: org.mondo.collaboration.security:org.mondo.collaboration.security.macl.xtext.rule:1.0.0-SNAPSHOT @ /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/plugins/org.mondo.collaboration.security.macl.xtext.rule/pom.xml
+[INFO] Fetching p2.index from http://download.eclipse.org/eclipse/updates/4.5/ (0B at 0B/s)
+[INFO] Adding repository http://download.eclipse.org/eclipse/updates/4.5
+[INFO] Fetching p2.index from http://download.eclipse.org/eclipse/updates/4.5/R-4.5-201506032000/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/eclipse/updates/4.5/R-4.5.1-201509040015/ (0B at 0B/s)
+[INFO] Adding repository https://hudson.eclipse.org/viatra/job/viatra-modelobfuscator-master/lastSuccessfulBuild/artifact/releng/org.eclipse.viatra.modelobfuscator.update/target/repository
+[INFO] Fetching p2.index from http://download.eclipse.org/releases/mars/ (0B at 0B/s)
+[INFO] Adding repository http://download.eclipse.org/releases/mars
+[INFO] Fetching p2.index from http://download.eclipse.org/technology/epp/packages/mars/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/releases/mars/201506241002/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/releases/mars/201510021000/ (0B at 0B/s)
+[INFO] Adding repository http://download.eclipse.org/incquery/updates/integration
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/composite/milestones/ (0B at 0B/s)
+[INFO] Adding repository http://download.eclipse.org/modeling/tmf/xtext/updates/composite/milestones
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/emft/mwe/updates/milestones/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/m2t/xpand/updates/milestones/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/maintenance/S201505051043/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/head/S201505180813/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/maintenance/S201505190403/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/head/S201505220408/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/maintenance/S201505260429/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.8.3/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/head/S201507170721/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/head/S201510010343/ (0B at 0B/s)
+[INFO] Fetching p2.index from http://download.eclipse.org/modeling/tmf/xtext/updates/milestones/head/S201510020259/ (0B at 0B/s)
+[INFO] Adding repository http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.8.1
+[INFO] Resolving dependencies of MavenProject: org.mondo.collaboration.security:org.mondo.collaboration.security.macl.xtext.rule:1.0.0-SNAPSHOT @ /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/plugins/org.mondo.collaboration.security.macl.xtext.rule/pom.xml
+[INFO] Resolving class path of MavenProject: org.mondo.collaboration.security:org.mondo.collaboration.security.macl.xtext.rule:1.0.0-SNAPSHOT @ /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/plugins/org.mondo.collaboration.security.macl.xtext.rule/pom.xml
+[INFO] Computing target platform for MavenProject: org.mondo.collaboration.security:org.mondo.collaboration.security.macl.xtext.rule.ui:1.0.0-SNAPSHOT @ /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/plugins/org.mondo.collaboration.security.macl.xtext.rule.ui/pom.xml
+[INFO] Resolving dependencies of MavenProject: org.mondo.collaboration.security:org.mondo.collaboration.security.macl.xtext.rule.ui:1.0.0-SNAPSHOT @ /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/plugins/org.mondo.collaboration.security.macl.xtext.rule.ui/pom.xml
+[INFO] Resolving class path of MavenProject: org.mondo.collaboration.security:org.mondo.collaboration.security.macl.xtext.rule.ui:1.0.0-SNAPSHOT @ /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/plugins/org.mondo.collaboration.security.macl.xtext.rule.ui/pom.xml
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] org.mondo.collaboration.security
+[INFO] org.mondo.collaboration.security.targetplatform
+[INFO] org.mondo.collaboration.security.macl.xtext.rule
+[INFO] org.mondo.collaboration.security.macl.xtext.rule.ui
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building org.mondo.collaboration.security 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ org.mondo.collaboration.security ---
+[INFO] 
+[INFO] --- tycho-source-plugin:0.23.0:plugin-source (attach-source) @ org.mondo.collaboration.security ---
+[INFO] 
+[INFO] --- maven-install-plugin:2.3:install (default-install) @ org.mondo.collaboration.security ---
+[INFO] Installing /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/releng/org.mondo.collaboration.security.parent/pom.xml to /home/vialpando/.m2/repository/org/mondo/collaboration/security/org.mondo.collaboration.security/1.0.0-SNAPSHOT/org.mondo.collaboration.security-1.0.0-SNAPSHOT.pom
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building org.mondo.collaboration.security.targetplatform 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ org.mondo.collaboration.security.targetplatform ---
+[INFO] 
+[INFO] --- tycho-source-plugin:0.23.0:plugin-source (attach-source) @ org.mondo.collaboration.security.targetplatform ---
+[INFO] 
+[INFO] --- tycho-packaging-plugin:0.23.0:package-target-definition (default-package-target-definition) @ org.mondo.collaboration.security.targetplatform ---
+[INFO] 
+[INFO] --- maven-install-plugin:2.3.1:install (default-install) @ org.mondo.collaboration.security.targetplatform ---
+[INFO] Installing /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/releng/org.mondo.collaboration.security.targetplatform/org.mondo.collaboration.security.targetplatform.target to /home/vialpando/.m2/repository/org/mondo/collaboration/security/org.mondo.collaboration.security.targetplatform/1.0.0-SNAPSHOT/org.mondo.collaboration.security.targetplatform-1.0.0-SNAPSHOT.target
+[INFO] Installing /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/releng/org.mondo.collaboration.security.targetplatform/pom.xml to /home/vialpando/.m2/repository/org/mondo/collaboration/security/org.mondo.collaboration.security.targetplatform/1.0.0-SNAPSHOT/org.mondo.collaboration.security.targetplatform-1.0.0-SNAPSHOT.pom
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building org.mondo.collaboration.security.macl.xtext.rule 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ org.mondo.collaboration.security.macl.xtext.rule ---
+[INFO] Deleting /home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/plugins/org.mondo.collaboration.security.macl.xtext.rule/xtend-gen (includes = [**], excludes = [.gitignore])
+[INFO] 
+[INFO] --- tycho-packaging-plugin:0.23.0:build-qualifier (default-build-qualifier) @ org.mondo.collaboration.security.macl.xtext.rule ---
+[INFO] The project's OSGi version is 1.0.0.201510191359
+[INFO] 
+[INFO] --- tycho-packaging-plugin:0.23.0:validate-id (default-validate-id) @ org.mondo.collaboration.security.macl.xtext.rule ---
+[INFO] 
+[INFO] --- tycho-packaging-plugin:0.23.0:validate-version (default-validate-version) @ org.mondo.collaboration.security.macl.xtext.rule ---
+[INFO] 
+[INFO] --- fornax-oaw-m2-plugin:3.5.1:run-workflow (default) @ org.mondo.collaboration.security.macl.xtext.rule ---
+[INFO] Fornax Model Workflow Maven2 Plugin V3.5.1
+[INFO] Executing workflow in forked mode.
+[INFO] Error: Could not find or load main class org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher
+[ERROR] ExitStatusException occurred while running workflow: Java returned: 1
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] org.mondo.collaboration.security .................. SUCCESS [0.138s]
+[INFO] org.mondo.collaboration.security.targetplatform ... SUCCESS [0.064s]
+[INFO] org.mondo.collaboration.security.macl.xtext.rule .. FAILURE [0.734s]
+[INFO] org.mondo.collaboration.security.macl.xtext.rule.ui  SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1:00.704s
+[INFO] Finished at: Mon Oct 19 15:59:39 CEST 2015
+[INFO] Final Memory: 102M/831M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.fornax.toolsupport:fornax-oaw-m2-plugin:3.5.1:run-workflow (default) on project org.mondo.collaboration.security.macl.xtext.rule: Workflow execution failed. -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <goals> -rf :org.mondo.collaboration.security.macl.xtext.rule
