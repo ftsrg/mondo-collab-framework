@@ -1,0 +1,38 @@
+Prerequisites:
+ - org.mondo.collaboration.online.emfhandler.rest (the OSGi framework) is running with permissions to read/write disk
+ - glassfish server that is hosting org.mondo.collaboration.online.server and MondoOnlineCollaborationClient applications is running (with permissions to read/write disk, it shouldn't be required but just to be sure)
+ - configuration of the ...emfhandler.rest/config.properties
+ - the SVN server hosting the repository at the configured path (in the config.properties) is running and reachable
+
+#1
+Navigate to the application's URL: 
+http://<ip>:<port>/MondoOnlineCollaborationClient/#!Login
+
+This should present the Login page (the pages are constructed when the first user connects to the framework, so the first may take a little while but the following users should have a snappy feeling)
+
+#2 
+Login as one of the SVN users who has access to the configured SVN repository.
+
+#3
+Click the "Start session" button. This should navigate the browser to another page that presents the Available models after loading them from the respository (using the credentials entered in #2). If the checkout fails then a warning message informs about the failure and the browser will not be navigated to the "Start session" page.
+
+#4
+Select the "model_group1/sub_model1/model_1_1" model then click the "Start" button. Afterwards the browser is navigated back to the "Session selection" page and a session for the selected model should be listed.
+
+#5
+Click on the started session then press the "Join session" button. The browser is navigated to the "Collaboration page" and the model is visualised.
+
+#6
+Organize the model by dragging the nodes. The model flickers after each move because the positions are stored centrally.
+
+#7
+Open a new tab in the browser. Login with another user (in this case this user does not have to have acces to the repository.) Join the same session by selecting it and pressing the "Join session" button. This new tab is another instance of the Client application and could be a remote from connection as well (with a proper IP address in the URL field).
+
+#8
+Detach/organize the browser tab so that both can be seen at the same time.
+
+#9
+At this point node draggings and modifications should be propagated in real time to the other user.
+
+#10
+NOT FINISHED
