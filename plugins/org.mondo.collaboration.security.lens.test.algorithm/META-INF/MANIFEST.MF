@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MONDO Collaboration Security Lens - Algorithm Tests
+Bundle-SymbolicName: org.mondo.collaboration.security.lens.test.algorithm
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit,
+ org.mondo.collaboration.security.lens,
+ org.eclipse.viatra.modelobfuscator.runtime,
+ es.ikerlan.wt.emf.mondocollab,
+ es.ikerlan.wt.emf.model;bundle-version="0.1.0"
