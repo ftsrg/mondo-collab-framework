@@ -1,0 +1,16 @@
+package org.mondo.collaboration.security.lens.test.algorithm
+
+import "http://www.ikerlan.es/domains/WTSpec4M/benchmark"
+import "http://www.eclipse.org/emf/2002/Ecore"
+
+pattern objectInput (obj : SystemInput){
+	SystemInput (obj);
+}
+
+pattern attributename (obj : SystemInput, name){
+	SystemInput.name (obj,name);
+}
+
+pattern referenceinput(ctrl : WTCtrl,Input : WTCtrlInput) {
+	WTCtrl.input(ctrl, Input);
+}

@@ -1,13 +1,17 @@
 package org.mondo.collaboration.security.lens.test.algorithm;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
 import org.mondo.collaboration.security.lens.bx.OfflineCollaborationSession;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
+import org.mondo.collaboration.security.lens.emf.EMFUtil;
 
 import es.ikerlan.wt.emf.mondocollab.UniqueIDFactory;
 
@@ -39,6 +43,18 @@ public class AbstractTestBase {
             session.getLens().doGet();
     }
 
+    Resource loadPolicyModel(String policyPath, List<String> securityQueryPaths) {
+		ResourceSet model = new ResourceSetImpl();
+		for (String eiqPath : securityQueryPaths) {
+			getResourceAtPath(model, eiqPath);
+		}
+		return getResourceAtPath(model, policyPath);
+	}
+	Resource getResourceAtPath(ResourceSet model, String path) {
+		final URI fileURI = URI.createFileURI(path);
+		return EMFUtil.getOrCreateResource(model, fileURI);
+	}
+    
     public ResourceSet getGoldResourceSet() {
         return goldResourceSet;
     }
