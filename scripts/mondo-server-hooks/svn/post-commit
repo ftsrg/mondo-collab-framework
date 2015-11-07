@@ -1,25 +1,15 @@
 #!/bin/bash
+. config.properties
 
 # Post-commit script is responsible for execute the "get" method of our lens when commit occurs on the gold repository.
 # This hook has to be placed into the hooks directory of the gold repository.
 # For the configuration, set the following variables:
 
-URL="http://127.0.0.1" 				                               #URL of the SVN repository provider (not ssh)
-TEMP="/home/vialpando/Eclipse/Mondo/example/tempsvn"		                           #Temporary directory, where the script has enough permisson to create and copy files
-FRONT_LIST="svn/front1:alice svn/front2:bob" #front2:bob"		 #List of the front repositories - FRONT_LIST="repo1:userA repo2:userB repo3:userC ... repoN:userX"
-LENS_SCRIPT="/home/vialpando/Eclipse/Mondo/lens/run.sh"      #Lens script location. This script executes the lens.
-
-JAVA_HOME="/usr/lib/jvm/java-8-oracle"
 export PATH=$PATH:$JAVA_HOME
-
-EXTENSION="wtspec4m"                  # We execute the lens on each file with the given extension
-
-ADMIN_USER="admin"                    # Username of a user that has read and write permissions on all front repositories and on the gold repository
-ADMIN_PWD="admin"                     # Password of a user that has read and write permissions on all front repositories and on the gold repository
 
 GOLD_REPOS="$1"
 REV="$2"
-LOG="$TEMP/.log"
+LOG="$TEMP/post-commit.log"
 
 GOLD_REPOS_URL="$URL$GOLD_REPOS"
 
@@ -65,7 +55,7 @@ log "find models with specific extension - $EXTENSION"
 FILE_LIST="$(find $TEMP_GOLD -type f -name \*.$EXTENSION)"
 
 log "iterate over the front list"
-for entry in $FRONT_LIST; do
+for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
   oldIFS=$IFS
   IFS=':'
   set x $entry
@@ -82,8 +72,6 @@ for entry in $FRONT_LIST; do
     log "        synchronizing the source tree"
     log "           rsync -av --exclude='.svn' $TEMP_GOLD/ $TEMP_FRONTS/$2"
     rsync -av --exclude=".svn" $TEMP_GOLD/ $TEMP_FRONTS/$2
-    log "        load related config file: $2.cfg"
-    source "$2.cfg"
     IFS="
 "
     log "        start iterating over the model files"
@@ -96,6 +84,11 @@ for entry in $FRONT_LIST; do
       log "        ->     $gold"
       log "        ->     $front"
       log "        ->     '-performGet' $TEMP"
+      obfuscatorSeed="seed_/$FRONT_REPOS"
+      obfuscatorSalt="salt_/$FRONT_REPOS"
+      obfuscatorPrefix="mondo"
+      log "        ->     $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
+
       $LENS_SCRIPT $FRONT_USER $gold $front '-performGet' $TEMP $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix
       log "        ->   execution finished"
     done

@@ -1,36 +1,22 @@
 #!/bin/sh
+. config.properties
 
 # Pre-commit script is responsible for execute the "put back" method of our lens when a client commits changes to a front repository.
 # This hook has to be placed in the into the hooks directory of every front repository.
 # For the configuration, set the following variables:
 
-URL='http://localhost' 				        #URL of the SVN repository provider
-GOLD_REPOS="svn/gold" 		            #The name of the gold repository
-GOLD_REPOS_URL="$URL/$GOLD_REPOS"		  #URL of the gold repository
-TEMP='/home/vialpando/Eclipse/Mondo/example/tempsvn'			  #Temporary directory, where the script has enough permisson to create and copy files
-
-EXTENSION="wtspec4m"                  # We execute the lens on each file with the given extension
-
-ADMIN_USER="admin"                    # Username of a user that has read and write permissions on all front repositories and on the gold repository
-ADMIN_PWD="admin"                     # Password of a user that has read and write permissions on all front repositories and on the gold repository
-LENS_SCRIPT='/home/vialpando/Eclipse/Mondo/lens/run.sh' #Lens script location. This script executes the lens.
-
-CONFIG="config.cfg"
-
-JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+GOLD_REPOS_URL="$URL/$SVN_PATH_URL/$GOLD_REPO_NAME"		  #URL of the gold repository
 export PATH=$PATH:$JAVA_HOME
 
-#Do not modify these variables - these variables comes from the svn call
 CURRENT_FRONT_REPOS="$1"
 CURRENT_FRONT_REPOS_URL="$URL$CURRENT_FRONT_REPOS"
 TXN="$2"
 
-#Do not modify these variables - other scripts may depends on these settings
-TEMP_GOLD="$TEMP/tempGold/$GOLD_REPOS"
+TEMP_GOLD="$TEMP/tempGold/$GOLD_REPO_NAME"
 TEMP_FRONT="$TEMP/tempFront/Current$CURRENT_FRONT_REPOS"
 FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)
 
-LOG="$TEMP/.log"
+LOG="$TEMP/pre-commit.log"
 
 timestamp() {
   date +"%Y-%m-%d_%H-%M-%S"
@@ -45,7 +31,7 @@ log "Executing Pre-commit"
 log "Parameters"
 log "      TXN $TXN"
 log "      URL $URL"
-log "      GOLD_REPOS $GOLD_REPOS"
+log "      GOLD_REPOS $GOLD_REPO_NAME"
 log "      GOLD_REPOS_URL $GOLD_REPOS_URL"
 log "      CURRENT_REPOS $CURRENT_FRONT_REPOS"
 log "      CURRENT_REPOS_URL $CURRENT_FRONT_REPOS_URL"
@@ -58,10 +44,11 @@ log "      ADMIN_PWD $ADMIN_PWD"
 log "      TEMP_GOLD $TEMP_GOLD"
 log "      TEMP_FRONT $TEMP_FRONT"
 log "      FRONT_USER $FRONT_USER"
+
 set -e
 
 log "Load config"
-source $CONFIG
+#source $CONFIG
 
 if [ "$FRONT_USER" = "$ADMIN_USER" ]; then
   log "Admin was the committer. Nothing to do right now"
@@ -82,6 +69,10 @@ log "Get commit message"
 MSG=$(svnlook log -t $TXN $CURRENT_FRONT_REPOS)
 
 mkdir -p $TEMP_FRONT
+
+obfuscatorSeed="seed_$CURRENT_FRONT_REPOS"
+obfuscatorSalt="salt_$CURRENT_FRONT_REPOS"
+obfuscatorPrefix="mondo"
 
 log "Start iterating over the changes"
 counter=0
@@ -104,15 +95,22 @@ for line in $changes; do
           ;;
        		*)
           log "     -> Action: Copy Content $TEMP_FRONT/$nextChange"
-          svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$TEMP_FRONT/$nextChange"
-          if [[ $nextChange =~ .${EXTENSION}$ ]]
+          DIR="$TEMP_FRONT/$nextChange"
+          BASEDIR=$(dirname "${DIR}")
+          if [ ! -d $BASEDIR ]
           then
-            log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
-            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix
-          else
-            log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
-            cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange
+            mkdir -p $BASEDIR
           fi
+          svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$TEMP_FRONT/$nextChange"
+          #if [[ $nextChange =~ .${EXTENSION}$ ]]
+          #then
+            log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
+            log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
+            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix  #> /dev/null 2>&1
+          #else
+          #  log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
+          #  cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange
+          #fi
           ;;
   	   esac
     fi
