@@ -11,6 +11,11 @@ rm -rf temp/*
 svn co $GOLD_REPO_URL temp/gold -q --username $ADMIN_USER --password $ADMIN_PWD
 mkdir -p temp/gold/test.project.with.model
 cp ../project/test.project.with.model/* temp/gold/test.project.with.model/
+cp ../project/test.project.with.model/.project temp/gold/test.project.with.model/.project
+
+mkdir -p temp/gold/macl.project
+cp ../project/macl.project/* temp/gold/macl.project/
+cp ../project/macl.project/.project temp/gold/macl.project/.project
 
 cd temp/gold
 svn add --force * --auto-props --parents --depth infinity -q
