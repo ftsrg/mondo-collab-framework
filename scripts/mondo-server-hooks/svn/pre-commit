@@ -3,11 +3,15 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $DIR/config.properties
 
 # Pre-commit script is responsible for execute the "put back" method of our lens when a client commits changes to a front repository.
-# This hook has to be placed in the into the hooks directory of every front repository.
+# This hook has to be placed into the hooks directory of every front repository.
 # For the configuration, set the following variables:
 
 GOLD_REPOS_URL="$URL/$SVN_PATH_URL/$GOLD_REPO_NAME"		  #URL of the gold repository
 export PATH=$PATH:$JAVA_HOME
+
+function replace {
+    echo "${1/$2/$3}"
+}
 
 CURRENT_FRONT_REPOS="$1"
 CURRENT_FRONT_REPOS_URL="$URL$CURRENT_FRONT_REPOS"
@@ -17,7 +21,9 @@ TEMP_GOLD="$TEMP/tempGold/$GOLD_REPO_NAME"
 TEMP_FRONT="$TEMP/tempFront/Current$CURRENT_FRONT_REPOS"
 FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)
 
-LOG="$TEMP/pre-commit.log"
+CURRENT_FRONT_REPOS_NAME=$(replace $CURRENT_FRONT_REPOS "/$SVN_PATH_URL" "")
+
+LOG="$DIR/pre-commit.log"
 
 timestamp() {
   date +"%Y-%m-%d_%H-%M-%S"
@@ -48,9 +54,6 @@ log "      FRONT_USER $FRONT_USER"
 
 set -e
 
-log "Load config"
-#source $CONFIG
-
 if [ "$FRONT_USER" = "$ADMIN_USER" ]; then
   log "Admin was the committer. Nothing to do right now"
   log "-------------------------------------------------------"
@@ -71,8 +74,8 @@ MSG=$(svnlook log -t $TXN $CURRENT_FRONT_REPOS)
 
 mkdir -p $TEMP_FRONT
 
-obfuscatorSeed="seed_$CURRENT_FRONT_REPOS"
-obfuscatorSalt="salt_$CURRENT_FRONT_REPOS"
+obfuscatorSeed="seed_$CURRENT_FRONT_REPOS_NAME"
+obfuscatorSalt="salt_$CURRENT_FRONT_REPOS_NAME"
 obfuscatorPrefix="mondo"
 
 log "Start iterating over the changes"
@@ -107,7 +110,7 @@ for line in $changes; do
           #then
             log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
             log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
-            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix  #> /dev/null 2>&1
+            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix
           #else
           #  log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
           #  cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange
@@ -138,7 +141,7 @@ log "Commit changes to the gold"
 svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
 
 log "Remove temporary files"
-#rm -rf $TEMP/*
+rm -rf $TEMP/*
 
 log "Pre-commit finished successfully"
 exit 0
