@@ -23,6 +23,7 @@ echo "(2/5) Gold Repo created"
 chown -R $SVN_USER_OS /$SVN_PATH_OS/$GOLD_REPO_NAME
 echo "(3/5) Permissons added"
 cp ../../mondo-server-hooks/svn/post-commit $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
+chmod +x $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "(4/5) Post-commit hook copied"
 cp $CONFIG $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/config.properties
 cp $FRONT_LIST $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/front_list.properties
@@ -45,9 +46,15 @@ for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
   chown -R $SVN_USER_OS /$SVN_PATH_OS/$FRONT_REPO_NAME
   echo "(3/5) Permissons added"
   cp ../../mondo-server-hooks/svn/pre-commit $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/pre-commit
+  chmod +x $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/pre-commit
   echo "(4/5) Pre-commit hook copied"
   cp $CONFIG $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/config.properties
   echo "(5/5) Config file copied"
 done
+cp lens-executor.sh $LENS_SCRIPT
+cp $CONFIG $LENS_DIR/config.properties
+chmod 777 $LENS_SCRIPT
+chmod 777 $LENS_DIR/config.properties
+echo "Lens executor copied"
 
 echo "WARNING! Permissions for the repositories have to be set manually"

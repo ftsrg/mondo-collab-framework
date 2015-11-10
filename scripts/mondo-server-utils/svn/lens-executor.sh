@@ -1,6 +1,9 @@
 #!/bin/sh
 
-LOG="/home/mondo/MONDO-Demo/example/lens.log"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. $DIR/config.properties
+
+LOG="$LENS_DIR/lens.log"
 
 timestamp() {
   date +"%Y-%m-%d_%H-%M-%S"

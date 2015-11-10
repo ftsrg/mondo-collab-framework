@@ -1,5 +1,12 @@
 #!/bin/bash
-. config.properties
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+set -e
+
+. $DIR/config.properties
+. $DIR/front_list.properties
 
 # Post-commit script is responsible for execute the "get" method of our lens when commit occurs on the gold repository.
 # This hook has to be placed into the hooks directory of the gold repository.
@@ -16,8 +23,6 @@ GOLD_REPOS_URL="$URL$GOLD_REPOS"
 TEMP_GOLD="$TEMP/tempGold$GOLD_REPOS"
 TEMP_FRONTS="$TEMP/tempFront/Additional"
 TEMP_CURRENT="$TEMP/tempFront/Current"
-
-set -e
 
 timestamp() {
   date +"%Y-%m-%d_%H-%M-%S"
@@ -36,7 +41,7 @@ log "      TEMP $TEMP"
 log "      FRONT_LIST $FRONT_LIST"
 log "      LENS_SCRIPT $LENS_SCRIPT"
 log "      JAVA_HOME $JAVA_HOME"
-log "      EXTENSION $EXTENSION"
+log "      MODEL_EXTENSIONS $MODEL_EXTENSIONS"
 log "      ADMIN_USER $ADMIN_USER"
 log "      ADMIN_PWD $ADMIN_PWD"
 log "      GOLD_REPOS $GOLD_REPOS"
@@ -51,8 +56,8 @@ rm -rf "$TEMP/tempGold"
 log "checkout gold - from $GOLD_REPOS_URL to $TEMP_GOLD"
 svn checkout "$GOLD_REPOS_URL" "$TEMP_GOLD" -r $REV --username $ADMIN_USER --password $ADMIN_PWD
 
-log "find models with specific extension - $EXTENSION"
-FILE_LIST="$(find $TEMP_GOLD -type f -name \*.$EXTENSION)"
+log "find models with specific extension - $MODEL_EXTENSIONS"
+FILE_LIST="$(find $TEMP_GOLD -type f -name \*.$MODEL_EXTENSIONS)"
 
 log "iterate over the front list"
 for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
@@ -67,8 +72,8 @@ for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
   # If this is not the current repo
   if [ ! -d $TEMP_CURRENT/$2 ]; then
     log "        Note: Another front repo triggered the process - $TEMP_CURRENT/$2 not exists"
-    log "        checkout the repository - from $URL/$2 to $TEMP_FRONTS/$2"
-    svn checkout "$URL/$2" "$TEMP_FRONTS/$2" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+    log "        checkout the repository - from $URL/$SVN_PATH_URL/$2 to $TEMP_FRONTS/$2"
+    svn checkout "$URL/$SVN_PATH_URL/$2" "$TEMP_FRONTS/$2" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
     log "        synchronizing the source tree"
     log "           rsync -av --exclude='.svn' $TEMP_GOLD/ $TEMP_FRONTS/$2"
     rsync -av --exclude=".svn" $TEMP_GOLD/ $TEMP_FRONTS/$2

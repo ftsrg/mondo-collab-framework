@@ -1,5 +1,6 @@
 #!/bin/sh
-. config.properties
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. $DIR/config.properties
 
 # Pre-commit script is responsible for execute the "put back" method of our lens when a client commits changes to a front repository.
 # This hook has to be placed in the into the hooks directory of every front repository.
@@ -38,7 +39,7 @@ log "      CURRENT_REPOS_URL $CURRENT_FRONT_REPOS_URL"
 log "      TEMP $TEMP"
 log "      LENS_SCRIPT $LENS_SCRIPT"
 log "      JAVA_HOME $JAVA_HOME"
-log "      EXTENSION $EXTENSION"
+log "      MODEL_EXTENSIONS $MODEL_EXTENSIONS"
 log "      ADMIN_USER $ADMIN_USER"
 log "      ADMIN_PWD $ADMIN_PWD"
 log "      TEMP_GOLD $TEMP_GOLD"
@@ -102,7 +103,7 @@ for line in $changes; do
             mkdir -p $BASEDIR
           fi
           svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$TEMP_FRONT/$nextChange"
-          #if [[ $nextChange =~ .${EXTENSION}$ ]]
+          #if [[ $nextChange =~ .${MODEL_EXTENSIONS}$ ]]
           #then
             log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
             log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
