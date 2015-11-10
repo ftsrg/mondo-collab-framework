@@ -110,7 +110,7 @@ for line in $changes; do
           #then
             log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
             log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
-            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix
+            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$TEMP_GOLD/$ACCESS_CONTROL_RULES" "$TEMP_GOLD/$ACCESS_CONTROL_QUERIES"
           #else
           #  log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
           #  cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange

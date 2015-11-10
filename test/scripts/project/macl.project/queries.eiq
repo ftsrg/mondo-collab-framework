@@ -1,0 +1,23 @@
+package es.ikerlan.wt.emf.security.example
+
+import "http://www.ikerlan.es/domains/WTSpec4M/benchmark"
+
+pattern objectOutput(output) {
+	WTCtrlOutput(output);
+}
+
+pattern objectInput(input) {
+	WTCtrlInput(input);
+}
+
+pattern attributemodel(system, modelString) {
+	WTSystem.model(system, modelString);
+}
+
+pattern attributename(system, nameString) {
+	WTSystem.name(system, nameString);
+}
+
+pattern attributeversion(system, versionString) {
+	WTSystem.version(system, versionString);
+}

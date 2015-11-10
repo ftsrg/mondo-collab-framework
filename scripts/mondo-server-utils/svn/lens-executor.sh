@@ -17,8 +17,8 @@ log() {
 # Set them carefully
 LENS="$DIR/eclipse/MondoOfflineCollaborationLens"
 ARGS="-nosplash -consoleLog --launcher.suppressErrors -application org.mondo.collaboration.security.lens.offline.cli"
-MACL="$DIR/rules.macl"
-EIQ="$DIR/queries.eiq"
+MACL="$9"
+EIQ="${10}"
 
 # Input parameters
 USER="$1"

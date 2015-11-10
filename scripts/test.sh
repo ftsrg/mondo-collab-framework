@@ -1,4 +1,4 @@
 #!/bin/bash
-CONFIG="a:b c:ddsa e:hs"
-
-echo $CONFIG | grep -P 'c:(\w)*' -o
+REPO="/svn/front1"
+REPO=${REPO%/}
+echo $REPO

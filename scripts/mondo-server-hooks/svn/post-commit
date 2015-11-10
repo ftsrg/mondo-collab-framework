@@ -94,7 +94,7 @@ for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
       obfuscatorPrefix="mondo"
       log "        ->     $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
 
-      $LENS_SCRIPT $FRONT_USER $gold $front '-performGet' $TEMP $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix
+      $LENS_SCRIPT $FRONT_USER $gold $front '-performGet' $TEMP $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix "$TEMP_GOLD/$ACCESS_CONTROL_RULES" "$TEMP_GOLD/$ACCESS_CONTROL_QUERIES"
       log "        ->   execution finished"
     done
 

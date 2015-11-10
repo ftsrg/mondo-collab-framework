@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<es.ikerlan.wt:WTSystem
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:es.ikerlan.wt="http://www.ikerlan.es/domains/WTSpec4M/benchmark"
+    name="mondo000409100000000000000000360E001B"
+    id="WT1"
+    model="mondo0004091000000000000000001E0E081133"
+    version="mondo000409100000000000000000424F5C">
+  <subsystems
+      name="SubSystem"
+      id="SubSystem">
+    <wtctrls
+        name="CoolingFan2"
+        id="CoolingFan2"
+        cycle="Low"
+        input="//@inputs.0"/>
+    <wtctrls
+        name="CoolingFan1"
+        id="CoolingFan1"
+        type="HeaterCtrl"
+        input="//@inputs.0"
+        param="//@params.0"/>
+  </subsystems>
+  <inputs name="GeneratorTemparature"
+      id="GeneratorTemparature"/>
+  <params name="GeneratorCoolingTempLimit1"
+      id="GeneratorCoolingTempLimit1"
+      value="109"/>
+</es.ikerlan.wt:WTSystem>

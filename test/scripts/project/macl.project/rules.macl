@@ -1,0 +1,27 @@
+user alice
+user bob
+
+policy WindTurbinePolicy first-applicable {
+
+	// Bob is not allowed to read and write the inputs
+	rule inputs deny RW to bob {
+		query "es.ikerlan.wt.emf.security.example.objectInput"
+	}
+
+	// Alice is not allowed to read and write the outputs
+	rule outputs deny RW to alice {
+		query "es.ikerlan.wt.emf.security.example.objectOutput"
+	}
+
+	rule name obfuscate to alice, bob {
+		query "es.ikerlan.wt.emf.security.example.attributename"
+	}
+
+	rule model obfuscate to alice, bob {
+		query "es.ikerlan.wt.emf.security.example.attributemodel"
+	}
+
+	rule version obfuscate to alice, bob {
+		query "es.ikerlan.wt.emf.security.example.attributeversion"
+	}
+}
