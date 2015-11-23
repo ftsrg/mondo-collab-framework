@@ -10,7 +10,8 @@ Export-Package: org.mondo.collaboration.security.lens.arbiter,
  org.mondo.collaboration.security.lens.correspondence,
  org.mondo.collaboration.security.lens.emf,
  org.mondo.collaboration.security.lens.relational,
- org.mondo.collaboration.security.lens.util
+ org.mondo.collaboration.security.lens.util,
+ org.mondo.collaboration.security.lens.util.uri
 Require-Bundle: org.mondo.collaboration.security.macl.xtext;bundle-version="1.0.0",
  org.eclipse.incquery.runtime.evm;bundle-version="1.1.0",
  org.eclipse.emf.ecore,

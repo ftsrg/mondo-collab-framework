@@ -34,6 +34,7 @@ import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
 import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
+import org.mondo.collaboration.security.lens.util.uri.URIRelativiser;
 
 /**
  * Connects a given EMF model to the security lens.

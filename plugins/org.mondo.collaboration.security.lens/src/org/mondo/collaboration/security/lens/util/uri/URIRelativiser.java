@@ -9,7 +9,7 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.emf;
+package org.mondo.collaboration.security.lens.util.uri;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -27,21 +27,15 @@ public class URIRelativiser {
 	}
 	
 	public URI uriToRelativePath(URI resourceURI) {
-		final URI relative = resourceURI.deresolve(baseURI, false, true, true);
-		if (!relative.isRelative()) { // wow, an absolute reference
-			//if (relative.isFile() || relative.isPlatformResource() || relative.isArchive() || relative.host() != null) {
-			if (! relative.isPlatformPlugin()) { // only plugin absolute URIs are allowed
-				// this is breaking the sandbox...
-				throw new IllegalArgumentException(
-						"Resource URI: " + resourceURI + 
-						"is trying to leave the confines of the base URI: " + baseURI);
-				// TODO handle better, e.g. return null and skip resource entirely.
-			}
-		}
+		final URI relative = 
+				URIConfinementHelper.uriToRelativePathConfinementChecked(resourceURI, baseURI, true, 
+						"Resource URI");
 		return relative;
 	}
+
 	public URI relativePathToURI(URI relativeURI) {
 		return relativeURI.resolve(baseURI, false);
 	}
+	
 	
 }

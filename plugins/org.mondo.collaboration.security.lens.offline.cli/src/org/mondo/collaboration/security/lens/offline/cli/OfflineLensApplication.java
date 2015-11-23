@@ -1,7 +1,9 @@
 package org.mondo.collaboration.security.lens.offline.cli;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -15,6 +17,7 @@ import org.mondo.collaboration.security.lens.bx.OfflineCollaborationSession;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.EMFUtil;
+import org.mondo.collaboration.security.lens.util.uri.URIWorkspaceMappingsHelper;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
 
 public class OfflineLensApplication implements IApplication {
@@ -23,6 +26,8 @@ public class OfflineLensApplication implements IApplication {
 	private static final String FRONT_MODEL_ROOTS_PATH_OPTION 		= "-front";
 	private static final String ACCESS_CONTROL_MODEL_PATH_OPTION	= "-macl";
 	private static final String SECURITY_QUERIES_PATH_OPTION 		= "-eiq";
+	private static final String REPOSITORY_ROOT_PATH_OPTION 		= "-repositoryRoot";
+	private static final String WORKSPACE_MAPPING_PATH_OPTION 		= "-workspaceMapping";
 	private static final String PATH_VALUE 							= "<path>";
 	private static final String USER_NAME_OPTION 					= "-userName";
 	private static final String USER_VALUE      			 		= "<userName>";
@@ -32,6 +37,10 @@ public class OfflineLensApplication implements IApplication {
 	private static final String STRING_VALUE      			 		= "<string>";
 	private static final String PERFORM_GET_SWITCH 					= "-performGet";
 	private static final String PERFORM_PUTBACK_SWITCH 		 		= "-performPutback";
+	
+	
+	private String repositoryRootPath;
+	private Map<String, String> workspaceMappings;
 
 
 	@Override
@@ -46,6 +55,8 @@ public class OfflineLensApplication implements IApplication {
 		String obfuscatorSeed 			=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SEED_OPTION, 			STRING_VALUE, null);
 		String obfuscatorSalt 			=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SALT_OPTION, 			STRING_VALUE, "");
 		String obfuscatorPrefix 		=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_PREFIX_OPTION, 			STRING_VALUE, "");
+		String workspaceMappingPath     =  getOptionalCLIOptionValue( argArray, WORKSPACE_MAPPING_PATH_OPTION, 		PATH_VALUE, null);
+		       repositoryRootPath       =  getOptionalCLIOptionValue( argArray, REPOSITORY_ROOT_PATH_OPTION, 		PATH_VALUE, ".");
 
 		boolean performGet = getCLISwitch(argArray, PERFORM_GET_SWITCH);
 		boolean performPutback = getCLISwitch(argArray, PERFORM_PUTBACK_SWITCH);
@@ -62,6 +73,12 @@ public class OfflineLensApplication implements IApplication {
 		
 		URI goldConfinementURI = URI.createFileURI(goldPaths.get(0));
 		URI frontConfinementURI = URI.createFileURI(frontPaths.get(0));
+		
+		if (workspaceMappingPath != null) {
+			workspaceMappings = URIWorkspaceMappingsHelper.readProjectNameToRelativePathFromProperties(workspaceMappingPath);
+		} else {
+			workspaceMappings = Collections.emptyMap();
+		}
 		
 		EMFPatternLanguageStandaloneSetup.doSetup();
 		AccessControlLanguageStandaloneSetup.doSetup();
@@ -105,14 +122,20 @@ public class OfflineLensApplication implements IApplication {
 	}
 
 	private ResourceSet loadModelRoots(List<String> paths) {
-		ResourceSet model = new ResourceSetImpl();
+		ResourceSet model = newResourceSet();
 		for (String path : paths) {
 			getResourceAtPath(model, path);
 		}
 		return model;
 	}
+
+	private ResourceSetImpl newResourceSet() {
+		final ResourceSetImpl resourceSet = new ResourceSetImpl();
+		URIWorkspaceMappingsHelper.applyLocalMappings(resourceSet, repositoryRootPath, workspaceMappings);
+		return resourceSet;
+	}
 	private Resource loadPolicyModel(String policyPath, List<String> securityQueryPaths) {
-		ResourceSet model = new ResourceSetImpl();
+		ResourceSet model = newResourceSet();
 		for (String eiqPath : securityQueryPaths) {
 			getResourceAtPath(model, eiqPath);
 		}
