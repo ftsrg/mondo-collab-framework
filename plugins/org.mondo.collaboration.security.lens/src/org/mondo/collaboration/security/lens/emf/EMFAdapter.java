@@ -57,14 +57,16 @@ class EMFAdapter extends EContentAdapter {
 	private void traverseNotifier(Notifier notifier, boolean isInsertion) {
 		final Visitor visitor = new Visitor(modelIndexer, isInsertion, false);
 		if (notifier instanceof Resource) {
-			visitor.visitResource((Resource) notifier);
+			final Resource resource = (Resource) notifier;
+			visitor.visitResource(resource);
+			for (EObject eObject : resource.getContents()) {
+				visitor.visitTopElementInResource(resource, eObject);				
+			}
 		} else if (notifier instanceof EObject) {
 			final EObject eObject = (EObject) notifier;
 			modelIndexer.comprehension.traverseObject(visitor, eObject);
 			if (eObject.eContainer() == null) {
 				final Resource resource = eObject.eResource();
-				if (resource != null)
-					visitor.visitTopElementInResource(resource, eObject);
 			}
 		}
 	}
