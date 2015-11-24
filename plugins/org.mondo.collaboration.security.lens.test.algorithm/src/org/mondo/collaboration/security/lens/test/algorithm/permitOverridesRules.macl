@@ -1,0 +1,96 @@
+user Alice
+
+
+policy permitOverridesTest permit-overrides {
+	//a, rész
+	
+// 	rule denyInputs deny RW to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+//	}
+//	
+//	rule permitInputs permit RW to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+//	}
+//	
+//	rule permitInputnames permit RW to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.attributename"
+//	}
+//	
+//	rule denyInputnames deny RW to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.attributename"
+//	}
+//	
+//  	rule permitInputReferences permit RW to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
+//	}
+//	
+//	rule denyInputReferences deny RW to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
+//	}
+	
+	//OP AD
+// 	rule permitInputs permit RW to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+//	}
+//	
+//	rule denyInputNames deny RW to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.attributename"
+//	}
+	
+	//OD AP
+	
+//	rule denyInputs deny R to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+//	}
+//	
+//	rule permitInputNames permit R to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.attributename"
+//	}
+	
+	//OP RD
+//	rule permitInputs permit R to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+//	}
+//	
+//	rule denyInputReferences deny R to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
+//	}
+	
+	//OD RP
+	
+//	rule permitInputReferences permit R to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
+//	}
+//	
+//	rule denyInputs deny R to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+//	}
+	
+
+	
+	//c, rész
+	
+	rule permitInputReferences permit R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
+	}
+
+	rule denyInputs deny R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+	}
+	
+	rule denyInputNames deny R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.attributename"
+	}
+	
+
+	
+
+	
+	
+
+	
+	
+// 	rule permitInputReferences permit R to Alice{
+//		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
+//	}
+}

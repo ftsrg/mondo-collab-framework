@@ -158,10 +158,29 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 			}
 		}
 		
-		if (ConflictResolutionTypes.FIRST_APPLICABLE != policy.getType())
+		if (ConflictResolutionTypes.FIRST_APPLICABLE != policy.getType() &&
+				ConflictResolutionTypes.DENY_OVERRIDES != policy.getType() &&
+				ConflictResolutionTypes.PERMIT_OVERRIDES != policy.getType() &&
+				ConflictResolutionTypes.ORDERED_DENY_OVERRIDES != policy.getType() &&
+				ConflictResolutionTypes.ORDERED_PERMIT_OVERRIDES != policy.getType())
 			throw new UnsupportedOperationException(
 					"Unsupported conflict resolution: " + policy.getType());
-		this.ruleConflictResolver = new FirstApplicableResolution(rules);
+		else if (ConflictResolutionTypes.FIRST_APPLICABLE == policy.getType())
+			this.ruleConflictResolver = new FirstApplicableResolution(rules);
+		else if (ConflictResolutionTypes.DENY_OVERRIDES == policy.getType())
+			this.ruleConflictResolver = new DenyOverridesResolution(rules);
+		else if (ConflictResolutionTypes.PERMIT_OVERRIDES == policy.getType()){
+			this.ruleConflictResolver = new PermitOverridesResolution(rules);
+			((PermitOverridesResolution)this.ruleConflictResolver).setCurrentRights(currentRights);
+			((PermitOverridesResolution)this.ruleConflictResolver).setArbiter(this);
+		}
+		else if (ConflictResolutionTypes.ORDERED_DENY_OVERRIDES == policy.getType())
+			this.ruleConflictResolver = new OrderedDenyOverridesResolution(rules);
+		else if (ConflictResolutionTypes.ORDERED_PERMIT_OVERRIDES == policy.getType()){
+			this.ruleConflictResolver = new OrderedPermitOverridesResolution(rules);
+			((OrderedPermitOverridesResolution)this.ruleConflictResolver).setCurrentRights(currentRights);
+			((OrderedPermitOverridesResolution)this.ruleConflictResolver).setArbiter(this);
+		}
 
 		policyQueryEngine = AdvancedIncQueryEngine.from(IncQueryEngine.on(new EMFScope(goldModelRoots, indexOptions)));
 		this.specBuilder = new SpecificationBuilder();
@@ -226,7 +245,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	private AccessControlVerdict getPrevailingJudgementInternal(Set<SecurityRuleJudgement> judgements, OperationKind op) {
 		if (judgements.isEmpty()) return null;
 		
-		final SecurityRuleJudgement relevantJudgement = judgements.iterator().next();
+		final SecurityRuleJudgement relevantJudgement = judgements.iterator().next(); //???
 		Map<OperationKind, AccessControlVerdict> interpretedRule = AccessControlVerdict.interpret(relevantJudgement.getRule());
 		return interpretedRule.get(op);
 	}
@@ -286,7 +305,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	/**
 	 * If role is a group, users are updated as well.
 	 */
-	protected void updateJudgement(OperationKind op, Role role, Asset asset, SecurityRuleJudgement judgement, boolean addition) {
+	public void updateJudgement(OperationKind op, Role role, Asset asset, SecurityRuleJudgement judgement, boolean addition) {
 		updateJudgementInternal(op, role, asset, judgement, addition);
 		if (role instanceof Group) {
 			for (User user : ((Group) role).getUsers()) {
@@ -307,6 +326,22 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		AccessControlVerdict oldPrevailing = getPrevailingJudgementInternal(judgements, op);
 		if (addition) {
 			judgements.add(judgement);
+			if (ruleConflictResolver instanceof PermitOverridesResolution){
+				if (((PermitOverridesResolution)ruleConflictResolver).getNewJudgements().contains(role, asset)){
+					for (SecurityRuleJudgement actual :((PermitOverridesResolution)ruleConflictResolver).getNewJudgements().get(role, asset)){
+						judgements.add(actual);
+					}
+				}
+			}
+			
+			else if (ruleConflictResolver instanceof OrderedPermitOverridesResolution){
+				if (((OrderedPermitOverridesResolution)ruleConflictResolver).getNewJudgements().contains(role, asset)){
+					for (SecurityRuleJudgement actual :((OrderedPermitOverridesResolution)ruleConflictResolver).getNewJudgements().get(role, asset)){
+						judgements.add(actual);
+					}
+				}
+			}
+		//	ruleConflictResolver.addRemainings();
 		} else {
 			judgements.remove(judgement);			
 			if (judgements.isEmpty())
@@ -320,6 +355,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 			if (newPrevailing != null) 
 				updateResults(op, role, asset, newPrevailing, true);
 		}
+		
 		
 	}
 	
