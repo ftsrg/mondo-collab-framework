@@ -21,9 +21,17 @@ public class AbstractTestBase {
         PUTBACK, GET
     }
 
-    URI goldConfinementURI = URI.createURI("gold.xmi");
+    String goldPath = "D:\\Modelling\\git\\mondo-collab-framework\\plugins\\"
+    		+ "org.mondo.collaboration.security.lens.test.algorithm\\src\\org\\"
+    		+ "mondo\\collaboration\\security\\lens\\test\\algorithm\\gold.xmi";
+    
+    String frontPath = "D:\\Modelling\\git\\mondo-collab-framework\\plugins\\"
+    		+ "org.mondo.collaboration.security.lens.test.algorithm\\src\\org\\"
+    		+ "mondo\\collaboration\\security\\lens\\test\\algorithm\\front.xmi";
+    
+    URI goldConfinementURI = URI.createFileURI(goldPath);
     ResourceSet goldResourceSet;
-    URI frontConfinementURI = URI.createURI("front.xmi");
+    URI frontConfinementURI = URI.createFileURI(frontPath);
     ResourceSet frontResourceSet;
     UniqueIDSchemeFactory uniqueIDSchemeFactory = new UniqueIDFactory();
     Resource policyResource;

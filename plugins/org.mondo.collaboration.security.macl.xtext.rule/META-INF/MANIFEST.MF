@@ -32,4 +32,3 @@ Export-Package: org.mondo.collaboration.security.macl.xtext.rule,
  org.mondo.collaboration.security.macl.xtext.rule.scoping,
  org.mondo.collaboration.security.macl.xtext.rule.generator,
  org.mondo.collaboration.security.macl.xtext.rule.formatting
-

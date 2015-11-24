@@ -6,10 +6,16 @@ Bundle-Version: 1.0.0.qualifier
 Export-Package: org.mondo.collaboration.security.lens.test.algorithm,
  org.mondo.collaboration.security.lens.test.algorithm.util
 Require-Bundle: org.junit,
- org.mondo.collaboration.security.lens,
- org.eclipse.viatra.modelobfuscator.runtime,
- es.ikerlan.wt.emf.mondocollab,
  es.ikerlan.wt.emf.model;bundle-version="0.1.0",
- org.eclipse.emf.ecore.xmi;bundle-version="2.11.1"
+ org.eclipse.equinox.app,
+ org.mondo.collaboration.security.lens;bundle-version="1.0.0",
+ org.eclipse.core.runtime;bundle-version="3.11.0",
+ com.google.guava;bundle-version="10.0.1",
+ org.eclipse.emf.common,
+ org.eclipse.emf.ecore,
+ org.mondo.collaboration.security.macl.xtext,
+ org.eclipse.viatra.modelobfuscator.runtime,
+ es.ikerlan.wt.emf.mondocollab;bundle-version="1.0.0",
+ org.eclipse.incquery.patternlanguage.emf;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.log4j
