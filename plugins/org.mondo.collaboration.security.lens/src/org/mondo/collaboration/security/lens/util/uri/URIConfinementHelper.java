@@ -30,9 +30,12 @@ public class URIConfinementHelper {
 			String uriNameInException) throws URIConfinementException 
 	{
 		final URI relative = checkedURI.deresolve(baseURI, false, true, true);
-		if (!relative.isRelative() || 
-			".".equals(relative.segment(0)) || 
-			"..".equals(relative.segment(0))) 
+		if (!relative.isRelative() ||
+		        (relative.segmentCount() > 0 && (
+		                ".".equals(relative.segment(0)) || 
+		                "..".equals(relative.segment(0))
+		        ))
+		    ) 
 		{  // wow, a non-confined reference
 			
 			// are plugin absolute URIs allowed?
