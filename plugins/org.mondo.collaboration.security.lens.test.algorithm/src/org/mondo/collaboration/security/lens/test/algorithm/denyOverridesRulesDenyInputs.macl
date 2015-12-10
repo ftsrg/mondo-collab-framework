@@ -1,18 +1,18 @@
 user Alice
 
 
-policy firstApplicableTest first-applicable {
-	
-	rule denyInputs deny R to Alice{
-		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
-	}
-	
+policy differentAssetDenyInputs deny-overrides {
+
 	rule permitInputNames permit R to Alice{
 		query "org.mondo.collaboration.security.lens.test.algorithm.attributename"
+	}
+	
+	rule denyInputs deny RW to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
 	}
 	
 	rule permitInputReferences permit R to Alice{
 		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
 	}
-
+	
 }

@@ -13,7 +13,7 @@ public class OrderedDenyOverridesResolution implements SecurityArbiter.RuleConfl
 
 	public OrderedDenyOverridesResolution(List<Rule> rules) {
 		super();
-		
+
 		int index = 0;
 		for (Rule rule : rules) {
 			ruleToIndex.put(rule, index++);
@@ -22,22 +22,17 @@ public class OrderedDenyOverridesResolution implements SecurityArbiter.RuleConfl
 
 	@Override
 	public int compare(SecurityRuleJudgement arg0, SecurityRuleJudgement arg1) {
-		System.out.println(arg0.getRule().getName());
-		System.out.println(arg1.getRule().getName());
-		System.out.println("\n");
-		 if(arg0.getRule().getContraint().getType() == RuleType.DENY  && getIndex(arg0) > getIndex(arg1) ){
-			 return -1;
-		 }
-		 if(arg0.getRule().getContraint().getType() == RuleType.PERMIT  && getIndex(arg0) > getIndex(arg1) ){
-			 return -1;
-		 }
-		 return 1;
+		if (arg0.getRule().getContraint().getType() == RuleType.DENY && getIndex(arg0) > getIndex(arg1)) {
+			return -1;
+		}
+		if (arg0.getRule().getContraint().getType() == RuleType.PERMIT && getIndex(arg0) > getIndex(arg1)) {
+			return -1;
+		}
+		return 1;
 	}
-	
+
 	public Integer getIndex(SecurityRuleJudgement arg0) {
 		return ruleToIndex.get(arg0.getRule());
 	}
-
-
 
 }

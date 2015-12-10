@@ -1,0 +1,30 @@
+user Alice
+
+
+policy sameAssetDenyAll ordered-deny-overrides {
+	
+	rule permitInputs permit R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+	}	
+	
+	 rule denyInputs deny R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+	}
+	
+	rule permitOutputID permit R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.attributeid"
+	}
+	
+	rule denyOutputID deny R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.attributeid"
+	}
+	
+	rule permitOutputReferences permit R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.referenceoutput"
+	}
+	
+	rule denyOutputReferences deny R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.referenceoutput"
+	}
+
+}
