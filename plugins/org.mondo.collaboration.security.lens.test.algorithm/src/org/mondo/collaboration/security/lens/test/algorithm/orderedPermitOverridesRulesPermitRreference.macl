@@ -1,0 +1,30 @@
+user Alice
+
+
+policy permitReference ordered-permit-overrides {
+
+	rule permitInputs permit R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+	}	
+
+	rule denyInputs deny R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.objectInput"
+	}
+	
+	rule denyInputReferences deny R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
+	}
+	
+	rule permitInputReferences permit R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.referenceinput"
+	}
+	
+	rule permitInputNames permit R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.attributename"
+	}
+
+	rule denyInputNames deny R to Alice{
+		query "org.mondo.collaboration.security.lens.test.algorithm.attributename"
+	}
+
+}

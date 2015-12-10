@@ -14,15 +14,15 @@ pattern objectOutput (obj : SystemOutput){
 pattern attributename (obj : SystemInput, name){
 	SystemInput.name (obj,name);
 }
-// deny overrides a, részhez kell
-//pattern attributename (obj : SystemOutput, name){
-//	SystemOutput.name (obj,name);
-//}
+
+pattern attributeid (obj : SystemOutput, id){
+	SystemOutput.id (obj,id);
+}
+
+pattern referenceoutput(ctrl : WTCtrl,Output : SystemOutput) {
+	WTCtrl.output(ctrl, Output);
+}
 
 pattern referenceinput(ctrl : WTCtrl,Input : SystemInput) {
 	WTCtrl.input(ctrl, Input);
 }
-//// deny overrides a, részhez kell 
-//pattern referenceinput(ctrl : WTCtrl,Output : SystemOutput) {
-//	WTCtrl.output(ctrl, Output);
-//}
