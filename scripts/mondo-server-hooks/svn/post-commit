@@ -70,10 +70,10 @@ for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
 
   log "     processing: $FRONT_REPOS in the name of $FRONT_USER"
   # If this is not the current repo
-  if [ ! -d $TEMP_CURRENT/$2 ]; then
-    log "        Note: Another front repo triggered the process - $TEMP_CURRENT/$2 not exists"
-    log "        checkout the repository - from $URL/$SVN_PATH_URL/$2 to $TEMP_FRONTS/$2"
-    svn checkout "$URL/$SVN_PATH_URL/$2" "$TEMP_FRONTS/$2" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+  if [ ! -d $TEMP_CURRENT/$SVN_PATH_URL/$2 ]; then
+    log "        Note: Another front repo triggered the process - $TEMP_CURRENT/$SVN_PATH_URL/$2 not exists"
+    log "        checkout the repository - from $URL$SVN_PATH_URL/$2 to $TEMP_FRONTS/$2"
+    svn checkout "$URL$SVN_PATH_URL/$2" "$TEMP_FRONTS/$2" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
     log "        synchronizing the source tree"
     log "           rsync -av --exclude='.svn' $TEMP_GOLD/ $TEMP_FRONTS/$2"
     rsync -av --exclude=".svn" $TEMP_GOLD/ $TEMP_FRONTS/$2
@@ -122,5 +122,6 @@ done
 
 #rm -rf $TEMP_FRONTS/*
 #rm -rf $TEMP_GOLD/*
+
 log "Post-commit finished successfully"
 exit 0

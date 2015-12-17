@@ -17,7 +17,7 @@ CURRENT_FRONT_REPOS="$1"
 CURRENT_FRONT_REPOS_URL="$URL$CURRENT_FRONT_REPOS"
 TXN="$2"
 
-TEMP_GOLD="$TEMP/tempGold/$GOLD_REPO_NAME"
+TEMP_GOLD="$TEMP/tempGoldPre/$GOLD_REPO_NAME"
 TEMP_FRONT="$TEMP/tempFront/Current$CURRENT_FRONT_REPOS"
 FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)
 
@@ -106,15 +106,15 @@ for line in $changes; do
             mkdir -p $BASEDIR
           fi
           svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$TEMP_FRONT/$nextChange"
-          #if [[ $nextChange =~ .${MODEL_EXTENSIONS}$ ]]
-          #then
+          if [[ $nextChange =~ .${MODEL_EXTENSIONS}$ ]]
+          then
             log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
             log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
             $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$TEMP_GOLD/$ACCESS_CONTROL_RULES" "$TEMP_GOLD/$ACCESS_CONTROL_QUERIES"
-          #else
-          #  log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
-          #  cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange
-          #fi
+          else
+            log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
+            cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange
+          fi
           ;;
   	   esac
     fi
