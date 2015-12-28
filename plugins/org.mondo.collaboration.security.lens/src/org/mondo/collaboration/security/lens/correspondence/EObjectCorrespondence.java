@@ -65,6 +65,26 @@ public class EObjectCorrespondence {
 		}
 		return DefaultEMFUniqueIDFunctions.Factory.INSTANCE;
 	}
+	/**
+	 * @param uniqueIDSchemeExtension the extension ID of the unique ID scheme to get
+	 * @return the unique ID provider factory registered via the extension point org.mondo.collaboration.security.lens.uniqueIDSchemeFactory with the given extension ID, or null if not found 
+	 * 
+	 */
+	public static UniqueIDSchemeFactory getRegisteredIDProviderFactory(String uniqueIDSchemeExtension) throws CoreException {
+		if (! Platform.isRunning()) {
+			throw new IllegalStateException("Platform not started yet.");
+		}
+		IConfigurationElement[] configurationElements = 
+				Platform.getExtensionRegistry().getConfigurationElementsFor(SCHEME_FACTORY_EXTENSION_POINT);
+		for (IConfigurationElement contribution : configurationElements) {
+			if (uniqueIDSchemeExtension.equals(contribution.getDeclaringExtension().getUniqueIdentifier())) {
+			    Object executableExtension = contribution.createExecutableExtension("scheme-factory-class");
+			    return (UniqueIDSchemeFactory) executableExtension;			    
+			}
+		}
+		// Not found
+		return null;
+	}
 	private static final String SCHEME_FACTORY_EXTENSION_POINT = "org.mondo.collaboration.security.lens.uniqueIDSchemeFactory";
 	
 	/**

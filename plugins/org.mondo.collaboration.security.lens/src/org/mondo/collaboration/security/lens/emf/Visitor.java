@@ -43,6 +43,10 @@ class Visitor extends EMFVisitor {
 		return false;
 	}
 	
+	public boolean avoidTransientContainmentLink(EObject source, EReference reference, EObject targetObject) {
+	    return (!isNotification) && targetObject.eAdapters().contains(modelIndexer.adapter); 
+    }
+	
 	@Override
 	public void visitElement(EObject source) {
 		Tuple t = new FlatTuple(source, source.eClass());

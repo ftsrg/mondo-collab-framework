@@ -128,7 +128,7 @@ public class ModelIndexer {
 	} 
 	
 	
-	private EMFAdapter adapter;
+	EMFAdapter adapter;
 	
 
 	public Iterable<EObject> getAllEObjects() {

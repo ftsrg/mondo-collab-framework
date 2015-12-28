@@ -16,7 +16,11 @@ import org.eclipse.emf.ecore.EObject;
 /**
  * Unique ID function, several of which can be assembled (using {@link #dispatchTo(ComposableIDFunction...)}) 
  * 	to form a part of a composite strategy. 
+ * <p> If no provided strategy matches, then the default object reference is used as the identifier function. 
+ * See {@link ElseComplain} if the scheme needs to be strict instead and complain for unmatched elements.
+ * 
  * @author Bergmann Gabor
+ * 
  *
  */
 public abstract class ComposableIDFunction implements EObjectCorrespondence.UniqueIDScheme {
@@ -52,10 +56,17 @@ public abstract class ComposableIDFunction implements EObjectCorrespondence.Uniq
 		@Override
 		public Object tryApply(EObject input) {
 			for (ComposableIDFunction component : components) {
-				Object result = component.apply(input);
+				Object result = component.tryApply(input);
 				if (result != null) return result;
 			}
 			return null;
 		}
+	}
+	
+	public static class ElseComplain extends ComposableIDFunction {
+	    @Override
+	    public Object tryApply(EObject input) {
+	        throw new IllegalArgumentException("No unique identifier could be constructed for " + input);
+	    }
 	}
 }
