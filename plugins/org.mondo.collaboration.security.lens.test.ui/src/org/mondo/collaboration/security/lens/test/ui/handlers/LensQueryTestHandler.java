@@ -11,6 +11,11 @@
 
 package org.mondo.collaboration.security.lens.test.ui.handlers;
 
+import static org.mondo.collaboration.security.lens.context.keys.WhichModel.FRONT;
+import static org.mondo.collaboration.security.lens.context.keys.WhichModel.GOLD;
+import static org.mondo.collaboration.security.lens.emf.ModelFactInputKey.EOBJECT_KEY;
+import static org.mondo.collaboration.security.lens.emf.ModelFactInputKey.RESOURCE_KEY;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,9 +43,8 @@ import org.mondo.collaboration.security.lens.arbiter.Asset.ObjectAsset;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind;
 import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
+import org.mondo.collaboration.security.lens.context.keys.CollabLensModelInputKey;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
-import org.mondo.collaboration.security.lens.context.keys.EObjectKey;
-import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
 import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Role;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType;
@@ -154,9 +158,9 @@ public class LensQueryTestHandler extends AbstractLensTestHandler {
 				PVariable var_relativeURI = body.getOrCreateVariableByName("relativeURI");
 				
 				new TypeConstraint(body, new FlatTuple(var_goldResource, var_relativeURI), 
-						ResourceKey.GOLD);
+						new CollabLensModelInputKey(RESOURCE_KEY, GOLD));
 				new TypeConstraint(body, new FlatTuple(var_frontResource, var_relativeURI), 
-						ResourceKey.FRONT);
+                        new CollabLensModelInputKey(RESOURCE_KEY, FRONT));
 			}
 			return bodies;
 		}
@@ -199,9 +203,9 @@ public class LensQueryTestHandler extends AbstractLensTestHandler {
 //				PVariable var_judgement = body.getOrCreateVariableByName("judgement");
 			
 				new TypeConstraint(body, new FlatTuple(var_gold, var_eClass), 
-						EObjectKey.GOLD);
+				        new CollabLensModelInputKey(EOBJECT_KEY, GOLD));
 				new TypeConstraint(body, new FlatTuple(var_front, var_eClass), 
-						EObjectKey.FRONT);
+				        new CollabLensModelInputKey(EOBJECT_KEY, FRONT));
 				new TypeConstraint(body, new FlatTuple(var_gold, var_front), 
 						CorrespondenceKey.EOBJECT);
 				
@@ -264,7 +268,7 @@ public class LensQueryTestHandler extends AbstractLensTestHandler {
 //				PVariable var_judgement = body.getOrCreateVariableByName("judgement");
 			
 				new TypeConstraint(body, new FlatTuple(var_gold, var_eClass), 
-						EObjectKey.GOLD);
+				        new CollabLensModelInputKey(EOBJECT_KEY, GOLD));
 //				new TypeConstraint(body, new FlatTuple(var_front, var_eClass), 
 //						EObjectKey.FRONT);
 //				new TypeConstraint(body, new FlatTuple(var_gold, var_front), 
@@ -334,7 +338,7 @@ public class LensQueryTestHandler extends AbstractLensTestHandler {
 //				new TypeConstraint(body, new FlatTuple(var_gold, var_eClass), 
 //						EObjectKey.GOLD);
 				new TypeConstraint(body, new FlatTuple(var_front, var_eClass), 
-						EObjectKey.FRONT);
+				        new CollabLensModelInputKey(EOBJECT_KEY, FRONT));
 //				new TypeConstraint(body, new FlatTuple(var_gold, var_front), 
 //						CorrespondenceKey.EOBJECT);
 				
@@ -403,9 +407,9 @@ public class LensQueryTestHandler extends AbstractLensTestHandler {
 				PVariable var_judgement = body.getOrCreateVariableByName("judgement");
 			
 				new TypeConstraint(body, new FlatTuple(var_gold, var_eClass), 
-						EObjectKey.GOLD);
+				        new CollabLensModelInputKey(EOBJECT_KEY, GOLD));
 				new TypeConstraint(body, new FlatTuple(var_front, var_eClass), 
-						EObjectKey.FRONT);
+				        new CollabLensModelInputKey(EOBJECT_KEY, FRONT));
 				new TypeConstraint(body, new FlatTuple(var_gold, var_front), 
 						CorrespondenceKey.EOBJECT);
 				
@@ -468,7 +472,7 @@ public class LensQueryTestHandler extends AbstractLensTestHandler {
 				PVariable var_judgement = body.getOrCreateVariableByName("judgement");
 			
 				new TypeConstraint(body, new FlatTuple(var_gold, var_eClass), 
-						EObjectKey.GOLD);
+				        new CollabLensModelInputKey(EOBJECT_KEY, GOLD));
 //				new TypeConstraint(body, new FlatTuple(var_front, var_eClass), 
 //						EObjectKey.FRONT);
 //				new TypeConstraint(body, new FlatTuple(var_gold, var_front), 
@@ -538,7 +542,7 @@ public class LensQueryTestHandler extends AbstractLensTestHandler {
 //				new TypeConstraint(body, new FlatTuple(var_gold, var_eClass), 
 //						EObjectKey.GOLD);
 				new TypeConstraint(body, new FlatTuple(var_front, var_eClass), 
-						EObjectKey.FRONT);
+				        new CollabLensModelInputKey(EOBJECT_KEY, FRONT));
 //				new TypeConstraint(body, new FlatTuple(var_gold, var_front), 
 //						CorrespondenceKey.EOBJECT);
 				

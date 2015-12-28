@@ -13,15 +13,16 @@ package org.mondo.collaboration.security.lens.context.manipulables;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.incquery.runtime.matchers.context.IInputKey;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
-import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
 import org.mondo.collaboration.security.lens.emf.EMFUtil;
+import org.mondo.collaboration.security.lens.emf.ModelFactInputKey;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 
 /**
  * @author Bergmann Gabor
- * @see ResourceKey
+ * @see ModelFactInputKey#RESOURCE_KEY
  */
 public class ResourceManipulator extends BaseEMFManipulable {
 
@@ -31,6 +32,11 @@ public class ResourceManipulator extends BaseEMFManipulable {
 	public ResourceManipulator(ModelIndexer model) {
 		super(model);
 	}
+    
+    @Override
+    public IInputKey getInputKey() {
+        return ModelFactInputKey.RESOURCE_KEY;
+    }
 
 	@Override
 	public Tuple retractTuple(Tuple tuple) {

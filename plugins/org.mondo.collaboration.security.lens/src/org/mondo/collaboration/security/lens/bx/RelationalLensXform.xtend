@@ -14,27 +14,28 @@ package org.mondo.collaboration.security.lens.bx
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
 import java.util.Set
-import org.apache.log4j.Logger
+import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.incquery.runtime.api.IncQueryEngine
 import org.eclipse.incquery.runtime.evm.api.Activation
 import org.eclipse.incquery.runtime.evm.api.Context
 import org.eclipse.incquery.runtime.evm.api.RuleEngine
 import org.eclipse.incquery.runtime.evm.api.RuleSpecification
 import org.eclipse.incquery.runtime.evm.specific.RuleEngines
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.Equality
+import org.eclipse.incquery.runtime.matchers.psystem.IExpressionEvaluator
+import org.eclipse.incquery.runtime.matchers.psystem.IValueProvider
+import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
+import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.PatternMatchCounter
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
+import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.mondo.collaboration.security.lens.arbiter.Asset
 import org.mondo.collaboration.security.lens.arbiter.AuthorizationQueries
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind
 import org.mondo.collaboration.security.lens.context.MondoLensScope
+import org.mondo.collaboration.security.lens.context.keys.CollabLensModelInputKey
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey
-import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
-import org.mondo.collaboration.security.lens.context.keys.EObjectKey
-import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey
-import org.mondo.collaboration.security.lens.context.keys.ResourceKey
-import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey
-import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey
+import org.mondo.collaboration.security.lens.context.keys.WhichModel
+import org.mondo.collaboration.security.lens.emf.ModelFactInputKey
 import org.mondo.collaboration.security.lens.relational.ActionStep
 import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
 import org.mondo.collaboration.security.lens.relational.QueryTemplate
@@ -42,15 +43,10 @@ import org.mondo.collaboration.security.lens.relational.RelationalRuleSpecificat
 import org.mondo.collaboration.security.lens.relational.RelationalTransformationSpecification
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.RuleType
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
-import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
-import org.eclipse.incquery.runtime.matchers.psystem.PConstraint
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.PatternMatchCounter
-import org.eclipse.incquery.runtime.matchers.psystem.IExpressionEvaluator
-import org.eclipse.incquery.runtime.matchers.psystem.IValueProvider
-import org.eclipse.emf.ecore.EAttribute
+
+import static org.mondo.collaboration.security.lens.context.keys.WhichModel.*
+import static org.mondo.collaboration.security.lens.emf.ModelFactInputKey.*
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -140,29 +136,32 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		IncQueryEngine::on(scope)
 	}
 	
-	
+	private def inModel(ModelFactInputKey inputkey, WhichModel model) {
+		new CollabLensModelInputKey(inputkey, model)
+	}
+
 	def addRules() {
 		rules += new RelationalRuleSpecification => [
 			name = "resources"
 			priority = 10
 			gold += new ManipulableTemplate(
-				ResourceKey.GOLD, #[varGoldResource, varRelativeURI]
+				RESOURCE_KEY.inModel(GOLD), #[varGoldResource, varRelativeURI]
 			)
 			front += new ManipulableTemplate(
-				ResourceKey.FRONT, #[varFrontResource, varRelativeURI]
+				RESOURCE_KEY.inModel(FRONT), #[varFrontResource, varRelativeURI]
 			)
 		]
 		rules += new RelationalRuleSpecification => [
 			name = "objects"
 			priority = 20
 			gold += new ManipulableTemplate(
-				EObjectKey.GOLD, #[varGoldEObject, varEClass]
+				EOBJECT_KEY.inModel(GOLD), #[varGoldEObject, varEClass]
 			)
 			correspondence += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
 			)
 			front += new ManipulableTemplate(
-				EObjectKey.FRONT, #[varFrontEObject, varEClass]
+				EOBJECT_KEY.inModel(FRONT), #[varFrontEObject, varEClass]
 			)
 			readAuthorization += checkReadAuthorization(Asset.ObjectAsset, varGoldEObject)
 			writeAuthorization += checkWriteAuthorization(Asset.ObjectAsset, varGoldEObject)
@@ -171,20 +170,20 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			name = "rootObjects"
 			priority = 30
 			gold += new ManipulableTemplate(
-				ResourceRootContentsKey.GOLD, #[varGoldResource, varGoldEObject]
+				RESOURCE_ROOT_CONTENTS_KEY.inModel(GOLD), #[varGoldResource, varGoldEObject]
 			)
 			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
 			)
 			// TODO resue mapped from earlier rule
 			mappingCondition += new ManipulableTemplate(
-				ResourceKey.GOLD, #[varGoldResource, varRelativeURI]
+				RESOURCE_KEY.inModel(GOLD), #[varGoldResource, varRelativeURI]
 			)
 			mappingCondition += new ManipulableTemplate(
-				ResourceKey.FRONT, #[varFrontResource, varRelativeURI]
+				RESOURCE_KEY.inModel(FRONT), #[varFrontResource, varRelativeURI]
 			)
 			front += new ManipulableTemplate(
-				ResourceRootContentsKey.FRONT, #[varFrontResource, varFrontEObject]
+				RESOURCE_ROOT_CONTENTS_KEY.inModel(FRONT), #[varFrontResource, varFrontEObject]
 			)
 			// TODO reuse
 			readAuthorization += checkReadAuthorization(Asset.ObjectAsset, varGoldEObject)
@@ -194,7 +193,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			name = "references"
 			priority = 40
 			gold += new ManipulableTemplate(
-				EObjectReferenceKey.GOLD, #[varGoldSrc, varEReference, varGoldTrg]
+				REFERENCE_KEY.inModel(GOLD), #[varGoldSrc, varEReference, varGoldTrg]
 			)
 			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldSrc, varFrontSrc]
@@ -203,7 +202,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 				CorrespondenceKey.EOBJECT, #[varGoldTrg, varFrontTrg]
 			)
 			front += new ManipulableTemplate(
-				EObjectReferenceKey.FRONT, #[varFrontSrc, varEReference, varFrontTrg]
+				REFERENCE_KEY.inModel(FRONT), #[varFrontSrc, varEReference, varFrontTrg]
 			)
 			readAuthorization += checkReadAuthorization(Asset.ReferenceAsset, varGoldSrc, varEReference, varGoldTrg)
 			writeAuthorization += checkWriteAuthorization(Asset.ReferenceAsset, varGoldSrc, varEReference, varGoldTrg)
@@ -212,7 +211,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			name = "attributes"
 			priority = 50
 			gold += new ManipulableTemplate(
-				EObjectAttributeKey.GOLD, #[varGoldEObject, varEAttribute, varGoldValue]
+				ATTRIBUTE_KEY.inModel(GOLD), #[varGoldEObject, varEAttribute, varGoldValue]
 			)
 			mappingCondition += new ManipulableTemplate(
 				CorrespondenceKey.EOBJECT, #[varGoldEObject, varFrontEObject]
@@ -271,7 +270,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 				}, body.getOrCreateVariableByName(varGoldValue))
 			]
 			front += new ManipulableTemplate(
-				EObjectAttributeKey.FRONT, #[varFrontEObject, varEAttribute, varFrontValue]
+				ATTRIBUTE_KEY.inModel(FRONT), #[varFrontEObject, varEAttribute, varFrontValue]
 			)
 			readAuthorization += checkReadAuthorization(Asset.AttributeAsset, varGoldEObject, varEAttribute)
 			writeAuthorization += checkWriteAuthorization(Asset.AttributeAsset, varGoldEObject, varEAttribute)
