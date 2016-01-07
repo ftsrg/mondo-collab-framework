@@ -11,6 +11,7 @@
 
 package org.mondo.collaboration.security.lens.context.manipulables;
 
+import org.apache.log4j.Logger;
 import org.eclipse.incquery.runtime.matchers.context.IInputKey;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.mondo.collaboration.security.lens.util.IManipulableRelation;
@@ -25,6 +26,8 @@ public class DebuggableManipulableWrapper extends BaseKeyAwareManipulable {
 	private IManipulableRelation wrappedManipulable;
 	private IInputKey key;
 	
+	private static Logger LOGGER = Logger.getLogger(DebuggableManipulableWrapper.class);
+	
 	public DebuggableManipulableWrapper(IManipulableRelation wrappedManipulable, IInputKey key) {
 		this.wrappedManipulable = wrappedManipulable;
 		this.key = key;
@@ -32,23 +35,30 @@ public class DebuggableManipulableWrapper extends BaseKeyAwareManipulable {
 	
 	@Override
 	public Tuple retractTuple(Tuple seed) {
-		final String seedString = seed.toString();
 		final Tuple removedTuple = wrappedManipulable.retractTuple(seed);
-		System.out.println(String.format("\t\t%25s\t\t-- %s --> %s", 
-				getInputKey().getPrettyPrintableName(), 
-				seedString, 
-				removedTuple));
+		
+		if (LOGGER.isDebugEnabled()) {
+		    final String seedString = seed.toString();
+		    LOGGER.debug(String.format("\t\t%25s\t\t-- %s --> %s", 
+		            getInputKey().getPrettyPrintableName(), 
+		            seedString, 
+		            removedTuple));		    
+		}
+		
 		return removedTuple;
 	}
 
 	@Override
 	public Tuple assertTuple(Tuple seed) {
-		final String seedString = seed.toString();
 		Tuple insertedTuple = wrappedManipulable.assertTuple(seed);
-		System.out.println(String.format("\t\t%25s\t\t++ %s --> %s", 
-				getInputKey().getPrettyPrintableName(), 
-				seedString, 
-				insertedTuple));
+		
+        if (LOGGER.isDebugEnabled()) {
+            final String seedString = seed.toString();
+            LOGGER.debug(String.format("\t\t%25s\t\t++ %s --> %s", 
+                    getInputKey().getPrettyPrintableName(), 
+                    seedString, 
+                    insertedTuple));         
+        }
 		return insertedTuple;
 	}
 
