@@ -27,14 +27,17 @@ import org.mondo.collaboration.security.lens.arbiter.Asset.AttributeAsset
 import org.mondo.collaboration.security.lens.arbiter.Asset.ObjectAsset
 import org.mondo.collaboration.security.lens.arbiter.Asset.ReferenceAsset
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind
-import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey
-import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey
 import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey
 import org.mondo.collaboration.security.lens.relational.QueryTemplate
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
 import org.mondo.collaboration.security.lens.util.EnumWrapper
 import java.util.Collections
+
+import static org.mondo.collaboration.security.lens.emf.ModelFactInputKey.*;
+import org.mondo.collaboration.security.lens.emf.ModelFactInputKey
+import org.mondo.collaboration.security.lens.context.keys.CollabLensModelInputKey
+import org.mondo.collaboration.security.lens.context.keys.WhichModel
 
 /**
  * Queries for security checks.
@@ -61,6 +64,9 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 	val explicitObfuscateQuery = 
 		prepareExplicitRuleDecisionHelperPattern(OperationKind::READ, AttributeAsset, AccessControlVerdict::OBFUSCATED, varEObject, varEAttribute)
 		
+	private def inGoldModel(ModelFactInputKey inputkey) {
+		new CollabLensModelInputKey(inputkey, WhichModel::GOLD)
+	}
 		
 	private def Pair<Class<? extends Asset>, Map<OperationKind, IQuerySpecification>> prepareExplicitlyDeniedHelperPatterns(Class<? extends Asset> assetClass, String... assetVariables) {
 		val x = EnumWrapper.myValues
@@ -85,7 +91,7 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 	}
 	private def filteredGoldReference(List<String> variableNames, String checkDescription, (EReference) => Boolean referenceFilter) {
 		QueryTemplate::fromConstrainer(variableNames) [ body |
-			typeConstraint(EObjectReferenceKey.GOLD, variableNames).apply(body)
+			typeConstraint(REFERENCE_KEY.inGoldModel, variableNames).apply(body)
 			
 			val referenceVariableName = variableNames.get(1)
 			new ExpressionEvaluation(body, new IExpressionEvaluator(){
@@ -135,7 +141,7 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 					.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
 			], #[
 				effectivelyHiddenObject.positiveCall(#{varEObject -> varEObject}),
-				typeConstraint(EObjectAttributeKey.GOLD, #[varEObject, varEAttribute, varValue])
+				typeConstraint(ATTRIBUTE_KEY.inGoldModel, #[varEObject, varEAttribute, varValue])
 			]
 		)	
 	private val IQuerySpecification effectivelyFrozenAttribute = 
@@ -164,10 +170,10 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 					.positiveCall(#{varSrc -> varSrc, varEReference -> varEReference, varTrg -> varTrg})
 			], #[
 				effectivelyHiddenObject.positiveCall(#{varEObject -> varSrc}),
-				typeConstraint(EObjectReferenceKey.GOLD, #[varSrc, varEReference, varTrg])
+				typeConstraint(REFERENCE_KEY.inGoldModel, #[varSrc, varEReference, varTrg])
 			], #[
 				effectivelyHiddenObject.positiveCall(#{varEObject -> varTrg}),
-				typeConstraint(EObjectReferenceKey.GOLD, #[varSrc, varEReference, varTrg])
+				typeConstraint(REFERENCE_KEY.inGoldModel, #[varSrc, varEReference, varTrg])
 			]
 		)	
 		
@@ -180,7 +186,7 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 				effectivelyHiddenReference.positiveCall(#{varSrc -> varSrc, varEReference -> varEReference, varTrg -> varTrg})
 			], #[
 				effectivelyFrozenObject.positiveCall(#{varEObject -> varSrc}),
-				typeConstraint(EObjectReferenceKey.GOLD, #[varSrc, varEReference, varTrg])
+				typeConstraint(REFERENCE_KEY.inGoldModel, #[varSrc, varEReference, varTrg])
 			], #[
 				effectivelyFrozenObject.positiveCall(#{varEObject -> varTrg}),
 				filteredGoldReference(#[varSrc, varEReference, varTrg], "containment or reverse navigable") [isContainment || (EOpposite != null)]

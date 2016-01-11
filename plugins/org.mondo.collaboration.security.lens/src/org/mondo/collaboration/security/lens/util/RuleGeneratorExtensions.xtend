@@ -48,6 +48,7 @@ import org.mondo.collaboration.security.lens.relational.QueryTemplate
 import org.mondo.collaboration.security.lens.relational.RelationalTransformationSpecification
 import org.mondo.collaboration.security.lens.relational.RuleExecutionEnvironment
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
+import org.apache.log4j.Logger
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -60,11 +61,12 @@ public class RuleGeneratorExtensions {
 	// rules
 	public def createEVMRule(RuleOperationalization ruleOp, IQuerySpecification query, int priority, Iterable<ActionStep>... actions) {
 		val transformation = ruleOp.transformation
+		val	logger = Logger::getLogger(transformation.fullyQualifiedName)
 		val allActions = Iterables::concat(actions)
 		val job = Jobs::newStatelessJob(IncQueryActivationStateEnum::APPEARED) [ match |
-			// TODO logger
-			System::out.println
-			System::out.println('''*** executing «ruleOp.rule.name» on «match»''')
+			if (logger.isDebugEnabled) {
+				logger.debug('''*** executing «ruleOp.rule.name» on «match»''')
+			}
 			val environment = transformation.initRHS(match)
 			allActions.forEach[apply(environment)]
 		]

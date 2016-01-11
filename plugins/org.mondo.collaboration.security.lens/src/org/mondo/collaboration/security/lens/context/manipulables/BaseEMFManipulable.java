@@ -20,7 +20,7 @@ import org.mondo.collaboration.security.lens.util.IManipulableRelation;
  * @author Bergmann Gabor
  *
  */
-public abstract class BaseEMFManipulable implements IManipulableRelation {
+public abstract class BaseEMFManipulable extends BaseKeyAwareManipulable implements IManipulableRelation {
 
 	ModelIndexer model;
 	ResourceSet root;

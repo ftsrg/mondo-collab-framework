@@ -21,7 +21,7 @@ export PATH=$PATH:$JAVA_HOME
 GOLD_REPOS="$SVN_PATH_URL/$GOLD_REPO_NAME"
 LOG="$DIR/reset.log"
 
-GOLD_REPOS_URL="$URL$GOLD_REPOS"
+GOLD_REPOS_URL="$URL/$GOLD_REPOS"
 
 TEMP_GOLD="$TEMP/tempGold$GOLD_REPOS"
 TEMP_FRONTS="$TEMP/tempFront"
@@ -108,7 +108,7 @@ for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
   svn commit -m "Reseting front repositories with reset script" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
 done
 
-#rm -rf $TEMP_FRONTS/*
-#rm -rf $TEMP_GOLD/*
+rm -rf $TEMP_FRONTS/*
+rm -rf $TEMP_GOLD/*
 log "Reset script finished finished successfully"
 exit 0

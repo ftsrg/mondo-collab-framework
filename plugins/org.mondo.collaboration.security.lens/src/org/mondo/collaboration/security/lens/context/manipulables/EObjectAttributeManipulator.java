@@ -15,14 +15,15 @@ import java.util.Collection;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.incquery.runtime.matchers.context.IInputKey;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
-import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey;
+import org.mondo.collaboration.security.lens.emf.ModelFactInputKey;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 
 /**
  * @author Bergmann Gabor
- * @see EObjectAttributeKey 
+ * @see ModelFactInputKey#ATTRIBUTE_KEY 
  */
 public class EObjectAttributeManipulator extends BaseEMFManipulable {
 
@@ -32,6 +33,11 @@ public class EObjectAttributeManipulator extends BaseEMFManipulable {
 	 */
 	public EObjectAttributeManipulator(ModelIndexer model) {
 		super(model);
+	}
+	
+	@Override
+	public IInputKey getInputKey() {
+	    return ModelFactInputKey.ATTRIBUTE_KEY;
 	}
 
 	@Override

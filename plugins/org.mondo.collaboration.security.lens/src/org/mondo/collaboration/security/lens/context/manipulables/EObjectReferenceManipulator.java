@@ -13,13 +13,14 @@ package org.mondo.collaboration.security.lens.context.manipulables;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.incquery.runtime.matchers.context.IInputKey;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
-import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey;
+import org.mondo.collaboration.security.lens.emf.ModelFactInputKey;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 
 /**
  * @author Bergmann Gabor
- * @see EObjectReferenceKey
+ * @see ModelFactInputKey#REFERENCE_KEY
  *
  */
 public class EObjectReferenceManipulator extends BaseEMFManipulable {
@@ -31,6 +32,11 @@ public class EObjectReferenceManipulator extends BaseEMFManipulable {
 	public EObjectReferenceManipulator(ModelIndexer model) {
 		super(model);
 	}
+    
+    @Override
+    public IInputKey getInputKey() {
+        return ModelFactInputKey.REFERENCE_KEY;
+    }
 
 	@Override
 	public Tuple retractTuple(Tuple tuple) {

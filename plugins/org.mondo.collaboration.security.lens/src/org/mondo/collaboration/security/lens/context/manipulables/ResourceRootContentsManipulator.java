@@ -13,13 +13,14 @@ package org.mondo.collaboration.security.lens.context.manipulables;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.incquery.runtime.matchers.context.IInputKey;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
-import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey;
+import org.mondo.collaboration.security.lens.emf.ModelFactInputKey;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 
 /**
  * @author Bergmann Gabor
- * @see ResourceRootContentsKey 
+ * @see ModelFactInputKey#RESOURCE_ROOT_CONTENTS_KEY
  */
 public class ResourceRootContentsManipulator extends BaseEMFManipulable {
 
@@ -30,6 +31,11 @@ public class ResourceRootContentsManipulator extends BaseEMFManipulable {
 	public ResourceRootContentsManipulator(ModelIndexer model) {
 		super(model);
 	}
+    
+    @Override
+    public IInputKey getInputKey() {
+        return ModelFactInputKey.RESOURCE_ROOT_CONTENTS_KEY;
+    }
 
 	@Override
 	public Tuple retractTuple(Tuple tuple) {

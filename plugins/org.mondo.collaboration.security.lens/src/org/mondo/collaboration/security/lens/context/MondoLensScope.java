@@ -23,20 +23,14 @@ import org.eclipse.incquery.runtime.matchers.context.IInputKey;
 import org.mondo.collaboration.security.lens.arbiter.Asset;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind;
+import org.mondo.collaboration.security.lens.context.keys.CollabLensModelInputKey;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
-import org.mondo.collaboration.security.lens.context.keys.EObjectAttributeKey;
-import org.mondo.collaboration.security.lens.context.keys.EObjectKey;
-import org.mondo.collaboration.security.lens.context.keys.EObjectReferenceKey;
-import org.mondo.collaboration.security.lens.context.keys.ResourceKey;
-import org.mondo.collaboration.security.lens.context.keys.ResourceRootContentsKey;
 import org.mondo.collaboration.security.lens.context.keys.SecurityJudgementKey;
+import org.mondo.collaboration.security.lens.context.keys.WhichModel;
 import org.mondo.collaboration.security.lens.context.manipulables.BaseKeyAwareManipulable;
 import org.mondo.collaboration.security.lens.context.manipulables.DebuggableManipulableWrapper;
 import org.mondo.collaboration.security.lens.context.manipulables.EObjectAttributeManipulator;
-import org.mondo.collaboration.security.lens.context.manipulables.EObjectManipulator;
-import org.mondo.collaboration.security.lens.context.manipulables.EObjectReferenceManipulator;
-import org.mondo.collaboration.security.lens.context.manipulables.ResourceManipulator;
-import org.mondo.collaboration.security.lens.context.manipulables.ResourceRootContentsManipulator;
+import org.mondo.collaboration.security.lens.emf.ModelFactInputKey;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.IManipulableRelation;
@@ -161,16 +155,14 @@ public class MondoLensScope extends IncQueryScope {
 		Map<IInputKey, ILiveRelation> liveRelations = new HashMap<IInputKey, ILiveRelation>();
 		
 		liveRelations.putAll(correspondenceTables);
-		liveRelations.put(EObjectAttributeKey.FRONT, frontIndexer.getIndexedEObjectAttributes());
-		liveRelations.put(EObjectAttributeKey.GOLD, goldIndexer.getIndexedEObjectAttributes());
-		liveRelations.put(EObjectKey.FRONT, frontIndexer.getIndexedEObjects());
-		liveRelations.put(EObjectKey.GOLD, goldIndexer.getIndexedEObjects());
-		liveRelations.put(EObjectReferenceKey.FRONT, frontIndexer.getIndexedEObjectReferences());
-		liveRelations.put(EObjectReferenceKey.GOLD, goldIndexer.getIndexedEObjectReferences());
-		liveRelations.put(ResourceKey.FRONT, frontIndexer.getIndexedResources());
-		liveRelations.put(ResourceKey.GOLD, goldIndexer.getIndexedResources());
-		liveRelations.put(ResourceRootContentsKey.FRONT, frontIndexer.getIndexedResourceRootContents());
-		liveRelations.put(ResourceRootContentsKey.GOLD, goldIndexer.getIndexedResourceRootContents());
+		
+		for (ModelFactInputKey factInputKey : ModelFactInputKey.values()) {
+            liveRelations.put(new CollabLensModelInputKey(factInputKey, WhichModel.GOLD), 
+                    goldIndexer.getLiveIndexRelations().get(factInputKey));
+            liveRelations.put(new CollabLensModelInputKey(factInputKey, WhichModel.FRONT), 
+                    frontIndexer.getLiveIndexRelations().get(factInputKey));
+        }
+		
 		for (Class<? extends Asset> assetClass : Asset.getKinds()) {
 			for (OperationKind op : OperationKind.values()) {
 				ILiveRelation liveRelation = arbiter.getResultsAsLiveRelation(op, assetClass);
@@ -189,29 +181,18 @@ public class MondoLensScope extends IncQueryScope {
 		
 		for (Entry<CorrespondenceKey, LiveTable> entry : correspondenceTables.entrySet()) {
 			wrapForDebug(entry.getKey(), entry.getValue()).putInto(manipulables);
-		}		
-		wrapForDebug(EObjectAttributeKey.FRONT    , new EObjectAttributeManipulator(frontIndexer)).putInto(manipulables);
-		wrapForDebug(EObjectAttributeKey.GOLD     , new EObjectAttributeManipulator(goldIndexer)).putInto(manipulables);
-		wrapForDebug(EObjectKey.FRONT             , new EObjectManipulator(frontIndexer)).putInto(manipulables);            
-		wrapForDebug(EObjectKey.GOLD              , new EObjectManipulator(goldIndexer)).putInto(manipulables);              
-		wrapForDebug(EObjectReferenceKey.FRONT    , new EObjectReferenceManipulator(frontIndexer)).putInto(manipulables);            
-		wrapForDebug(EObjectReferenceKey.GOLD     , new EObjectReferenceManipulator(goldIndexer)).putInto(manipulables);              
-		wrapForDebug(ResourceKey.FRONT            , new ResourceManipulator(frontIndexer)).putInto(manipulables);            
-		wrapForDebug(ResourceKey.GOLD             , new ResourceManipulator(goldIndexer)).putInto(manipulables);              
-		wrapForDebug(ResourceRootContentsKey.FRONT, new ResourceRootContentsManipulator(frontIndexer)).putInto(manipulables);            
-		wrapForDebug(ResourceRootContentsKey.GOLD , new ResourceRootContentsManipulator(goldIndexer)).putInto(manipulables);              
-
-//		new DebuggableManipulableWrapper(EObjectAttributeKey.FRONT).putInto(manipulables);
-//		new DebuggableManipulableWrapper(EObjectAttributeKey.GOLD).putInto(manipulables);			
-//		new DebuggableManipulableWrapper(EObjectKey.FRONT).putInto(manipulables);					
-//		new DebuggableManipulableWrapper(EObjectKey.GOLD).putInto(manipulables);						
-//		new DebuggableManipulableWrapper(EObjectReferenceKey.FRONT).putInto(manipulables);			
-//		new DebuggableManipulableWrapper(EObjectReferenceKey.GOLD).putInto(manipulables);			
-//		new DebuggableManipulableWrapper(ResourceKey.FRONT).putInto(manipulables);					
-//		new DebuggableManipulableWrapper(ResourceKey.GOLD).putInto(manipulables);					
-//		new DebuggableManipulableWrapper(ResourceRootContentsKey.FRONT).putInto(manipulables);		
-//		new DebuggableManipulableWrapper(ResourceRootContentsKey.GOLD).putInto(manipulables);		
-		
+		}
+		for (ModelFactInputKey modelFactKey : ModelFactInputKey.values()) {
+            wrapForDebug(
+                    new CollabLensModelInputKey(modelFactKey, WhichModel.GOLD), 
+                    new EObjectAttributeManipulator(goldIndexer)
+            ).putInto(manipulables);
+            wrapForDebug(
+                    new CollabLensModelInputKey(modelFactKey, WhichModel.FRONT), 
+                    new EObjectAttributeManipulator(frontIndexer)
+            ).putInto(manipulables);
+        }
+				
 		return manipulables;
 	}
 

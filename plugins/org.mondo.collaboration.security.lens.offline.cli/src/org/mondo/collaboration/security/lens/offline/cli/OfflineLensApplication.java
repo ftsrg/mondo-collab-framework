@@ -35,9 +35,10 @@ public class OfflineLensApplication implements IApplication {
 	private static final String OBFUSCATOR_SALT_OPTION 				= "-obfuscatorSalt";
 	private static final String OBFUSCATOR_PREFIX_OPTION 			= "-obfuscatorPrefix";
 	private static final String STRING_VALUE      			 		= "<string>";
+    private static final String UNIQUE_ID_SCHEME_OPTION             = "-uniqueIDScheme";
+    private static final String EXTENSION_VALUE                     = "<extensionIdentifier>";
 	private static final String PERFORM_GET_SWITCH 					= "-performGet";
 	private static final String PERFORM_PUTBACK_SWITCH 		 		= "-performPutback";
-	
 	
 	private String repositoryRootPath;
 	private Map<String, String> workspaceMappings;
@@ -51,7 +52,8 @@ public class OfflineLensApplication implements IApplication {
 		List<String> frontPaths 		=  getRequiredCLIOptionValues(argArray, FRONT_MODEL_ROOTS_PATH_OPTION, 		PATH_VALUE);
 		List<String> securityQueryPaths =  getRequiredCLIOptionValues(argArray, SECURITY_QUERIES_PATH_OPTION, 		PATH_VALUE);
 		String policyPath  				=  getSingletonCLIOptionValue(argArray, ACCESS_CONTROL_MODEL_PATH_OPTION,	PATH_VALUE);
-		String userName 				=  getSingletonCLIOptionValue(argArray, USER_NAME_OPTION, 					USER_VALUE);
+        String userName                 =  getSingletonCLIOptionValue(argArray, USER_NAME_OPTION,                   USER_VALUE);
+        String uniqueIDSchemeExtension  =  getSingletonCLIOptionValue(argArray, UNIQUE_ID_SCHEME_OPTION,            EXTENSION_VALUE);
 		String obfuscatorSeed 			=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SEED_OPTION, 			STRING_VALUE, null);
 		String obfuscatorSalt 			=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SALT_OPTION, 			STRING_VALUE, "");
 		String obfuscatorPrefix 		=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_PREFIX_OPTION, 			STRING_VALUE, "");
@@ -87,7 +89,10 @@ public class OfflineLensApplication implements IApplication {
 		ResourceSet frontResourceSet 	= loadModelRoots(frontPaths); // TODO use resourceSetProvider?
 		Resource policyResource 		= loadPolicyModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
 		
-		final UniqueIDSchemeFactory uniqueIDSchemeFactory = EObjectCorrespondence.getRegisteredIDProviderFactory();
+		final UniqueIDSchemeFactory uniqueIDSchemeFactory = EObjectCorrespondence.getRegisteredIDProviderFactory(uniqueIDSchemeExtension);
+		if (uniqueIDSchemeFactory == null) {
+            throw new IllegalArgumentException(String.format("Unique ID scheme provided by extension %s not found", uniqueIDSchemeExtension));
+		}
 		
 		System.out.println();
 		System.out.println("[MondoOfflineCollaborationLens] Setting up lens...");

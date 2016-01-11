@@ -11,36 +11,12 @@
 
 package org.mondo.collaboration.security.lens.context.keys;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-
 /**
- * Tuples of ({@link Resource}, {@link EObject}).
+ * There are two models in the MONDO collaboration security lens.
  * @author Bergmann Gabor
  *
  */
-public enum ResourceRootContentsKey implements CollabLensInputKey {
-	GOLD,
-	FRONT;
-	
-	@Override
-	public String getPrettyPrintableName() {
-		return getStringID();
-	}
-
-	@Override
-	public String getStringID() {
-		return name()+"$Resource.rootContents";
-	}
-
-	@Override
-	public int getArity() {
-		return 2;
-	}
-
-	@Override
-	public boolean isEnumerable() {
-		return true;
-	}
-
+public enum WhichModel {
+    GOLD,
+    FRONT
 }

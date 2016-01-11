@@ -15,7 +15,7 @@ log() {
 
 # Config variables
 # Set them carefully
-LENS="$DIR/eclipse/MondoOfflineCollaborationLens"
+LENS="$DIR/eclipse"
 ARGS="-nosplash -consoleLog --launcher.suppressErrors -application org.mondo.collaboration.security.lens.offline.cli"
 MACL="$9"
 EIQ="${10}"
@@ -25,7 +25,7 @@ USER="$1"
 GOLD="$2"
 FRONT="$3"
 TYPE="$4"
-TEMP="$5"
+TEMP="$5/lens"
 OBF_SALT="$6"
 OBF_SEED="$7"
 OBF_PREFIX="$8"
@@ -39,6 +39,10 @@ USER_COMMAND="-userName"
 OBF_SALT_COMMAND="-obfuscatorSalt"
 OBF_SEED_COMMAND="-obfuscatorSeed"
 OBF_PREFIX_COMMAND="-obfuscatorPrefix"
+
+log "clear previous mess"
+rm -rf "$TEMP/"
+mkdir "$TEMP"
 
 #execute everything
 log "$LENS $ARGS $GOLD_COMMAND $GOLD $FRONT_COMMAND $FRONT $MACL_COMMAND $MACL $EIQ_COMMAND $EIQ $USER_COMMAND $USER $TYPE -configuration $TEMP -data $TEMP $OBF_SALT_COMMAND $OBF_SALT $OBF_SEED_COMMAND $OBF_SEED $OBF_PREFIX_COMMAND $OBF_PREFIX"
