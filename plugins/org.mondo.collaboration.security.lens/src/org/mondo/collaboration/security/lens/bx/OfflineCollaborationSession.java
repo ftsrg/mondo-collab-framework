@@ -29,6 +29,7 @@ import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
@@ -131,9 +132,11 @@ public class OfflineCollaborationSession {
 	 * @throws IOException 
 	 */
 	public void doGetAndSave() throws IOException {
-		lens.doGet();
+        final LensTransformationExecution lensExecution = 
+                lens.doGet();
 		
-		saveResources(frontResourceSet, frontConfinementURI);
+        if (! lensExecution.isAborted()) 
+            saveResources(frontResourceSet, frontConfinementURI);
 	}
 
 	/**
@@ -141,9 +144,11 @@ public class OfflineCollaborationSession {
 	 * @throws IOException 
 	 */
 	public void doPutbackAndSave() throws IOException {
-		lens.doPutback();
+		final LensTransformationExecution lensExecution = 
+		        lens.doPutback(false /* no need to roll back, will be discarded instead */);
 		
-		saveResources(goldResourceSet, goldConfinementURI);
+		if (! lensExecution.isAborted()) 
+		    saveResources(goldResourceSet, goldConfinementURI);
 	}
 
 	/**

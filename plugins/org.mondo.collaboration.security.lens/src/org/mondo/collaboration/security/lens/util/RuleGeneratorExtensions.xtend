@@ -49,6 +49,12 @@ import org.mondo.collaboration.security.lens.relational.RelationalTransformation
 import org.mondo.collaboration.security.lens.relational.RuleExecutionEnvironment
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.apache.log4j.Logger
+import org.eclipse.incquery.runtime.evm.api.Job
+import org.eclipse.incquery.runtime.evm.api.Activation
+import org.eclipse.incquery.runtime.evm.api.Context
+import org.eclipse.incquery.runtime.api.IncQueryMatcher
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.ExceptionAbort
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -59,23 +65,42 @@ public class RuleGeneratorExtensions {
 	public static val RuleGeneratorExtensions INSTANCE = new RuleGeneratorExtensions;
 	
 	// rules
-	public def createEVMRule(RuleOperationalization ruleOp, IQuerySpecification query, int priority, Iterable<ActionStep>... actions) {
+	public def <Match extends IPatternMatch> createEVMRule(
+		RuleOperationalization ruleOp, 
+		IQuerySpecification<? extends IncQueryMatcher<Match>> query, 
+		int priority, 
+		Iterable<ActionStep>... actions
+	) {
 		val transformation = ruleOp.transformation
-		val	logger = Logger::getLogger(transformation.fullyQualifiedName)
 		val allActions = Iterables::concat(actions)
-		val job = Jobs::newStatelessJob(IncQueryActivationStateEnum::APPEARED) [ match |
-			if (logger.isDebugEnabled) {
-				logger.debug('''*** executing «ruleOp.rule.name» on «match»''')
+		val Job<Match> job = new Job<Match>(IncQueryActivationStateEnum::APPEARED) {
+			
+			override protected execute(Activation<? extends Match> activation, Context context) {
+				val match = activation.atom
+				val LensTransformationExecution trExecution = context.get(LensTransformationExecution.name) as LensTransformationExecution
+				
+				if (trExecution.logger.isDebugEnabled) {
+					trExecution.logger.debug('''*** executing «ruleOp.rule.name» on «match»''')
+				}
+				val environment = trExecution.initRHS(match)
+				for (currentAction: allActions) {
+					currentAction.apply(environment)
+					if (trExecution.aborted) return;
+				}
 			}
-			val environment = transformation.initRHS(match)
-			allActions.forEach[apply(environment)]
-		]
-		val rule = Rules::newMatcherRuleSpecification(query, Lifecycles::getDefault(false, false), #{job})
+			
+			override protected handleError(Activation<? extends Match> activation, Exception exception, Context context) {
+				val match = activation.atom
+				val LensTransformationExecution trExecution = context.get(LensTransformationExecution.name) as LensTransformationExecution
+				trExecution.abort(new ExceptionAbort(exception, match))
+			}
+		}
+		val rule = Rules::<Match>newMatcherRuleSpecification(query, Lifecycles::getDefault(false, false), #{job})
 		transformation.assignPriority(rule, priority)
 		return rule
 	}
-	public def initRHS(RelationalTransformationSpecification transformation, IPatternMatch match) {
-		new RuleExecutionEnvironment(transformation) => [
+	public def initRHS(LensTransformationExecution trExecution, IPatternMatch match) {
+		new RuleExecutionEnvironment(trExecution) => [
 			match.parameterNames.forEach[name | variables.put(name, match.get(name))]
 		]
 	}

@@ -44,9 +44,15 @@ import org.mondo.collaboration.security.lens.relational.RelationalTransformation
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
+import org.eclipse.xtend.lib.annotations.Data
 
 import static org.mondo.collaboration.security.lens.context.keys.WhichModel.*
 import static org.mondo.collaboration.security.lens.emf.ModelFactInputKey.*
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.UndoableManipulationAction
+import org.eclipse.incquery.runtime.api.IPatternMatch
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.AbortReason
+import org.apache.log4j.Logger
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -89,17 +95,44 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		ruleOperationalizations = ImmutableSet::copyOf(rules.map[operationalize(this)])
 	}
 	
+	private long nextTransformationSequenceID = 0; 
+	
 	public def doGet() {
-		fireAllRules(getRuleEngineForGet)		
+		val trExec = new LensTransformationExecution(this, '''GET.«nextTransformationSequenceID++»''')
+		fireAllRules(getRuleEngineForGet, trExec)	
+		trExec	
 	}
-	public def doPutback() {
-		fireAllRules(getRuleEngineForPutback)		
+	public def doPutback(boolean rollbackIfUndoable) {
+		val trExec = new LensTransformationExecution(this, '''PUTBACK.«nextTransformationSequenceID++»''')
+		fireAllRules(getRuleEngineForPutback, trExec)		
+		
+		if (rollbackIfUndoable && trExec.abortReason.isUndoable) {
+			val undoStack = trExec.undoStack
+			
+			if (trExec.logger.isDebugEnabled) {
+				trExec.logger.debug('''Attempting to undo «undoStack.size» operations after PUTBACK «trExec.executionSequenceID» aborted''')
+			}
+			
+			var UndoableManipulationAction toBeUndone;
+			while ({toBeUndone = undoStack.pollLast; toBeUndone!= null}) {
+				val manipulable = getManipulable(toBeUndone.manipulableKey)
+				val updateTuple = toBeUndone.updateTuple
+				if (toBeUndone.insertion) // do the opposite 
+					manipulable.retractTuple(updateTuple) 
+				else 
+					manipulable.assertTuple(updateTuple)				
+			}
+		}
+		
+		trExec
 	}
 	
-	def fireAllRules(RuleEngine engine) {
+	def fireAllRules(RuleEngine engine, LensTransformationExecution trExec) {
 		val context = Context::create
+		context.put(LensTransformationExecution.name, trExec)
+		
 		var Activation activation = engine.nextActivation
-		while (activation != null) { 
+		while (!(trExec.isAborted) && activation != null) { 
 			activation.fire(context)
 			activation = engine.nextActivation
 		}
@@ -285,10 +318,28 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			val Object[] valueArray = assetVariables.map[name | variables.get(name)]
 			val authMatch = authDeniedQuery.newMatch(valueArray)
 			if (authDeniedMatcher.hasMatch(authMatch)) {
-				throw new RuntimeException('''User "«user.name»" has no authorization for writing «assetClass.simpleName» at «authMatch.prettyPrint»''');
+				transformationExecution.abort(new WriteAuthorizationAbort(user, assetClass.name, authMatch))
 			}
 		]
 	}
+	@Data
+	public static class WriteAuthorizationAbort implements AbortReason {
+		val User user
+		val String assetClassName
+		val IPatternMatch authMatch
+		//val IPatternMatch lhsMatch
+		
+		override logAbortion(Logger logger, String executionFullID) {
+			logger.warn(
+			'''Aborting execution of «executionFullID» due to write error: user "«user.name»" has no authorization for writing «assetClassName» at «authMatch.prettyPrint»''')
+		}
+		
+		override isUndoable() {
+			true
+		}
+	}
+	
+	
 	def QueryTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
 		authorizationQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
 	}
