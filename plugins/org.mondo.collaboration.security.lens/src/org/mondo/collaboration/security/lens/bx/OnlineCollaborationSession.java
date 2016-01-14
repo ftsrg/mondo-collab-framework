@@ -13,10 +13,12 @@ package org.mondo.collaboration.security.lens.bx;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Semaphore;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -33,8 +35,7 @@ import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondenc
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.relational.LensTransformationExecution;
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.AbortReason;
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.ExceptionAbort;
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.DenialReason;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
@@ -61,6 +62,11 @@ public class OnlineCollaborationSession {
 	private final AccessControlModel accessControlModel;
 	
 	private final Map<String, Leg> legsByUserName = new HashMap<>(); 
+	
+	/**
+	 * For serializing concurrent modifications by Legs
+	 */
+    Semaphore mutex = new Semaphore(1);
 	
 	/**
 	 * @param goldConfinementURI the writable area in the folder hierarchy for the gold model
@@ -100,7 +106,10 @@ public class OnlineCollaborationSession {
 	
 	/**
 	 * The "leg" of the session specific to a single user.
-	 * <p> Modifications of the front model should be wrapped in {@link #atomicallyModify(Callable)}
+	 * <p> Modifications of the front model should be indicated with {@link #atomicallyModify(Callable)}
+	 * 
+	 * <p> For Transactional EMF or other model-level R/W access control, subclass and override methods 
+	 *     to acquire appropriate permissions.
 	 * 
 	 * @author Bergmann Gabor
 	 *
@@ -159,9 +168,11 @@ public class OnlineCollaborationSession {
 		}
 		
 		/**
-		 * @return
+		 * Sets up the bidirectional lens transformation between the front model of the Leg and the common gold model.
+		 * <p> Must read the front model. For Transactional EMF or other model-level R/W access control, 
+		 *        subclass and override to wrap in a read-enabled transaction.
 		 */
-		private RelationalLensXform setupLens(boolean startWithGet) {
+		protected RelationalLensXform setupLens(boolean startWithGet) {
 			User user = SecurityArbiter.getUserByName(accessControlModel, userName);
 			if (user == null)
 				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, policyResource.getURI()));
@@ -187,16 +198,19 @@ public class OnlineCollaborationSession {
 		}
 		
 		
-		public void overWriteFromGold() throws InvocationTargetException {
+        /**
+         * Uses the GET transformation of the lens to update the front model so that it reflects the contents of the gold model.
+         * <p> May write to the front model. For Transactional EMF or other model-level R/W access control, 
+         *      subclass and override to wrap in a write-enabled transaction.
+         */
+		public void overWriteFromGold() {
             LensTransformationExecution propagatingExecution = 
                     lens.doGet();
             
             // propagation error
             if (propagatingExecution.isAborted()) {
-                final AbortReason abortReason = propagatingExecution.getAbortReason();
-                if (abortReason instanceof ExceptionAbort) { // this must be an exception abort, because GET
-                    throw new InvocationTargetException(((ExceptionAbort) abortReason).getException());
-                }
+                // this must be an exception abort, because GET, so we just rethrow the stored runtime exception
+                propagatingExecution.extractDenialReason();
                 
                 // should not reach this
                 throw new RuntimeException();
@@ -204,9 +218,7 @@ public class OnlineCollaborationSession {
 		}
 		
 		/**
-		 * Use this method to perform modifications of the front model.
-		 * <p> For Transactional EMF, client must enclose the invocation of this method 
-		 *    within nested write transactions for all of the front models.  
+		 * Use this method to indicate user modifications of the front model.
 		 * <p> If client can wrap all user modifications to this front model into a single callback, 
 		 *    then serializability is automatically enforced.
 		 * 
@@ -222,7 +234,7 @@ public class OnlineCollaborationSession {
 					result = modificationTransaction == null ? null : modificationTransaction.call();
 				} catch (Exception e) {
 //				    // try to roll back
-//					this.lens.doGet(); 
+//					overWriteFromGold(); 
 					throw new InvocationTargetException(e);
 				}
 				
@@ -240,6 +252,38 @@ public class OnlineCollaborationSession {
 			return result;
 		}
 
+		/**
+		 * Assumption: called within a write-enabled transaction for this Leg. 
+		 * If the modification is denied, the transaction must be rolled back by the client.
+		 * 
+		 * @return the reason the modification was denied, or null if it was successful
+		 * @throws ConcurrentModificationException if another Leg thread has preempted this modification
+		 */
+		public DenialReason trySubmitModification() {
+		    if (!mutex.tryAcquire()) {
+		        // another Leg has acquired the mutex and is performing modifications
+		        throw new ConcurrentModificationException();
+		    }		        
+		    // acquired
+		    try {
+		        // synchronized(this)?
+		        
+                final LensTransformationExecution lensExecution = 
+                        lens.doPutback(true /* restore previous gold model if permission is denied */);
+                
+                // propagate successful PUTBACK to the other front models   
+                if (!lensExecution.isAborted()) {       
+                    for (Leg leg : legsByUserName.values()) {
+                        leg.overWriteFromGold();
+                    }
+                } 
+
+                return lensExecution.extractDenialReason();		        
+		    } finally {
+		        mutex.release();
+		    }
+		}
+		
 		public String getUserName() {
 			return userName;
 		}

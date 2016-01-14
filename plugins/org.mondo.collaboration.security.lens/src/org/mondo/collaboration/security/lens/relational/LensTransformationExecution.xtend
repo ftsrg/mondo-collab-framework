@@ -49,19 +49,41 @@ public class LensTransformationExecution {
 		reason.logAbortion(logger, executionFullID)
 	}
 	
+	/**
+	 * If the transformation was aborted due to a denial, the denial reason is returned.
+	 * If aborted due to a runtime exception instead, the exception is thrown again.
+	 * If the transformation was not aborted, null is returned
+	 */
+	public def extractDenialReason() {
+		if (abortReason instanceof RuntimeExceptionAbort) 
+			throw abortReason.exception
+		else
+			return abortReason as DenialReason
+	}
+
 	@Data
+	/**
+	 * Represent an elementary modification that can be rolled back if necessary.
+	 */
 	public static class UndoableManipulationAction {
 		IInputKey manipulableKey
 		Tuple updateTuple
 		boolean isInsertion
 	}
+	
+	/**
+	 * Represent the reason the lens execution has been aborted.
+	 * Must either be a {@link RuntimeExceptionAbort} or a {@link DenialReason}.
+	 */
 	public static interface AbortReason {
 		public def void logAbortion(Logger logger, String executionFullID)
-		public def boolean isUndoable()
 	}
+	/**
+	 * Lens Execution has been aborted due to an internal error.
+	 */
 	@Data
-	public static class ExceptionAbort implements AbortReason {
-		val Exception exception
+	public static class RuntimeExceptionAbort implements AbortReason {
+		val RuntimeException exception
 		val IPatternMatch lhsMatch
 		
 		override logAbortion(Logger logger, String executionFullID) {
@@ -70,9 +92,11 @@ public class LensTransformationExecution {
 			exception)
 		}
 		
-		override isUndoable() {
-			false
-		}
+	}
+	/**
+	 * Lens Execution has been aborted because a lock or authorization has been denied.
+	 */
+	public static interface DenialReason extends AbortReason {
 		
 	}
 }

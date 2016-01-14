@@ -53,6 +53,7 @@ import org.mondo.collaboration.security.lens.relational.LensTransformationExecut
 import org.eclipse.incquery.runtime.api.IPatternMatch
 import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.AbortReason
 import org.apache.log4j.Logger
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.DenialReason
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -102,11 +103,11 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		fireAllRules(getRuleEngineForGet, trExec)	
 		trExec	
 	}
-	public def doPutback(boolean rollbackIfUndoable) {
+	public def doPutback(boolean rollbackGoldIfDenied) {
 		val trExec = new LensTransformationExecution(this, '''PUTBACK.«nextTransformationSequenceID++»''')
 		fireAllRules(getRuleEngineForPutback, trExec)		
 		
-		if (rollbackIfUndoable && trExec.abortReason.isUndoable) {
+		if (rollbackGoldIfDenied && trExec.abortReason instanceof DenialReason) {
 			val undoStack = trExec.undoStack
 			
 			if (trExec.logger.isDebugEnabled) {
@@ -318,12 +319,12 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			val Object[] valueArray = assetVariables.map[name | variables.get(name)]
 			val authMatch = authDeniedQuery.newMatch(valueArray)
 			if (authDeniedMatcher.hasMatch(authMatch)) {
-				transformationExecution.abort(new WriteAuthorizationAbort(user, assetClass.name, authMatch))
+				transformationExecution.abort(new WriteAuthorizationDenial(user, assetClass.name, authMatch))
 			}
 		]
 	}
 	@Data
-	public static class WriteAuthorizationAbort implements AbortReason {
+	public static class WriteAuthorizationDenial implements DenialReason {
 		val User user
 		val String assetClassName
 		val IPatternMatch authMatch
@@ -332,11 +333,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		override logAbortion(Logger logger, String executionFullID) {
 			logger.warn(
 			'''Aborting execution of «executionFullID» due to write error: user "«user.name»" has no authorization for writing «assetClassName» at «authMatch.prettyPrint»''')
-		}
-		
-		override isUndoable() {
-			true
-		}
+		}		
 	}
 	
 	

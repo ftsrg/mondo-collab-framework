@@ -54,7 +54,7 @@ import org.eclipse.incquery.runtime.evm.api.Activation
 import org.eclipse.incquery.runtime.evm.api.Context
 import org.eclipse.incquery.runtime.api.IncQueryMatcher
 import org.mondo.collaboration.security.lens.relational.LensTransformationExecution
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.ExceptionAbort
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.RuntimeExceptionAbort
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -92,7 +92,12 @@ public class RuleGeneratorExtensions {
 			override protected handleError(Activation<? extends Match> activation, Exception exception, Context context) {
 				val match = activation.atom
 				val LensTransformationExecution trExecution = context.get(LensTransformationExecution.name) as LensTransformationExecution
-				trExecution.abort(new ExceptionAbort(exception, match))
+				val runtimeException = 
+					if (exception instanceof RuntimeException) 
+						exception 
+					else // can this happen at all?
+						new RuntimeException(exception)
+				trExecution.abort(new RuntimeExceptionAbort(runtimeException, match))
 			}
 		}
 		val rule = Rules::<Match>newMatcherRuleSpecification(query, Lifecycles::getDefault(false, false), #{job})
