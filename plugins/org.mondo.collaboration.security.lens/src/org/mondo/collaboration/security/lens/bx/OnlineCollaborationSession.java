@@ -15,8 +15,9 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 
@@ -61,7 +62,7 @@ public class OnlineCollaborationSession {
 	private final ModelIndexer goldIndexer;
 	private final AccessControlModel accessControlModel;
 	
-	private final Map<String, Leg> legsByUserName = new HashMap<>(); 
+	private final Set<Leg> legs = new HashSet<>(); 
 	
 	/**
 	 * For serializing concurrent modifications by Legs
@@ -95,14 +96,6 @@ public class OnlineCollaborationSession {
         		goldResourceSet,
         		EMFScope.extractUnderlyingEMFIndex(arbiter.getPolicyQueryEngine()));
 	}
-
-	/**
-	 * @return null if Leg does not exist yet and bust be created
-	 */
-	public Leg getExistingLeg(String userName) {
-	    return legsByUserName.get(userName);
-	}
-	
 	
 	/**
 	 * The "leg" of the session specific to a single user.
@@ -159,7 +152,7 @@ public class OnlineCollaborationSession {
 			this.frontConfinementURI = frontConfinementURI;
 			this.frontResourceSet = frontResourceSet;
 			
-			legsByUserName.put(userName, this);
+			legs.add(this);
 			this.lens = setupLens(startWithGet);
 			
 			if (startWithGet) {
@@ -243,7 +236,7 @@ public class OnlineCollaborationSession {
 				
 				// propagate successful PUTBACK to the other front models	
 				if (!lensExecution.isAborted()) { 		
-				    for (Leg leg : legsByUserName.values()) {
+				    for (Leg leg : legs) {
 				        leg.overWriteFromGold();
 				    }				
 				}
@@ -273,7 +266,7 @@ public class OnlineCollaborationSession {
                 
                 // propagate successful PUTBACK to the other front models   
                 if (!lensExecution.isAborted()) {       
-                    for (Leg leg : legsByUserName.values()) {
+                    for (Leg leg : legs) {
                         leg.overWriteFromGold();
                     }
                 } 
@@ -297,7 +290,7 @@ public class OnlineCollaborationSession {
 		}
 
 		public void dispose() {
-		    legsByUserName.remove(userName);
+		    legs.remove(userName);
 		}
 
 		
