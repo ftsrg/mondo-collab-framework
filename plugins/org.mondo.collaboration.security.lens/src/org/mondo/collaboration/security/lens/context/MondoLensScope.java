@@ -30,6 +30,10 @@ import org.mondo.collaboration.security.lens.context.keys.WhichModel;
 import org.mondo.collaboration.security.lens.context.manipulables.BaseKeyAwareManipulable;
 import org.mondo.collaboration.security.lens.context.manipulables.DebuggableManipulableWrapper;
 import org.mondo.collaboration.security.lens.context.manipulables.EObjectAttributeManipulator;
+import org.mondo.collaboration.security.lens.context.manipulables.EObjectManipulator;
+import org.mondo.collaboration.security.lens.context.manipulables.EObjectReferenceManipulator;
+import org.mondo.collaboration.security.lens.context.manipulables.ResourceManipulator;
+import org.mondo.collaboration.security.lens.context.manipulables.ResourceRootContentsManipulator;
 import org.mondo.collaboration.security.lens.emf.ModelFactInputKey;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
@@ -185,18 +189,36 @@ public class MondoLensScope extends IncQueryScope {
 		for (ModelFactInputKey modelFactKey : ModelFactInputKey.values()) {
             wrapForDebug(
                     new CollabLensModelInputKey(modelFactKey, WhichModel.GOLD), 
-                    new EObjectAttributeManipulator(goldIndexer)
+                    createManipulator(modelFactKey, goldIndexer)
             ).putInto(manipulables);
             wrapForDebug(
                     new CollabLensModelInputKey(modelFactKey, WhichModel.FRONT), 
-                    new EObjectAttributeManipulator(frontIndexer)
+                    createManipulator(modelFactKey, frontIndexer)
             ).putInto(manipulables);
         }
 				
 		return manipulables;
 	}
 
-	private static BaseKeyAwareManipulable wrapForDebug(IInputKey key, IManipulableRelation wrapped) {
+    private IManipulableRelation createManipulator(ModelFactInputKey modelFactKey, ModelIndexer model) {
+        switch(modelFactKey) {
+        case ATTRIBUTE_KEY:
+            return new EObjectAttributeManipulator(model);
+        case EOBJECT_KEY:
+            return new EObjectManipulator(model);
+        case REFERENCE_KEY:
+            return new EObjectReferenceManipulator(model);
+        case RESOURCE_KEY:
+            return new ResourceManipulator(model);
+        case RESOURCE_ROOT_CONTENTS_KEY:
+            return new ResourceRootContentsManipulator(model);
+        default:
+            throw new IllegalArgumentException();
+        }
+    }
+
+
+    private static BaseKeyAwareManipulable wrapForDebug(IInputKey key, IManipulableRelation wrapped) {
 		return new DebuggableManipulableWrapper(wrapped, key);
 	}
 }
