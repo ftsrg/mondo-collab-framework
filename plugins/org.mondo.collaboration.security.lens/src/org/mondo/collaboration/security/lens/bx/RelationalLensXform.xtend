@@ -318,7 +318,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			val Object[] valueArray = assetVariables.map[name | variables.get(name)]
 			val authMatch = authDeniedQuery.newMatch(valueArray)
 			if (authDeniedMatcher.hasMatch(authMatch)) {
-				transformationExecution.abort(new WriteAuthorizationDenial(user, assetClass.name, authMatch))
+				transformationExecution.abort(new WriteAuthorizationDenial(user, assetClass, authMatch))
 			}
 		]
 	}

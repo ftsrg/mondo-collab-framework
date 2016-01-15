@@ -15,6 +15,7 @@ import org.apache.log4j.Logger
 import org.eclipse.incquery.runtime.api.IPatternMatch
 import org.eclipse.xtend.lib.annotations.Data
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
+import org.mondo.collaboration.security.lens.arbiter.Asset
 
 /**
  * Represent the reason the lens execution has been aborted.
@@ -48,7 +49,7 @@ public interface AbortReason {
 	@Data
 	public static class WriteAuthorizationDenial implements DenialReason {
 		val User user
-		val String assetClassName
+		val Class<? extends Asset> assetClass
 		val IPatternMatch authMatch
 		//val IPatternMatch lhsMatch
 		
@@ -58,7 +59,7 @@ public interface AbortReason {
 		}	
 		
 		override prettyPrintProblem() {
-			'''Permission denied - user "«user.name»" has no authorization for writing «assetClassName» at «authMatch.prettyPrint»'''
+			'''Permission denied - user "«user.name»" has no authorization for writing «assetClass.simpleName» at «authMatch.prettyPrint»'''
 		}
 		
 	}
