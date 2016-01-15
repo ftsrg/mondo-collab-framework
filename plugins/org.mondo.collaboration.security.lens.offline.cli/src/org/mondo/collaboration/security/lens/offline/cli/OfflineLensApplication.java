@@ -2,7 +2,8 @@ package org.mondo.collaboration.security.lens.offline.cli;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.DenialReason;
+import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
+import org.mondo.collaboration.security.lens.bx.offline.OfflineLensGlue;
 
 public class OfflineLensApplication implements IApplication {
 

@@ -53,8 +53,8 @@ import org.eclipse.incquery.runtime.evm.api.Job
 import org.eclipse.incquery.runtime.evm.api.Activation
 import org.eclipse.incquery.runtime.evm.api.Context
 import org.eclipse.incquery.runtime.api.IncQueryMatcher
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.RuntimeExceptionAbort
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution
+import org.mondo.collaboration.security.lens.bx.AbortReason.RuntimeExceptionAbort
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 

@@ -5,6 +5,8 @@ Bundle-SymbolicName: org.mondo.collaboration.security.lens;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: org.mondo.collaboration.security.lens.arbiter,
  org.mondo.collaboration.security.lens.bx,
+ org.mondo.collaboration.security.lens.bx.offline,
+ org.mondo.collaboration.security.lens.bx.online,
  org.mondo.collaboration.security.lens.context,
  org.mondo.collaboration.security.lens.context.keys,
  org.mondo.collaboration.security.lens.context.manipulables,

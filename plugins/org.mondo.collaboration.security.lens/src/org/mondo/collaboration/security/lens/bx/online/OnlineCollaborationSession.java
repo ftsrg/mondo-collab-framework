@@ -9,7 +9,7 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.bx;
+package org.mondo.collaboration.security.lens.bx.online;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -31,13 +31,14 @@ import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
+import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution;
+import org.mondo.collaboration.security.lens.bx.RelationalLensXform;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution;
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.DenialReason;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;

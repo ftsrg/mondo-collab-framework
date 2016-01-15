@@ -17,7 +17,8 @@ import org.eclipse.incquery.runtime.matchers.context.IInputKey
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple
 import java.util.List
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.UndoableManipulationAction
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution.UndoableManipulationAction
 
 /**
  * The runtime execution context of a transformation rule

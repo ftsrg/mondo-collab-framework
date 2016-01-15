@@ -9,7 +9,7 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.offline.cli;
+package org.mondo.collaboration.security.lens.bx.offline;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,16 +29,15 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
-import org.mondo.collaboration.security.lens.bx.OfflineCollaborationSession;
+import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.EMFUtil;
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.DenialReason;
 import org.mondo.collaboration.security.lens.util.uri.URIWorkspaceMappingsHelper;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
 
 /**
- * Glue code that takes a list of string parameters, configures and executes an offline collaboration lens, and returns the results.
+ * Glue code that takes a list of string parameters, configures and executes an org.mondo.collaboration.security.lens.bx.offline collaboration lens, and returns the results.
  * @author Bergmann Gabor
  *
  */
@@ -56,10 +55,10 @@ public class OfflineLensGlue {
         Logger logger = Logger.getLogger(OfflineLensGlue.class.getName() + "." + currentSequenceID);
                 
         try {
-            if (logger.isDebugEnabled()) logger.debug("Parsing arguments: " + Arrays.toString(argArray));
+            if (logger.isInfoEnabled()) logger.info("Parsing arguments: " + Arrays.toString(argArray));
             OfflineLensGlue lensGlue = new OfflineLensGlue(argArray, logger);
             
-            if (logger.isDebugEnabled()) logger.debug("Starting transformation...");
+            if (logger.isInfoEnabled()) logger.info("Starting transformation...");
             
             DenialReason denialReason = null;
             if (lensGlue.performGet)
@@ -67,7 +66,7 @@ public class OfflineLensGlue {
             else if (lensGlue.performPutback)
                denialReason =  lensGlue.session.doPutbackAndSave();
             
-            if (logger.isDebugEnabled()) logger.debug(denialReason == null ? "Done (success)." : "Done (denied).");
+            if (logger.isInfoEnabled()) logger.info(denialReason == null ? "Done (success)." : "Done (denied).");
             return denialReason;
         } catch (Exception ex) {
             logger.error("Aborted.", ex);

@@ -48,12 +48,11 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static org.mondo.collaboration.security.lens.context.keys.WhichModel.*
 import static org.mondo.collaboration.security.lens.emf.ModelFactInputKey.*
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.UndoableManipulationAction
 import org.eclipse.incquery.runtime.api.IPatternMatch
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.AbortReason
 import org.apache.log4j.Logger
-import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.DenialReason
+import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution.UndoableManipulationAction
+import org.mondo.collaboration.security.lens.bx.AbortReason.WriteAuthorizationDenial
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -322,23 +321,6 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 				transformationExecution.abort(new WriteAuthorizationDenial(user, assetClass.name, authMatch))
 			}
 		]
-	}
-	@Data
-	public static class WriteAuthorizationDenial implements DenialReason {
-		val User user
-		val String assetClassName
-		val IPatternMatch authMatch
-		//val IPatternMatch lhsMatch
-		
-		override logAbortion(Logger logger, String executionFullID) {
-			logger.warn(
-			'''Aborting execution of «executionFullID»: «prettyPrintProblem»''')
-		}	
-		
-		override prettyPrintProblem() {
-			'''Permission denied - user "«user.name»" has no authorization for writing «assetClassName» at «authMatch.prettyPrint»'''
-		}
-		
 	}
 	
 	
