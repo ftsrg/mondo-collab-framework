@@ -332,8 +332,13 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		
 		override logAbortion(Logger logger, String executionFullID) {
 			logger.warn(
-			'''Aborting execution of «executionFullID» due to write error: user "«user.name»" has no authorization for writing «assetClassName» at «authMatch.prettyPrint»''')
-		}		
+			'''Aborting execution of «executionFullID»: «prettyPrintProblem»''')
+		}	
+		
+		override prettyPrintProblem() {
+			'''Permission denied - user "«user.name»" has no authorization for writing «assetClassName» at «authMatch.prettyPrint»'''
+		}
+		
 	}
 	
 	

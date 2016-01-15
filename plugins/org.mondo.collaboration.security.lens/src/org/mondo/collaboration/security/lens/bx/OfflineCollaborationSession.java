@@ -30,6 +30,7 @@ import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondenc
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.relational.LensTransformationExecution;
+import org.mondo.collaboration.security.lens.relational.LensTransformationExecution.DenialReason;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
@@ -129,26 +130,33 @@ public class OfflineCollaborationSession {
 	
 	/**
 	 * Performs the GET transformation and saves the front model
+	 * @return null if successful, the reason for failure otherwise
 	 * @throws IOException 
 	 */
-	public void doGetAndSave() throws IOException {
+	public DenialReason doGetAndSave() throws IOException {
         final LensTransformationExecution lensExecution = 
                 lens.doGet();
 		
         if (! lensExecution.isAborted()) 
             saveResources(frontResourceSet, frontConfinementURI);
+        
+        return lensExecution.extractDenialReason();
 	}
 
 	/**
 	 * Performs the PUTBACK transformation and saves the front model
+	 * @return 
+     * @return null if successful, the reason for failure otherwise
 	 * @throws IOException 
 	 */
-	public void doPutbackAndSave() throws IOException {
+	public DenialReason doPutbackAndSave() throws IOException {
 		final LensTransformationExecution lensExecution = 
 		        lens.doPutback(false /* no need to roll back, will be discarded instead */);
 		
 		if (! lensExecution.isAborted()) 
 		    saveResources(goldResourceSet, goldConfinementURI);
+        
+        return lensExecution.extractDenialReason();
 	}
 
 	/**

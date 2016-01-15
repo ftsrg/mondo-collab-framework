@@ -97,6 +97,7 @@ public class LensTransformationExecution {
 	 * Lens Execution has been aborted because a lock or authorization has been denied.
 	 */
 	public static interface DenialReason extends AbortReason {
+		def String prettyPrintProblem();
 		
 	}
 }
