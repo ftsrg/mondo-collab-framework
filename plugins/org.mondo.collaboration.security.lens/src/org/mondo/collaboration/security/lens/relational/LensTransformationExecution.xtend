@@ -31,10 +31,18 @@ import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
 public class LensTransformationExecution {
 	val RelationalLensXform transformation
 	val String executionSequenceID
-	
-	val executionFullID = '''«transformation.fullyQualifiedName».«executionSequenceID»'''
-	val	logger = Logger::getLogger(executionFullID)	
+	val String executionFullID
+	val	Logger logger
 	val undoStack = new ArrayDeque<UndoableManipulationAction>
+	
+	public new(RelationalLensXform transformation, String executionSequenceID) {
+		this.transformation = transformation
+		this.executionSequenceID = executionSequenceID
+		this.executionFullID = '''«transformation.fullyQualifiedName».«executionSequenceID»'''
+		this.logger = Logger::getLogger(executionFullID)	
+	}
+	
+	
 	
 	/**
 	 * Null as long as transformation execution is not aborted

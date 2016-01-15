@@ -94,7 +94,6 @@ public class OfflineLensGlue {
     private static final String PERFORM_GET_SWITCH                  = "-performGet";
     private static final String PERFORM_PUTBACK_SWITCH              = "-performPutback";
     
-    private String[] argArray;
     private Logger logger;
     
     private String repositoryRootPath;
@@ -110,7 +109,6 @@ public class OfflineLensGlue {
     }
     
     private OfflineLensGlue(String[] argArray, Logger logger) throws FileNotFoundException, IOException, IncQueryException, CoreException {
-        this.argArray = argArray;
         this.logger = logger;        
         
         List<String> goldPaths          =  getRequiredCLIOptionValues(argArray, GOLD_MODEL_ROOTS_PATH_OPTION,       PATH_VALUE);
