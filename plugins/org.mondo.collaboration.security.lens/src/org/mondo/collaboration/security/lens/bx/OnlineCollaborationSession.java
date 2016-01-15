@@ -19,7 +19,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -67,7 +68,7 @@ public class OnlineCollaborationSession {
 	/**
 	 * For serializing concurrent modifications by Legs
 	 */
-    Semaphore mutex = new Semaphore(1);
+    Lock mutex = new ReentrantLock();
 	
 	/**
 	 * @param goldConfinementURI the writable area in the folder hierarchy for the gold model
@@ -206,7 +207,7 @@ public class OnlineCollaborationSession {
                 propagatingExecution.extractDenialReason();
                 
                 // should not reach this
-                throw new RuntimeException();
+                throw new IllegalStateException();
             }
 		}
 		
@@ -220,29 +221,23 @@ public class OnlineCollaborationSession {
 		 *    serializability must be ensured separately in that case.
 		 * @throws InvocationTargetException if the modification transaction throws an exception
 		 */
-		public <T> T atomicallyModify(Callable<T> modificationTransaction) throws InvocationTargetException {
-			T result;
-			synchronized (OnlineCollaborationSession.this) {
+		public DenialReason atomicallyModify(Callable<?> modificationTransaction) throws InvocationTargetException {
+            mutex.lock();
+            try {
 				try {
-					result = modificationTransaction == null ? null : modificationTransaction.call();
+					if (modificationTransaction == null) 
+					    modificationTransaction.call();
 				} catch (Exception e) {
 //				    // try to roll back
 //					overWriteFromGold(); 
 					throw new InvocationTargetException(e);
 				}
 				
-				final LensTransformationExecution lensExecution = 
-				        lens.doPutback(true /* restore previous gold model if permission is denied */);
-				
-				// propagate successful PUTBACK to the other front models	
-				if (!lensExecution.isAborted()) { 		
-				    for (Leg leg : legs) {
-				        leg.overWriteFromGold();
-				    }				
-				}
-			}
-			
-			return result;
+                final LensTransformationExecution lensExecution = propagateToGold(); 
+                return lensExecution.extractDenialReason();             
+            } finally {
+                mutex.unlock();
+            }
 		}
 
 		/**
@@ -253,7 +248,7 @@ public class OnlineCollaborationSession {
 		 * @throws ConcurrentModificationException if another Leg thread has preempted this modification
 		 */
 		public DenialReason trySubmitModification() {
-		    if (!mutex.tryAcquire()) {
+		    if (!mutex.tryLock()) {
 		        // another Leg has acquired the mutex and is performing modifications
 		        throw new ConcurrentModificationException();
 		    }		        
@@ -261,21 +256,25 @@ public class OnlineCollaborationSession {
 		    try {
 		        // synchronized(this)?
 		        
-                final LensTransformationExecution lensExecution = 
-                        lens.doPutback(true /* restore previous gold model if permission is denied */);
-                
-                // propagate successful PUTBACK to the other front models   
-                if (!lensExecution.isAborted()) {       
-                    for (Leg leg : legs) {
-                        leg.overWriteFromGold();
-                    }
-                } 
-
+                final LensTransformationExecution lensExecution = propagateToGold(); 
                 return lensExecution.extractDenialReason();		        
 		    } finally {
-		        mutex.release();
+		        mutex.unlock();
 		    }
 		}
+
+        protected LensTransformationExecution propagateToGold() {
+            final LensTransformationExecution lensExecution = 
+                    lens.doPutback(true /* restore previous gold model if permission is denied */);
+            
+            // propagate successful PUTBACK to the other front models   
+            if (!lensExecution.isAborted()) {       
+                for (Leg leg : legs) {
+                    leg.overWriteFromGold();
+                }
+            }
+            return lensExecution;
+        }
 		
 		public String getUserName() {
 			return userName;
@@ -295,5 +294,5 @@ public class OnlineCollaborationSession {
 
 		
 	}
-	
+		
 }
