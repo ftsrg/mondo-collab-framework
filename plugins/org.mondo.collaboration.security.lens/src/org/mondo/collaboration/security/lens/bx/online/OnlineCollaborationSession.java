@@ -9,14 +9,18 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.bx;
+package org.mondo.collaboration.security.lens.bx.online;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -27,6 +31,9 @@ import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
+import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution;
+import org.mondo.collaboration.security.lens.bx.RelationalLensXform;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
@@ -45,7 +52,7 @@ import com.google.common.collect.ImmutableSet;
  */
 // TODO: use Transactional EMF
 public class OnlineCollaborationSession {
-	private static final URI FAKE_MAIN_RESOURCE_URI = URI.createFileURI(
+	public static final URI FAKE_MAIN_RESOURCE_URI = URI.createFileURI(
 			"org.mondo.collaboration.security.lens.bx.fake-path" + File.pathSeparator + 
 			"org.mondo.collaboration.security.lens.bx.fake-root-resource");
 
@@ -57,7 +64,12 @@ public class OnlineCollaborationSession {
 	private final ModelIndexer goldIndexer;
 	private final AccessControlModel accessControlModel;
 	
-	private final Map<String, Leg> legsByUserName = new HashMap<>(); 
+	private final Set<Leg> legs = new HashSet<>(); 
+	
+	/**
+	 * For serializing concurrent modifications by Legs
+	 */
+    Lock mutex = new ReentrantLock();
 	
 	/**
 	 * @param goldConfinementURI the writable area in the folder hierarchy for the gold model
@@ -86,10 +98,13 @@ public class OnlineCollaborationSession {
         		goldResourceSet,
         		EMFScope.extractUnderlyingEMFIndex(arbiter.getPolicyQueryEngine()));
 	}
-
+	
 	/**
 	 * The "leg" of the session specific to a single user.
-	 * <p> Modifications of the front model should be wrapped in {@link #atomicallyModify(Callable)}
+	 * <p> Modifications of the front model should be indicated with {@link #atomicallyModify(Callable)}
+	 * 
+	 * <p> For Transactional EMF or other model-level R/W access control, subclass and override methods 
+	 *     to acquire appropriate permissions.
 	 * 
 	 * @author Bergmann Gabor
 	 *
@@ -105,42 +120,54 @@ public class OnlineCollaborationSession {
 		private final RelationalLensXform lens;
 
 		/**
-		 * Creates an in-memory front model for the user.
+		 * Creates an in-memory front model for the user and immediately synchronizes the gold model onto it.
 		 * @param userName the name of the user for which the online synchronization is conducted
 		 * @param stringObfuscator the attribute obfuscator seeded for the specific user
+		 * @throws InvocationTargetException 
 		 */
-		public Leg(String userName, DataTypeObfuscator<String> stringObfuscator) {
+		public Leg(String userName, DataTypeObfuscator<String> stringObfuscator) throws InvocationTargetException {
 			this(userName, stringObfuscator,
+			        true,
 					new ResourceSetImpl(), 
 					FAKE_MAIN_RESOURCE_URI);
 		}
 		
 		/**
-		 * Use {@link #OnlineCollaborationSession(String, DataTypeObfuscator)} instead 
+		 * Creates a 
+		 * <p> Use {@link #OnlineCollaborationSession(String, DataTypeObfuscator)} instead 
 		 * unless you want to fine-tune the front model. 
 		 * 
 		 * @param userName the name of the user for which the online synchronization is conducted
 		 * @param stringObfuscator the attribute obfuscator seeded for the specific user
+		 * @param startWithGet whether to immediately initialize model contents by a GET (overwrites existing content)
 		 * @param frontConfinementURI the writable area in the folder hierarchy for the front model
 		 * @param frontResourceSet preinitialized front model
+		 * @throws InvocationTargetException 
 		 */
-		private Leg(String userName, DataTypeObfuscator<String> stringObfuscator, 
+		public Leg(String userName, DataTypeObfuscator<String> stringObfuscator,
+		        boolean startWithGet, 
 				ResourceSet frontResourceSet, 
-				URI frontConfinementURI) {
+				URI frontConfinementURI) throws InvocationTargetException {
 			super();
 			this.userName = userName;
 			this.stringObfuscator = stringObfuscator;
 			this.frontConfinementURI = frontConfinementURI;
 			this.frontResourceSet = frontResourceSet;
 			
-			legsByUserName.put(userName, this);
-			this.lens = setupLens();
+			legs.add(this);
+			this.lens = setupLens(startWithGet);
+			
+			if (startWithGet) {
+			    overWriteFromGold();
+			}
 		}
 		
 		/**
-		 * @return
+		 * Sets up the bidirectional lens transformation between the front model of the Leg and the common gold model.
+		 * <p> Must read the front model. For Transactional EMF or other model-level R/W access control, 
+		 *        subclass and override to wrap in a read-enabled transaction.
 		 */
-		private RelationalLensXform setupLens() {
+		protected RelationalLensXform setupLens(boolean startWithGet) {
 			User user = SecurityArbiter.getUserByName(accessControlModel, userName);
 			if (user == null)
 				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, policyResource.getURI()));
@@ -150,7 +177,7 @@ public class OnlineCollaborationSession {
 	        		frontResourceSet);
 
 			// if using in-memory resource with fake URI, then front model is initially empty, no need to gather EObject correspondences
-			LiveTable correspondenceTable = frontConfinementURI == FAKE_MAIN_RESOURCE_URI ? new LiveTable() :	
+			LiveTable correspondenceTable = startWithGet ? new LiveTable() :	
 				EObjectCorrespondence.buildEObjectCorrespondenceTable(
 					goldIndexer, 
 					uniqueIDFactory.apply(goldConfinementURI),
@@ -165,34 +192,91 @@ public class OnlineCollaborationSession {
 			return new RelationalLensXform(scope, user, stringObfuscator);
 		}
 		
+		
+        /**
+         * Uses the GET transformation of the lens to update the front model so that it reflects the contents of the gold model.
+         * <p> May write to the front model. For Transactional EMF or other model-level R/W access control, 
+         *      subclass and override to wrap in a write-enabled transaction.
+         */
+		public void overWriteFromGold() {
+            LensTransformationExecution propagatingExecution = 
+                    lens.doGet();
+            
+            // propagation error
+            if (propagatingExecution.isAborted()) {
+                // this must be an exception abort, because GET, so we just rethrow the stored runtime exception
+                propagatingExecution.extractDenialReason();
+                
+                // should not reach this
+                throw new IllegalStateException();
+            }
+		}
+		
 		/**
-		 * Use this method to wrap modifications of the front model.
+		 * Use this method to indicate user modifications of the front model.
+		 * <p> If client can wrap all user modifications to this front model into a single callback, 
+		 *    then serializability is automatically enforced.
+		 * 
+		 * @param modificationTransaction a callback that encloses the actual modifications to the front model. 
+		 *    Can be null if it is not possible to enclose modifications; 
+		 *    serializability must be ensured separately in that case.
 		 * @throws InvocationTargetException if the modification transaction throws an exception
 		 */
-		public <T> T atomicallyModify(Callable<T> modificationTransaction) throws InvocationTargetException {
-			T result;
-			synchronized (OnlineCollaborationSession.this) {
+		public DenialReason atomicallyModify(Callable<?> modificationTransaction) throws InvocationTargetException {
+            mutex.lock();
+            try {
 				try {
-					result = modificationTransaction.call();
+					if (modificationTransaction == null) 
+					    modificationTransaction.call();
 				} catch (Exception e) {
-					// TODO roll back & return
+//				    // try to roll back
+//					overWriteFromGold(); 
 					throw new InvocationTargetException(e);
 				}
 				
-				lens.doPutback();
-				// TODO roll back & return if failed
-				
-				for (Leg leg : legsByUserName.values()) {
-					//if (leg != Leg.this) {
-						leg.lens.doGet();
-					//}
-				}				
-				// TODO transactional, handle write access denial, roll back modification with a get
-			}
-			
-			return result;
+                final LensTransformationExecution lensExecution = propagateToGold(); 
+                return lensExecution.extractDenialReason();             
+            } finally {
+                mutex.unlock();
+            }
 		}
 
+		/**
+		 * Assumption: called within a write-enabled transaction for this Leg. 
+		 * If the modification is denied, the transaction must be rolled back by the client.
+		 * 
+		 * @return the reason the modification was denied, or null if it was successful
+		 * @throws ConcurrentModificationException if another Leg thread has preempted this modification
+		 */
+		public DenialReason trySubmitModification() {
+		    if (!mutex.tryLock()) {
+		        // another Leg has acquired the mutex and is performing modifications
+		        throw new ConcurrentModificationException();
+		    }		        
+		    // acquired
+		    try {
+		        // synchronized(this)?
+		        
+                final LensTransformationExecution lensExecution = propagateToGold(); 
+                return lensExecution.extractDenialReason();		        
+		    } finally {
+		        mutex.unlock();
+		    }
+		}
+
+        protected LensTransformationExecution propagateToGold() {
+            final LensTransformationExecution lensExecution = 
+                    lens.doPutback(true /* restore previous gold model if permission is denied */);
+            
+            // propagate successful PUTBACK to the other front models   
+            if (!lensExecution.isAborted()) {       
+                for (Leg leg : legs) {
+                    leg.overWriteFromGold();
+                }
+            }
+            return lensExecution;
+        }
+		
 		public String getUserName() {
 			return userName;
 		}
@@ -205,8 +289,11 @@ public class OnlineCollaborationSession {
 			return scope;
 		}
 
+		public void dispose() {
+		    legs.remove(userName);
+		}
 
 		
 	}
-	
+		
 }

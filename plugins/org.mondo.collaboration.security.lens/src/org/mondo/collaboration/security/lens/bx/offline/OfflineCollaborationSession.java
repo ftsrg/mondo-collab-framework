@@ -9,7 +9,7 @@
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
 
-package org.mondo.collaboration.security.lens.bx;
+package org.mondo.collaboration.security.lens.bx.offline;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -24,6 +24,9 @@ import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
+import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution;
+import org.mondo.collaboration.security.lens.bx.RelationalLensXform;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
@@ -36,7 +39,7 @@ import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * An offline synchronization session for a single user, between the gold model and a single front model.
+ * An org.mondo.collaboration.security.lens.bx.offline synchronization session for a single user, between the gold model and a single front model.
  * @author Bergmann Gabor
  *
  */
@@ -61,7 +64,7 @@ public class OfflineCollaborationSession {
 	 * @param frontResourceSet the front model
 	 * @param uniqueIDFactory the scheme for identifying model elements
 	 * @param policyResource the resource of the policy model
-	 * @param userName the name of the user for which the offline map is conducted
+	 * @param userName the name of the user for which the org.mondo.collaboration.security.lens.bx.offline map is conducted
 	 * @param stringObfuscator the attribute obfuscator seeded for the specific user
 	 * @throws IncQueryException 
 	 */
@@ -128,22 +131,33 @@ public class OfflineCollaborationSession {
 	
 	/**
 	 * Performs the GET transformation and saves the front model
+	 * @return null if successful, the reason for failure otherwise
 	 * @throws IOException 
 	 */
-	public void doGetAndSave() throws IOException {
-		lens.doGet();
+	public DenialReason doGetAndSave() throws IOException {
+        final LensTransformationExecution lensExecution = 
+                lens.doGet();
 		
-		saveResources(frontResourceSet, frontConfinementURI);
+        if (! lensExecution.isAborted()) 
+            saveResources(frontResourceSet, frontConfinementURI);
+        
+        return lensExecution.extractDenialReason();
 	}
 
 	/**
 	 * Performs the PUTBACK transformation and saves the front model
+	 * @return 
+     * @return null if successful, the reason for failure otherwise
 	 * @throws IOException 
 	 */
-	public void doPutbackAndSave() throws IOException {
-		lens.doPutback();
+	public DenialReason doPutbackAndSave() throws IOException {
+		final LensTransformationExecution lensExecution = 
+		        lens.doPutback(false /* no need to roll back, will be discarded instead */);
 		
-		saveResources(goldResourceSet, goldConfinementURI);
+		if (! lensExecution.isAborted()) 
+		    saveResources(goldResourceSet, goldConfinementURI);
+        
+        return lensExecution.extractDenialReason();
 	}
 
 	/**

@@ -36,18 +36,10 @@ public class ManipulableTemplate extends QueryTemplate {
 		}
 		
 		def ActionStep asRetractAction() {
-			return [ environment |
-				val Object[] valueArray = argumentVariables.map[environment.variables.get(it)]
-				environment.transformation.getManipulable(key).retractTuple(new FlatTuple(valueArray))
-			]
+			return [performManipulation(key, argumentVariables, false)]
 		}
 		def ActionStep asAssertAction() {
-			return [ environment |
-				val Object[] valueArray = argumentVariables.map[environment.variables.get(it)]
-				val assertedTuple = environment.transformation.getManipulable(key).assertTuple(new FlatTuple(valueArray))
-				for (int i : 0..< argumentVariables.size)
-					environment.variables.put(argumentVariables.get(i), assertedTuple.get(i))
-			]
+			return [performManipulation(key, argumentVariables, true)]
 		}
 		
 }

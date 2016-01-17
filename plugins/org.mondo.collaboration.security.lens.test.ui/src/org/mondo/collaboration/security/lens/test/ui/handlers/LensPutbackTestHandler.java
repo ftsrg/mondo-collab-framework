@@ -36,7 +36,7 @@ public class LensPutbackTestHandler extends AbstractLensTestHandler {
 		}
 		
 		///
-		lens.doPutback();
+		lens.doPutback(true);
 	}
 
 }
