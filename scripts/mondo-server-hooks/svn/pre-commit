@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DIR=/mondo
 . $DIR/config.properties
@@ -10,7 +10,7 @@ DIR=/mondo
 GOLD_REPOS_URL="$URL/$SVN_PATH_URL/$GOLD_REPO_NAME"		  #URL of the gold repository
 export PATH=$PATH:$JAVA_HOME
 
-function replace {
+replace {
     echo "${1/$2/$3}"
 }
 

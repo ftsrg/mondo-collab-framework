@@ -116,7 +116,7 @@ for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
     log "        execute commit"
     svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
   else
-    log "        Skipping this repo: $FRON_USER is the current committer"
+    log "        Skipping this repo: $FRONT_USER is the current committer"
   fi
 done
 
