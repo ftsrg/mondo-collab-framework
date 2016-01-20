@@ -25,12 +25,24 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 public class EMFUtil {
 	
 	public static Resource getOrCreateResource(ResourceSet resourceSet, URI resourceURI) {
-		if (resourceURI.isFile() && !(new File(resourceURI.toFileString()).exists())) {
-			return resourceSet.createResource(resourceURI);			
+	    Resource resource = getExistingResource(resourceSet, resourceURI);
+		if (resource == null) {
+		    return resourceSet.createResource(resourceURI);			
 		} else {
-			return resourceSet.getResource(resourceURI, true);			
+			return resource;			
 		}
 		
 	}
+	/**
+	 * @return null if file does not exist, the loaded resource otherwise
+	 */
+    public static Resource getExistingResource(ResourceSet resourceSet, URI resourceURI) {
+        if (resourceURI.isFile() && !(new File(resourceURI.toFileString()).exists())) {
+            return null;
+        } else {
+            return resourceSet.getResource(resourceURI, true);          
+        }
+        
+    }
 
 }

@@ -4,6 +4,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.bx.offline.OfflineLensGlue;
+import org.mondo.collaboration.security.lens.bx.offline.OfflineLensParametrizationException;
 
 public class OfflineLensApplication implements IApplication {
 
@@ -20,6 +21,9 @@ public class OfflineLensApplication implements IApplication {
                 System.err.println(denialReason.prettyPrintProblem());
     		    return -1;
             }
+        } catch (OfflineLensParametrizationException ex) {
+            System.err.println("Aborted due to incorrect parametrization - " + ex.getMessage());
+            return -1;
 		} catch (Exception ex) {
             System.err.println("Aborted due to internal error (see server log for details) - " + ex.getMessage());
             return -1;
