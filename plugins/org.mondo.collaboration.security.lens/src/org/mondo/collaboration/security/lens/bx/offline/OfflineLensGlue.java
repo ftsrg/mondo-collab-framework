@@ -22,19 +22,25 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
+import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.EMFUtil;
 import org.mondo.collaboration.security.lens.util.uri.URIWorkspaceMappingsHelper;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
+import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 
 /**
  * Glue code that takes a list of string parameters, configures and executes an org.mondo.collaboration.security.lens.bx.offline collaboration lens, and returns the results.
@@ -125,7 +131,7 @@ public class OfflineLensGlue {
         performGet = getCLISwitch(argArray, PERFORM_GET_SWITCH);
         performPutback = getCLISwitch(argArray, PERFORM_PUTBACK_SWITCH);
         if (!(performGet ^ performPutback)) {
-            throw new IllegalArgumentException(String.format("Specify either switch %s or %s", PERFORM_GET_SWITCH, PERFORM_PUTBACK_SWITCH));
+            throw new OfflineLensParametrizationException(String.format("Specify either switch %s or %s", PERFORM_GET_SWITCH, PERFORM_PUTBACK_SWITCH));
         }
         
         StringObfuscator stringObfuscator = null; 
@@ -144,14 +150,31 @@ public class OfflineLensGlue {
             workspaceMappings = Collections.emptyMap();
         }
         
-        ResourceSet goldResourceSet     = loadModelRoots(goldPaths); // TODO use resourceSetProvider?
-        ResourceSet frontResourceSet    = loadModelRoots(frontPaths); // TODO use resourceSetProvider?
+        ResourceSet goldResourceSet     = loadModelRoots(goldPaths, performGet); // TODO use resourceSetProvider?
+        ResourceSet frontResourceSet    = loadModelRoots(frontPaths, performPutback); // TODO use resourceSetProvider?
         Resource policyResource         = loadPolicyModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
         
         final UniqueIDSchemeFactory uniqueIDSchemeFactory = EObjectCorrespondence.getRegisteredIDProviderFactory(uniqueIDSchemeExtension);
         if (uniqueIDSchemeFactory == null) {
-            throw new IllegalArgumentException(String.format("Unique ID scheme provided by extension %s not found", uniqueIDSchemeExtension));
+            throw new OfflineLensParametrizationException(String.format("Unique ID scheme provided by extension %s not found", uniqueIDSchemeExtension));
         }
+        
+        final EList<EObject> policyModelContents = policyResource.getContents();
+        if (policyModelContents.isEmpty())
+            throw new OfflineLensParametrizationException(String.format("Empty or non-existing MACL resource %s", policyResource.getURI()));
+        AccessControlModel accessControlModel;
+        try {
+            accessControlModel = (AccessControlModel) policyModelContents.get(0);
+        } catch (ClassCastException ex) {
+            throw new OfflineLensParametrizationException(String.format("Could not interpret as an access control model: MACL resource %s", policyResource.getURI()));
+        }
+        final Policy policy = accessControlModel.getPolicy();
+        if (policy == null)
+            throw new OfflineLensParametrizationException(String.format("No access control policy defined in MACL resource %s", policyResource.getURI()));
+        
+        User user = SecurityArbiter.getUserByName(accessControlModel, userName);
+        if (user == null)
+            throw new OfflineLensParametrizationException(String.format("User of name %s not found in MACL resource %s", userName, policyResource.getURI()));
         
         if (logger.isDebugEnabled()) logger.debug("Setting up lens...");
         
@@ -161,16 +184,16 @@ public class OfflineLensGlue {
                 frontConfinementURI, 
                 frontResourceSet,
                 uniqueIDSchemeFactory,
-                policyResource, 
-                userName,
+                policy, 
+                user,
                 stringObfuscator);
     }
     
     
-    private ResourceSet loadModelRoots(List<String> paths) {
+    private ResourceSet loadModelRoots(List<String> paths, boolean mustExist) {
         ResourceSet model = newResourceSet();
         for (String path : paths) {
-            getResourceAtPath(model, path);
+            getResourceAtPath(model, path, mustExist);
         }
         return model;
     }
@@ -183,13 +206,19 @@ public class OfflineLensGlue {
     private Resource loadPolicyModel(String policyPath, List<String> securityQueryPaths) {
         ResourceSet model = newResourceSet();
         for (String eiqPath : securityQueryPaths) {
-            getResourceAtPath(model, eiqPath);
+            getResourceAtPath(model, eiqPath, true);
         }
-        return getResourceAtPath(model, policyPath);
+        return getResourceAtPath(model, policyPath, true);
     }
-    private Resource getResourceAtPath(ResourceSet model, String path) {
+    private Resource getResourceAtPath(ResourceSet model, String path, boolean mustExist) {
         final URI fileURI = URI.createFileURI(path);
-        return EMFUtil.getOrCreateResource(model, fileURI);
+        if (mustExist) {
+            Resource resource = EMFUtil.getExistingResource(model, fileURI);
+            if (resource == null)
+                throw new OfflineLensParametrizationException("File not found: " + path);
+            return resource;
+        }
+        else return EMFUtil.getOrCreateResource(model, fileURI);
     }
     
     private static String getSingletonCLIOptionValue(String[] argArray, String optionKey, String valuePlaceHolder) {
@@ -213,16 +242,16 @@ public class OfflineLensGlue {
             return values.get(0);
     }
     
-    private static void checkSingleton(String optionKey, String valuePlaceHolder, List<String> values) throws IllegalArgumentException {
+    private static void checkSingleton(String optionKey, String valuePlaceHolder, List<String> values) throws OfflineLensParametrizationException {
         if (values.size() > 1) {
-            throw new IllegalArgumentException(String.format("Ambiguous value for singleton parameter %s %s", optionKey, valuePlaceHolder));
+            throw new OfflineLensParametrizationException(String.format("Ambiguous value for singleton parameter %s %s", optionKey, valuePlaceHolder));
         }
     }
     
     private static void checkMissing(String optionKey, String valuePlaceHolder, List<String> values)
-            throws IllegalArgumentException {
+            throws OfflineLensParametrizationException {
         if (values.isEmpty()) {
-            throw new IllegalArgumentException(String.format("Missing required parameter %s %s", optionKey, valuePlaceHolder));
+            throw new OfflineLensParametrizationException(String.format("Missing required parameter %s %s", optionKey, valuePlaceHolder));
         }
     }
     

@@ -33,7 +33,7 @@ import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondenc
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.LiveTable;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
+import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 
 import com.google.common.collect.ImmutableSet;
@@ -51,8 +51,8 @@ public class OfflineCollaborationSession {
 	private final URI frontConfinementURI;
 	private final ResourceSet frontResourceSet;
 	private final UniqueIDSchemeFactory uniqueIDFactory;
-	private final Resource policyResource;
-	private final String userName;
+	private User user;
+	private Policy policy;
 	private DataTypeObfuscator<String> stringObfuscator;
 	
 	private final RelationalLensXform lens;
@@ -63,8 +63,8 @@ public class OfflineCollaborationSession {
 	 * @param frontConfinementURI the writable area in the folder hierarchy for the front model
 	 * @param frontResourceSet the front model
 	 * @param uniqueIDFactory the scheme for identifying model elements
-	 * @param policyResource the resource of the policy model
-	 * @param userName the name of the user for which the org.mondo.collaboration.security.lens.bx.offline map is conducted
+	 * @param policy the policy model determining access control privileges
+	 * @param user the user for which the org.mondo.collaboration.security.lens.bx.offline mapping is conducted
 	 * @param stringObfuscator the attribute obfuscator seeded for the specific user
 	 * @throws IncQueryException 
 	 */
@@ -72,8 +72,8 @@ public class OfflineCollaborationSession {
 			URI goldConfinementURI, ResourceSet goldResourceSet, 
 			URI frontConfinementURI, ResourceSet frontResourceSet,
 			EObjectCorrespondence.UniqueIDSchemeFactory uniqueIDFactory,
-			Resource policyResource, 
-			String userName,
+			Policy policy, 
+			User user,
 			DataTypeObfuscator<String> stringObfuscator) throws IncQueryException {
 		super();
 		this.goldConfinementURI = goldConfinementURI;
@@ -81,8 +81,8 @@ public class OfflineCollaborationSession {
 		this.frontConfinementURI = frontConfinementURI;
 		this.frontResourceSet = frontResourceSet;
 		this.uniqueIDFactory = uniqueIDFactory;
-		this.policyResource = policyResource;
-		this.userName = userName;
+        this.policy = policy;
+        this.user = user;
 		this.stringObfuscator = stringObfuscator;
 		
 		this.lens = setupLens();
@@ -90,13 +90,9 @@ public class OfflineCollaborationSession {
 
 
 	public RelationalLensXform setupLens() throws IncQueryException {
-		AccessControlModel accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
-		User user = SecurityArbiter.getUserByName(accessControlModel, userName);
-		if (user == null)
-			throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, policyResource.getURI()));
 		
-		SecurityArbiter arbiter = new SecurityArbiter(
-				accessControlModel.getPolicy(), 
+        SecurityArbiter arbiter = new SecurityArbiter(
+				policy, 
 				user, 
 				ImmutableSet.of(goldResourceSet), 
 				new BaseIndexOptions());
@@ -201,16 +197,16 @@ public class OfflineCollaborationSession {
 		return frontResourceSet;
 	}
 
+	public Policy getPolicy() {
+        return policy;
+    }
 
-	public Resource getPolicyResource() {
-		return policyResource;
-	}
+	public User getUser() {
+        return user;
+    }
 
-	public String getUserName() {
-		return userName;
-	}
 
-	public RelationalLensXform getLens() {
+    public RelationalLensXform getLens() {
 		return lens;
 	}
 
