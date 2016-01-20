@@ -12,13 +12,18 @@ public class OfflineLensApplication implements IApplication {
 	public Object start(IApplicationContext context) throws Exception {
 		String[] argArray = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 
-		final DenialReason denialReason = OfflineLensGlue.invokeOfflineLens(argArray);
-        if (null == denialReason) {
-		    return IApplication.EXIT_OK;
-        } else {
-            System.err.println(denialReason.prettyPrintProblem());
-		    return -1;
-        }
+		try {
+    		final DenialReason denialReason = OfflineLensGlue.invokeOfflineLens(argArray);
+            if (null == denialReason) {
+    		    return IApplication.EXIT_OK;
+            } else {
+                System.err.println(denialReason.prettyPrintProblem());
+    		    return -1;
+            }
+		} catch (Exception ex) {
+            System.err.println("Aborted due to internal error (see server log for details) - " + ex.getMessage());
+            return -1;
+		}
 	}
 
 
