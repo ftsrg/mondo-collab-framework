@@ -1,5 +1,6 @@
 #!/bin/sh
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR=/mondo
 . $DIR/config.properties
 
 # Pre-commit script is responsible for execute the "put back" method of our lens when a client commits changes to a front repository.

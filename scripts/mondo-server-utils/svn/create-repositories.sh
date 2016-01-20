@@ -27,8 +27,10 @@ echo "(3/5) Permissons added"
 cp $DIR/../../mondo-server-hooks/svn/post-commit $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 chmod +x $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "(4/5) Post-commit hook copied"
-cp $CONFIG $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/config.properties
-cp $FRONT_LIST $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/front_list.properties
+#cp $CONFIG $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/config.properties
+#cp $FRONT_LIST $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/front_list.properties
+cp $CONFIG /mondo/config.properties
+cp $FRONT_LIST /mondo/front_list.properties
 echo "(5/5) Config files copied"
 
 echo "Generating Front Repositories..."
@@ -51,6 +53,7 @@ for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
   chmod +x $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/pre-commit
   echo "(4/5) Pre-commit hook copied"
   cp $CONFIG $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/config.properties
+  cp $CONFIG /mondo/config.properties
   echo "(5/5) Config file copied"
 done
 cp $DIR/lens-executor.sh $LENS_SCRIPT

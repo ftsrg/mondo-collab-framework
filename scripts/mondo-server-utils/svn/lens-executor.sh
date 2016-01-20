@@ -1,6 +1,7 @@
 #!/bin/sh
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR=/mondo
 . $DIR/config.properties
 
 LOG="$LENS_DIR/lens.log"
@@ -15,7 +16,7 @@ log() {
 
 # Config variables
 # Set them carefully
-LENS="$DIR/eclipse"
+LENS="$LENS_DIR/eclipse"
 ARGS="-nosplash -consoleLog --launcher.suppressErrors -application org.mondo.collaboration.security.lens.offline.cli"
 MACL="$9"
 EIQ="${10}"
@@ -40,6 +41,8 @@ OBF_SALT_COMMAND="-obfuscatorSalt"
 OBF_SEED_COMMAND="-obfuscatorSeed"
 OBF_PREFIX_COMMAND="-obfuscatorPrefix"
 
+-unique
+
 log "clear previous mess"
 rm -rf "$TEMP/"
 mkdir "$TEMP"
@@ -50,7 +53,7 @@ log "$LENS $ARGS $GOLD_COMMAND $GOLD $FRONT_COMMAND $FRONT $MACL_COMMAND $MACL $
 set -e
 
 #set +e
-$LENS $ARGS $GOLD_COMMAND $GOLD $FRONT_COMMAND $FRONT $MACL_COMMAND $MACL $EIQ_COMMAND $EIQ $USER_COMMAND $USER $TYPE -configuration $TEMP -data $TEMP $OBF_SALT_COMMAND $OBF_SALT $OBF_SEED_COMMAND $OBF_SEED $OBF_PREFIX_COMMAND $OBF_PREFIX
+$LENS $ARGS $GOLD_COMMAND $GOLD $FRONT_COMMAND $FRONT $MACL_COMMAND $MACL $EIQ_COMMAND $EIQ $USER_COMMAND $USER $TYPE -configuration $TEMP -data $TEMP $OBF_SALT_COMMAND $OBF_SALT $OBF_SEED_COMMAND $OBF_SEED $OBF_PREFIX_COMMAND $OBF_PREFIX -uniqueIDScheme mondo.demo
 #ret=$?
 #log "$ret"
 #set -e
