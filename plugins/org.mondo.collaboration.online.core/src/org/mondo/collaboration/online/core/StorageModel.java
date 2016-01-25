@@ -13,7 +13,7 @@ public class StorageModel {
 		initializeRoots();
 	}
 	private void initializeRoots() throws Exception {
-		roots = sa.explore(sa.getRepository(), null);
+		roots = sa.explore(StorageAccess.getRepository(), null);
 	}
 	protected StorageAccess getStorageAccess() {
 		return sa;

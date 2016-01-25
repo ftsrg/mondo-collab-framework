@@ -1,4 +1,6 @@
 package org.mondo.collaboration.online.core;
+
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Map;
 
@@ -11,8 +13,8 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
-import org.mondo.collaboration.security.lens.bx.OnlineCollaborationSession;
-import org.mondo.collaboration.security.lens.bx.OnlineCollaborationSession.Leg;
+import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
+import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession.Leg;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -26,11 +28,11 @@ public class LensActivator extends Plugin implements BundleActivator {
 
 	// The shared instance
 	private static LensActivator plugin;
-	
+
 	private static Logger logger = Logger.getLogger(LensActivator.class);
-	
+
 	private static Map<URI, OnlineCollaborationSession> modelSessions = Maps.newHashMap();
-	 
+
 	/**
 	 * The constructor
 	 */
@@ -38,18 +40,17 @@ public class LensActivator extends Plugin implements BundleActivator {
 		
 	}
 
-	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		
+
 		URL confURL = getBundle().getEntry("log4j.properties");
 		PropertyConfigurator.configure(FileLocator.toFileURL(confURL).getFile());
-		
+
 		logger.info(PLUGIN_ID + " is activated");
 	}
-	
+
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -65,30 +66,31 @@ public class LensActivator extends Plugin implements BundleActivator {
 	public static LensActivator getDefault() {
 		return plugin;
 	}
-	
+
 	public static Map<URI, OnlineCollaborationSession> getModelSessions() {
 		return modelSessions;
 	}
-	
-	public static void initializeSession(URI goldURI, ResourceSet resourceSet) {
-		
-		// TODO resourcePolicy
+
+	public static void initializeSession(URI goldURI, ResourceSet resourceSet, StorageAccess sa) {
 
 		try {
-			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, resourceSet, EObjectCorrespondence.getRegisteredIDProviderFactory(), null);
+			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, resourceSet,
+					EObjectCorrespondence.getRegisteredIDProviderFactory(), sa.loadPolicyModel());
 			modelSessions.put(goldURI, onlineCollaborationSession);
 		} catch (IncQueryException | CoreException e) {
-			logger.error("Error during online session initialization",e);
+			logger.error("Error during online session initialization", e);
 		}
-		
+
 	}
-	
-	public static Resource getOrCreateResource(URI goldURI) {
-		// TODO provide username here
-		// TODO provide DataTypeObfuscator
-		Leg leg = getModelSessions().get(goldURI).new Leg("Alice", null);
-		// We assume that the root resource is the first in this list
-		return leg.getFrontResourceSet().getResources().get(0);
+
+	public static Resource getOrCreateResource(URI goldURI, StorageAccess sa) {
+		try {
+			Leg leg = getModelSessions().get(goldURI).new Leg(sa.getUsername(), sa.getObfuscator());
+			return leg.getFrontResourceSet().getResources().get(0);
+		} catch (InvocationTargetException e) {
+			logger.error("Error during lens execution", e);
+		}
+		return null;
 	}
-	
+
 }

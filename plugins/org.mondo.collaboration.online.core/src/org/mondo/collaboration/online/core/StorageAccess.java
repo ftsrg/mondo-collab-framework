@@ -6,14 +6,21 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.URI;
-import org.mondo.collaboration.online.core.StorageModel.NodeType;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
+import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
+import org.mondo.collaboration.security.lens.bx.offline.OfflineLensParametrizationException;
+import org.mondo.collaboration.security.lens.emf.EMFUtil;
 
 /**
  * Classes inherited from StorageAccess responsible for accessing to the
@@ -22,58 +29,38 @@ import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
  * @author Csaba Debreceni
  *
  */
-public class StorageAccess {
+public abstract class StorageAccess {
 
 	protected final String username;
 	protected final String password;
-	
+
+	protected final StringObfuscator obfuscator;
+
 	private Logger logger = Logger.getLogger(StorageAccess.class);
-	
+
 	public StorageAccess(String username, String password) throws FileNotFoundException, IOException {
 		this.username = username;
 		this.password = password;
-		
+
+		obfuscator = new StringObfuscator(UUID.randomUUID().toString(), username);
+
 		logger.info("Storage access is created for " + username);
 	}
 
-	public static final String SVN_LIST_COMMAND = "svn list %s --username=%s --password=%s --non-interactive --no-auth-cache";
-	public static final String SVN_CHECKOUT_COMMAND = "svn checkout %s --depth empty --username=%s --password=%s --non-interactive --no-auth-cache";
-	public static final String SVN_CLEANUP_COMMAND = "svn cleanup --username=%s --password=%s --non-interactive --no-auth-cache";
-	public static final String SVN_UPDATE_COMMAND = "svn up %s --username=%s --password=%s --non-interactive --no-auth-cache";
-	public static final String SVN_LOG_COMMAND = "svn log %s --username=%s --password=%s --non-interactive --no-auth-cache";
-	
-	public static final String ERROR_SVN_LOGIN = "Authentication failed";
-	
 	/**
 	 * Testing the credentials. This is not required for other methods to be
 	 * called as they also use the credentials.
 	 * 
-	 * @return true if the login was successful, otherwise false
+	 * @return null if the login was successful, otherwise the error message to
+	 *         be displayed for the user
 	 */
-	public String login() {
-		logger.info("Login request sent in name of " + username);
-		try {
-			Collection<String> response = internalLoginProcess();
-			if(response.contains(ERROR_SVN_LOGIN)) {
-				logger.error("-> Response: " + ERROR_SVN_LOGIN);
-				return ERROR_SVN_LOGIN;
-			}
-		} catch (Exception e) {
-			logger.error("-> Response: Internal error during login", e);
-		}
-		logger.error("-> Response: OK");
-		return null;
-	}
-
-	private Collection<String> internalLoginProcess() throws Exception {
-		return internalExecuteProcess(String.format(SVN_LOG_COMMAND, getRepository(), getUsername(), getPassword()));
-	}
+	public abstract String login();
 
 	/**
 	 * Provides a storage model which stores the element of the repository.
 	 * 
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public StorageModel explore() throws Exception {
 		return new StorageModel(this);
@@ -84,50 +71,48 @@ public class StorageAccess {
 	 * 
 	 * @param path
 	 *            in the repository
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public Collection<StorageModelNode> explore(String path, StorageModelNode parent) throws Exception {
-		List<StorageModelNode> nodes = new ArrayList<StorageModelNode>();
-		Collection<String> entries = internalExecuteProcess(String.format(SVN_LIST_COMMAND, path, getUsername(), getPassword()));
-		
-		for (String entry : entries) {
-			if(entry.endsWith("/")) {
-				entry = entry.substring(0, entry.length()-1);
-				nodes.add(new StorageModelNode(entry, path + "/" + entry, NodeType.Folder, parent, this));
-			}
-			if(entry.endsWith(getExtension())) {
-				nodes.add(new StorageModelNode(entry, path + "/" + entry, NodeType.ModelNoSession, parent, this));
-			}
-		}
-		return nodes;
+	public abstract Collection<StorageModelNode> explore(String path, StorageModelNode parent) throws Exception;
+
+	public abstract URI startSession(String path) throws Exception;
+
+	public Resource loadPolicyModel() {
+		return loadPolicyModel(getInternalMaclFile(), Arrays.asList(getInternalEiqFile()));
 	}
 
-	public URI startSession(String path) throws Exception {
-		return URI.createFileURI(internalCheckoutFile(path));
+	private ResourceSetImpl newResourceSet() {
+		final ResourceSetImpl resourceSet = new ResourceSetImpl();
+		return resourceSet;
 	}
-	
-	private String internalCheckoutFile(String path) throws Exception {
-		Assert.isLegal(path.endsWith(getExtension()));
-		URI fullUri = URI.createURI(path);
-		String file = fullUri.lastSegment();
-		String folder = replaceLast(path, file, "");
-		String temp = folder.replaceFirst(getRepository(), getTempFolder());
-		
-		internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, getUsername(), getPassword()), new String[] {}, new File(getTempFolder()));
-		internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(temp));
-		
-		return temp+file;
+
+	private Resource loadPolicyModel(URI policyPath, List<URI> securityQueryPaths) {
+		ResourceSet model = newResourceSet();
+		for (URI eiqPath : securityQueryPaths) {
+			getResourceAtPath(model, eiqPath, true);
+		}
+		return getResourceAtPath(model, policyPath, true);
 	}
-	
-	private Collection<String> internalExecuteProcess(String cmd) throws Exception {
+
+	private Resource getResourceAtPath(ResourceSet model, URI fileURI, boolean mustExist) {
+		if (mustExist) {
+			Resource resource = EMFUtil.getExistingResource(model, fileURI);
+			if (resource == null)
+				throw new OfflineLensParametrizationException("File not found: " + fileURI);
+			return resource;
+		} else
+			return EMFUtil.getOrCreateResource(model, fileURI);
+	}
+
+	protected Collection<String> internalExecuteProcess(String cmd) throws Exception {
 		return internalExecuteProcess(cmd, new String[] {}, null);
 	}
-	
-	private Collection<String> internalExecuteProcess(String cmd, String[] args, File ctx) throws Exception {
+
+	protected Collection<String> internalExecuteProcess(String cmd, String[] args, File ctx) throws Exception {
 		logger.info("Process executing:");
-		logger.info("-> Command: "+ cmd);
-		logger.info("-> Context: "+ (ctx == null ? "@null" : ctx.getPath()));
-		
+		logger.info("-> Command: " + cmd);
+		logger.info("-> Context: " + (ctx == null ? "@null" : ctx.getPath()));
+
 		List<String> list = new ArrayList<String>();
 		String line;
 		Process p = Runtime.getRuntime().exec(cmd, args, ctx);
@@ -139,10 +124,10 @@ public class StorageAccess {
 			}
 			bre.close();
 		}
-		
-		if(!list.isEmpty())
+
+		if (!list.isEmpty())
 			return list;
-		
+
 		{
 			BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			while ((line = bri.readLine()) != null) {
@@ -155,12 +140,7 @@ public class StorageAccess {
 		logger.info("Process finished");
 		return list;
 	}
-	
-	private String replaceLast(String original, String from, String to) {
-		int lastIndexOf = original.lastIndexOf(from);
-		return new StringBuilder(original).replace(lastIndexOf, lastIndexOf+from.length(), to).toString();
-	}
-	
+
 	/**
 	 * Getter for username
 	 * 
@@ -179,18 +159,76 @@ public class StorageAccess {
 		return password;
 	}
 
-	public String getRepository() {
-		String ret =  Activator.getDefault().getBundle().getBundleContext().getProperty("mondo.repository.gold");
-		return ret == null ? "http://mondo.inf.mit.bme.hu/svn/wt-demo" : ret;
+	/**
+	 * Returns the repository location
+	 * 
+	 * @return the repository location
+	 */
+	public static String getRepository() {
+		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.repository.gold");
+		return ret == null ? "http://127.0.0.1/svn/wt-demo" : ret;
 	}
-	
-	public String getExtension() {
-		String ret = Activator.getDefault().getBundle().getBundleContext().getProperty("mondo.extension");
+
+	/**
+	 * Returns the lens specific extension
+	 * 
+	 * @return the lens specific extension
+	 */
+	public static String getExtension() {
+		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.extension");
 		return ret == null ? "wtspec4m" : ret;
 	}
 
-	public String getTempFolder() {
-		String ret = Activator.getDefault().getBundle().getBundleContext().getProperty("mondo.temporary.folder");
+	/**
+	 * Returns a temporary folder, where the application can store files
+	 * 
+	 * @return a temporary folder, where the application can store files
+	 */
+	public static String getTempFolder() {
+		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.temporary.folder");
 		return ret == null ? "/mondo/online/temp" : ret;
+	}
+
+	/**
+	 * Returns the Eiq file location to be check out
+	 * 
+	 * @return the Eiq file location to be check out
+	 */
+	public static String getEiqFile() {
+		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.eiq");
+		return ret == null ? "http://127.0.0.1/svn/wt-demo/macl.project/src/macl/project/queries.eiq" : ret;
+	}
+
+	/**
+	 * Returns the MACL file location to be check out
+	 * 
+	 * @return the MACL file location to be check out
+	 */
+	public static String getMaclFile() {
+		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.macl");
+		return ret == null ? "http://127.0.0.1/svn/wt-demo/macl.project/src/macl/project/rules.eiq" : ret;
+	}
+
+	/**
+	 * Returns the path of Eiq file on the file system.
+	 * 
+	 * @return the path of Eiq file on the file system.
+	 */
+	protected abstract URI getInternalEiqFile();
+
+	/**
+	 * Returns the path of Macl file on the file system.
+	 * 
+	 * @return the path of Macl file on the file system.
+	 */
+	protected abstract URI getInternalMaclFile();
+
+	/**
+	 * Returns the user specific obfuscator
+	 * 
+	 * @return the user specific obfuscator
+	 */
+	public DataTypeObfuscator<String> getObfuscator() {
+		return obfuscator;
 	}
 }

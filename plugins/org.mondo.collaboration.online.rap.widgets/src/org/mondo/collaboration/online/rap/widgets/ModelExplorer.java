@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.FillLayout;
@@ -40,6 +39,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.mondo.collaboration.online.core.StorageAccess;
+import org.mondo.collaboration.online.core.StorageAccessFactory;
+import org.mondo.collaboration.online.core.StorageAccessFactory.Type;
 import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
@@ -63,6 +64,8 @@ public class ModelExplorer extends ViewPart {
 	private StackLayout layout;
 	private StorageAccess access;
 	private Button remember;
+	
+	public static StorageAccessFactory.Type storageType = Type.SVN;
 	
 	/**
 	 * {@inheritDoc}
@@ -222,7 +225,7 @@ public class ModelExplorer extends ViewPart {
 	}
 	
 	protected void processLogin(String username, String password, boolean internal) throws FileNotFoundException, IOException {
-		access = new StorageAccess(username, password);
+		access = StorageAccessFactory.createStorageAccess(storageType, username, password);
 		String loginReason = access.login();
 		if(loginReason != null && !internal) {
 			showMessage(container, "Login failed", loginReason, SWT.ERROR | SWT.RETRY);
@@ -262,6 +265,7 @@ public class ModelExplorer extends ViewPart {
 	private void internalStoreHttpSession() {
 		RWT.getUISession().getHttpSession().setAttribute("username", usernameField.getText());
 		RWT.getUISession().getHttpSession().setAttribute("password", passwordField.getText());
+		RWT.getUISession().getHttpSession().setAttribute("storageaccess", access);
 	}
 	
 	private void internalStoreUserData() throws Exception {
@@ -310,5 +314,9 @@ public class ModelExplorer extends ViewPart {
 			}
 		}
 		return true;
+	}
+	
+	public static StorageAccess getCurrentStorageAccess() {
+		return (StorageAccess) RWT.getUISession().getHttpSession().getAttribute("storageaccess");
 	}
 }
