@@ -20,7 +20,7 @@ public class StorageAccessSvn extends StorageAccess {
 	}
 
 	public static final String SVN_LIST_COMMAND = "svn list %s --username=%s --password=%s --non-interactive --no-auth-cache";
-	public static final String SVN_CHECKOUT_COMMAND = "svn checkout %s --depth empty --username=%s --password=%s --non-interactive --no-auth-cache";
+	public static final String SVN_CHECKOUT_COMMAND = "svn checkout %s %s --depth empty --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_CLEANUP_COMMAND = "svn cleanup --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_UPDATE_COMMAND = "svn up %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_LOG_COMMAND = "svn log %s --username=%s --password=%s --non-interactive --no-auth-cache";
@@ -43,7 +43,7 @@ public class StorageAccessSvn extends StorageAccess {
 		} catch (Exception e) {
 			logger.error("-> Response: Internal error during login", e);
 		}
-		logger.error("-> Response: OK");
+		logger.info("-> Response: OK");
 		return null;
 	}
 
@@ -90,8 +90,10 @@ public class StorageAccessSvn extends StorageAccess {
 		String folder = replaceLast(path, file, "");
 		String temp = folder.replaceFirst(getRepository(), getTempFolder());
 		
-		internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, getUsername(), getPassword()), new String[] {}, new File(getTempFolder()));
-		internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(temp));
+		if(!new File(temp).exists())
+			internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, temp, getUsername(), getPassword()), new String[] {}, new File(getTempFolder()));
+		if(!new File(temp+file).exists())
+			internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(temp));
 		
 		return temp+file;
 	}

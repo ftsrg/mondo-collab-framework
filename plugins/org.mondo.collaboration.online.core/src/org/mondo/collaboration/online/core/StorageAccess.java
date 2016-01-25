@@ -206,7 +206,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getMaclFile() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.macl");
-		return ret == null ? "http://127.0.0.1/svn/wt-demo/macl.project/src/macl/project/rules.eiq" : ret;
+		return ret == null ? "http://127.0.0.1/svn/wt-demo/macl.project/src/macl/project/rules.macl" : ret;
 	}
 
 	/**
