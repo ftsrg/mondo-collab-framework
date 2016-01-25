@@ -65,7 +65,7 @@ public class ModelExplorer extends ViewPart {
 	private StorageAccess access;
 	private Button remember;
 	
-	public static StorageAccessFactory.Type storageType = Type.SVN;
+	public static StorageAccessFactory.Type storageType = Type.Dummy;
 	
 	/**
 	 * {@inheritDoc}

@@ -77,7 +77,8 @@ public class LensActivator extends Plugin implements BundleActivator {
 			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, resourceSet,
 					EObjectCorrespondence.getRegisteredIDProviderFactory(), sa.loadPolicyModel());
 			modelSessions.put(goldURI, onlineCollaborationSession);
-		} catch (IncQueryException | CoreException e) {
+//		} catch (IncQueryException | CoreException e) {
+		} catch (Exception e) {
 			logger.error("Error during online session initialization", e);
 		}
 

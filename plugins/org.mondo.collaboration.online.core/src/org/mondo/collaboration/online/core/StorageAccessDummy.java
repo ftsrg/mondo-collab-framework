@@ -11,8 +11,9 @@ import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 public class StorageAccessDummy extends StorageAccess {
 
-	private String internalEiqFile = "path to eiq";
-	private String internalMaclFile = "path to macl";
+	private String internalEiqFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
+	private String internalMaclFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
+	private String filepath = "/home/marci/git/mondo-demo-wt/Demo/demo.project/example.wtspec4m";
 
 	public StorageAccessDummy(String username, String password) throws FileNotFoundException, IOException {
 		super(username, password);
@@ -25,14 +26,13 @@ public class StorageAccessDummy extends StorageAccess {
 
 	@Override
 	public Collection<StorageModelNode> explore(String path, StorageModelNode parent) throws Exception {
-		//TODO: set path
-		StorageModelNode node = new StorageModelNode("example.wtspec4m", "path", NodeType.ModelNoSession, null, this);
+		StorageModelNode node = new StorageModelNode("example.wtspec4m", filepath, NodeType.ModelNoSession, null, this);
 		return Arrays.asList(node);
 	}
 
 	@Override
 	public URI startSession(String path) throws Exception {
-		return URI.createURI(path);
+		return URI.createFileURI(path);
 	}
 
 	@Override
