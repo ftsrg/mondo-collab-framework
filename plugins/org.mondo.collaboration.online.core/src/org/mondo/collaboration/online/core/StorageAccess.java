@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -14,13 +13,10 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
-import org.mondo.collaboration.security.lens.bx.offline.OfflineLensParametrizationException;
-import org.mondo.collaboration.security.lens.emf.EMFUtil;
 
 /**
  * Classes inherited from StorageAccess responsible for accessing to the
@@ -78,30 +74,9 @@ public abstract class StorageAccess {
 	public abstract URI startSession(String path) throws Exception;
 
 	public Resource loadPolicyModel() {
-		return loadPolicyModel(getInternalMaclFile(), Arrays.asList(getInternalEiqFile()));
-	}
-
-	private ResourceSetImpl newResourceSet() {
-		final ResourceSetImpl resourceSet = new ResourceSetImpl();
-		return resourceSet;
-	}
-
-	private Resource loadPolicyModel(URI policyPath, List<URI> securityQueryPaths) {
-		ResourceSet model = newResourceSet();
-		for (URI eiqPath : securityQueryPaths) {
-			getResourceAtPath(model, eiqPath, true);
-		}
-		return getResourceAtPath(model, policyPath, true);
-	}
-
-	private Resource getResourceAtPath(ResourceSet model, URI fileURI, boolean mustExist) {
-		if (mustExist) {
-			Resource resource = EMFUtil.getExistingResource(model, fileURI);
-			if (resource == null)
-				throw new OfflineLensParametrizationException("File not found: " + fileURI);
-			return resource;
-		} else
-			return EMFUtil.getOrCreateResource(model, fileURI);
+		ResourceSetImpl resourceSet = new ResourceSetImpl();
+		resourceSet.getResource(getInternalEiqFile(), true);
+		return resourceSet.getResource(getInternalMaclFile(), true);
 	}
 
 	protected Collection<String> internalExecuteProcess(String cmd) throws Exception {
