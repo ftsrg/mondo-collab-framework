@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.emf.ecp.common,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.mondo.collaboration.security.lens;bundle-version="1.0.0",
- com.google.guava;bundle-version="15.0.0"
+ com.google.guava;bundle-version="15.0.0",
+ org.eclipse.viatra.modelobfuscator.runtime;bundle-version="0.7.0"
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: org.mondo.collaboration.online.core.Activator
+Bundle-Activator: org.mondo.collaboration.online.core.LensActivator
 Import-Package: org.apache.log4j;version="1.2.15"
