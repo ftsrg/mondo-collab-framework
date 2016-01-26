@@ -87,7 +87,9 @@ public class LensActivator extends Plugin implements BundleActivator {
 
 		try {
 			Resource policyModel = sa.loadPolicyModel();
-			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, new ResourceSetImpl(),
+			ResourceSetImpl rSet = new ResourceSetImpl();
+			rSet.getResource(goldURI, true);
+			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, rSet,
 					EObjectCorrespondence.getRegisteredIDProviderFactory(), policyModel);
 			modelSessions.put(goldURI, onlineCollaborationSession);
 		} catch (IncQueryException | CoreException e) {
