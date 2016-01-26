@@ -52,8 +52,8 @@ import com.google.common.collect.ImmutableSet;
  */
 // TODO: use Transactional EMF
 public class OnlineCollaborationSession {
-	public static final URI FAKE_MAIN_RESOURCE_URI = URI.createFileURI(
-			"org.mondo.collaboration.security.lens.bx.fake-path" + File.pathSeparator + 
+	public static final URI FAKE_MAIN_RESOURCE_URI = URI.createURI("file://" +
+			"org.mondo.collaboration.security.lens.bx.fake-path" + File.separator + 
 			"org.mondo.collaboration.security.lens.bx.fake-root-resource");
 
 	private final URI goldConfinementURI;
