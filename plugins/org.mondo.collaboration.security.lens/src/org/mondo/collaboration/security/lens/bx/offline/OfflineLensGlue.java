@@ -138,7 +138,7 @@ public class OfflineLensGlue {
         if (obfuscatorSeed == null) {
             logger.warn("WARNING: option -" + OBFUSCATOR_SEED_OPTION + " not specified, obfuctation will fail if attempted");
         } else {
-            stringObfuscator = new StringObfuscator(obfuscatorSeed, obfuscatorSalt, obfuscatorPrefix);
+            stringObfuscator = new StringObfuscator(obfuscatorSeed, obfuscatorSalt);
         }
         
         URI goldConfinementURI = URI.createFileURI(goldPaths.get(0));
