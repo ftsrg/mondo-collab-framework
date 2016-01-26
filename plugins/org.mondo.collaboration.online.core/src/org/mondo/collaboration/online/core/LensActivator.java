@@ -23,6 +23,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.FutureCallback;
 
 public class LensActivator extends Plugin implements BundleActivator {
 
@@ -108,7 +109,7 @@ public class LensActivator extends Plugin implements BundleActivator {
 	 * 
 	 * @return user specific front {@link Leg}
 	 */
-	public static Leg getOrCreateResource(URI goldURI, EditingDomain domain, ILegCallback callback, StorageAccess sa) {
+	public static Leg getOrCreateResource(URI goldURI, EditingDomain domain, FutureCallback<Object> callback, StorageAccess sa) {
 		logger.info(String.format("Leg is creating for user: %s uri: %s", sa.getUsername(), goldURI.toString()));
 		try {
 			Leg leg = new OnlineLeg(getModelSessions().get(goldURI), sa.getUsername(), sa.getObfuscator(), true, domain,

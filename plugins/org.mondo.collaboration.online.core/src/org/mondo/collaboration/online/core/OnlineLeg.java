@@ -11,17 +11,19 @@ import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession.Leg;
 
+import com.google.common.util.concurrent.FutureCallback;
+
 public class OnlineLeg extends Leg {
 
 	private static Logger logger = Logger.getLogger(LensActivator.class);
 
 	protected boolean initialized = false;
-	protected ILegCallback callback;
+	protected FutureCallback<Object> callback;
 	protected EditingDomain editingDomain;
 	
 	public OnlineLeg(OnlineCollaborationSession onlineCollaborationSession, String userName,
 			DataTypeObfuscator<String> stringObfuscator, boolean startWithGet, EditingDomain editingDomain,
-			URI frontConfinementURI, ILegCallback callback) throws InvocationTargetException {
+			URI frontConfinementURI, FutureCallback<Object> callback) throws InvocationTargetException {
 		onlineCollaborationSession.super(userName, stringObfuscator, startWithGet, editingDomain.getResourceSet(), frontConfinementURI);
 		
 		this.editingDomain = editingDomain;
@@ -42,7 +44,7 @@ public class OnlineLeg extends Leg {
 					logger.info("Lens command is executing");
 					internalOverWriteFromGold();
 					logger.info("Callback method is calling");
-					callback.callback();
+					callback.onSuccess(null);
 				}
 			};
 			editingDomain.getCommandStack().execute(cmd);
