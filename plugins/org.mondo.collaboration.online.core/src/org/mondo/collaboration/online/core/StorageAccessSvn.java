@@ -70,12 +70,21 @@ public class StorageAccessSvn extends StorageAccess {
 				nodes.add(new StorageModelNode(entry, path + "/" + entry, NodeType.Folder, parent, this));
 			}
 			if(entry.endsWith(getExtension())) {
-				nodes.add(new StorageModelNode(entry, path + "/" + entry, NodeType.ModelNoSession, parent, this));
+				nodes.add(new StorageModelNode(entry, path + "/" + entry, checkType(path + "/" + entry), parent, this));
 			}
 		}
 		return nodes;
 	}
 
+	private NodeType checkType(String url) {
+		URI uri = URI.createFileURI(internalCheckoutFile(url, false));
+		if(LensActivator.getModelSessions().containsKey(uri)) {
+			return NodeType.ModelInSession;
+		} else {
+			return NodeType.ModelNoSession;
+		}
+	}
+	
 	@Override
 	public URI startSession(String path) throws Exception {
 		Assert.isLegal(path.endsWith(getExtension()));
@@ -85,16 +94,21 @@ public class StorageAccessSvn extends StorageAccess {
 	}
 
 	private String internalCheckoutFile(String path) throws Exception {
+		return internalCheckoutFile(path, true);
+	}
+	
+	private String internalCheckoutFile(String path, boolean doCheckout) {
 		URI fullUri = URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(path, file, "");
 		String temp = folder.replaceFirst(getRepository(), getTempFolder());
 		
-		if(!new File(temp).exists())
-			internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, temp, getUsername(), getPassword()), new String[] {}, new File(getTempFolder()));
-		if(!new File(temp+file).exists())
-			internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(temp));
-		
+		if(doCheckout) {
+			if(!new File(temp).exists())
+				internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, temp, getUsername(), getPassword()), new String[] {}, new File(getTempFolder()));
+			if(!new File(temp+file).exists())
+				internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(temp));
+		}
 		return temp+file;
 	}
 	

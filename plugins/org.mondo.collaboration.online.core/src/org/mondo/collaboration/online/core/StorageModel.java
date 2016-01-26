@@ -21,11 +21,11 @@ public class StorageModel {
 
 	public static class StorageModelNode {
 		
-		private String text;
-		private NodeType type;
-		private StorageModelNode parent;
-		private String path;
-		private StorageAccess sa;
+		private final String text;
+		private final NodeType type;
+		private final StorageModelNode parent;
+		private final String path;
+		private final StorageAccess sa;
 
 		private Collection<StorageModelNode> children = null;
 		
@@ -77,5 +77,5 @@ public class StorageModel {
 		return roots.toArray();
 	}
 	
-	public enum NodeType {Repository, Folder, ModelInSession, ModelNoSession}		
+	public enum NodeType {Repository, Folder, ModelInSession, ModelNoSession, ModelOwnSession}		
 }

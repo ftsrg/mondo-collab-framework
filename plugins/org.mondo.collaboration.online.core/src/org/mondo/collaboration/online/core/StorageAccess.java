@@ -83,36 +83,40 @@ public abstract class StorageAccess {
 		return internalExecuteProcess(cmd, new String[] {}, null);
 	}
 
-	protected Collection<String> internalExecuteProcess(String cmd, String[] args, File ctx) throws Exception {
+	protected Collection<String> internalExecuteProcess(String cmd, String[] args, File ctx) {
 		logger.info("Process executing:");
 		logger.info("-> Command: " + cmd);
 		logger.info("-> Context: " + (ctx == null ? "@null" : ctx.getPath()));
 
 		List<String> list = new ArrayList<String>();
-		String line;
-		Process p = Runtime.getRuntime().exec(cmd, args, ctx);
-		{
-			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-			while ((line = bre.readLine()) != null) {
-				list.add(line);
-				logger.info("---> Error: " + line);
+		try {
+			String line;
+			Process p = Runtime.getRuntime().exec(cmd, args, ctx);
+			{
+				BufferedReader bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+				while ((line = bre.readLine()) != null) {
+					list.add(line);
+					logger.info("---> Error: " + line);
+				}
+				bre.close();
 			}
-			bre.close();
-		}
-
-		if (!list.isEmpty())
-			return list;
-
-		{
-			BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			while ((line = bri.readLine()) != null) {
-				list.add(line);
-				logger.info("---> Response: " + line);
+	
+			if (!list.isEmpty())
+				return list;
+	
+			{
+				BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				while ((line = bri.readLine()) != null) {
+					list.add(line);
+					logger.info("---> Response: " + line);
+				}
+				bri.close();
 			}
-			bri.close();
+			p.waitFor();
+			logger.info("Process finished");
+		} catch (Exception e) {
+			logger.error("Process failed", e);
 		}
-		p.waitFor();
-		logger.info("Process finished");
 		return list;
 	}
 
