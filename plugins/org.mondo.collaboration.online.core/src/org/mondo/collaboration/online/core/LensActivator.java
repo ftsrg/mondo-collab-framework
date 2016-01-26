@@ -9,8 +9,6 @@ import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.emf.common.command.AbstractCommand;
-import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -44,7 +42,7 @@ public class LensActivator extends Plugin implements BundleActivator {
 	 * The constructor
 	 */
 	public LensActivator() {
-		
+
 	}
 
 	@Override
@@ -57,7 +55,7 @@ public class LensActivator extends Plugin implements BundleActivator {
 
 		AccessControlLanguageStandaloneSetup.doSetup();
 		EMFPatternLanguageStandaloneSetup.doSetup();
-		
+
 		logger.info(PLUGIN_ID + " is activated");
 	}
 
@@ -82,9 +80,13 @@ public class LensActivator extends Plugin implements BundleActivator {
 	}
 
 	/**
-	 * Initializes an {@link OnlineCollaborationSession} and stores in {@link LensActivator#getModelSessions()} map
-	 * @param goldURI that points to the gold model
-	 * @param sa that provides policy model configuration
+	 * Initializes an {@link OnlineCollaborationSession} and stores in
+	 * {@link LensActivator#getModelSessions()} map
+	 * 
+	 * @param goldURI
+	 *            that points to the gold model
+	 * @param sa
+	 *            that provides policy model configuration
 	 */
 	public static void initializeSession(URI goldURI, StorageAccess sa) {
 		logger.info(String.format("Lens is creating for uri: %s", goldURI.toString()));
@@ -102,55 +104,17 @@ public class LensActivator extends Plugin implements BundleActivator {
 	}
 
 	/**
-	 * Returns user specific front resource in the given resource set.
-	 * @param goldURI
-	 * @param resourceSet will be the container of front resource
-	 * @param sa that provides user specific information
-	 * @return user specific front resource in the given resource set
+	 * Returns user specific front {@link Leg}
+	 * 
+	 * @return user specific front {@link Leg}
 	 */
-	public static Resource getOrCreateResource(URI goldURI, EditingDomain domain, ILegCallback callback, StorageAccess sa) {
+	public static Leg getOrCreateResource(URI goldURI, EditingDomain domain, ILegCallback callback, StorageAccess sa) {
 		logger.info(String.format("Leg is creating for user: %s uri: %s", sa.getUsername(), goldURI.toString()));
 		try {
-			Leg leg = getModelSessions().get(goldURI).new Leg(sa.getUsername(), sa.getObfuscator(), 
-					true, domain.getResourceSet(),OnlineCollaborationSession.FAKE_MAIN_RESOURCE_URI) {
-				
-				boolean initialized = false;
-				
-				@Override
-				public void overWriteFromGold() {
-					if(initialized) {
-						logger.info("Lens command has to be executed");
-						Command cmd = new AbstractCommand(LENS_COMMAND_TITLE, LENS_COMMAND_DESCRIPTION) {
-							
-							@Override
-							public boolean canUndo() {
-								return false;
-							}
-							
-							@Override
-							public void redo() {
-								// Do nothing here
-							}
-							
-							@Override
-							public void execute() {
-								overWriteFromGoldSuper();
-								callback.callback();
-							}
-						};
-						domain.getCommandStack().execute(cmd);
-					} else {
-						logger.info("Leg initialized");
-						initialized = true;
-						overWriteFromGoldSuper();
-					}
-				}
-				protected void overWriteFromGoldSuper() {
-					super.overWriteFromGold();
-				}
-			};
-			Resource frontResource = leg.getFrontResourceSet().getResources().get(0);
-			return frontResource;
+			Leg leg = new OnlineLeg(getModelSessions().get(goldURI), sa.getUsername(), sa.getObfuscator(), true, domain,
+					OnlineCollaborationSession.FAKE_MAIN_RESOURCE_URI, callback);
+			logger.info("Successfully finished");
+			return leg;
 		} catch (InvocationTargetException e) {
 			logger.error("Error during lens execution", e);
 		}
