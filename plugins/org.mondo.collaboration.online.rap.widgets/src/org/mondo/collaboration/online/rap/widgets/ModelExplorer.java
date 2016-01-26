@@ -65,7 +65,7 @@ public class ModelExplorer extends ViewPart {
 	private StorageAccess access;
 	private Button remember;
 	
-	public static StorageAccessFactory.Type storageType = Type.Dummy;
+	public static StorageAccessFactory.Type storageType = Type.SVN;
 	
 	/**
 	 * {@inheritDoc}
@@ -122,7 +122,9 @@ public class ModelExplorer extends ViewPart {
                     		
 							@Override
 							public String getText() {
-								return "Open in a new session";
+								if(node.getType() == NodeType.ModelNoSession)
+									return "Open in a new session";
+								return "Join to session";
 							}
 							
 							public void run() {
