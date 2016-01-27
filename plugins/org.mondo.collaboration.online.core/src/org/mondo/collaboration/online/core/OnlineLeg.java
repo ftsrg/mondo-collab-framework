@@ -97,6 +97,11 @@ public class OnlineLeg extends Leg {
 	public abstract class LegCommand extends AbstractCommand {
 
 		@Override
+		protected boolean prepare() {
+			return true;
+		}
+		
+		@Override
 		public void redo() {
 			execute();
 		}
