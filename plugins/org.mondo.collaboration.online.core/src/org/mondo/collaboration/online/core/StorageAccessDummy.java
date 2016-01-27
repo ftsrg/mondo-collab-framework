@@ -11,9 +11,10 @@ import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 public class StorageAccessDummy extends StorageAccess {
 
-	private String internalEiqFile = "/home/vialpando/Eclipse/Mondo/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
-	private String internalMaclFile = "/home/vialpando/Eclipse/Mondo/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
-	private String filepath = "/home/vialpando/Eclipse/Mondo/git/mondo-demo-wt/Demo/demo.project/simplified-example.wtspec4m";
+	private String internalEiqFile = "C:\\Eclipse\\MondoOnline\\eclipse\\..\\git\\mondo-demo-wt\\Demo\\macl.project\\src\\macl\\project\\queries.eiq";
+	private String internalMaclFile = "C:\\Eclipse\\MondoOnline\\eclipse\\..\\git\\mondo-demo-wt\\Demo\\macl.project\\src\\macl\\project\\rules.macl";
+	private String filepath = "C:\\Eclipse\\MondoOnline\\eclipse\\..\\git\\mondo-demo-wt\\Demo\\demo.project\\example.wtspec4m";
+	private StorageModelNode node;
 
 	public StorageAccessDummy(String username, String password) throws FileNotFoundException, IOException {
 		super(username, password);
@@ -25,8 +26,8 @@ public class StorageAccessDummy extends StorageAccess {
 	}
 
 	@Override
-	public Collection<StorageModelNode> explore(String path, StorageModelNode parent) throws Exception {
-		StorageModelNode node = new StorageModelNode("example.wtspec4m", filepath, NodeType.ModelNoSession, null, this);
+	public Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent) {
+		node = new StorageModelNode(model, "example.wtspec4m", filepath, NodeType.NoModification, null, this);
 		return Arrays.asList(node);
 	}
 
@@ -35,6 +36,10 @@ public class StorageAccessDummy extends StorageAccess {
 		return URI.createFileURI(path);
 	}
 
+	@Override
+	public void finishSession(String path) {
+	}
+	
 	@Override
 	protected URI getInternalEiqFile() {
 		return URI.createFileURI(internalEiqFile);
@@ -45,4 +50,13 @@ public class StorageAccessDummy extends StorageAccess {
 		return URI.createFileURI(internalMaclFile);
 	}
 
+	@Override
+	public StorageModelNode updateNode(String path) {
+		return node;
+	}
+	
+	@Override
+	public StorageModelNode updateNode(StorageModelNode node) {
+		return node;
+	}
 }

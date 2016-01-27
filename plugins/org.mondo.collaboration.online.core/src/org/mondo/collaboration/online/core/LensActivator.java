@@ -109,11 +109,11 @@ public class LensActivator extends Plugin implements BundleActivator {
 	 * 
 	 * @return user specific front {@link Leg}
 	 */
-	public static Leg getOrCreateResource(URI goldURI, EditingDomain domain, FutureCallback<Object> callback, StorageAccess sa) {
+	public static OnlineLeg getOrCreateResource(URI goldURI, EditingDomain domain, FutureCallback<Object> callbackModification, FutureCallback<Object> callbackSave, StorageAccess sa) {
 		logger.info(String.format("Leg is creating for user: %s uri: %s", sa.getUsername(), goldURI.toString()));
 		try {
-			Leg leg = new OnlineLeg(getModelSessions().get(goldURI), sa.getUsername(), sa.getObfuscator(), true, domain,
-					OnlineCollaborationSession.FAKE_MAIN_RESOURCE_URI, callback);
+			OnlineLeg leg = new OnlineLeg(getModelSessions().get(goldURI), sa.getUsername(), sa.getObfuscator(), true, domain,
+					OnlineCollaborationSession.FAKE_MAIN_RESOURCE_URI, callbackModification, callbackSave);
 			logger.info("Successfully finished");
 			return leg;
 		} catch (InvocationTargetException e) {

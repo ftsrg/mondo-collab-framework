@@ -13,6 +13,7 @@ package org.mondo.collaboration.security.lens.bx.online;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -97,6 +98,14 @@ public class OnlineCollaborationSession {
         		goldConfinementURI,
         		goldResourceSet,
         		EMFScope.extractUnderlyingEMFIndex(arbiter.getPolicyQueryEngine()));
+	}
+	
+	public ResourceSet getGoldResourceSet() {
+		return goldResourceSet;
+	}
+	
+	public Set<Leg> getLegs() {
+		return Collections.unmodifiableSet(legs);
 	}
 	
 	/**

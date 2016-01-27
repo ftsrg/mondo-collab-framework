@@ -33,6 +33,7 @@ public abstract class StorageAccess {
 	protected final StringObfuscator obfuscator;
 
 	private Logger logger = Logger.getLogger(StorageAccess.class);
+	private StorageModel model;
 
 	public StorageAccess(String username, String password) throws FileNotFoundException, IOException {
 		this.username = username;
@@ -58,8 +59,11 @@ public abstract class StorageAccess {
 	 * @return
 	 * @throws Exception
 	 */
-	public StorageModel explore() throws Exception {
-		return new StorageModel(this);
+	public StorageModel explore() {
+		if(this.model == null) {
+			this.model = new StorageModel(this);
+		}
+		return this.model;
 	}
 
 	/**
@@ -69,7 +73,7 @@ public abstract class StorageAccess {
 	 *            in the repository
 	 * @throws Exception
 	 */
-	public abstract Collection<StorageModelNode> explore(String path, StorageModelNode parent) throws Exception;
+	public abstract Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent);
 
 	public abstract URI startSession(String path) throws Exception;
 
@@ -145,7 +149,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getRepository() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.repository.gold");
-		return ret == null ? "http://127.0.0.1/svn/wt-demo" : ret;
+		return ret == null ? "https://localhost:8443/svn/wt-demo" : ret;
 	}
 
 	/**
@@ -165,7 +169,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getTempFolder() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.temporary.folder");
-		return ret == null ? "/mondo/online/temp" : ret;
+		return ret == null ? "C:\\Eclipse\\MondoOnline\\mondo-online\\temp" : ret;
 	}
 
 	/**
@@ -175,7 +179,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getEiqFile() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.eiq");
-		return ret == null ? "http://127.0.0.1/svn/wt-demo/macl.project/src/macl/project/queries.eiq" : ret;
+		return ret == null ? "https://localhost:8443/svn/wt-demo/macl.project/src/macl/project/queries.eiq" : ret;
 	}
 
 	/**
@@ -185,7 +189,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getMaclFile() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.macl");
-		return ret == null ? "http://127.0.0.1/svn/wt-demo/macl.project/src/macl/project/rules.macl" : ret;
+		return ret == null ? "https://localhost:8443/svn/wt-demo/macl.project/src/macl/project/rules.macl" : ret;
 	}
 
 	/**
@@ -210,4 +214,22 @@ public abstract class StorageAccess {
 	public DataTypeObfuscator<String> getObfuscator() {
 		return obfuscator;
 	}
+	
+	/**
+	 * Finishes the session.
+	 * @param path to the model
+	 */
+	public abstract void finishSession(String path);
+	
+	/**
+	 * Updates a node in the StorageModel
+	 * @param path from the file system
+	 */
+	public abstract StorageModelNode updateNode(String path);
+	
+	/**
+	 * Updates a node in the StorageModel
+	 * @param path
+	 */
+	public abstract StorageModelNode updateNode(StorageModelNode node);
 }

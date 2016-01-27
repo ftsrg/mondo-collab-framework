@@ -65,7 +65,7 @@ public class ModelExplorer extends ViewPart {
 	private StorageAccess access;
 	private Button remember;
 	
-	public static StorageAccessFactory.Type storageType = Type.Dummy;
+	public static StorageAccessFactory.Type storageType = Type.SVN;
 	
 	/**
 	 * {@inheritDoc}
@@ -96,6 +96,8 @@ public class ModelExplorer extends ViewPart {
 		}
 		
 		registerContexMenu();
+		
+		RWT.getUISession().setAttribute("explorer", this);
 	}
 	
 	private void registerContexMenu() {
@@ -122,13 +124,36 @@ public class ModelExplorer extends ViewPart {
                     		
 							@Override
 							public String getText() {
-								if(node.getType() == NodeType.ModelNoSession)
-									return "Open in a new session";
-								return "Join to session";
+								return "Open in editor";
 							}
 							
 							public void run() {
 								openEditor(wb, node.getPath());
+							};
+                    	});
+                    }
+                    if (node.getType() == NodeType.Modified) {
+                    	manager.add(new Action() {
+
+							private static final long serialVersionUID = 1L;
+                    		
+							@Override
+							public String getText() {
+								return "Commit changes";
+							}
+							
+							public void run() {
+								access.finishSession(node.getPath());
+								access.updateNode(node);
+								
+								treeViewer.getControl().getDisplay().asyncExec(new Runnable() {
+									
+									@Override
+									public void run() {
+										treeViewer.update(node, null);
+										treeViewer.refresh(node);
+									}
+								});;
 							};
                     	});
                     }
@@ -318,7 +343,24 @@ public class ModelExplorer extends ViewPart {
 		return true;
 	}
 	
+	protected void updateTreeView(final String path) {
+		treeViewer.getControl().getDisplay().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				StorageModelNode updateNode = access.updateNode(path);
+				treeViewer.update(updateNode, null);
+				treeViewer.refresh(updateNode);
+			}
+		});;
+	}
+	
 	public static StorageAccess getCurrentStorageAccess() {
 		return (StorageAccess) RWT.getUISession().getHttpSession().getAttribute("storageaccess");
+	}
+	
+	public static void update(String path) {
+		ModelExplorer explorer = (ModelExplorer) RWT.getUISession().getAttribute("explorer");
+		explorer.updateTreeView(path);
 	}
 }
