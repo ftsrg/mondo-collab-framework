@@ -11,9 +11,9 @@ import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 public class StorageAccessDummy extends StorageAccess {
 
-	private String internalEiqFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
-	private String internalMaclFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
-	private String filepath = "/home/marci/git/mondo-demo-wt/Demo/demo.project/example.wtspec4m";
+	private String internalEiqFile = "/home/vialpando/Eclipse/Mondo/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
+	private String internalMaclFile = "/home/vialpando/Eclipse/Mondo/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
+	private String filepath = "/home/vialpando/Eclipse/Mondo/git/mondo-demo-wt/Demo/demo.project/simplified-example.wtspec4m";
 
 	public StorageAccessDummy(String username, String password) throws FileNotFoundException, IOException {
 		super(username, password);

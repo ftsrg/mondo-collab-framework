@@ -151,10 +151,10 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	}
 	private RuleEngine ruleEngineForPutback
 	public def getRuleEngineForPutback() {
-		if (ruleEngineForGet == null) {
-			ruleEngineForGet = createRuleEngine(ruleOperationalizations.map[rulesForPutback])
+		if (ruleEngineForPutback == null) {
+			ruleEngineForPutback = createRuleEngine(ruleOperationalizations.map[rulesForPutback])
 		}
-		return ruleEngineForGet
+		return ruleEngineForPutback
 	}
 	
 	

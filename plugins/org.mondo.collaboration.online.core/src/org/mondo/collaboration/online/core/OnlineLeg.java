@@ -58,12 +58,19 @@ public class OnlineLeg extends Leg {
 	public abstract class LegCommand extends AbstractCommand {
 
 		@Override
+		protected boolean prepare() {
+			//Don't need to prepare anything.
+			return true;
+		}
+		
+		@Override
 		public void redo() {
-			execute();
+			throw new UnsupportedOperationException("This feature currently is not supported");
 		}
 		
 		@Override
 		public boolean canUndo() {
+			//This feature currently is not supported
 			return false;
 		}
 	}
