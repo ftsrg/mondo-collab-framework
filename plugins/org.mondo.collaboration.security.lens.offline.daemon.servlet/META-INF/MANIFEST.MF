@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Offline Lens Daemon Servlet
+Bundle-SymbolicName: org.mondo.collaboration.security.lens.offline.daemon.servlet;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.mondo.collaboration.security.lens.offline.daemon.servlet.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.mondo.collaboration.security.lens.offline.daemon.api;bundle-version="1.0.0",
+ org.eclipse.equinox.http.registry;bundle-version="1.1.300",
+ org.eclipse.equinox.http.servlet;bundle-version="1.2.1",
+ org.mondo.collaboration.security.lens;bundle-version="1.0.0",
+ org.apache.thrift;bundle-version="0.9.3",
+ javax.servlet;bundle-version="3.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

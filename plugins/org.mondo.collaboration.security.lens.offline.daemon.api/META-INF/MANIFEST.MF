@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Offline Lens Daemon API
+Bundle-SymbolicName: org.mondo.collaboration.security.lens.offline.daemon.api
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.mondo.collaboration.security.lens.offline.daemon.api.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.apache.thrift;bundle-version="0.9.3",
+ org.slf4j.api;bundle-version="1.7.2"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.mondo.collaboration.security.lens.offline.daemon.api
