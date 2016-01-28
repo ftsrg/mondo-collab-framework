@@ -5,7 +5,8 @@
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/thrift-local/lens-daemon"
-            class="org.mondo.collaboration.security.lens.offline.daemon.servlet.OfflineLensDaemonServlet">
+            class="org.mondo.collaboration.security.lens.offline.daemon.servlet.OfflineLensDaemonServlet"
+            load-on-startup="true">
       </servlet>
    </extension>
    <extension

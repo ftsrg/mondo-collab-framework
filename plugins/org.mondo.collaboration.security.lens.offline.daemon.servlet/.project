@@ -3,6 +3,7 @@
 	<name>org.mondo.collaboration.security.lens.offline.daemon.servlet</name>
 	<comment></comment>
 	<projects>
+		<project>org.mondo.collaboration.security.lens.offline.daemon.api</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -25,4 +26,11 @@
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>thrift</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/org.mondo.collaboration.security.lens.offline.daemon.api/target/generated-sources/thrift</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
