@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.FutureTask;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
@@ -45,6 +46,8 @@ import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
+import com.google.common.util.concurrent.FutureCallback;
+
 /**
  * @author Csaba Debreceni
  *
@@ -64,6 +67,8 @@ public class ModelExplorer extends ViewPart {
 	private StackLayout layout;
 	private StorageAccess access;
 	private Button remember;
+	
+	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
 	
 	public static StorageAccessFactory.Type storageType = Type.SVN;
 	
@@ -144,16 +149,7 @@ public class ModelExplorer extends ViewPart {
 							
 							public void run() {
 								access.finishSession(node.getPath());
-								access.updateNode(node);
-								
-								treeViewer.getControl().getDisplay().asyncExec(new Runnable() {
-									
-									@Override
-									public void run() {
-										treeViewer.update(node, null);
-										treeViewer.refresh(node);
-									}
-								});;
+								UISessionManager.notifySuccess(EVENT_UPDATE_PATH, node.getPath());
 							};
                     	});
                     }
@@ -275,6 +271,8 @@ public class ModelExplorer extends ViewPart {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		UISessionManager.register(EVENT_UPDATE_PATH, RWT.getUISession(), new UpdatePath());
 	}
 	
 	private boolean retrieveHttpSession() {
@@ -343,24 +341,31 @@ public class ModelExplorer extends ViewPart {
 		return true;
 	}
 	
-	protected void updateTreeView(final String path) {
-		treeViewer.getControl().getDisplay().asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				StorageModelNode updateNode = access.updateNode(path);
-				treeViewer.update(updateNode, null);
-				treeViewer.refresh(updateNode);
-			}
-		});;
-	}
-	
 	public static StorageAccess getCurrentStorageAccess() {
 		return (StorageAccess) RWT.getUISession().getHttpSession().getAttribute("storageaccess");
 	}
 	
 	public static void update(String path) {
-		ModelExplorer explorer = (ModelExplorer) RWT.getUISession().getAttribute("explorer");
-		explorer.updateTreeView(path);
+		UISessionManager.notifySuccess(EVENT_UPDATE_PATH, path);
+	}
+	
+	public class UpdatePath implements FutureCallback<Object> {
+		@Override
+		public void onFailure(Throwable arg0) {
+		}
+		
+		@Override
+		public void onSuccess(Object param) {
+			String path = (String) param;
+			treeViewer.getControl().getDisplay().asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					StorageModelNode updateNode = access.updateNode(path);
+					treeViewer.update(updateNode, null);
+					treeViewer.refresh(updateNode);
+				}
+			});
+		}
 	}
 }
