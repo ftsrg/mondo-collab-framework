@@ -43,7 +43,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.mondo.collaboration.online.core.StorageAccess;
 import org.mondo.collaboration.online.core.StorageAccessFactory;
-import org.mondo.collaboration.online.core.StorageAccessFactory.Type;
 import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
@@ -56,10 +55,13 @@ import com.google.common.util.concurrent.FutureCallback;
  */
 public class ModelExplorer extends ViewPart {
 
+	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelExplorer";
+	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat();
+	
 	private Text passwordField;
 	private Text usernameField;
 
-	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelExplorer";
 	private Composite container;
 	private ModelExplorerContentProvider contentProvider = new ModelExplorerContentProvider();
 	private ModelExplorerLabelProvider labelProvider = new ModelExplorerLabelProvider();
@@ -70,11 +72,6 @@ public class ModelExplorer extends ViewPart {
 	private StorageAccess access;
 	private Button remember;
 	
-	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
-	
-	public static StorageAccessFactory.Type storageType = Type.Dummy;
-	public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
 	/**
 	 * {@inheritDoc}
 	 *
@@ -82,6 +79,7 @@ public class ModelExplorer extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		
 		container = new Composite(parent, SWT.None);
 		layout = new StackLayout();
 		container.setLayout(layout);
@@ -104,8 +102,6 @@ public class ModelExplorer extends ViewPart {
 		}
 		
 		registerContexMenu();
-		
-		RWT.getUISession().setAttribute("explorer", this);
 	}
 	
 	private void registerContexMenu() {
@@ -152,7 +148,7 @@ public class ModelExplorer extends ViewPart {
 							
 							public void run() {
 								access.finishSession(node.getPath());
-								UISessionManager.notifySuccess(EVENT_UPDATE_PATH, node.getPath());
+								UINotifierManager.notifySuccess(EVENT_UPDATE_PATH, node.getPath());
 							};
                     	});
                     }
@@ -251,7 +247,7 @@ public class ModelExplorer extends ViewPart {
 	}
 	
 	protected void processLogin(String username, String password, boolean internal) throws FileNotFoundException, IOException {
-		access = StorageAccessFactory.createStorageAccess(storageType, username, password);
+		access = StorageAccessFactory.createStorageAccess(username, password);
 		String loginReason = access.login();
 		if(loginReason != null && !internal) {
 			showMessage(container, "Login failed", loginReason, SWT.ERROR | SWT.RETRY);
@@ -275,7 +271,7 @@ public class ModelExplorer extends ViewPart {
 			e.printStackTrace();
 		}
 		
-		UISessionManager.register(EVENT_UPDATE_PATH, RWT.getUISession(), new UpdatePath());
+		UINotifierManager.register(EVENT_UPDATE_PATH, RWT.getUISession(), new UpdatePath());
 	}
 	
 	private boolean retrieveHttpSession() {
@@ -342,7 +338,7 @@ public class ModelExplorer extends ViewPart {
 				    
 					ModelLogView.setLogString(strDate + " Whiteboard initialized by " + username);
 				}
-				UISessionManager.notifySuccess(ModelLogView.EVENT_UPDATE_LOG, null);
+				UINotifierManager.notifySuccess(ModelLogView.EVENT_UPDATE_LOG, null);
 				
 			}
 			catch (PartInitException exception) {
@@ -361,7 +357,7 @@ public class ModelExplorer extends ViewPart {
 	}
 	
 	public static void update(String path) {
-		UISessionManager.notifySuccess(EVENT_UPDATE_PATH, path);
+		UINotifierManager.notifySuccess(EVENT_UPDATE_PATH, path);
 	}
 	
 	public class UpdatePath implements FutureCallback<Object> {

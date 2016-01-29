@@ -7,8 +7,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.rap.ui;bundle-version="3.0.0",
  org.mondo.collaboration.online.core;bundle-version="1.0.0",
  org.eclipse.emf.ecore,
- org.eclipse.emf.rap.edit.ui,
- com.google.guava
+ com.google.guava,
+ javax.servlet,
+ org.eclipse.osgi.services,
+ org.eclipse.equinox.http.servlet;bundle-version="1.2.100",
+ org.eclipse.emf.edit.ui
 Export-Package: org.mondo.collaboration.online.rap.widgets
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.mondo.collaboration.online.rap.widgets.Activator

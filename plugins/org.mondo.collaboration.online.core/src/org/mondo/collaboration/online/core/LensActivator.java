@@ -23,7 +23,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.FutureCallback;
 
 public class LensActivator extends Plugin implements BundleActivator {
 
@@ -43,7 +42,7 @@ public class LensActivator extends Plugin implements BundleActivator {
 	public LensActivator() {
 
 	}
-
+	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -54,7 +53,7 @@ public class LensActivator extends Plugin implements BundleActivator {
 
 		AccessControlLanguageStandaloneSetup.doSetup();
 		EMFPatternLanguageStandaloneSetup.doSetup();
-
+		
 		logger.info(PLUGIN_ID + " is activated");
 	}
 
