@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -70,7 +71,7 @@ public class ModelExplorer extends ViewPart {
 	
 	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
 	
-	public static StorageAccessFactory.Type storageType = Type.SVN;
+	public static StorageAccessFactory.Type storageType = Type.Dummy;
 	
 	/**
 	 * {@inheritDoc}
@@ -329,6 +330,9 @@ public class ModelExplorer extends ViewPart {
 		else {
 			try {
 				page.openEditor(new URIEditorInput(uri), editorDescriptor.getId());
+				IViewPart showView = page.showView(ModelLogView.ID);
+				ModelLogView modelLog = (ModelLogView) showView;
+				modelLog.setLogString(); //TODO Marci
 			}
 			catch (PartInitException exception) {
 				MessageDialog.openError(

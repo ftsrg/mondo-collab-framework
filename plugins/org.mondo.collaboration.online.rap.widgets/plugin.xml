@@ -10,6 +10,12 @@
             name="Model Explorer"
             restorable="true">
       </view>
+      <view
+            class="org.mondo.collaboration.online.rap.widgets.ModelLogView"
+            id="org.mondo.collaboration.online.rap.widgets.ModelLog"
+            name="Model Log"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>
