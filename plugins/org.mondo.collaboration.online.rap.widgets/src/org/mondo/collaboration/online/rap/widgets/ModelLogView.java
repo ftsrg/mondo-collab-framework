@@ -6,6 +6,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.part.ViewPart;
 
 public class ModelLogView extends ViewPart {
@@ -16,6 +17,7 @@ public class ModelLogView extends ViewPart {
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelLog";
 	private Text logText;
 	private String lineDelimiter;
+	private String fullLog = "";
 	
 	public ModelLogView() {
 		// TODO Auto-generated constructor stub
@@ -32,9 +34,6 @@ public class ModelLogView extends ViewPart {
 		
 		logText.setEditable(false);
 		
-		
-		
-		logText.setText("Model log");
 		lineDelimiter = logText.getLineDelimiter();
 		
 		RWT.getUISession().setAttribute("dummy", this);
@@ -46,8 +45,31 @@ public class ModelLogView extends ViewPart {
 		
 	}
 	
-	public void setLogString(){
-		
+	public void setLogString(String fullLog){
+		this.fullLog = fullLog;
+	}
+
+	public static ModelLogView getCurrentLogView(IViewReference[] viewReferences) {
+		ModelLogView logView = null;
+		for (IViewReference iViewReference : viewReferences) {
+			if (ModelLogView.ID.equals(iViewReference.getId())) {
+				logView = (ModelLogView) iViewReference.getView(false);
+				break;
+			}
+		}
+		return logView;
+	}
+
+	public String getLogString() {
+		return fullLog;
+	}
+
+	public void refresh() {
+		logText.setText(fullLog);		
+	}
+
+	public String getLineDelimiter() {
+		return lineDelimiter;
 	}
 
 }

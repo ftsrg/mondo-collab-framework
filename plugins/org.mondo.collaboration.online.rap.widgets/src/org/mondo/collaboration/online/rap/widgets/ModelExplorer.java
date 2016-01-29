@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.FutureTask;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
@@ -332,7 +334,18 @@ public class ModelExplorer extends ViewPart {
 				page.openEditor(new URIEditorInput(uri), editorDescriptor.getId());
 				IViewPart showView = page.showView(ModelLogView.ID);
 				ModelLogView modelLog = (ModelLogView) showView;
-				modelLog.setLogString(); //TODO Marci
+				String logString = modelLog.getLogString();
+				if(logString.equals("")){
+					final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+					Date now = new Date();
+				    String strDate = sdf.format(now);
+
+					String username = ModelExplorer.getCurrentStorageAccess().getUsername();
+				    
+					modelLog.setLogString(strDate + " Whiteboard initialized by " + username);
+					modelLog.refresh();
+				}
+				
 			}
 			catch (PartInitException exception) {
 				MessageDialog.openError(
