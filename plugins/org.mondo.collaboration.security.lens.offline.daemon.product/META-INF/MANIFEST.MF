@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Offline Lens Local Daemon Product
+Bundle-SymbolicName: org.mondo.collaboration.security.lens.offline.daemon.product;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.mondo.collaboration.security.lens.offline.daemon.product.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.mondo.collaboration.security.lens.offline.daemon.servlet;bundle-version="1.0.0",
+ org.slf4j.api;bundle-version="1.7.2",
+ org.antlr.runtime;bundle-version="3.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

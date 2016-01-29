@@ -10,6 +10,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 public class LocalityFilter implements Filter {
+	public LocalityFilter() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
