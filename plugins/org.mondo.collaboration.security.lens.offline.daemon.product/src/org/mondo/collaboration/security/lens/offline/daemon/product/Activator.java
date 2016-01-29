@@ -1,7 +1,10 @@
 package org.mondo.collaboration.security.lens.offline.daemon.product;
 
+import org.mondo.collaboration.security.lens.offline.daemon.servlet.OfflineLensDaemonServlet;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpService;
 
 public class Activator implements BundleActivator {
 
