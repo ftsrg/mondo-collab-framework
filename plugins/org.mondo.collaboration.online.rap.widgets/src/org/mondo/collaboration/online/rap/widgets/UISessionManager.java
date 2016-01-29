@@ -34,4 +34,12 @@ public class UISessionManager {
 		session.removeUISessionListener(listener);
 		table.remove(eventId, session);
 	}
+	
+	public static void notifyError(String eventId, Throwable e) {
+		SessionManager.notify(eventId, null, true, e);
+	}
+	
+	public static void notifySuccess(String eventId, Object param) {
+		SessionManager.notify(eventId, param, false, null);
+	}
 }
