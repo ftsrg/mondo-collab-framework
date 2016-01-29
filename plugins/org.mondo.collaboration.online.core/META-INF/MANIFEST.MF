@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.emf.ecp.common,
  org.eclipse.viatra.modelobfuscator.runtime;bundle-version="0.7.0",
  org.mondo.collaboration.security.macl.xtext,
  org.eclipse.incquery.patternlanguage.emf,
- org.eclipse.emf.edit
+ org.eclipse.emf.edit,
+ javax.servlet
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.mondo.collaboration.online.core.LensActivator
 Import-Package: org.apache.log4j;version="1.2.15"

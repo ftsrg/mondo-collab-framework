@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.concurrent.FutureTask;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
@@ -39,9 +38,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.mondo.collaboration.online.core.HttpSessionManager;
 import org.mondo.collaboration.online.core.StorageAccess;
 import org.mondo.collaboration.online.core.StorageAccessFactory;
-import org.mondo.collaboration.online.core.StorageAccessFactory.Type;
 import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
@@ -54,10 +53,12 @@ import com.google.common.util.concurrent.FutureCallback;
  */
 public class ModelExplorer extends ViewPart {
 
+	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelExplorer";
+	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
+
 	private Text passwordField;
 	private Text usernameField;
 
-	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelExplorer";
 	private Composite container;
 	private ModelExplorerContentProvider contentProvider = new ModelExplorerContentProvider();
 	private ModelExplorerLabelProvider labelProvider = new ModelExplorerLabelProvider();
@@ -68,10 +69,6 @@ public class ModelExplorer extends ViewPart {
 	private StorageAccess access;
 	private Button remember;
 	
-	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
-	
-	public static StorageAccessFactory.Type storageType = Type.SVN;
-	
 	/**
 	 * {@inheritDoc}
 	 *
@@ -79,6 +76,9 @@ public class ModelExplorer extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		
+		HttpSessionManager.register(RWT.getUISession().getHttpSession());
+		
 		container = new Composite(parent, SWT.None);
 		layout = new StackLayout();
 		container.setLayout(layout);
@@ -101,8 +101,6 @@ public class ModelExplorer extends ViewPart {
 		}
 		
 		registerContexMenu();
-		
-		RWT.getUISession().setAttribute("explorer", this);
 	}
 	
 	private void registerContexMenu() {
@@ -149,7 +147,7 @@ public class ModelExplorer extends ViewPart {
 							
 							public void run() {
 								access.finishSession(node.getPath());
-								UISessionManager.notifySuccess(EVENT_UPDATE_PATH, node.getPath());
+								UINotifierManager.notifySuccess(EVENT_UPDATE_PATH, node.getPath());
 							};
                     	});
                     }
@@ -248,7 +246,7 @@ public class ModelExplorer extends ViewPart {
 	}
 	
 	protected void processLogin(String username, String password, boolean internal) throws FileNotFoundException, IOException {
-		access = StorageAccessFactory.createStorageAccess(storageType, username, password);
+		access = StorageAccessFactory.createStorageAccess(username, password);
 		String loginReason = access.login();
 		if(loginReason != null && !internal) {
 			showMessage(container, "Login failed", loginReason, SWT.ERROR | SWT.RETRY);
@@ -272,7 +270,7 @@ public class ModelExplorer extends ViewPart {
 			e.printStackTrace();
 		}
 		
-		UISessionManager.register(EVENT_UPDATE_PATH, RWT.getUISession(), new UpdatePath());
+		UINotifierManager.register(EVENT_UPDATE_PATH, RWT.getUISession(), new UpdatePath());
 	}
 	
 	private boolean retrieveHttpSession() {
@@ -346,7 +344,7 @@ public class ModelExplorer extends ViewPart {
 	}
 	
 	public static void update(String path) {
-		UISessionManager.notifySuccess(EVENT_UPDATE_PATH, path);
+		UINotifierManager.notifySuccess(EVENT_UPDATE_PATH, path);
 	}
 	
 	public class UpdatePath implements FutureCallback<Object> {

@@ -61,7 +61,7 @@ public class OnlineLeg extends Leg {
 					logger.info("Lens command is executing");
 					internalOverWriteFromGold();
 					logger.info("Callback method is calling");
-					SessionManager.notifySuccess(EVENT_UPDATE, null);
+					NotifierManager.notifySuccess(EVENT_UPDATE, null);
 				}
 			};
 			editingDomain.getCommandStack().execute(cmd);
@@ -81,7 +81,7 @@ public class OnlineLeg extends Leg {
 	public void saveExecuted() {
 		if(((BasicCommandStack)editingDomain.getCommandStack()).isSaveNeeded()) {
 			((BasicCommandStack)editingDomain.getCommandStack()).saveIsDone();
-			SessionManager.notifySuccess(EVENT_SAVE, getGoldResourceSet().getResources().get(0).getURI().toFileString());
+			NotifierManager.notifySuccess(EVENT_SAVE, getGoldResourceSet().getResources().get(0).getURI().toFileString());
 		}
 	}
 	

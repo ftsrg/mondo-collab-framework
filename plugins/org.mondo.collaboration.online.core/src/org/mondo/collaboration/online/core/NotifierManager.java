@@ -4,7 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.FutureCallback;
 
-public class SessionManager {
+public class NotifierManager {
 
 	private static Multimap<String, FutureCallback<Object>> notifiers = ArrayListMultimap.create();	
 	

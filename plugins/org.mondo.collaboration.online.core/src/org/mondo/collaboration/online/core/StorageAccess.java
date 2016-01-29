@@ -169,7 +169,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getTempFolder() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.temporary.folder");
-		return ret == null ? "C:\\Eclipse\\MondoOnline\\mondo-online\\temp" : ret;
+		return ret == null ? "C:\\Eclipse\\MondoOnline\\server" : ret;
 	}
 
 	/**
