@@ -29,9 +29,7 @@ public class LensActivator extends Plugin implements BundleActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.mondo.collaboration.online.core"; //$NON-NLS-1$
-	public static final String LENS_COMMAND_TITLE = "Lens Command"; //$NON-NLS-1$
-	public static final String LENS_COMMAND_DESCRIPTION = "This is a command executed by the lens transformation. It cannot be reverted."; //$NON-NLS-1$
-
+	
 	// The shared instance
 	private static LensActivator plugin;
 
@@ -109,11 +107,11 @@ public class LensActivator extends Plugin implements BundleActivator {
 	 * 
 	 * @return user specific front {@link Leg}
 	 */
-	public static OnlineLeg getOrCreateResource(URI goldURI, EditingDomain domain, FutureCallback<Object> callbackModification, FutureCallback<Object> callbackSave, StorageAccess sa) {
+	public static OnlineLeg getOrCreateResource(URI goldURI, EditingDomain domain, StorageAccess sa) {
 		logger.info(String.format("Leg is creating for user: %s uri: %s", sa.getUsername(), goldURI.toString()));
 		try {
 			OnlineLeg leg = new OnlineLeg(getModelSessions().get(goldURI), sa.getUsername(), sa.getObfuscator(), true, domain,
-					OnlineCollaborationSession.FAKE_MAIN_RESOURCE_URI, callbackModification, callbackSave);
+					OnlineCollaborationSession.FAKE_MAIN_RESOURCE_URI);
 			logger.info("Successfully finished");
 			return leg;
 		} catch (InvocationTargetException e) {

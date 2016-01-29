@@ -14,31 +14,30 @@ import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession.Leg;
 
-import com.google.common.util.concurrent.FutureCallback;
-
 public class OnlineLeg extends Leg {
 
+	public static final String EVENT_UPDATE = "org.mondo.collaboration.online.core.OnlineLeg.update";
+	public static final String EVENT_SAVE = "org.mondo.collaboration.online.core.OnlineLeg.save";
+	
+	public static final String COMMAND_TITLE = "Lens Command"; //$NON-NLS-1$
+	public static final String COMMAND_DESCRIPTION = "This is a command executed by the lens transformation. It cannot be reverted."; //$NON-NLS-1$
+
+	
 	private static Logger logger = Logger.getLogger(OnlineLeg.class);
 
 	protected boolean initialized = false;
-	protected FutureCallback<Object> callback;
 	protected EditingDomain editingDomain;
 
 	protected OnlineCollaborationSession onlineCollaborationSession;
 
-	private FutureCallback<Object> callbackSave;
-
-	
 	public OnlineLeg(OnlineCollaborationSession onlineCollaborationSession, String userName,
 			DataTypeObfuscator<String> stringObfuscator, boolean startWithGet, EditingDomain editingDomain,
-			URI frontConfinementURI, FutureCallback<Object> callbackModification, FutureCallback<Object> callbackSave) 
+			URI frontConfinementURI) 
 					throws InvocationTargetException {
 		onlineCollaborationSession.super(userName, stringObfuscator, startWithGet, editingDomain.getResourceSet(), frontConfinementURI);
 		
 		this.onlineCollaborationSession = onlineCollaborationSession;
 		this.editingDomain = editingDomain;
-		this.callback = callbackModification;
-		this.callbackSave = callbackSave;
 		
 		initialized = true;
 	}
@@ -62,7 +61,7 @@ public class OnlineLeg extends Leg {
 					logger.info("Lens command is executing");
 					internalOverWriteFromGold();
 					logger.info("Callback method is calling");
-					callback.onSuccess(null);
+					SessionManager.notifySuccess(EVENT_UPDATE, null);
 				}
 			};
 			editingDomain.getCommandStack().execute(cmd);
@@ -82,7 +81,7 @@ public class OnlineLeg extends Leg {
 	public void saveExecuted() {
 		if(((BasicCommandStack)editingDomain.getCommandStack()).isSaveNeeded()) {
 			((BasicCommandStack)editingDomain.getCommandStack()).saveIsDone();
-			callbackSave.onSuccess(getGoldResourceSet().getResources().get(0).getURI().toFileString());
+			SessionManager.notifySuccess(EVENT_SAVE, getGoldResourceSet().getResources().get(0).getURI().toFileString());
 		}
 	}
 	
@@ -96,6 +95,16 @@ public class OnlineLeg extends Leg {
 	
 	public abstract class LegCommand extends AbstractCommand {
 
+		@Override
+		public String getLabel() {
+			return COMMAND_TITLE;
+		}
+		
+		@Override
+		public String getDescription() {
+			return COMMAND_DESCRIPTION;
+		}
+		
 		@Override
 		protected boolean prepare() {
 			return true;
