@@ -74,6 +74,7 @@ public class ModelExplorer extends ViewPart {
 	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
 	
 	public static StorageAccessFactory.Type storageType = Type.Dummy;
+	public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
 	 * {@inheritDoc}
@@ -336,9 +337,8 @@ public class ModelExplorer extends ViewPart {
 				ModelLogView modelLog = (ModelLogView) showView;
 				String logString = modelLog.getLogString();
 				if(logString.equals("")){
-					final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 					Date now = new Date();
-				    String strDate = sdf.format(now);
+				    String strDate = DATE_FORMAT.format(now);
 
 					String username = ModelExplorer.getCurrentStorageAccess().getUsername();
 				    
