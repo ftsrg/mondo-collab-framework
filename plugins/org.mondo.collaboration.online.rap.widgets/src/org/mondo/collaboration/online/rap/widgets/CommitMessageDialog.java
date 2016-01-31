@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Text;
 @SuppressWarnings("serial")
 public class CommitMessageDialog extends TitleAreaDialog {
 
+	private static final String DEFAULT_COMMIT_MESSAGE = "Changes during onlie collaboration";
 	private Text txtCommitMessage;
 	private String commitMessage;
 
@@ -25,7 +26,7 @@ public class CommitMessageDialog extends TitleAreaDialog {
 	public void create() {
 		super.create();
 		setTitle("Committing changes to SVN");
-		setMessage("Enter a commit message (leave blank for default the default \"Changes during onlie collaboration\"):", IMessageProvider.INFORMATION);
+		setMessage("Enter a commit message (leave blank for the default \""+ DEFAULT_COMMIT_MESSAGE +"\"):", IMessageProvider.INFORMATION);
 	}
 
 	@Override
@@ -52,6 +53,9 @@ public class CommitMessageDialog extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		commitMessage = txtCommitMessage.getText();
+		if(commitMessage == null || commitMessage.equals("")){
+			commitMessage = DEFAULT_COMMIT_MESSAGE;
+		}
 		super.okPressed();
 	}
 
