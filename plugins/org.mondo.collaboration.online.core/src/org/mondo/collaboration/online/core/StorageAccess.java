@@ -222,6 +222,12 @@ public abstract class StorageAccess {
 	public abstract void finishSession(String path);
 	
 	/**
+	 * Commits the changes made to the model.
+	 * @param path to the model
+	 */
+	public abstract void commit(String path, String message);
+	
+	/**
 	 * Updates a node in the StorageModel
 	 * @param path from the file system
 	 */

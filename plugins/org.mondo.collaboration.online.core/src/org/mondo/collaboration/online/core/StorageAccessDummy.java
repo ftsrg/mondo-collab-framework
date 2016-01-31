@@ -11,9 +11,9 @@ import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 public class StorageAccessDummy extends StorageAccess {
 
-	private String internalEiqFile = "C:\\Eclipse\\MondoOnline\\eclipse\\..\\git\\mondo-demo-wt\\Demo\\macl.project\\src\\macl\\project\\queries.eiq";
-	private String internalMaclFile = "C:\\Eclipse\\MondoOnline\\eclipse\\..\\git\\mondo-demo-wt\\Demo\\macl.project\\src\\macl\\project\\rules.macl";
-	private String filepath = "C:\\Eclipse\\MondoOnline\\eclipse\\..\\git\\mondo-demo-wt\\Demo\\demo.project\\example.wtspec4m";
+	private String internalEiqFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
+	private String internalMaclFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
+	private String filepath = "/home/marci/git/mondo-demo-wt/Demo/demo.project/simplified-example.wtspec4m";
 	private StorageModelNode node;
 
 	public StorageAccessDummy(String username, String password) throws FileNotFoundException, IOException {
@@ -58,5 +58,10 @@ public class StorageAccessDummy extends StorageAccess {
 	@Override
 	public StorageModelNode updateNode(StorageModelNode node) {
 		return node;
+	}
+
+	@Override
+	public void commit(String path, String message) {
+		// nop
 	}
 }

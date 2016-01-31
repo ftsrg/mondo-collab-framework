@@ -188,4 +188,15 @@ public class StorageAccessSvn extends StorageAccess {
 	protected URI getInternalMaclFile() {
 		return internalMacl;
 	}
+
+
+	@Override
+	public void commit(String path, String msg) {
+		URI fullUri = URI.createURI(path);
+		String file = fullUri.lastSegment();
+		String folder = replaceLast(path, file, "");
+		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
+		
+		internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, msg, getUsername(), getPassword()), new String[] {}, new File(temp));
+	}
 }
