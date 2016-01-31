@@ -1,13 +1,23 @@
 package org.mondo.collaboration.online.rap.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
+
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.FutureCallback;
 
 public class ModelLogView extends ViewPart {
 
@@ -16,8 +26,18 @@ public class ModelLogView extends ViewPart {
 	
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelLog";
 	private Text logText;
-	private String lineDelimiter;
-	private String fullLog = "";
+	private static String lineDelimiter;
+	private static String completeLog = "";
+	
+
+	public static final String EVENT_UPDATE_LOG = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.log";
+	
+	public Display getDisplay(){
+		if(logText == null){
+			return null;
+		}
+		return logText.getDisplay();
+	}
 	
 	public ModelLogView() {
 		// TODO Auto-generated constructor stub
@@ -36,6 +56,8 @@ public class ModelLogView extends ViewPart {
 		
 		lineDelimiter = logText.getLineDelimiter();
 		
+		UISessionManager.register(EVENT_UPDATE_LOG, RWT.getUISession(), new UpdateLog());
+
 		RWT.getUISession().setAttribute("dummy", this);
 	}
 
@@ -45,31 +67,41 @@ public class ModelLogView extends ViewPart {
 		
 	}
 	
-	public void setLogString(String fullLog){
-		this.fullLog = fullLog;
+	public static void setLogString(String completeLog){
+		ModelLogView.completeLog = completeLog;
 	}
 
-	public static ModelLogView getCurrentLogView(IViewReference[] viewReferences) {
-		ModelLogView logView = null;
-		for (IViewReference iViewReference : viewReferences) {
-			if (ModelLogView.ID.equals(iViewReference.getId())) {
-				logView = (ModelLogView) iViewReference.getView(false);
-				break;
-			}
-		}
-		return logView;
-	}
-
-	public String getLogString() {
-		return fullLog;
+	public static String getCompleteLogString() {
+		return completeLog;
 	}
 
 	public void refresh() {
-		logText.setText(fullLog);		
+		logText.setText(completeLog);		
 	}
 
-	public String getLineDelimiter() {
+	// TODO it might cause a problem on different platforms
+	public static String getLineDelimiter() {
 		return lineDelimiter;
+	}
+	
+
+	public class UpdateLog implements FutureCallback<Object> {
+		@Override
+		public void onFailure(Throwable arg0) {
+		}
+		
+		@Override
+		public void onSuccess(Object param) {
+			
+			Display display = logText.getDisplay();
+			display.asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					logText.setText(completeLog);
+				}
+			});
+		}
 	}
 
 }

@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.FutureTask;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
@@ -333,18 +332,17 @@ public class ModelExplorer extends ViewPart {
 		else {
 			try {
 				page.openEditor(new URIEditorInput(uri), editorDescriptor.getId());
-				IViewPart showView = page.showView(ModelLogView.ID);
-				ModelLogView modelLog = (ModelLogView) showView;
-				String logString = modelLog.getLogString();
+				page.showView(ModelLogView.ID);
+				String logString = ModelLogView.getCompleteLogString();
 				if(logString.equals("")){
 					Date now = new Date();
 				    String strDate = DATE_FORMAT.format(now);
 
 					String username = ModelExplorer.getCurrentStorageAccess().getUsername();
 				    
-					modelLog.setLogString(strDate + " Whiteboard initialized by " + username);
-					modelLog.refresh();
+					ModelLogView.setLogString(strDate + " Whiteboard initialized by " + username);
 				}
+				UISessionManager.notifySuccess(ModelLogView.EVENT_UPDATE_LOG, null);
 				
 			}
 			catch (PartInitException exception) {
