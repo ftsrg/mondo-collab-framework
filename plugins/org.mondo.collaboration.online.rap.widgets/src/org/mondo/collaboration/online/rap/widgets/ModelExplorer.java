@@ -38,7 +38,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.mondo.collaboration.online.core.HttpSessionManager;
 import org.mondo.collaboration.online.core.StorageAccess;
 import org.mondo.collaboration.online.core.StorageAccessFactory;
 import org.mondo.collaboration.online.core.StorageModel;
@@ -76,8 +75,6 @@ public class ModelExplorer extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		
-		HttpSessionManager.register(RWT.getUISession().getHttpSession());
 		
 		container = new Composite(parent, SWT.None);
 		layout = new StackLayout();

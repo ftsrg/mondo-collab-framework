@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.rap.ui;bundle-version="3.0.0",
  com.google.guava,
  javax.servlet,
  org.eclipse.osgi.services,
- org.eclipse.equinox.http.servlet;bundle-version="1.2.100"
+ org.eclipse.equinox.http.servlet;bundle-version="1.2.100",
+ org.apache.log4j
 Export-Package: org.mondo.collaboration.online.rap.widgets
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.mondo.collaboration.online.rap.widgets.Activator

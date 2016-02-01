@@ -299,7 +299,7 @@ public class OnlineCollaborationSession {
 		}
 
 		public void dispose() {
-		    legs.remove(userName);
+		    legs.remove(this);
 		}
 
 		

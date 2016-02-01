@@ -8,7 +8,7 @@ import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
@@ -26,12 +26,12 @@ public class OnlineLeg extends Leg {
 	private static Logger logger = Logger.getLogger(OnlineLeg.class);
 
 	protected boolean initialized = false;
-	protected EditingDomain editingDomain;
+	protected AdapterFactoryEditingDomain editingDomain;
 
 	protected OnlineCollaborationSession onlineCollaborationSession;
 
 	public OnlineLeg(OnlineCollaborationSession onlineCollaborationSession, String userName,
-			DataTypeObfuscator<String> stringObfuscator, boolean startWithGet, EditingDomain editingDomain,
+			DataTypeObfuscator<String> stringObfuscator, boolean startWithGet, AdapterFactoryEditingDomain editingDomain,
 			URI frontConfinementURI) 
 					throws InvocationTargetException {
 		onlineCollaborationSession.super(userName, stringObfuscator, startWithGet, editingDomain.getResourceSet(), frontConfinementURI);
@@ -91,6 +91,10 @@ public class OnlineLeg extends Leg {
 	
 	public ResourceSet getGoldResourceSet() {
 		return onlineCollaborationSession.getGoldResourceSet();
+	}
+	
+	public AdapterFactoryEditingDomain getEditingDomain() {
+		return editingDomain;
 	}
 	
 	public abstract class LegCommand extends AbstractCommand {
