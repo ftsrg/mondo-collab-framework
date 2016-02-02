@@ -53,6 +53,9 @@ public class OfflineLensLocalDaemonInvoker {
 			
 			OfflineLensLocalDaemonInvoker invoker = new OfflineLensLocalDaemonInvoker(portAndAlias);
 			invoker.invoke(argList);
+			
+			System.out.println("Success.");
+			System.exit(0);
 		} catch (LensIllegalParametrization e) {
             System.err.println(
             		"Aborted due to incorrect parametrization - "

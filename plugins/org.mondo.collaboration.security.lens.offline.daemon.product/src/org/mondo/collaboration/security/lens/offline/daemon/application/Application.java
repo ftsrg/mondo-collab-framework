@@ -1,18 +1,12 @@
 package org.mondo.collaboration.security.lens.offline.daemon.application;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.http.servlet.ExtendedHttpService;
 import org.mondo.collaboration.security.lens.offline.daemon.servlet.LocalityFilter;
 import org.mondo.collaboration.security.lens.offline.daemon.servlet.OfflineLensDaemonServlet;
-import org.mondo.collaboration.security.lens.offline.daemon.servlet.OfflineLensLocalDaemonHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpService;
 
 public class Application implements IApplication {
 
@@ -34,6 +28,7 @@ public class Application implements IApplication {
 				null, 
 				null);
 		
+		System.out.println("Welcome to the MONDO Offline Collaboration Lens Daemon!\n");
 		return IApplication.EXIT_OK;
 	}
 
