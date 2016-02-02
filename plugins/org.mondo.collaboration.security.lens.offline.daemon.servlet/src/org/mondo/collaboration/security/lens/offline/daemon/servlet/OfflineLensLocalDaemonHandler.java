@@ -20,17 +20,19 @@ public class OfflineLensLocalDaemonHandler implements Iface {
 		
 		String[] argArray = cliArguments.toArray(new String[cliArguments.size()]);
 		
+		final DenialReason denialReason;
 		try {
-    		final DenialReason denialReason = OfflineLensGlue.invokeOfflineLens(argArray);
-            if (null == denialReason) {
-    		    return;
-            } else {
-    		    throw new LensDenied(denialReason.prettyPrintProblem());
-            }
+    		denialReason = OfflineLensGlue.invokeOfflineLens(argArray);
         } catch (OfflineLensParametrizationException ex) {
 		    throw new LensIllegalParametrization(ex.getMessage());
 		} catch (Exception ex) {
 		    throw new LensInternalError(ex.getMessage());
+		}
+		
+		if (null == denialReason) {
+			return;
+		} else {
+			throw new LensDenied(denialReason.prettyPrintProblem());
 		}
 
 	}
