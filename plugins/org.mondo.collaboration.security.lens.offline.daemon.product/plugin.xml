@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.mondo.collaboration.security.lens.offline.daemon.application"
+         name="Offline Lens Local Daemon Application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.mondo.collaboration.security.lens.offline.daemon.application.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="LensOfflineDaemonProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.mondo.collaboration.security.lens.offline.daemon.application"
+            name="Mondo Offline Collaboration Lens Local Daemon">
+         <property
+               name="appName"
+               value="Mondo Offline Collaboration Lens Local Daemon">
+         </property>
+      </product>
+   </extension>
+</plugin>

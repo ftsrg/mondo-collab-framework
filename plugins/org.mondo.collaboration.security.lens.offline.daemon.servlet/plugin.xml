@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/thrift-local/lens-daemon"
+            class="org.mondo.collaboration.security.lens.offline.daemon.servlet.OfflineLensDaemonServlet"
+            load-on-startup="true">
+      </servlet>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.filters">
+      <filter
+            alias="/thrift-local"
+            class="org.mondo.collaboration.security.lens.offline.daemon.servlet.LocalityFilter"
+            load-on-startup="true">
+      </filter>
+   </extension>
+
+</plugin>
