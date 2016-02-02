@@ -56,7 +56,7 @@ public class ModelLogView extends ViewPart {
 		
 		lineDelimiter = logText.getLineDelimiter();
 		
-		UISessionManager.register(EVENT_UPDATE_LOG, RWT.getUISession(), new UpdateLog());
+		UINotifierManager.register(EVENT_UPDATE_LOG, RWT.getUISession(), new UpdateLog());
 
 		RWT.getUISession().setAttribute("dummy", this);
 	}
