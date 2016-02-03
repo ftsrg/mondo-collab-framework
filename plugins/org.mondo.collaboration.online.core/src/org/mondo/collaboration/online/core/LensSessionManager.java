@@ -222,5 +222,4 @@ public class LensSessionManager {
 		bundleContext.registerService(new String[] { HttpSessionListener.class.getName() }, SERVICE_LISTENER,
 				properties);
 	}
-
 }
