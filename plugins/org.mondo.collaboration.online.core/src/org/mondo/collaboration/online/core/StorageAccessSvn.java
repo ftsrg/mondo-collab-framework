@@ -143,8 +143,7 @@ public class StorageAccessSvn extends StorageAccess {
 		if(doCheckout) {
 			if(!new File(temp).exists())
 				internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, temp, getUsername(), getPassword()), new String[] {}, new File(getTempFolder()));
-			if(!new File(temp+file).exists())
-				internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(temp));
+			internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(temp));
 		}
 		return temp+file;
 	}
