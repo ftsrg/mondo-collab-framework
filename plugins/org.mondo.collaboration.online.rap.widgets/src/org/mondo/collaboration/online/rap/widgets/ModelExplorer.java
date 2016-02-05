@@ -46,6 +46,7 @@ import org.mondo.collaboration.online.core.StorageAccessFactory;
 import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
+import org.mondo.collaboration.online.rap.UINotifierManager;
 
 import com.google.common.util.concurrent.FutureCallback;
 

@@ -11,9 +11,12 @@ Require-Bundle: org.eclipse.rap.ui;bundle-version="3.0.0",
  javax.servlet,
  org.eclipse.osgi.services,
  org.eclipse.equinox.http.servlet;bundle-version="1.2.100",
- org.eclipse.emf.edit.ui,
- org.apache.log4j
+ org.apache.log4j,
+ org.eclipse.emf.rap.edit.ui;bundle-version="2.9.0",
+ org.mondo.collaboration.online.rap
 Export-Package: org.mondo.collaboration.online.rap.widgets
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.mondo.collaboration.online.rap.widgets.Activator
 Import-Package: javax.servlet.http
+Bundle-ClassPath: .,
+ swing2swt.jar

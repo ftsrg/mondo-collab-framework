@@ -1,4 +1,4 @@
-package org.mondo.collaboration.online.rap.widgets;
+package org.mondo.collaboration.online.rap;
 
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;

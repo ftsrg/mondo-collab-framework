@@ -19,6 +19,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.mondo.collaboration.online.core.LensSessionManager;
+import org.mondo.collaboration.online.rap.UINotifierManager;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
