@@ -17,12 +17,12 @@
             restorable="true">
       </view>
       <view
-            class="org.mondo.collaboration.online.rap.widgets.SessionChatView"
-            id="org.mondo.collaboration.online.rap.widgets.SessionChatView"
-            name="Session Chat">
+            class="org.mondo.collaboration.online.rap.widgets.WhiteboardChatView"
+            id="org.mondo.collaboration.online.rap.widgets.WhiteboardChatView"
+            name="Whiteboard Chat">
       </view>
       <view
-            class="org.mondo.collaboration.online.rap.widgets.SessionChatView"
+            class="org.mondo.collaboration.online.rap.widgets.WhiteboardChatView"
             id="org.mondo.collaboration.online.rap.widgets.SessionChatView"
             name="New ViewPart">
       </view>
