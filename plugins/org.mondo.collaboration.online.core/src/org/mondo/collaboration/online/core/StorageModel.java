@@ -18,7 +18,7 @@ public class StorageModel {
 		initializeRoots();
 	}
 	private void initializeRoots() {
-		roots = sa.explore(this, StorageAccess.getRepository(), null);
+		roots = sa.explore(this, StorageAccess.getRepository(), null, sa.getRepository());
 	}
 	protected StorageAccess getStorageAccess() {
 		return sa;
@@ -38,16 +38,22 @@ public class StorageModel {
 		
 		private Collection<StorageModelNode> children = null;
 		private StorageModel model;
+		private String gold;
 		
-		public StorageModelNode(StorageModel model, String text, String path, NodeType type, StorageModelNode parent, StorageAccess sa) {
+		public StorageModelNode(StorageModel model, String text, String path, NodeType type, StorageModelNode parent, StorageAccess sa, String gold) {
 			this.model = model;
 			this.text = text;
 			this.path = path;
 			this.type = type;
 			this.parent = parent;
 			this.sa = sa;
+			this.gold = gold;
 			
 			model.getNodeMapping().put(path, this);
+		}
+		
+		public String getGold() {
+			return gold;
 		}
 		
 		public String getText() {
@@ -72,14 +78,14 @@ public class StorageModel {
 		
 		public Collection<StorageModelNode> getChildren() throws Exception {
 			if(children == null) {
-				children = sa.explore(model, path, this);
+				children = sa.explore(model, path, this, gold);
 			}
 			return children;
 		}
 		
 		public boolean hasChildren() throws Exception {
 			if(children == null) {
-				children = sa.explore(model, path, this);
+				children = sa.explore(model, path, this, gold);
 			}
 			return !children.isEmpty();
 		}

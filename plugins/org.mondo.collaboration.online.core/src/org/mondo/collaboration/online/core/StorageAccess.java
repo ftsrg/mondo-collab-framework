@@ -71,9 +71,11 @@ public abstract class StorageAccess {
 	 * 
 	 * @param path
 	 *            in the repository
+	 * @param gold 
+	 * 			  model file location in the repository
 	 * @throws Exception
 	 */
-	public abstract Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent);
+	public abstract Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent, String gold);
 
 	public abstract URI startSession(String path) throws Exception;
 

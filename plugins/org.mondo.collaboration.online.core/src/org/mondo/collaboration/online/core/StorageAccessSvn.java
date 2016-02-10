@@ -66,7 +66,7 @@ public class StorageAccessSvn extends StorageAccess {
 	 * @throws Exception 
 	 */
 	@Override
-	public Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent) {
+	public Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent, String gold) {
 		List<StorageModelNode> nodes = new ArrayList<StorageModelNode>();
 		Collection<String> entries = Collections.emptyList();
 		try {
@@ -78,10 +78,10 @@ public class StorageAccessSvn extends StorageAccess {
 		for (String entry : entries) {
 			if(entry.endsWith("/")) {
 				entry = entry.substring(0, entry.length()-1);
-				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, NodeType.Folder, parent, this));
+				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, NodeType.Folder, parent, this, gold + "/" + entry));
 			}
 			if(entry.endsWith(getExtension())) {
-				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, checkType(path + "/" + entry), parent, this));
+				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, checkType(path + "/" + entry), parent, this, gold + "/" + entry));
 			}
 		}
 		return nodes;
@@ -97,6 +97,7 @@ public class StorageAccessSvn extends StorageAccess {
 		}
 	}
 	
+	// TODO decide whether modification status should be stored
 	public NodeType internalStatus(String path) {
 		URI fullUri = URI.createFileURI(path);
 		String file = fullUri.lastSegment();
@@ -105,7 +106,7 @@ public class StorageAccessSvn extends StorageAccess {
 		Collection<String> result = internalExecuteProcess(String.format(SVN_STATUS_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(folder));
 		if(result.isEmpty())
 			return NodeType.NoModification;
-		return NodeType.Modified;
+		return NodeType.NoModification;
 	}
 	
 	@Override
@@ -193,9 +194,9 @@ public class StorageAccessSvn extends StorageAccess {
 	public void commit(String path, String msg) {
 		URI fullUri = URI.createURI(path);
 		String file = fullUri.lastSegment();
-		String folder = replaceLast(path, file, "");
-		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
+		String folder = replaceLast(fullUri.toFileString(), file, "");
+//		String temp = replaceFirst(folder, getTempFolder(), getRepository()).replace("/", File.separator);
 		
-		internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, msg, getUsername(), getPassword()), new String[] {}, new File(temp));
+		internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, msg, getUsername(), getPassword()), new String[] {}, new File(folder));
 	}
 }

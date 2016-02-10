@@ -26,8 +26,8 @@ public class StorageAccessDummy extends StorageAccess {
 	}
 
 	@Override
-	public Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent) {
-		node = new StorageModelNode(model, "example.wtspec4m", filepath, NodeType.NoModification, null, this);
+	public Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent, String gold) {
+		node = new StorageModelNode(model, "example.wtspec4m", filepath, NodeType.NoModification, null, this, "/dummyLocation");
 		return Arrays.asList(node);
 	}
 
