@@ -1,6 +1,7 @@
 package org.mondo.collaboration.online.rap;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.URI;
@@ -44,13 +45,19 @@ public class UISessionManager {
 		} 
 	}
 	
+	@SuppressWarnings("serial")
 	private static final class RemoveSessionListener implements UISessionListener {
 		@Override
 		public void beforeDestroy(UISessionEvent event) {
-			String username = activeUsers.column(event.getUISession()).values().iterator().next();
-			activeUsers.column(event.getUISession()).clear();
-			if(!activeUsers.values().contains(username))
-				UINotifierManager.notifySuccess(EVENT_USER_INACTIVE, username);
+			Iterator<String> iterator = activeUsers.column(event.getUISession()).values().iterator();
+			if (iterator.hasNext()) {
+				String username = iterator.next();
+				activeUsers.column(event.getUISession()).clear();
+				if (!activeUsers.values().contains(username)) {
+					UINotifierManager.notifySuccess(EVENT_USER_INACTIVE, username);
+
+				}
+			}
 		}
 	}
 
