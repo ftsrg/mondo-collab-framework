@@ -26,6 +26,11 @@
             id="org.mondo.collaboration.online.rap.widgets.SessionChatView"
             name="New ViewPart">
       </view>
+      <view
+            class="org.mondo.collaboration.online.rap.widgets.Asd"
+            id="org.mondo.collaboration.online.rap.widgets.Asd"
+            name="New ViewPart">
+      </view>
    </extension>
 
 </plugin>

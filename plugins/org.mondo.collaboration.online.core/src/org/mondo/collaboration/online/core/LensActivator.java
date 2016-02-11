@@ -5,6 +5,7 @@ import java.net.URL;
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.incquery.patternlanguage.PatternLanguageStandaloneSetup;
 import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
 import org.osgi.framework.BundleActivator;
@@ -34,6 +35,7 @@ public class LensActivator extends Plugin implements BundleActivator {
 		PropertyConfigurator.configure(FileLocator.toFileURL(confURL).getFile());
 
 		AccessControlLanguageStandaloneSetup.doSetup();
+		PatternLanguageStandaloneSetup.doSetup();
 		EMFPatternLanguageStandaloneSetup.doSetup();
 		
 		LensSessionManager.initializeHttpSessionListener();

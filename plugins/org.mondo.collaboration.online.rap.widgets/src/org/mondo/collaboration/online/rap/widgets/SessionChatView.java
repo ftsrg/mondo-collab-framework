@@ -158,11 +158,11 @@ public class SessionChatView extends ViewPart {
 	public void createPartControl(Composite parent) {
 
 		Composite container = new Composite(parent, SWT.NONE);
-		container.setLayout(new BorderLayout(0, 0));
+		container.setLayout(new BorderLayout());
 		{
 			Composite composite = new Composite(container, SWT.NONE);
 			composite.setLayoutData(BorderLayout.SOUTH);
-			composite.setLayout(new BorderLayout(0, 0));
+			composite.setLayout(new BorderLayout());
 
 			txtMessage = new Text(composite, SWT.BORDER);
 			txtMessage.setLayoutData(BorderLayout.CENTER);
