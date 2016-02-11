@@ -27,6 +27,8 @@ public class StorageAccessSvn extends StorageAccess {
 	public static final String SVN_CLEANUP_COMMAND = "svn cleanup --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_UPDATE_COMMAND = "svn up %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_LOG_COMMAND = "svn log %s --username=%s --password=%s --non-interactive --no-auth-cache";
+	public static final String SVN_LOCK_COMMAND = "svn lock %s --username=%s --password=%s --non-interactive --no-auth-cache";
+	public static final String SVN_UNLOCK_COMMAND = "svn unlock %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_COMMIT_COMMAND = "svn commit %s -m \"%s\" --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_STATUS_COMMAND = "svn status %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	
@@ -128,9 +130,19 @@ public class StorageAccessSvn extends StorageAccess {
 		Assert.isLegal(path.endsWith(getExtension()));
 		internalEiq = URI.createFileURI(internalCheckoutFile(getEiqFile()));
 		internalMacl = URI.createFileURI(internalCheckoutFile(getMaclFile()));
-		return URI.createFileURI(internalCheckoutFile(path));
+		String filePath = internalCheckoutFile(path);
+		internalLockFile(filePath);
+		return URI.createFileURI(filePath);
 	}
 
+	private void internalLockFile(String path) {
+		URI fullUri = URI.createURI(path);
+		String file = fullUri.lastSegment();
+		String folder = replaceLast(path, file, "");
+		
+		internalExecuteProcess(String.format(SVN_LOCK_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(folder));
+	}
+	
 	private String internalCheckoutFile(String path) throws Exception {
 		return internalCheckoutFile(path, true);
 	}
@@ -153,7 +165,6 @@ public class StorageAccessSvn extends StorageAccess {
 	public void finishSession(String path) {
 		Date date= new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat();
-		
 		internalFinishSession(path, String.format(SVN_DEFAULT_MESSAGE, getUsername(), dateFormat.format(date)));
 	}
 	
@@ -164,6 +175,7 @@ public class StorageAccessSvn extends StorageAccess {
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
 		
 		internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, msg, getUsername(), getPassword()), new String[] {}, new File(temp));
+		internalExecuteProcess(String.format(SVN_UNLOCK_COMMAND, file, getUsername(), getPassword()), new String[] {}, new File(temp));
 		
 		return "Success";
 	}
@@ -195,7 +207,6 @@ public class StorageAccessSvn extends StorageAccess {
 		URI fullUri = URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(fullUri.toFileString(), file, "");
-//		String temp = replaceFirst(folder, getTempFolder(), getRepository()).replace("/", File.separator);
 		
 		internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, msg, getUsername(), getPassword()), new String[] {}, new File(folder));
 	}
