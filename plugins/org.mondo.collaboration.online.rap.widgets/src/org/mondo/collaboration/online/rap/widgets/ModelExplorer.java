@@ -136,8 +136,6 @@ public class ModelExplorer extends ViewPart {
                     }                    
                 }
             }
-
-			
         });
         menuMgr.setRemoveAllWhenShown(true);
         treeViewer.getControl().setMenu(menu);
@@ -308,17 +306,17 @@ public class ModelExplorer extends ViewPart {
 		else {
 			try {
 				page.openEditor(new URIEditorInput(uri), editorDescriptor.getId());
-				page.showView(ModelLogView.ID);
-				String logString = ModelLogView.getCompleteLogString();
-				if(logString.equals("")){
-					Date now = new Date();
-				    String strDate = DATE_FORMAT.format(now);
-
-					String username = ModelExplorer.getCurrentStorageAccess().getUsername();
-				    
-					ModelLogView.setLogString(strDate + " Whiteboard initialized by " + username);
-				}
-				UINotifierManager.notifySuccess(ModelLogView.EVENT_UPDATE_LOG, null);
+//				page.showView(ModelLogView.ID);
+//				String logString = ModelLogView.getCompleteLogString();
+//				if(logString.equals("")){
+//					Date now = new Date();
+//				    String strDate = DATE_FORMAT.format(now);
+//
+//					String username = ModelExplorer.getCurrentStorageAccess().getUsername();
+//				    
+//					ModelLogView.setLogString(strDate + " Whiteboard initialized by " + username);
+//				}
+//				UINotifierManager.notifySuccess(ModelLogView.EVENT_UPDATE_LOG, null);
 				
 			}
 			catch (PartInitException exception) {

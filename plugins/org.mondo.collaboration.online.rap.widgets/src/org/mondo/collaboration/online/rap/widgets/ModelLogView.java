@@ -1,74 +1,73 @@
 package org.mondo.collaboration.online.rap.widgets;
 
+import java.util.Map;
+
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.part.ViewPart;
+import org.mondo.collaboration.online.core.LensSessionManager;
 import org.mondo.collaboration.online.rap.UINotifierManager;
 
-import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.collect.Maps;
 
-public class ModelLogView extends ViewPart {
+public class ModelLogView extends WhiteboardGenericView {
 
-	private Composite container;
-	private FillLayout layout;
-	
-	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelLog";
-	private Text logText;
-	private static String lineDelimiter;
-	private static String completeLog = "";
-	
+	public ModelLogView() {
+	}
 
-	public static final String EVENT_UPDATE_LOG = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.log";
+	private static AddLogToWhiteboard addCallback;
+	private static RemoveFromWhiteboard removeCallback;
 	
-	public Display getDisplay(){
-		if(logText == null){
-			return null;
-		}
-		return logText.getDisplay();
+	// Static constructor for registering the global changes.
+	static {
+		addCallback = new AddLogToWhiteboard();
+		UINotifierManager.register(LensSessionManager.EVENT_SESSION_OPENED, RWT.getUISession(), addCallback);
+		removeCallback = new RemoveFromWhiteboard();
+		UINotifierManager.register(LensSessionManager.EVENT_SESSION_CLOSED, RWT.getUISession(), removeCallback);
 	}
 	
-	public ModelLogView() {
-		// TODO Auto-generated constructor stub
+	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelLogView";
+	public static final String EVENT_UPDATE_LOG = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.log";
+
+	private volatile static Map<URI, String> messages = Maps.newHashMap();
+	
+	private Composite container;
+	private FillLayout layout;
+	private static String lineDelimiter;
+	
+	public Display getDisplay(){
+		if(txtMessagePool == null){
+			return null;
+		}
+		return txtMessagePool.getDisplay();
+	}
+	
+	public void addMessage(String message){
+		String fullLog = messages.get(currentURI);
+		fullLog = message + lineDelimiter + fullLog;
+		messages.put(currentURI, fullLog);
 	}
 	
 	@Override
 	public void createPartControl(Composite parent) {
-		// TODO Auto-generated method stub
+		addCallback.setMessageSource(this);
+		removeCallback.setMessageSource(this);
+		
 		container = new Composite(parent, SWT.NONE | SWT.V_SCROLL | SWT.H_SCROLL);
 		layout = new FillLayout(SWT.NONE | SWT.V_SCROLL | SWT.H_SCROLL);
 		container.setLayout(layout);
 
-		logText= new Text(container, SWT.NONE | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		txtMessagePool= new Text(container, SWT.NONE | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		
-		logText.setEditable(false);
+		txtMessagePool.setEditable(false);
 		
-		lineDelimiter = logText.getLineDelimiter();
+		lineDelimiter = txtMessagePool.getLineDelimiter();
 		
-		UINotifierManager.register(EVENT_UPDATE_LOG, RWT.getUISession(), new UpdateLog());
-
-		RWT.getUISession().setAttribute("dummy", this);
-	}
-
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public static void setLogString(String completeLog){
-		ModelLogView.completeLog = completeLog;
-	}
-
-	public static String getCompleteLogString() {
-		return completeLog;
-	}
-
-	public void refresh() {
-		logText.setText(completeLog);		
+		super.createPartControl(parent);
 	}
 
 	// TODO it might cause a problem on different platforms
@@ -77,23 +76,21 @@ public class ModelLogView extends ViewPart {
 	}
 	
 
-	public class UpdateLog implements FutureCallback<Object> {
+	@Override
+	protected Map<URI, String> getMessages() {
+		return messages;
+	}
+
+	protected static class AddLogToWhiteboard extends AddToWhiteboard {
 		@Override
-		public void onFailure(Throwable arg0) {
-		}
-		
-		@Override
-		public void onSuccess(Object param) {
-			
-			Display display = logText.getDisplay();
-			display.asyncExec(new Runnable() {
-				
-				@Override
-				public void run() {
-					logText.setText(completeLog);
-				}
-			});
+		public String getViewKind() {
+			return "Model log";
 		}
 	}
 
+	@Override
+	protected String getNewMessageEventId() {
+		return EVENT_UPDATE_LOG;
+	}
+	
 }

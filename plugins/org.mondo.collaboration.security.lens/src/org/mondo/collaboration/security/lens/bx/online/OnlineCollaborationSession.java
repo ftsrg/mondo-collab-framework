@@ -107,6 +107,10 @@ public class OnlineCollaborationSession {
         		EMFScope.extractUnderlyingEMFIndex(arbiter.getPolicyQueryEngine()));
 	}
 	
+	public URI getGoldConfinementURI() {
+		return goldConfinementURI;
+	}
+	
 	public ResourceSet getGoldResourceSet() {
 		return goldResourceSet;
 	}

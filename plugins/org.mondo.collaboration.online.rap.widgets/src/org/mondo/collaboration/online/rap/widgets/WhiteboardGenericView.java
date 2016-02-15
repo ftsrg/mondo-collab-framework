@@ -39,9 +39,18 @@ public abstract class WhiteboardGenericView extends ViewPart {
 	 */
 	protected abstract Map<URI, String> getMessages();
 	
-	private Text txtMessagePool;
-	private URI currentURI;
-	private Text txtMessage;
+	/**
+	 * Null-safe get on the map returned by getMessages()
+	 * @param uri
+	 * @return
+	 */
+	protected String getMessages(URI uri){
+		return getMessages().get(uri) == null ? "" : getMessages().get(uri);
+	}
+	
+	protected URI currentURI;
+	protected Text txtMessagePool;
+	protected Text txtMessage;
 
 	// TODO specializations should register an instance of the
 	// AddToWhiteboard implementation class and the RemoveFromWhiteboard class
@@ -49,7 +58,7 @@ public abstract class WhiteboardGenericView extends ViewPart {
 	// Static initializer for registering the global changes.
 	static {
 		// These should be added in the implementation classes
-		// UINotifierManager.register(LensSessionManager.EVENT_SESSION_OPENED, RWT.getUISession(), new AddToWhiteboard());
+		// UINotifierManager.register(LensSessionManager.EVENT_SESSION_OPENED, RWT.getUISession(), new AddToWhiteboardImpl());
 		// UINotifierManager.register(LensSessionManager.EVENT_SESSION_CLOSED, RWT.getUISession(), new RemoveFromWhiteboard());
 	}
 
@@ -59,7 +68,7 @@ public abstract class WhiteboardGenericView extends ViewPart {
 			txtMessagePool.getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					txtMessagePool.setText(getMessages().get(uri));
+					txtMessagePool.setText(getMessages(uri));
 					txtMessagePool.update();
 				}
 			});
@@ -70,36 +79,12 @@ public abstract class WhiteboardGenericView extends ViewPart {
 		txtMessagePool.getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				txtMessagePool.setText(getMessages().get(currentURI));
+				txtMessagePool.setText(getMessages(currentURI));
 				txtMessagePool.update();
 			}
 		});
 	}
 	
-	private void sendMessage() {
-		String message = txtMessage.getText();
-		if(message != null && !message.trim().isEmpty()) {
-			StringBuilder sb = new StringBuilder();
-			
-			sb.append("#");
-			Date now = new Date();
-		    String strDate = ModelExplorer.DATE_FORMAT.format(now);
-		    sb.append(strDate);
-		    sb.append(" ");
-			sb.append(ModelExplorer.getCurrentStorageAccess().getUsername());
-			sb.append(": ");
-			sb.append(message);
-			sb.append(System.lineSeparator());
-			
-			String fullMessage = getMessages().get(currentURI);
-			fullMessage = sb.toString().concat(fullMessage);
-			getMessages().put(currentURI, fullMessage);
-			UINotifierManager.notifySuccess(EVENT_NEW_MESSAGE, currentURI);
-			
-			txtMessage.setText("");
-		}
-	}
-
 	/**
 	 * Create contents of the view part.
 	 * 
@@ -107,56 +92,7 @@ public abstract class WhiteboardGenericView extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-
-		Composite container = new Composite(parent, SWT.NONE);
-		container.setLayout(new BorderLayout(0, 0));
-		{
-			Composite composite = new Composite(container, SWT.NONE);
-			composite.setLayoutData(BorderLayout.SOUTH);
-			composite.setLayout(new BorderLayout(0, 0));
-
-			txtMessage = new Text(composite, SWT.BORDER);
-			txtMessage.setLayoutData(BorderLayout.CENTER);
-			
-
-			txtMessage.addKeyListener(new KeyAdapter() {
-
-				@Override
-				public void keyPressed(KeyEvent e) {
-					super.keyPressed(e);
-					if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) { 
-						sendMessage();
-					}
-				}
-
-			});
-
-			Button btnSend = new Button(composite, SWT.None);
-			btnSend.setLayoutData(BorderLayout.EAST);
-			btnSend.setText("Send");
-			btnSend.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseUp(MouseEvent e) {
-					super.mouseUp(e);
-					sendMessage();
-				}
-
-			});
-		}
-		{
-			Composite composite = new Composite(container, SWT.NONE);
-			composite.setLayoutData(BorderLayout.CENTER);
-			composite.setLayout(new FillLayout());
-
-			txtMessagePool = new Text(composite, SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
-			txtMessagePool.setText("Message Pool");
-		}
-
 		initializeView();
-
-		createActions();
-		initializeToolBar();
-		initializeMenu();
 	}
 
 	protected void initializeView() {
@@ -167,7 +103,9 @@ public abstract class WhiteboardGenericView extends ViewPart {
 				updateView(((URIEditorInput) input).getURI());
 			}
 		} else {
-			txtMessage.setEnabled(false);
+			if(txtMessage != null){
+				txtMessage.setEnabled(false);
+			}
 		}
 		UINotifierManager.register(getNewMessageEventId(), RWT.getUISession(), new NewMessageArrived(this));
 	}
@@ -178,30 +116,8 @@ public abstract class WhiteboardGenericView extends ViewPart {
 	 */
 	protected abstract String getNewMessageEventId();
 
-	/**
-	 * Create the actions.
-	 */
-	private void createActions() {
-		// Create the actions
-	}
-
-	/**
-	 * Initialize the toolbar.
-	 */
-	private void initializeToolBar() {
-//		IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
-	}
-
-	/**
-	 * Initialize the menu.
-	 */
-	private void initializeMenu() {
-//		IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
-	}
-
 	@Override
 	public void setFocus() {
-		txtMessage.setFocus();
 	}
 	
 
@@ -267,9 +183,13 @@ public abstract class WhiteboardGenericView extends ViewPart {
 				if (editorPart.getEditorInput() instanceof URIEditorInput) {
 					URIEditorInput input = (URIEditorInput) editorPart.getEditorInput();
 					updateView(input.getURI());
-					txtMessage.setEnabled(true);
+					if(txtMessage != null){
+						txtMessage.setEnabled(true);
+					}
 				} else {
-					txtMessage.setEnabled(false);
+					if(txtMessage != null){
+						txtMessage.setEnabled(false);
+					}
 					txtMessagePool.setText("Message Pool");
 				}
 			}

@@ -12,7 +12,7 @@
       </view>
       <view
             class="org.mondo.collaboration.online.rap.widgets.ModelLogView"
-            id="org.mondo.collaboration.online.rap.widgets.ModelLog"
+            id="org.mondo.collaboration.online.rap.widgets.ModelLogView"
             name="Model Log"
             restorable="true">
       </view>
