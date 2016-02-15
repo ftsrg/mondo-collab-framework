@@ -11,7 +11,6 @@ import com.google.common.util.concurrent.FutureCallback;
 
 public class UINotifierManager {
 
-	private static Table<String, UISession, UISessionListener> table = HashBasedTable.create();
 	
 	public static void register(String eventId, UISession session, FutureCallback<Object> callback) {
 		NotifierManager.registerCallback(eventId, callback);
@@ -23,16 +22,11 @@ public class UINotifierManager {
 				UINotifierManager.unregister(eventId, session, callback);
 			}
 		};
-		
-		table.put(eventId, session, listener);
 		session.addUISessionListener(listener);
 	}
 	
 	public static void unregister(String eventId, UISession session, FutureCallback<Object> callback) {
 		NotifierManager.removeCallback(eventId, callback);
-		UISessionListener listener = table.get(eventId,session);
-		session.removeUISessionListener(listener);
-		table.remove(eventId, session);
 	}
 	
 	public static void notifyError(String eventId, Throwable e) {
