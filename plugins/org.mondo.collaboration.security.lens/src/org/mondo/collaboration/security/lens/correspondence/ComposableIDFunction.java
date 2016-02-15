@@ -11,6 +11,8 @@
 
 package org.mondo.collaboration.security.lens.correspondence;
 
+import java.util.Set;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -61,6 +63,22 @@ public abstract class ComposableIDFunction implements EObjectCorrespondence.Uniq
 			}
 			return null;
 		}
+
+		@Override
+		public Object generateUniqueId(EObject input, Set<Object> reserved) {
+			for (ComposableIDFunction component : components) {
+				Object result = component.generateUniqueId(input, reserved);
+				if (result != null) return result;
+			}
+			return null;
+		}
+
+		@Override
+		public void setUniqueId(EObject target, Object uniqueId) {
+			for (ComposableIDFunction component : components) {
+				component.setUniqueId(target, uniqueId);
+			}
+		}
 	}
 	
 	public static class ElseComplain extends ComposableIDFunction {
@@ -68,5 +86,15 @@ public abstract class ComposableIDFunction implements EObjectCorrespondence.Uniq
 	    public Object tryApply(EObject input) {
 	        throw new IllegalArgumentException("No unique identifier could be constructed for " + input);
 	    }
+
+		@Override
+		public Object generateUniqueId(EObject input, Set<Object> reserved) {
+		    throw new IllegalArgumentException("No unique identifier could be generated for " + input);
+		}
+
+		@Override
+		public void setUniqueId(EObject target, Object uniqueId) {
+		    throw new IllegalArgumentException("Unique identifier could not be set for " + target);
+		}
 	}
 }

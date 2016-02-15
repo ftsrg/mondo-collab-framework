@@ -18,6 +18,8 @@ import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * Classes inherited from StorageAccess responsible for accessing to the
  * underlying repositories.
@@ -85,35 +87,32 @@ public abstract class StorageAccess {
 		return resourceSet.getResource(getInternalMaclFile(), true);
 	}
 
-	protected Collection<String> internalExecuteProcess(String cmd) throws Exception {
+	protected ExecutionResponse internalExecuteProcess(String cmd) throws Exception {
 		return internalExecuteProcess(cmd, new String[] {}, null);
 	}
 
-	protected Collection<String> internalExecuteProcess(String cmd, String[] args, File ctx) {
+	protected ExecutionResponse internalExecuteProcess(String cmd, String[] args, File ctx) {
 		logger.info("Process executing:");
 		logger.info("-> Command: " + cmd);
 		logger.info("-> Context: " + (ctx == null ? "@null" : ctx.getPath()));
 
-		List<String> list = new ArrayList<String>();
+		List<String> responseList = new ArrayList<String>();
+		List<String> errorList = new ArrayList<String>();
 		try {
 			String line;
 			Process p = Runtime.getRuntime().exec(cmd, args, ctx);
 			{
 				BufferedReader bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 				while ((line = bre.readLine()) != null) {
-					list.add(line);
+					errorList.add(line);
 					logger.info("---> Error: " + line);
 				}
 				bre.close();
 			}
-	
-			if (!list.isEmpty())
-				return list;
-	
 			{
 				BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				while ((line = bri.readLine()) != null) {
-					list.add(line);
+					responseList.add(line);
 					logger.info("---> Response: " + line);
 				}
 				bri.close();
@@ -123,7 +122,7 @@ public abstract class StorageAccess {
 		} catch (Exception e) {
 			logger.error("Process failed", e);
 		}
-		return list;
+		return new ExecutionResponse(errorList, responseList);
 	}
 
 	/**
@@ -151,7 +150,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getRepository() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.repository.gold");
-		return ret == null ? "http://localhost/svn/wt-demo" : ret;
+		return ret == null ? "https://localhost:8443/svn/wt-demo" : ret;
 	}
 
 	/**
@@ -171,7 +170,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getTempFolder() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.temporary.folder");
-		return ret == null ? "/home/vialpando/Eclipse/MondoOnline/server" : ret;
+		return ret == null ? "C:\\mondo\\online\\temp" : ret;
 	}
 
 	/**
@@ -181,7 +180,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getEiqFile() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.eiq");
-		return ret == null ? "http://localhost/svn/wt-demo/macl.project/src/macl/project/queries.eiq" : ret;
+		return ret == null ? "https://localhost:8443/svn/wt-demo/macl.project/src/macl/project/queries.eiq" : ret;
 	}
 
 	/**
@@ -191,7 +190,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getMaclFile() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.macl");
-		return ret == null ? "http://localhost/svn/wt-demo/macl.project/src/macl/project/rules.macl" : ret;
+		return ret == null ? "https://localhost:8443/svn/wt-demo/macl.project/src/macl/project/rules.macl" : ret;
 	}
 
 	/**
@@ -230,14 +229,34 @@ public abstract class StorageAccess {
 	public abstract void commit(String path, String message);
 	
 	/**
-	 * Updates a node in the StorageModel
-	 * @param path from the file system
+	 * This class represents the response of an executed command.
+	 * 
+	 * @author Csaba Debreceni
+	 *
 	 */
-	public abstract StorageModelNode updateNode(String path);
+	public static class ExecutionResponse {
+		List<String> errorList;
+		List<String> responseList;
+		
+		public ExecutionResponse(List<String> errorList, List<String> responseList) {
+			super();
+			this.errorList = errorList;
+			this.responseList = responseList;
+		}
+		
+		public List<String> getErrorList() {
+			return ImmutableList.copyOf(errorList);
+		}
+		
+		public List<String> getResponseList() {
+			return ImmutableList.copyOf(responseList);
+		}
+		
+		public boolean hasError() {
+			return !errorList.isEmpty();
+		}
+		
+	}
+
 	
-	/**
-	 * Updates a node in the StorageModel
-	 * @param path
-	 */
-	public abstract StorageModelNode updateNode(StorageModelNode node);
 }

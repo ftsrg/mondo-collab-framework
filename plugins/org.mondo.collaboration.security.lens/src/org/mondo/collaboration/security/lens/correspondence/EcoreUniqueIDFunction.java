@@ -11,6 +11,8 @@
 
 package org.mondo.collaboration.security.lens.correspondence;
 
+import java.util.Set;
+
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EGenericType;
@@ -49,5 +51,15 @@ public class EcoreUniqueIDFunction extends ComposableIDFunction {
 				return parentURI + "$$GenericType<>" + rawURI;
 		}
 		return null;
+	}
+
+	@Override
+	public Object generateUniqueId(EObject input, Set<Object> reserved) {
+		return null;
+	}
+
+	@Override
+	public void setUniqueId(EObject target, Object uniqueId) {
+		return;
 	}
 }

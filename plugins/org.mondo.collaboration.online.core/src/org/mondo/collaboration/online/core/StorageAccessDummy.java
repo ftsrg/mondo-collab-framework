@@ -27,7 +27,7 @@ public class StorageAccessDummy extends StorageAccess {
 
 	@Override
 	public Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent, String gold) {
-		node = new StorageModelNode(model, "example.wtspec4m", filepath, NodeType.NoModification, null, this, "/dummyLocation");
+		node = new StorageModelNode(model, "example.wtspec4m", filepath, NodeType.Model, null, this, "/dummyLocation");
 		return Arrays.asList(node);
 	}
 
@@ -48,16 +48,6 @@ public class StorageAccessDummy extends StorageAccess {
 	@Override
 	protected URI getInternalMaclFile() {
 		return URI.createFileURI(internalMaclFile);
-	}
-
-	@Override
-	public StorageModelNode updateNode(String path) {
-		return node;
-	}
-	
-	@Override
-	public StorageModelNode updateNode(StorageModelNode node) {
-		return node;
 	}
 
 	@Override

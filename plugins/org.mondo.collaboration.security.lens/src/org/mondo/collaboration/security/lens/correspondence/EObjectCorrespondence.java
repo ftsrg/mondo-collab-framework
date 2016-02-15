@@ -13,6 +13,7 @@ package org.mondo.collaboration.security.lens.correspondence;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
@@ -42,7 +43,19 @@ public class EObjectCorrespondence {
 	 * Assigns unique ID to objects for establishing correspondence. 
 	 * Never return null; return the argument if no ID is available.
 	 */
-	public interface UniqueIDScheme extends Function<EObject, Object> {}
+	public interface UniqueIDScheme extends Function<EObject, Object> {
+		
+		/**
+		 * Generate unique ID for a newly created objects
+		 */
+		public Object generateUniqueId(EObject input, Set<Object> reserved);
+		
+		/**
+		 * Set the unique ID to the target object
+		 */
+		public void setUniqueId(EObject target, Object uniqueId);
+		
+	}
 	/**
 	 * Returns an ID scheme relative to a given BaseURI.
 	 */
@@ -134,6 +147,8 @@ public class EObjectCorrespondence {
 				));					
 		}
 	}
+	
+	
 	
 //	private WeakHashMap<EObject, WeakReference<EObject>> sourceToTarget = new WeakHashMap<EObject, WeakReference<EObject>>();
 //	private WeakHashMap<EObject, WeakReference<EObject>> targetToSource = new WeakHashMap<EObject, WeakReference<EObject>>();

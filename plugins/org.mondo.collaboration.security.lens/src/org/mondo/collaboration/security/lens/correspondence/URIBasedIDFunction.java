@@ -11,6 +11,8 @@
 
 package org.mondo.collaboration.security.lens.correspondence;
 
+import java.util.Set;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -49,6 +51,18 @@ public class URIBasedIDFunction extends ComposableIDFunction {
 		}
 		
 		return resourceURI.toString() + "#" + uriFragment;
+	}
+
+
+	@Override
+	public Object generateUniqueId(EObject input, Set<Object> reserved) {
+		return null;
+	}
+
+
+	@Override
+	public void setUniqueId(EObject target, Object uniqueId) {
+		return;		
 	}
 
 }

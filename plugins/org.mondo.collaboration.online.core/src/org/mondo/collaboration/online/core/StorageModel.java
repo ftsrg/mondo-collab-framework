@@ -18,7 +18,7 @@ public class StorageModel {
 		initializeRoots();
 	}
 	private void initializeRoots() {
-		roots = sa.explore(this, StorageAccess.getRepository(), null, sa.getRepository());
+		roots = sa.explore(this, StorageAccess.getRepository(), null, StorageAccess.getRepository());
 	}
 	protected StorageAccess getStorageAccess() {
 		return sa;
@@ -104,5 +104,5 @@ public class StorageModel {
 		return roots.toArray();
 	}
 	
-	public enum NodeType {Repository, Folder, NoModification, Addition, Deletion, Modified, Conflict, NotVersioned}		
+	public enum NodeType {Repository, Folder, Model}		
 }

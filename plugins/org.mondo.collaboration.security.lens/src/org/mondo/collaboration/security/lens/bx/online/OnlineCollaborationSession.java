@@ -38,6 +38,7 @@ import org.mondo.collaboration.security.lens.bx.RelationalLensXform;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
+import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDScheme;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.LiveTable;
@@ -108,6 +109,10 @@ public class OnlineCollaborationSession {
 		return Collections.unmodifiableSet(legs);
 	}
 	
+	public UniqueIDSchemeFactory getUniqueIDFactory() {
+		return uniqueIDFactory;
+	}
+	
 	/**
 	 * The "leg" of the session specific to a single user.
 	 * <p> Modifications of the front model should be indicated with {@link #atomicallyModify(Callable)}
@@ -127,6 +132,7 @@ public class OnlineCollaborationSession {
 		
 		private MondoLensScope scope;
 		private final RelationalLensXform lens;
+		private Map<CorrespondenceKey, LiveTable> correspondenceTables;
 
 		/**
 		 * Creates an in-memory front model for the user and immediately synchronizes the gold model onto it.
@@ -193,7 +199,8 @@ public class OnlineCollaborationSession {
 					frontIndexer, 
 					uniqueIDFactory.apply(frontConfinementURI)
 				);
-	        Map<CorrespondenceKey, LiveTable> correspondenceTables = new EnumMap<CorrespondenceKey, LiveTable>(CorrespondenceKey.class);
+			
+			correspondenceTables = new EnumMap<CorrespondenceKey, LiveTable>(CorrespondenceKey.class);
 	        correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
 	        
 			scope = new MondoLensScope(arbiter, goldIndexer, frontIndexer, correspondenceTables);
@@ -235,7 +242,7 @@ public class OnlineCollaborationSession {
             mutex.lock();
             try {
 				try {
-					if (modificationTransaction == null) 
+					if (modificationTransaction != null) 
 					    modificationTransaction.call();
 				} catch (Exception e) {
 //				    // try to roll back
@@ -302,6 +309,13 @@ public class OnlineCollaborationSession {
 		    legs.remove(this);
 		}
 
+		public UniqueIDScheme getUniqueIDScheme() {
+			return uniqueIDFactory.apply(frontConfinementURI);
+		}
+		
+		public Map<CorrespondenceKey, LiveTable> getCorrespondenceTables() {
+			return correspondenceTables;
+		}
 		
 	}
 		

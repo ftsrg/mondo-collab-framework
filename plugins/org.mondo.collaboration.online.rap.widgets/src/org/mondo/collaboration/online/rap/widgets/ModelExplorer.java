@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -47,8 +46,6 @@ import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 import org.mondo.collaboration.online.rap.UINotifierManager;
-
-import com.google.common.util.concurrent.FutureCallback;
 
 /**
  * @author Csaba Debreceni
@@ -136,23 +133,7 @@ public class ModelExplorer extends ViewPart {
 								openEditor(wb, node.getPath());
 							};
                     	});
-                    }
-                    if (node.getType() == NodeType.Modified) {
-                    	manager.add(new Action() {
-
-							private static final long serialVersionUID = 1L;
-                    		
-							@Override
-							public String getText() {
-								return "Commit changes";
-							}
-							
-							public void run() {
-								access.finishSession(node.getPath());
-								UINotifierManager.notifySuccess(EVENT_UPDATE_PATH, node.getPath());
-							};
-                    	});
-                    }
+                    }                    
                 }
             }
 
@@ -271,8 +252,6 @@ public class ModelExplorer extends ViewPart {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		UINotifierManager.register(EVENT_UPDATE_PATH, RWT.getUISession(), new UpdatePath());
 	}
 	
 	private boolean retrieveHttpSession() {
@@ -355,29 +334,5 @@ public class ModelExplorer extends ViewPart {
 	
 	public static StorageAccess getCurrentStorageAccess() {
 		return (StorageAccess) RWT.getUISession().getHttpSession().getAttribute("storageaccess");
-	}
-	
-	public static void update(String path) {
-		UINotifierManager.notifySuccess(EVENT_UPDATE_PATH, path);
-	}
-	
-	public class UpdatePath implements FutureCallback<Object> {
-		@Override
-		public void onFailure(Throwable arg0) {
-		}
-		
-		@Override
-		public void onSuccess(Object param) {
-			String path = (String) param;
-			treeViewer.getControl().getDisplay().asyncExec(new Runnable() {
-				
-				@Override
-				public void run() {
-					StorageModelNode updateNode = access.updateNode(path);
-					treeViewer.update(updateNode, null);
-					treeViewer.refresh(updateNode);
-				}
-			});
-		}
 	}
 }

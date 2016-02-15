@@ -60,6 +60,7 @@ public class LensSessionManager {
 	public static void register(String user, HttpSession session, URI uri, OnlineLeg leg) {
 		table.put(user, uri, leg);
 		mapping.put(session, user);
+		uriSet.add(uri);
 		NotifierManager.notifySuccess(EVENT_REGISTER, leg);
 	}
 

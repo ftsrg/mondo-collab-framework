@@ -21,21 +21,6 @@ public class ModelExplorerLabelProvider extends LabelProvider {
 			if(node.getParent() == null) {
 				ret += " " + node.getPath();
 			}
-			if(node.getType() == NodeType.Addition) {
-				ret = String.format("[A] ", JOIN_SESSION) + ret;
-			}
-			if(node.getType() == NodeType.Conflict) {
-				ret = String.format("[C] ", OWNER_SESSION) + ret;
-			}
-			if(node.getType() == NodeType.Deletion) {
-				ret = String.format("[D] ", OWNER_SESSION) + ret;
-			}
-			if(node.getType() == NodeType.NotVersioned) {
-				ret = String.format("[?] ", OWNER_SESSION) + ret;
-			}
-			if(node.getType() == NodeType.Modified) {
-				ret = String.format("[M] ", OWNER_SESSION) + ret;
-			}
 			return ret;
 		}
 		return super.getText(element);
