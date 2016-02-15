@@ -100,22 +100,22 @@ public class EObjectCorrespondence {
 	}
 	private static final String SCHEME_FACTORY_EXTENSION_POINT = "org.mondo.collaboration.security.lens.uniqueIDSchemeFactory";
 	
+	public static Map<Object, Collection<EObject>> applyObjectToUniqueIdentifier(
+			ModelIndexer indexer, 
+			UniqueIDScheme objectToUniqueIdentifier) {
+		
+		return Multimaps.index(indexer.getAllEObjects(), objectToUniqueIdentifier).asMap();		
+	}
+	
 	/**
 	 * Builds a correspondence table between two models based on unique identifiers.
 	 */
 	public static LiveTable buildEObjectCorrespondenceTable(
-			ModelIndexer goldIndexer, 
-			UniqueIDScheme goldObjectToUniqueIdentifier,
-			ModelIndexer frontIndexer,
-			UniqueIDScheme frontObjectToUniqueIdentifier) 
+			Map<Object, Collection<EObject>> goldIndex,
+			Map<Object, Collection<EObject>> frontIndex) 
 	{
 		final LiveTable table = new LiveTable();
 		DebuggableManipulableWrapper manipulable = new DebuggableManipulableWrapper(table, CorrespondenceKey.EOBJECT);
-		
-		Map<Object, Collection<EObject>> goldIndex = 
-				Multimaps.index(goldIndexer.getAllEObjects(), goldObjectToUniqueIdentifier).asMap();
-		Map<Object, Collection<EObject>> frontIndex = 
-				Multimaps.index(frontIndexer.getAllEObjects(), frontObjectToUniqueIdentifier).asMap();
 		
 		for (Entry<Object, Collection<EObject>> goldEntry : goldIndex.entrySet()) {
 			final Collection<EObject> golds = goldEntry.getValue();

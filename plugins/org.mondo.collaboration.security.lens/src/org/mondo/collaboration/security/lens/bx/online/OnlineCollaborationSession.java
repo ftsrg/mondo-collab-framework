@@ -13,6 +13,7 @@ package org.mondo.collaboration.security.lens.bx.online;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
@@ -24,12 +25,15 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
+import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
+import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
@@ -41,11 +45,13 @@ import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondenc
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDScheme;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
+import org.mondo.collaboration.security.lens.util.ILiveRelation.Listener;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 /**
  * An online synchronization session for a variable number of users ('legs'), between the single gold model and a front model for each leg.
@@ -133,6 +139,8 @@ public class OnlineCollaborationSession {
 		private MondoLensScope scope;
 		private final RelationalLensXform lens;
 		private Map<CorrespondenceKey, LiveTable> correspondenceTables;
+		
+		private Set<Object> uniqueIdentifiers;
 
 		/**
 		 * Creates an in-memory front model for the user and immediately synchronizes the gold model onto it.
@@ -191,14 +199,39 @@ public class OnlineCollaborationSession {
 	        		frontConfinementURI,
 	        		frontResourceSet);
 
+			UniqueIDScheme goldObjectToUniqueIdentifier = uniqueIDFactory.apply(goldConfinementURI);
+			Map<Object, Collection<EObject>> goldIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(goldIndexer, goldObjectToUniqueIdentifier);
+			UniqueIDScheme frontObjectToUniqueIdentifier = uniqueIDFactory.apply(frontConfinementURI);
+			Map<Object, Collection<EObject>> frontIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(frontIndexer, frontObjectToUniqueIdentifier);
+			
 			// if using in-memory resource with fake URI, then front model is initially empty, no need to gather EObject correspondences
 			LiveTable correspondenceTable = startWithGet ? new LiveTable() :	
-				EObjectCorrespondence.buildEObjectCorrespondenceTable(
-					goldIndexer, 
-					uniqueIDFactory.apply(goldConfinementURI),
-					frontIndexer, 
-					uniqueIDFactory.apply(frontConfinementURI)
-				);
+				EObjectCorrespondence.buildEObjectCorrespondenceTable(goldIndex, frontIndex);
+			
+			uniqueIdentifiers = Sets.newHashSet();
+			correspondenceTable.addListener(new FlatTuple(null, null), new Listener() {
+				
+				@Override
+				public void accept(Tuple t, Boolean addition) {
+					if(addition) {
+						Object goldId = goldObjectToUniqueIdentifier.apply((EObject)t.get(0));
+						Object frontId = frontObjectToUniqueIdentifier.apply((EObject)t.get(1));
+						if(goldId != null)
+							uniqueIdentifiers.add(goldId);
+						if(frontId != null)
+							uniqueIdentifiers.add(frontId);
+					}
+					else {
+						Object goldId = goldObjectToUniqueIdentifier.apply((EObject)t.get(0));
+						Object frontId = frontObjectToUniqueIdentifier.apply((EObject)t.get(1));
+						if(goldId != null)
+							uniqueIdentifiers.remove(goldId);
+						if(frontId != null)
+							uniqueIdentifiers.remove(frontId);
+						}
+				}
+			});
+			
 			
 			correspondenceTables = new EnumMap<CorrespondenceKey, LiveTable>(CorrespondenceKey.class);
 	        correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
@@ -316,7 +349,9 @@ public class OnlineCollaborationSession {
 		public Map<CorrespondenceKey, LiveTable> getCorrespondenceTables() {
 			return correspondenceTables;
 		}
-		
+		public Set<Object> getUniqueIdentifiers() {
+			return ImmutableSet.copyOf(uniqueIdentifiers);
+		}
 	}
 		
 }

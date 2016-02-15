@@ -166,5 +166,5 @@ public class LiveTable implements ILiveRelation, IManipulableRelation {
 		}
 		
 	}
-
+	
 }

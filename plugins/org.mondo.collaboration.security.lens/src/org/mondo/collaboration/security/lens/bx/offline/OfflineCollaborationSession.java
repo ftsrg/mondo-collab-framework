@@ -12,11 +12,13 @@
 package org.mondo.collaboration.security.lens.bx.offline;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
@@ -108,14 +110,13 @@ public class OfflineCollaborationSession {
         		frontConfinementURI,
         		frontResourceSet);
         
+		Map<Object, Collection<EObject>> goldIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(goldIndexer, uniqueIDFactory.apply(goldConfinementURI));
+		Map<Object, Collection<EObject>> frontIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(frontIndexer, uniqueIDFactory.apply(frontConfinementURI));
+		
         
-		LiveTable correspondenceTable = EObjectCorrespondence.buildEObjectCorrespondenceTable(
-					goldIndexer, 
-					uniqueIDFactory.apply(goldConfinementURI),
-					frontIndexer, 
-					uniqueIDFactory.apply(frontConfinementURI)
-		);
+		LiveTable correspondenceTable = EObjectCorrespondence.buildEObjectCorrespondenceTable(goldIndex,frontIndex);
         Map<CorrespondenceKey, LiveTable> correspondenceTables = new EnumMap<CorrespondenceKey, LiveTable>(CorrespondenceKey.class);
+        
         correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
         //correspondenceTables.put(CorrespondenceKey.RESOURCE, new LiveTable());
         
