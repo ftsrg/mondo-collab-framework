@@ -154,6 +154,7 @@ public class SessionChatView extends ViewPart {
 	 * 
 	 * @param parent
 	 */
+	@SuppressWarnings("serial")
 	@Override
 	public void createPartControl(Composite parent) {
 

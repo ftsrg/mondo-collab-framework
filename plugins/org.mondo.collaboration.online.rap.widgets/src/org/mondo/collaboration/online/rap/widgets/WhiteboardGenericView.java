@@ -1,18 +1,10 @@
 package org.mondo.collaboration.online.rap.widgets;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
@@ -20,12 +12,9 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;
-import org.mondo.collaboration.online.core.LensSessionManager;
 import org.mondo.collaboration.online.rap.UINotifierManager;
 
 import com.google.common.util.concurrent.FutureCallback;
-
-import swing2swt.layout.BorderLayout;
 
 public abstract class WhiteboardGenericView extends ViewPart {
 	
@@ -131,7 +120,7 @@ public abstract class WhiteboardGenericView extends ViewPart {
 
 		@Override
 		public void onSuccess(Object arg0) {
-			if(view.currentURI.equals(arg0))
+			if(view.currentURI != null && view.currentURI.equals(arg0))
 				view.updateView();
 		}
 

@@ -46,10 +46,12 @@ public class ModelLogView extends WhiteboardGenericView {
 		return txtMessagePool.getDisplay();
 	}
 	
-	public void addMessage(String message){
-		String fullLog = messages.get(currentURI);
+	public static void addMessage(String message, URI uri){
+		String fullLog = messages.get(uri);
 		fullLog = message + lineDelimiter + fullLog;
-		messages.put(currentURI, fullLog);
+		messages.put(uri, fullLog);
+		
+		UINotifierManager.notifySuccess(ModelLogView.EVENT_UPDATE_LOG, uri);
 	}
 	
 	@Override
