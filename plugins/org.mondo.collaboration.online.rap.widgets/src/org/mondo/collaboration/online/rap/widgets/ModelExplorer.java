@@ -1,11 +1,8 @@
 package org.mondo.collaboration.online.rap.widgets;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
@@ -34,6 +31,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -45,7 +44,6 @@ import org.mondo.collaboration.online.core.StorageAccessFactory;
 import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
-import org.mondo.collaboration.online.rap.UINotifierManager;
 
 /**
  * @author Csaba Debreceni
@@ -53,6 +51,9 @@ import org.mondo.collaboration.online.rap.UINotifierManager;
  */
 public class ModelExplorer extends ViewPart {
 
+	public static final String STORAGEACCESS = "storageaccess";
+	public static final String USERNAME = "username";
+	public static final String PASSWORD = "password";
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelExplorer";
 	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat();
@@ -91,7 +92,7 @@ public class ModelExplorer extends ViewPart {
 			try {
 				processLogin(usernameField.getText(), passwordField.getText(), true);
 				layout.topControl = modelExplorer;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -209,7 +210,7 @@ public class ModelExplorer extends ViewPart {
 			public void handleEvent(Event event) {
 				try {
 					processLogin(usernameField.getText(), passwordField.getText(), false);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					showMessage(parent, "Exception", e.getMessage(), SWT.ERROR | SWT.ABORT);
 				}
 			}
@@ -226,19 +227,18 @@ public class ModelExplorer extends ViewPart {
 		return messageBox.open();
 	}
 	
-	protected void processLogin(String username, String password, boolean internal) throws FileNotFoundException, IOException {
-		access = StorageAccessFactory.createStorageAccess(username, password);
-		String loginReason = access.login();
-		if(loginReason != null && !internal) {
-			showMessage(container, "Login failed", loginReason, SWT.ERROR | SWT.RETRY);
-			return;
-		}
-		
+	protected void processLogin(String username, String password, boolean internal) {
 		try {
-			
-			if(remember.getSelection()) {
-				internalStoreUserData();
+			internalValidateStorageAccess(username, password);
+			String loginReason = access.login();
+			if(loginReason != null && !internal) {
+				showMessage(container, "Login failed", loginReason, SWT.ERROR | SWT.RETRY);
+				return;
 			}
+			
+//			if(remember.getSelection()) {
+//				internalStoreUserData();
+//			}
 			
 			internalStoreHttpSession();
 			
@@ -252,9 +252,21 @@ public class ModelExplorer extends ViewPart {
 		}
 	}
 	
+	private void internalValidateStorageAccess(String username, String password) throws Exception {
+		StorageAccess currentStorageAccess = getCurrentStorageAccess();
+		if(currentStorageAccess == null || 
+				!(currentStorageAccess.getUsername().equals(username) 
+						&& currentStorageAccess.getPassword().equals(password))) {
+			access = StorageAccessFactory.createStorageAccess(username, password);
+		} else {
+			access = currentStorageAccess;
+		}
+		
+	}
+	
 	private boolean retrieveHttpSession() {
-		Object username = RWT.getUISession().getHttpSession().getAttribute("username");
-		Object password = RWT.getUISession().getHttpSession().getAttribute("password");
+		Object username = RWT.getUISession().getHttpSession().getAttribute(USERNAME);
+		Object password = RWT.getUISession().getHttpSession().getAttribute(PASSWORD);
 		
 		if(username != null && password != null) {
 			usernameField.setText((String)username);
@@ -265,14 +277,14 @@ public class ModelExplorer extends ViewPart {
 	}
 	
 	private void internalStoreHttpSession() {
-		RWT.getUISession().getHttpSession().setAttribute("username", usernameField.getText());
-		RWT.getUISession().getHttpSession().setAttribute("password", passwordField.getText());
-		RWT.getUISession().getHttpSession().setAttribute("storageaccess", access);
+		RWT.getUISession().getHttpSession().setAttribute(USERNAME, usernameField.getText());
+		RWT.getUISession().getHttpSession().setAttribute(PASSWORD, passwordField.getText());
+		RWT.getUISession().getHttpSession().setAttribute(STORAGEACCESS, access);
 	}
 	
 	private void internalStoreUserData() throws Exception {
-		RWT.getSettingStore().setAttribute("username", usernameField.getText());
-		RWT.getSettingStore().setAttribute("password", passwordField.getText());
+		RWT.getSettingStore().setAttribute(USERNAME, usernameField.getText());
+		RWT.getSettingStore().setAttribute(PASSWORD, passwordField.getText());
 	}
 	
 	@Override
@@ -306,18 +318,6 @@ public class ModelExplorer extends ViewPart {
 		else {
 			try {
 				page.openEditor(new URIEditorInput(uri), editorDescriptor.getId());
-//				page.showView(ModelLogView.ID);
-//				String logString = ModelLogView.getCompleteLogString();
-//				if(logString.equals("")){
-//					Date now = new Date();
-//				    String strDate = DATE_FORMAT.format(now);
-//
-//					String username = ModelExplorer.getCurrentStorageAccess().getUsername();
-//				    
-//					ModelLogView.setLogString(strDate + " Whiteboard initialized by " + username);
-//				}
-//				UINotifierManager.notifySuccess(ModelLogView.EVENT_UPDATE_LOG, null);
-				
 			}
 			catch (PartInitException exception) {
 				MessageDialog.openError(
@@ -330,7 +330,37 @@ public class ModelExplorer extends ViewPart {
 		return true;
 	}
 	
+	@Override
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		
+		if(!usernameField.getText().trim().isEmpty() && 
+				!passwordField.getText().trim().isEmpty()) {
+			memento.putString(USERNAME, usernameField.getText());
+			memento.putString(PASSWORD, passwordField.getText());
+		}
+	}
+	
+	@Override
+	public void init(IViewSite site, IMemento memento) throws PartInitException {
+		super.init(site, memento);
+		if(memento == null)	return;
+		if(memento.getString(USERNAME) != null && memento.getString(PASSWORD) != null) {
+			try {
+				RWT.getUISession().getHttpSession().setAttribute(STORAGEACCESS, 
+						StorageAccessFactory.createStorageAccess(
+								memento.getString(USERNAME), 
+								memento.getString(PASSWORD)));
+				RWT.getUISession().getHttpSession().setAttribute(USERNAME, memento.getString(USERNAME));
+				RWT.getUISession().getHttpSession().setAttribute(PASSWORD, memento.getString(PASSWORD));
+				processLogin(memento.getString(USERNAME), memento.getString(PASSWORD), true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public static StorageAccess getCurrentStorageAccess() {
-		return (StorageAccess) RWT.getUISession().getHttpSession().getAttribute("storageaccess");
+		return (StorageAccess) RWT.getUISession().getHttpSession().getAttribute(STORAGEACCESS);
 	}
 }

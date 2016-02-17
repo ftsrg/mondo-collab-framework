@@ -25,9 +25,9 @@ public class ModelLogView extends WhiteboardGenericView {
 	// Static constructor for registering the global changes.
 	static {
 		addCallback = new AddLogToWhiteboard();
-		UINotifierManager.register(LensSessionManager.EVENT_SESSION_OPENED, RWT.getUISession(), addCallback);
+		UINotifierManager.register(LensSessionManager.EVENT_WHITEBOARD_SESSION_OPENED, RWT.getUISession(), addCallback);
 		removeCallback = new RemoveFromWhiteboard();
-		UINotifierManager.register(LensSessionManager.EVENT_SESSION_CLOSED, RWT.getUISession(), removeCallback);
+		UINotifierManager.register(LensSessionManager.EVENT_WHITEBOARD_SESSION_CLOSED, RWT.getUISession(), removeCallback);
 	}
 	
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelLogView";

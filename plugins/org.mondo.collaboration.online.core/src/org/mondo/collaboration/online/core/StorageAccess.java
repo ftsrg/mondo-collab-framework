@@ -150,7 +150,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getRepository() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.repository.gold");
-		return ret == null ? "https://localhost:8443/svn/wt-demo" : ret;
+		return ret == null ? "http://localhost/svn/wt-demo" : ret;
 	}
 
 	/**
@@ -170,7 +170,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getTempFolder() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.temporary.folder");
-		return ret == null ? "C:\\mondo\\online\\temp" : ret;
+		return ret == null ? "/home/vialpando/Eclipse/MondoOnline/server" : ret;
 	}
 
 	/**
@@ -180,7 +180,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getEiqFile() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.eiq");
-		return ret == null ? "https://localhost:8443/svn/wt-demo/macl.project/src/macl/project/queries.eiq" : ret;
+		return ret == null ? "http://localhost/svn/wt-demo/macl.project/src/macl/project/queries.eiq" : ret;
 	}
 
 	/**
@@ -190,7 +190,7 @@ public abstract class StorageAccess {
 	 */
 	public static String getMaclFile() {
 		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.macl");
-		return ret == null ? "https://localhost:8443/svn/wt-demo/macl.project/src/macl/project/rules.macl" : ret;
+		return ret == null ? "http://localhost/svn/wt-demo/macl.project/src/macl/project/rules.macl" : ret;
 	}
 
 	/**

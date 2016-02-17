@@ -47,13 +47,14 @@ public abstract class WhiteboardGenericView extends ViewPart {
 	// Static initializer for registering the global changes.
 	static {
 		// These should be added in the implementation classes
-		// UINotifierManager.register(LensSessionManager.EVENT_SESSION_OPENED, RWT.getUISession(), new AddToWhiteboardImpl());
-		// UINotifierManager.register(LensSessionManager.EVENT_SESSION_CLOSED, RWT.getUISession(), new RemoveFromWhiteboard());
+		// UINotifierManager.register(LensSessionManager.EVENT_WHITEBOARD_SESSION_OPENED, RWT.getUISession(), new AddToWhiteboardImpl());
+		// UINotifierManager.register(LensSessionManager.EVENT_WHITEBOARD_SESSION_CLOSED, RWT.getUISession(), new RemoveFromWhiteboard());
 	}
 
 	protected void updateView(URI uri) {
 		this.currentURI = uri;
 		if (getMessages().containsKey(uri)) {
+			if(txtMessagePool.isDisposed()) return;
 			txtMessagePool.getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
@@ -65,6 +66,7 @@ public abstract class WhiteboardGenericView extends ViewPart {
 	}
 
 	protected void updateView() {
+		if(txtMessagePool.isDisposed()) return;
 		txtMessagePool.getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {

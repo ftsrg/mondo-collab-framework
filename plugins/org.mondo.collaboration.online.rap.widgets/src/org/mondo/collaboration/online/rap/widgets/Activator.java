@@ -28,6 +28,9 @@ public class Activator extends AbstractUIPlugin {
 
 		reg.put("folder", AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/folder.gif"));
 		reg.put("file", AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/model_file.gif"));
+		reg.put("active", AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/active.png"));
+		reg.put("inactive", AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/inactive.png"));
+		reg.put("offline", AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/offline.png"));
 	}
 
 	/*

@@ -4,44 +4,53 @@ import java.util.Date;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.mondo.collaboration.online.core.LensSessionManager;
 import org.mondo.collaboration.online.rap.UINotifierManager;
+import org.mondo.collaboration.online.rap.UISessionManager;
 
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.FutureCallback;
 
 import swing2swt.layout.BorderLayout;
 
 @SuppressWarnings("serial")
 public class WhiteboardChatView extends WhiteboardGenericView {
 
-	public WhiteboardChatView() {
-	}
-
+	private static final String PLACEHOLDER = "                     ";
+	
 	private static AddChatToWhiteboard addCallback;
 	private static RemoveFromWhiteboard removeCallback;
 	
 	// Static constructor for registering the global changes.
 	static {
 		addCallback = new AddChatToWhiteboard();
-		UINotifierManager.register(LensSessionManager.EVENT_SESSION_OPENED, RWT.getUISession(), addCallback);
+		UINotifierManager.register(LensSessionManager.EVENT_WHITEBOARD_SESSION_OPENED, RWT.getUISession(), addCallback);
 		removeCallback = new RemoveFromWhiteboard();
-		UINotifierManager.register(LensSessionManager.EVENT_SESSION_CLOSED, RWT.getUISession(), removeCallback);
+		UINotifierManager.register(LensSessionManager.EVENT_WHITEBOARD_SESSION_CLOSED, RWT.getUISession(), removeCallback);
 	}
 	
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.WhiteboardChatView"; //$NON-NLS-1$
 	public static final String EVENT_NEW_MESSAGE = "org.mondo.collaboration.online.rap.widgets.WhiteboardChatView.new.message";
 
 	private volatile static Map<URI, String> messages = Maps.newHashMap();
+	private TableViewer userList;
 
 	private void sendMessage() {
 		String message = txtMessage.getText();
@@ -118,12 +127,54 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 			composite.setLayout(new FillLayout());
 
 			txtMessagePool = new Text(composite, SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
-			txtMessagePool.setText("Message Pool");
+			txtMessagePool.setText("");
 		}
+		{
+			Composite composite = new Composite(container, SWT.NONE);
+			composite.setLayoutData(BorderLayout.WEST);
+			composite.setLayout(new FillLayout());
 
+			userList = new TableViewer(composite);
+			userList.setContentProvider(new UserContentProvider());
+			userList.setLabelProvider(new DecoratingLabelProvider(new UserStatusLabelProvider(), null));
+			userList.setInput(PLACEHOLDER);
+		}
+		
+		UINotifierManager.register(UISessionManager.EVENT_USER_ONLINE, RWT.getUISession(), new UpdateCallback());
+		UINotifierManager.register(UISessionManager.EVENT_USER_INACTIVE, RWT.getUISession(), new UpdateCallback());
+		UINotifierManager.register(UISessionManager.EVENT_USER_OFFLINE, RWT.getUISession(), new UpdateCallback());
+		UINotifierManager.register(UISessionManager.EVENT_USER_REMOVED, RWT.getUISession(), new UpdateCallback());
+		
 		super.createPartControl(parent);
 	}
 
+	@Override
+	protected void updateView() {
+		super.updateView();
+		if(userList.getControl().isDisposed()) return;
+		userList.getControl().getDisplay().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				userList.refresh();
+			}
+		});
+	}
+	
+	@Override
+	protected void updateView(URI uri) {
+		super.updateView(uri);
+		if(userList.getControl().isDisposed()) return;
+		userList.getControl().getDisplay().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				userList.setInput(uri);
+				userList.refresh();
+			}
+		});
+	}
+	
 	@Override
 	public void setFocus() {
 		txtMessage.setFocus();
@@ -139,12 +190,62 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 		return EVENT_NEW_MESSAGE;
 	}
 
+	private final class UpdateCallback implements FutureCallback<Object> {
+		@Override
+		public void onSuccess(Object arg0) {
+			updateView();
+		}
+
+		@Override
+		public void onFailure(Throwable arg0) {
+			// TODO Auto-generated method stub
+		}
+	}
+
 	protected static class AddChatToWhiteboard extends AddToWhiteboard {
 		@Override
 		public String getViewKind() {
 			return "Model chat";
 		}
 	}
-
 	
+	private class UserContentProvider implements IStructuredContentProvider {
+
+		private Object input;
+
+		@Override
+		public void dispose() {
+		}
+
+		@Override
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			this.input = newInput;
+		}
+
+		@Override
+		public Object[] getElements(Object inputElement) {
+			if(input instanceof URI) {
+				return LensSessionManager.getUsersForURI((URI) input).toArray();
+			}
+			return new Object[]{PLACEHOLDER};
+		}
+		
+	}
+	
+	private class UserStatusLabelProvider extends LabelProvider {
+
+		@Override
+		public Image getImage(Object element) {
+			if(UISessionManager.getActiveUsers(currentURI).contains(element)) {
+				return Activator.getDefault().getImageRegistry().get("active");
+			}
+			if(UISessionManager.getInactiveUsers(currentURI).contains(element)) {
+				return Activator.getDefault().getImageRegistry().get("inactive");
+			}
+			if(UISessionManager.getInactiveUsers(currentURI).contains(element)) {
+				return Activator.getDefault().getImageRegistry().get("offline");
+			}
+			return null;
+		}
+	}
 }

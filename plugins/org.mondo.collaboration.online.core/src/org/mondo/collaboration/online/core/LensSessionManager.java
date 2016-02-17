@@ -35,15 +35,28 @@ public class LensSessionManager {
 	private static volatile Table<String, URI, OnlineLeg> table = HashBasedTable.create();
 	private static volatile Map<HttpSession, String> mapping = Maps.newHashMap();
 	private static volatile Set<URI> uriSet = Sets.newHashSet();
-	
-	public static final String EVENT_REGISTER = "org.mondo.collaboration.online.core.LensSessionManager.register";
-	public static final String EVENT_UNREGISTER = "org.mondo.collaboration.online.core.LensSessionManager.unregister";
-	public static final String EVENT_LEG_CLOSED_BY_USER = "org.mondo.collaboration.online.core.LensSessionManager.leg_closed_by_user";
-	public static final String EVENT_SESSION_OPENED = "org.mondo.collaboration.online.core.LensSessionManager.session_opened";
-	public static final String EVENT_SESSION_CLOSED = "org.mondo.collaboration.online.core.LensSessionManager.session_closed";
 
-	
-	
+	/**
+	 * When an user is registered to a new {@link OnlineLeg}.
+	 */
+	public static final String EVENT_REGISTER = "org.mondo.collaboration.online.core.LensSessionManager.register";
+	/**
+	 * When an user is unregistered with all of the {@link OnlineLeg}. There is no more {@link HttpSession} related to the user.
+	 */
+	public static final String EVENT_UNREGISTER = "org.mondo.collaboration.online.core.LensSessionManager.unregister";
+	/**
+	 * When an {@link OnlineLeg} closed by a user (e.g. the user closed the editor) and there is no more session related to the URI
+	 */
+	public static final String EVENT_WHITEBOARD_LEG_CLOSED_BY_USER = "org.mondo.collaboration.online.core.LensSessionManager.leg_closed_by_user";
+	/**
+	 * When an new {@link OnlineCollaborationSession} is initialized.
+	 */
+	public static final String EVENT_WHITEBOARD_SESSION_OPENED = "org.mondo.collaboration.online.core.LensSessionManager.session_opened";
+	/**
+	 * When an {@link OnlineCollaborationSession} has no more legs.
+	 */
+	public static final String EVENT_WHITEBOARD_SESSION_CLOSED = "org.mondo.collaboration.online.core.LensSessionManager.session_closed";
+
 	/**
 	 * This method is called when a new user joins to an
 	 * {@link OnlineCollaborationSession}
@@ -66,15 +79,17 @@ public class LensSessionManager {
 
 	/**
 	 * This method is called by the {@link HttpSessionListener} when a session
-	 * is destroyed.
+	 * is destroyed. Removes the session from the session mapping. If the user
+	 * has no more session, all the used legs will be disposed.
 	 * 
 	 * @param session
 	 *            that is destroyed
 	 */
 	protected static void unregister(HttpSession session) {
 		String user = mapping.get(session);
+		if(user == null) return;
+		
 		mapping.remove(session);
-
 		if (!mapping.containsValue(user)) {
 			Set<Entry<URI, OnlineLeg>> entrySet = Sets.newHashSet(table.row(user).entrySet());
 			for (Entry<URI, OnlineLeg> entry : entrySet) {
@@ -92,7 +107,7 @@ public class LensSessionManager {
 
 	private static void removeURI(URI uri, OnlineLeg value) {
 		uriSet.remove(uri);
-		NotifierManager.notifySuccess(EVENT_SESSION_CLOSED, value);
+		NotifierManager.notifySuccess(EVENT_WHITEBOARD_SESSION_CLOSED, value);
 	}
 
 	/**
@@ -115,7 +130,7 @@ public class LensSessionManager {
 			if (collaborationSession.getLegs().isEmpty())
 				removeURI(uri, leg);
 			table.remove(user, uri);
-			NotifierManager.notifySuccess(EVENT_LEG_CLOSED_BY_USER, leg);
+			NotifierManager.notifySuccess(EVENT_WHITEBOARD_LEG_CLOSED_BY_USER, leg);
 		}
 		mapping.put(session, user);
 	}
@@ -165,7 +180,7 @@ public class LensSessionManager {
 			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, rSet,
 					EObjectCorrespondence.getRegisteredIDProviderFactory(), policyModel);
 
-			NotifierManager.notifySuccess(EVENT_SESSION_OPENED, goldURI);
+			NotifierManager.notifySuccess(EVENT_WHITEBOARD_SESSION_OPENED, goldURI);
 			logger.info("Lens created");
 			return onlineCollaborationSession;
 		} catch (IncQueryException | CoreException e) {
@@ -178,18 +193,22 @@ public class LensSessionManager {
 
 	private static final class HttpSessionListenerImplementation implements HttpSessionListener {
 
+		public static int MAX_INTERVAL = 15 * 60; // 15 minutes
+
 		private static final Logger logger = Logger.getLogger(HttpSessionListenerImplementation.class);
 
 		@Override
 		public void sessionDestroyed(HttpSessionEvent se) {
-			logger.info("Http Session Remove");
 			HttpSession session = se.getSession();
 			LensSessionManager.unregister(session);
+			logger.info("Http Session Removed");
 		}
 
 		@Override
 		public void sessionCreated(HttpSessionEvent se) {
 			logger.info("Http Session Created");
+			HttpSession session = se.getSession();
+			session.setMaxInactiveInterval(MAX_INTERVAL);
 		}
 	}
 
@@ -210,10 +229,27 @@ public class LensSessionManager {
 		return table.column(goldURI).keySet();
 	}
 
+	/**
+	 * Returns a Set view of the users contained in this manager. The set is
+	 * backed by a map, so changes to the session are reflected in the set, and
+	 * vice-versa. If the map is modified while an iteration over the set is in
+	 * progress (except through the iterator's own remove operation), the
+	 * results of the iteration are undefined. The set supports element removal,
+	 * which removes the corresponding mapping from the map, via the
+	 * Iterator.remove, Set.remove, removeAll, retainAll, and clear operations.
+	 * It does not support the add or addAll operations.
+	 * 
+	 * @param goldURI
+	 * @return
+	 */
+	public static Set<URI> getURIsForUser(String user) {
+		return table.row(user).keySet();
+	}
+	
 	public static Set<URI> getUriSet() {
 		return uriSet;
 	}
-	
+
 	public static void initializeHttpSessionListener() {
 		BundleContext bundleContext = FrameworkUtil.getBundle(HttpServiceServlet.class).getBundleContext();
 		Hashtable<String, Object> properties = new Hashtable<String, Object>();

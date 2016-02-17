@@ -1,12 +1,9 @@
 package org.mondo.collaboration.online.core;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.function.BinaryOperator;
@@ -23,8 +20,10 @@ public class StorageAccessSvn extends StorageAccess {
 
 	private static final String INTERNAL_ERROR_DURING_LOGIN = "Internal error during login";
 
-	public StorageAccessSvn(String username, String password) throws FileNotFoundException, IOException {
+	public StorageAccessSvn(String username, String password) throws Exception {
 		super(username, password);
+		internalEiq = URI.createFileURI(internalCheckoutFile(getEiqFile()));
+		internalMacl = URI.createFileURI(internalCheckoutFile(getMaclFile()));
 	}
 
 	public static final String SVN_LIST_COMMAND = "svn list %s --username=%s --password=%s --non-interactive --no-auth-cache";
@@ -119,8 +118,6 @@ public class StorageAccessSvn extends StorageAccess {
 		if(LensSessionManager.getUriSet().contains(fileURI))
 			return fileURI;
 		
-		internalEiq = URI.createFileURI(internalCheckoutFile(getEiqFile()));
-		internalMacl = URI.createFileURI(internalCheckoutFile(getMaclFile()));
 		internalLockFile(filePath);
 		return fileURI;
 	}
