@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -64,6 +65,8 @@ public class OnlineCollaborationSession {
 			"org.mondo.collaboration.security.lens.bx.fake-path" + File.separator + 
 			"org.mondo.collaboration.security.lens.bx.fake-root-resource");
 
+	private final Logger logger = Logger.getLogger(OnlineCollaborationSession.class);
+	
 	private final URI goldConfinementURI;
 	private final ResourceSet goldResourceSet;
 	private final UniqueIDSchemeFactory uniqueIDFactory;
@@ -76,6 +79,9 @@ public class OnlineCollaborationSession {
 	private final String ownerPassword;
 	
 	private final Set<Leg> legs = new HashSet<>(); 
+	
+	protected final long AUTOSAVE_DELAY = 30 * 1000; // 5 min
+	protected boolean canSave = false;
 	
 	/**
 	 * For serializing concurrent modifications by Legs
@@ -111,6 +117,28 @@ public class OnlineCollaborationSession {
 		
 		this.ownerPassword = ownerPassword;
 		this.ownerUsername = ownerUsername;
+		
+		Thread autosaveThread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					while(true) {
+						if(canSave) {
+							for (Resource resource : goldResourceSet.getResources()) {
+								resource.save(Collections.emptyMap());
+								logger.info("Auto-save executed for URI: " + resource.getURI().toString());
+							}
+							canSave = false;
+						}
+						Thread.sleep(AUTOSAVE_DELAY);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		autosaveThread.start();
 	}
 	
 	public URI getGoldConfinementURI() {
@@ -266,8 +294,7 @@ public class OnlineCollaborationSession {
          *      subclass and override to wrap in a write-enabled transaction.
          */
 		public void overWriteFromGold() {
-            LensTransformationExecution propagatingExecution = 
-                    lens.doGet();
+            LensTransformationExecution propagatingExecution = lens.doGet();
             
             // propagation error
             if (propagatingExecution.isAborted()) {
@@ -336,7 +363,8 @@ public class OnlineCollaborationSession {
                     lens.doPutback(true /* restore previous gold model if permission is denied */);
             
             // propagate successful PUTBACK to the other front models   
-            if (!lensExecution.isAborted()) {       
+            if (!lensExecution.isAborted()) {  
+            	canSave = true;
                 for (Leg leg : legs) {
                     leg.overWriteFromGold();
                 }
