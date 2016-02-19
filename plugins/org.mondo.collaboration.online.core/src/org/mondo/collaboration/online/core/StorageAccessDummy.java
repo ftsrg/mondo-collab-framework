@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.emf.common.util.URI;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
@@ -51,7 +52,22 @@ public class StorageAccessDummy extends StorageAccess {
 	}
 
 	@Override
-	public void commit(String path, String message, OnlineLeg leg) {
-		// nop
+	public ExecutionResponse commit(String path, String message, OnlineLeg leg) {
+		return new ExecutionResponse(Collections.emptyList(), Collections.emptyList());
+	}
+
+	@Override
+	public FileStatus checkFileStatus(String path) throws Exception {
+		return FileStatus.Normal;
+	}
+
+	@Override
+	public ExecutionResponse commit(String path, String message, String username, String password) {
+		return new ExecutionResponse(Collections.emptyList(), Collections.emptyList());
+	}
+
+	@Override
+	public ExecutionResponse revert(String path, String username, String password) {
+		return new ExecutionResponse(Collections.emptyList(), Collections.emptyList());
 	}
 }

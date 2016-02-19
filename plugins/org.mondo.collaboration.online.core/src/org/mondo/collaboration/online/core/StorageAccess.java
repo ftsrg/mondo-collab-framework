@@ -81,6 +81,8 @@ public abstract class StorageAccess {
 
 	public abstract URI startSession(String path) throws Exception;
 
+	public abstract FileStatus checkFileStatus(String path) throws Exception;
+	
 	public Resource loadPolicyModel() {
 		ResourceSetImpl resourceSet = new ResourceSetImpl();
 		resourceSet.getResource(getInternalEiqFile(), true);
@@ -88,19 +90,24 @@ public abstract class StorageAccess {
 	}
 
 	protected ExecutionResponse internalExecuteProcess(String cmd) throws Exception {
-		return internalExecuteProcess(cmd, new String[] {}, null);
+		return internalExecuteProcess(new String[] {cmd}, new String[] {}, null);
 	}
 
 	protected ExecutionResponse internalExecuteProcess(String cmd, String[] args, File ctx) {
+		return internalExecuteProcess(new String[] {cmd}, args, ctx);
+	}
+	protected ExecutionResponse internalExecuteProcess(String[] cmd, String[] args, File ctx) {
 		logger.info("Process executing:");
-		logger.info("-> Command: " + cmd);
+		for (String command : cmd) {
+			logger.info("-> Command: " + command);
+		}
 		logger.info("-> Context: " + (ctx == null ? "@null" : ctx.getPath()));
 
 		List<String> responseList = new ArrayList<String>();
 		List<String> errorList = new ArrayList<String>();
 		try {
 			String line;
-			Process p = Runtime.getRuntime().exec(cmd, args, ctx);
+			Process p = cmd.length == 1 ? Runtime.getRuntime().exec(cmd[0], args, ctx) : Runtime.getRuntime().exec(cmd, args, ctx);
 			{
 				BufferedReader bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 				while ((line = bre.readLine()) != null) {
@@ -225,7 +232,23 @@ public abstract class StorageAccess {
 	 * Commits the changes made to the model.
 	 * @param path to the model
 	 */
-	public abstract void commit(String path, String message, OnlineLeg leg);
+	public abstract ExecutionResponse commit(String path, String message, OnlineLeg leg);
+	
+	/**
+	 * Commits the changes made to the model.
+	 * @param path to the model
+	 */
+	public abstract ExecutionResponse commit(String path, String message, String username, String password);
+	
+	/**
+	 * Commits the changes made to the model.
+	 * @param path to the model
+	 */
+	public abstract ExecutionResponse revert(String path, String username, String password);
+	
+	public static enum FileStatus {
+		Modified, Normal
+	}
 	
 	/**
 	 * This class represents the response of an executed command.
