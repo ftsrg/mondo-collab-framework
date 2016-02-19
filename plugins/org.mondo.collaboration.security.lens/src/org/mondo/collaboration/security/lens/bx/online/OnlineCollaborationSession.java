@@ -72,6 +72,9 @@ public class OnlineCollaborationSession {
 	private final ModelIndexer goldIndexer;
 	private final AccessControlModel accessControlModel;
 	
+	private final String ownerUsername;
+	private final String ownerPassword;
+	
 	private final Set<Leg> legs = new HashSet<>(); 
 	
 	/**
@@ -87,7 +90,7 @@ public class OnlineCollaborationSession {
 	 * @throws IncQueryException 
 	 */
 	public OnlineCollaborationSession(URI goldConfinementURI, ResourceSet goldResourceSet,
-			UniqueIDSchemeFactory uniqueIDFactory, Resource policyResource) throws IncQueryException {
+			UniqueIDSchemeFactory uniqueIDFactory, Resource policyResource, String ownerUsername, String ownerPassword) throws IncQueryException {
 		super();
 		this.goldConfinementURI = goldConfinementURI;
 		this.goldResourceSet = goldResourceSet;
@@ -105,6 +108,9 @@ public class OnlineCollaborationSession {
         		goldConfinementURI,
         		goldResourceSet,
         		EMFScope.extractUnderlyingEMFIndex(arbiter.getPolicyQueryEngine()));
+		
+		this.ownerPassword = ownerPassword;
+		this.ownerUsername = ownerUsername;
 	}
 	
 	public URI getGoldConfinementURI() {
@@ -121,6 +127,14 @@ public class OnlineCollaborationSession {
 	
 	public UniqueIDSchemeFactory getUniqueIDFactory() {
 		return uniqueIDFactory;
+	}
+	
+	public String getOwnerPassword() {
+		return ownerPassword;
+	}
+	
+	public String getOwnerUsername() {
+		return ownerUsername;
 	}
 	
 	/**

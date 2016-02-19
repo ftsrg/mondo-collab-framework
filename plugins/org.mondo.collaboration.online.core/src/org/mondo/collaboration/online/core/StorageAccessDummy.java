@@ -37,7 +37,7 @@ public class StorageAccessDummy extends StorageAccess {
 	}
 
 	@Override
-	public void finishSession(String path) {
+	public void finishSession(URI goldConfimentUri, String ownerUsername, String ownerPassword) {
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class StorageAccessDummy extends StorageAccess {
 	}
 
 	@Override
-	public void commit(String path, String message) {
+	public void commit(String path, String message, OnlineLeg leg) {
 		// nop
 	}
 }

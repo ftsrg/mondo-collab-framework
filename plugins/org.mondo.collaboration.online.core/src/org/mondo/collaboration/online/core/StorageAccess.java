@@ -218,15 +218,14 @@ public abstract class StorageAccess {
 	
 	/**
 	 * Finishes the session.
-	 * @param path to the model
 	 */
-	public abstract void finishSession(String path);
+	public abstract void finishSession(URI goldConfimentUri, String ownerUsername, String ownerPassword);
 	
 	/**
 	 * Commits the changes made to the model.
 	 * @param path to the model
 	 */
-	public abstract void commit(String path, String message);
+	public abstract void commit(String path, String message, OnlineLeg leg);
 	
 	/**
 	 * This class represents the response of an executed command.

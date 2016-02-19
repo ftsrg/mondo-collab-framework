@@ -14,7 +14,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.command.CreateChildCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
-import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession.Leg;
@@ -34,14 +33,15 @@ public class OnlineLeg extends Leg {
 	protected AdapterFactoryEditingDomain editingDomain;
 
 	protected OnlineCollaborationSession onlineCollaborationSession;
+	private StorageAccess storageAccess;
 
-	public OnlineLeg(OnlineCollaborationSession onlineCollaborationSession, String userName,
-			DataTypeObfuscator<String> stringObfuscator, boolean startWithGet,
+	public OnlineLeg(OnlineCollaborationSession onlineCollaborationSession, StorageAccess storageAccess, boolean startWithGet,
 			AdapterFactoryEditingDomain editingDomain, URI frontConfinementURI) throws InvocationTargetException {
-		onlineCollaborationSession.super(userName, stringObfuscator, startWithGet, editingDomain.getResourceSet(),
+		onlineCollaborationSession.super(storageAccess.getUsername(), storageAccess.getObfuscator(), startWithGet, editingDomain.getResourceSet(),
 				frontConfinementURI);
 
 		this.onlineCollaborationSession = onlineCollaborationSession;
+		this.storageAccess = storageAccess;
 		this.editingDomain = editingDomain;
 
 		initialized = true;
@@ -95,6 +95,10 @@ public class OnlineLeg extends Leg {
 		return editingDomain;
 	}
 
+	public StorageAccess getStorageAccess() {
+		return storageAccess;
+	}
+	
 	public abstract class LegCommand extends AbstractCommand {
 
 		@Override

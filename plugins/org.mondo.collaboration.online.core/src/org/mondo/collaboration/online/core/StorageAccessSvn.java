@@ -1,10 +1,8 @@
 package org.mondo.collaboration.online.core;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.function.BinaryOperator;
 
@@ -13,6 +11,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.URI;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
+import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 
 import com.google.common.collect.Lists;
 
@@ -32,7 +31,7 @@ public class StorageAccessSvn extends StorageAccess {
 	public static final String SVN_UPDATE_COMMAND = "svn up %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_LOG_COMMAND = "svn log %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_LOCK_COMMAND = "svn lock %s --username=%s --password=%s --non-interactive --no-auth-cache";
-	public static final String SVN_UNLOCK_COMMAND = "svn unlock %s --username=%s --password=%s --non-interactive --no-auth-cache";
+	public static final String SVN_UNLOCK_COMMAND = "svn unlock %s --force --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_COMMIT_COMMAND = "svn commit %s -m \"%s\" --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_STATUS_COMMAND = "svn status %s --username=%s --password=%s --non-interactive --no-auth-cache";
 
@@ -111,7 +110,6 @@ public class StorageAccessSvn extends StorageAccess {
 	@Override
 	public URI startSession(String path) throws Exception {
 		Assert.isLegal(path.endsWith(getExtension()));
-		
 		String filePath = internalCheckoutFile(path);
 		URI fileURI = URI.createFileURI(filePath);
 		
@@ -123,14 +121,17 @@ public class StorageAccessSvn extends StorageAccess {
 	}
 
 	private void internalLockFile(String path) {
+		internalLockFile(path, getUsername(), getPassword(), true);
+	}
+	private void internalLockFile(String path, String username, String password, boolean unlock) {
 		URI fullUri = URI.createFileURI(path);
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(path, file, "");
 
-		internalUnlockFile(file, folder);
+		if(unlock)
+			internalUnlockFile(file, folder);
 		
-		internalExecuteProcess(String.format(SVN_LOCK_COMMAND, file, getUsername(), getPassword()), new String[] {},
-				new File(folder));
+		internalExecuteProcess(String.format(SVN_LOCK_COMMAND, file, username, password), new String[] {}, new File(folder));
 	}
 
 	private String internalCheckoutFile(String path) throws Exception {
@@ -144,38 +145,43 @@ public class StorageAccessSvn extends StorageAccess {
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
 
 		if (doCheckout) {
-			if (!new File(temp).exists())
+			if (!new File(temp).exists()) {
 				internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, temp, getUsername(), getPassword()),
 						new String[] {}, new File(getTempFolder()));
-			internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()),
+				internalExecuteProcess(String.format(SVN_UNLOCK_COMMAND, "", getUsername(), getPassword()),
+						new String[] {}, new File(temp));
+				internalExecuteProcess(String.format(SVN_CLEANUP_COMMAND, getUsername(), getPassword()), 
+						new String[] {}, new File(temp));
+			}
+			internalExecuteProcess(String.format(SVN_UNLOCK_COMMAND, file, getUsername(), getPassword()),
 					new String[] {}, new File(temp));
+			internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()),
+				new String[] {}, new File(temp));
 		}
 		return temp + file;
 	}
 
 	@Override
-	public void finishSession(String path) {
-		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat();
-		internalFinishSession(path, String.format(SVN_DEFAULT_MESSAGE, getUsername(), dateFormat.format(date)));
+	public void finishSession(URI goldConfimentUri, String ownerUsername, String ownerPassword) {
+		internalFinishSession(goldConfimentUri, ownerUsername, ownerPassword);
 	}
 
-	protected String internalFinishSession(String path, String msg) {
-		URI fullUri = URI.createURI(path);
-		String file = fullUri.lastSegment();
-		String folder = replaceLast(path, file, "");
-		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
-
-		internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, msg, getUsername(), getPassword()),
-				new String[] {}, new File(temp));
-		internalUnlockFile(file, temp);
+	protected String internalFinishSession(URI goldConfimentUri, String ownerUsername, String ownerPassword) {
+		String file = goldConfimentUri.lastSegment();
+		String folder = replaceLast(goldConfimentUri.toFileString(), file, "");
+		
+		internalUnlockFile(file, folder, username, password);
 
 		return "Success";
 	}
 
-	private void internalUnlockFile(String file, String temp) {
-		internalExecuteProcess(String.format(SVN_UNLOCK_COMMAND, file, getUsername(), getPassword()), new String[] {},
-				new File(temp));
+	private void internalUnlockFile(String file, String folder) {
+		internalUnlockFile(file, folder, getUsername(), getPassword());
+	}
+	
+	private void internalUnlockFile(String file, String folder, String username, String password) {
+		internalExecuteProcess(String.format(SVN_UNLOCK_COMMAND, file, username, password), new String[] {},
+				new File(folder));
 	}
 
 	protected String replaceLast(String original, String from, String to) {
@@ -199,13 +205,19 @@ public class StorageAccessSvn extends StorageAccess {
 	}
 
 	@Override
-	public void commit(String path, String msg) {
+	public void commit(String path, String msg, OnlineLeg leg) {
 		URI fullUri = URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(fullUri.toFileString(), file, "");
 
+		OnlineCollaborationSession onlineCollaborationSession = leg.getOnlineCollaborationSession();
+		internalUnlockFile(file, folder, onlineCollaborationSession.getOwnerUsername(), onlineCollaborationSession.getOwnerPassword());
+		
 		internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, msg, getUsername(), getPassword()),
 				new String[] {}, new File(folder));
+		
+		internalLockFile(fullUri.toFileString(), onlineCollaborationSession.getOwnerUsername(), onlineCollaborationSession.getOwnerPassword(), false);
+		
 	}
 
 }

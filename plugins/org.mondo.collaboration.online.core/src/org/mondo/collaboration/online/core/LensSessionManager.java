@@ -105,9 +105,12 @@ public class LensSessionManager {
 		}
 	}
 
-	private static void removeURI(URI uri, OnlineLeg value) {
+	private static void removeURI(URI uri, OnlineLeg leg) {
 		uriSet.remove(uri);
-		NotifierManager.notifySuccess(EVENT_WHITEBOARD_SESSION_CLOSED, value);
+		StorageAccess storageAccess = leg.getStorageAccess();
+		OnlineCollaborationSession whiteboardSession = leg.getOnlineCollaborationSession();
+		storageAccess.finishSession(whiteboardSession.getGoldConfinementURI(), whiteboardSession.getOwnerUsername(), whiteboardSession.getOwnerPassword());
+		NotifierManager.notifySuccess(EVENT_WHITEBOARD_SESSION_CLOSED, leg);
 	}
 
 	/**
@@ -159,8 +162,7 @@ public class LensSessionManager {
 
 		try {
 			logger.info(String.format("Leg is creating for user: %s uri: %s", sa.getUsername(), goldURI.toString()));
-			OnlineLeg leg = new OnlineLeg(collabSession, sa.getUsername(), sa.getObfuscator(), true, domain,
-					OnlineCollaborationSession.FAKE_MAIN_RESOURCE_URI);
+			OnlineLeg leg = new OnlineLeg(collabSession, sa, true, domain,	OnlineCollaborationSession.FAKE_MAIN_RESOURCE_URI);
 			register(sa.getUsername(), session, goldURI, leg);
 			logger.info("Leg created");
 			return leg;
@@ -178,7 +180,7 @@ public class LensSessionManager {
 			ResourceSetImpl rSet = new ResourceSetImpl();
 			rSet.getResource(goldURI, true);
 			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, rSet,
-					EObjectCorrespondence.getRegisteredIDProviderFactory(), policyModel);
+					EObjectCorrespondence.getRegisteredIDProviderFactory(), policyModel, sa.getUsername(), sa.getPassword());
 
 			NotifierManager.notifySuccess(EVENT_WHITEBOARD_SESSION_OPENED, goldURI);
 			logger.info("Lens created");
