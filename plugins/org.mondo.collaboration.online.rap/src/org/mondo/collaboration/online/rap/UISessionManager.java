@@ -2,7 +2,6 @@ package org.mondo.collaboration.online.rap;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -74,7 +73,7 @@ public class UISessionManager {
 			UINotifierManager.notifySuccess(EVENT_USER_ONLINE, new Entry<URI, String>(uri, username));
 			logger.info("User online:" + username + " - uri: " + uri);
 		}
-		session.addUISessionListener(new RemoveSessionListener());
+		session.addUISessionListener(new RemoveSessionListener(username));
 	}
 	
 	public static void remove(URI uri, String username, UISession session) {
@@ -140,13 +139,19 @@ public class UISessionManager {
 
 	@SuppressWarnings("serial")
 	private static final class RemoveSessionListener implements UISessionListener {
+		
+		private final String username;
+		
+		public RemoveSessionListener(String username) {
+			this.username = username;
+		}
+		
 		@Override
 		public void beforeDestroy(UISessionEvent event) {
-			String username = (String) event.getUISession().getAttribute("username");
 			usersWithUISession.remove(username, event.getUISession());
 			ImmutableSet<URI> uriSet = ImmutableSet.copyOf(usersConnectedToUriWithUISession.column(event.getUISession()).keySet());
 			for (URI uri : uriSet) {
-				usersConnectedToUriWithUISession.remove(event.getUISession(), uri);
+				usersConnectedToUriWithUISession.remove(uri, event.getUISession());
 				if (!usersConnectedToUriWithUISession.values().contains(username)) {
 					UINotifierManager.notifySuccess(EVENT_USER_OFFLINE, new Entry<URI, String>(uri, username));
 					logger.info("UISession destroyed for user:" + username + " - uri: " + uri);

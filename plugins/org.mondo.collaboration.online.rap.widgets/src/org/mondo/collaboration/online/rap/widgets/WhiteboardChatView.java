@@ -241,7 +241,7 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 			if(UISessionManager.getInactiveUsers(currentURI).contains(element)) {
 				return Activator.getDefault().getImageRegistry().get("inactive");
 			}
-			if(UISessionManager.getInactiveUsers(currentURI).contains(element)) {
+			if(UISessionManager.getOfflineUsers(currentURI).contains(element)) {
 				return Activator.getDefault().getImageRegistry().get("offline");
 			}
 			return null;
