@@ -44,6 +44,7 @@ import org.mondo.collaboration.online.core.StorageAccessFactory;
 import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
+import org.mondo.collaboration.online.rap.UINotifierManager;
 
 /**
  * @author Csaba Debreceni
@@ -56,6 +57,7 @@ public class ModelExplorer extends ViewPart {
 	public static final String PASSWORD = "password";
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelExplorer";
 	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
+	public static final String EVENT_USER_LOGGED_IN = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.user.logged.in";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat();
 	
 	private Text passwordField;
@@ -247,6 +249,8 @@ public class ModelExplorer extends ViewPart {
 			modelExplorer.setVisible(true);
 			loginForm.setVisible(false);
 			layout.topControl = modelExplorer;
+			
+			UINotifierManager.notifySuccess(EVENT_USER_LOGGED_IN, username);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -282,10 +286,10 @@ public class ModelExplorer extends ViewPart {
 		RWT.getUISession().getHttpSession().setAttribute(STORAGEACCESS, access);
 	}
 	
-	private void internalStoreUserData() throws Exception {
-		RWT.getSettingStore().setAttribute(USERNAME, usernameField.getText());
-		RWT.getSettingStore().setAttribute(PASSWORD, passwordField.getText());
-	}
+//	private void internalStoreUserData() throws Exception {
+//		RWT.getSettingStore().setAttribute(USERNAME, usernameField.getText());
+//		RWT.getSettingStore().setAttribute(PASSWORD, passwordField.getText());
+//	}
 	
 	@Override
 	public void setFocus() {

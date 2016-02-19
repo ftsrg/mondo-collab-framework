@@ -11,6 +11,12 @@
             restorable="true">
       </view>
       <view
+            class="org.mondo.collaboration.online.rap.widgets.CurrentUserView"
+            id="org.mondo.collaboration.online.rap.widgets.CurrentUserView"
+            name="Curent User"
+            restorable="true">
+      </view>
+      <view
             class="org.mondo.collaboration.online.rap.widgets.ModelLogView"
             id="org.mondo.collaboration.online.rap.widgets.ModelLogView"
             name="Model Log"
@@ -20,16 +26,6 @@
             class="org.mondo.collaboration.online.rap.widgets.WhiteboardChatView"
             id="org.mondo.collaboration.online.rap.widgets.WhiteboardChatView"
             name="Whiteboard Chat">
-      </view>
-      <view
-            class="org.mondo.collaboration.online.rap.widgets.WhiteboardChatView"
-            id="org.mondo.collaboration.online.rap.widgets.SessionChatView"
-            name="New ViewPart">
-      </view>
-      <view
-            class="org.mondo.collaboration.online.rap.widgets.Asd"
-            id="org.mondo.collaboration.online.rap.widgets.Asd"
-            name="New ViewPart">
       </view>
    </extension>
 
