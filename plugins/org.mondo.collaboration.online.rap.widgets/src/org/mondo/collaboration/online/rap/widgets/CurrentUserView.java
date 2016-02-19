@@ -53,12 +53,15 @@ public class CurrentUserView extends ViewPart {
 		UINotifierManager.register(ModelExplorer.EVENT_USER_LOGGED_IN, RWT.getUISession(), new SetCurrentUser());
 	}
 
-	protected void setCurrentUser(String username) {
-		this.username = username;
+	protected void setCurrentUser(String newUsername) {
 		label.getDisplay().asyncExec(new Runnable() {
 			
 			@Override
 			public void run() {
+				if(!newUsername.equals(RWT.getUISession().getHttpSession().getAttribute(ModelExplorer.USERNAME)))
+					return;
+				
+				username = newUsername;
 				label.setText(String.format(CURRENT_USER_FORMAT, username));
 				label.update();
 			}
