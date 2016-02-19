@@ -5,6 +5,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.mondo.collaboration.online.rap.UINotifierManager;
 
@@ -15,6 +18,8 @@ public class CurrentUserView extends ViewPart {
 	private Label label;
 	private static final String CURRENT_USER_FORMAT = "Current user: %s";
 	private static final String NO_LOGGED_USER = "-";
+	
+	private String username = NO_LOGGED_USER;
 	
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.CurrentUserView";
 	
@@ -29,12 +34,19 @@ public class CurrentUserView extends ViewPart {
 	}
 
 	@Override
+	public void init(IViewSite site, IMemento memento) throws PartInitException {
+		if(memento != null)
+			username = memento.getString("username");
+		super.init(site, memento);
+	}
+	
+	@Override
 	public void createPartControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.None);
 		composite.setLayout(new FillLayout());
 		{
 			label = new Label(composite, SWT.None);
-			setCurrentUser(NO_LOGGED_USER);
+			setCurrentUser(username);
 		}
 		
 		
@@ -42,6 +54,7 @@ public class CurrentUserView extends ViewPart {
 	}
 
 	protected void setCurrentUser(String username) {
+		this.username = username;
 		label.getDisplay().asyncExec(new Runnable() {
 			
 			@Override
@@ -54,8 +67,13 @@ public class CurrentUserView extends ViewPart {
 	
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
+		label.setFocus();
 	}
 
+	@Override
+	public void saveState(IMemento memento) {
+		memento.putString("username", username);
+		super.saveState(memento);
+	}
+	
 }
