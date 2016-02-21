@@ -14,7 +14,7 @@
 <repository location="http://download.eclipse.org/tools/gef/updates/milestones/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.incquery.sdk.feature.source.feature.group" version="1.1.0.201511122120"/>
+<unit id="org.eclipse.incquery.sdk.feature.source.feature.group" version="1.2.0.201601151736"/>
 <repository location="http://download.eclipse.org/incquery/updates/milestone"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
