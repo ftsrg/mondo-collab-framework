@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<units size='2'>
+  <unit id='org.mondo.collaboration.security.lens.offline.server.feature.feature.group' version='1.0.0.201602212109' singleton='false'>
+    <update id='org.mondo.collaboration.security.lens.offline.server.feature.feature.group' range='[0.0.0,1.0.0.201602212109)' severity='0'/>
+    <properties size='7'>
+      <property name='org.eclipse.equinox.p2.name' value='MONDO Offline Collaboration Server'/>
+      <property name='org.eclipse.equinox.p2.description' value='[Enter Feature Description here.]'/>
+      <property name='org.eclipse.equinox.p2.description.url' value='http://www.example.com/description'/>
+      <property name='org.eclipse.equinox.p2.type.group' value='true'/>
+      <property name='maven-groupId' value='org.mondo.collaboration.security'/>
+      <property name='maven-artifactId' value='org.mondo.collaboration.security.lens.offline.server.feature'/>
+      <property name='maven-version' value='1.0.0-SNAPSHOT'/>
+    </properties>
+    <provides size='1'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='org.mondo.collaboration.security.lens.offline.server.feature.feature.group' version='1.0.0.201602212109'/>
+    </provides>
+    <requires size='49'>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.runtime.base' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.patternlanguage.emf' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.runtime.base.itc' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.runtime.rete' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.patternlanguage' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.runtime' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.runtime.evm' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.runtime.matchers' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.mondo.collaboration.security.lens.offline.daemon.servlet' range='[1.0.0.201602212109,1.0.0.201602212109]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.mondo.collaboration.security.lens' range='[1.0.0.201602212109,1.0.0.201602212109]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.incquery.runtime.rete.recipes' range='[1.1.0.201511122120,1.1.0.201511122120]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.mondo.collaboration.security.macl.xtext' range='[1.0.0.201602212109,1.0.0.201602212109]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.mondo.collaboration.security.macl.xtext.rule' range='[1.0.0.201602212109,1.0.0.201602212109]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.viatra.modelobfuscator.runtime' range='[0.7.0.201407161550,0.7.0.201407161550]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='com.google.guava' range='[15.0.0.v201403281430,15.0.0.v201403281430]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='com.google.inject' range='[3.0.0.v201312141243,3.0.0.v201312141243]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='com.google.inject.multibindings' range='[3.0.0.v201402270930,3.0.0.v201402270930]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.antlr.runtime' range='[3.2.0.v201101311130,3.2.0.v201101311130]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.common' range='[2.11.0.v20150805-0538,2.11.0.v20150805-0538]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.ecore' range='[2.11.1.v20150805-0538,2.11.1.v20150805-0538]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.ecore.xmi' range='[2.11.1.v20150805-0538,2.11.1.v20150805-0538]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.apache.log4j' range='[1.2.15.v201012070815,1.2.15.v201012070815]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.codegen.ecore' range='[2.11.0.v20150806-0404,2.11.0.v20150806-0404]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.codegen' range='[2.11.0.v20150806-0404,2.11.0.v20150806-0404]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.jdt.launching' range='[3.8.0.v20150527-0946,3.8.0.v20150527-0946]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.jdt.core' range='[3.11.1.v20150902-1521,3.11.1.v20150902-1521]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtend.lib' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.jdt.debug' range='[3.9.0.v20150528-1838,3.9.0.v20150528-1838]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext.common.types' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext.generator' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext.xbase' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext.xbase.lib' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtend.lib.macro' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext.smap' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext.util' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.objectweb.asm' range='[5.0.1.v201404251740,5.0.1.v201404251740]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.mwe2.launch' range='[2.9.0.v201511100907,2.9.0.v201511100907]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xpand' range='[2.2.0.v201509290912,2.2.0.v201509290912]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtend' range='[2.2.0.v201509290912,2.2.0.v201509290912]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtend.typesystem.emf' range='[2.2.0.v201509290912,2.2.0.v201509290912]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext.ecore' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.xtext.xtext.generator' range='[2.9.0.v201511170433,2.9.0.v201511170433]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.apache.commons.cli' range='[1.2.0.v201404270220,1.2.0.v201404270220]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.mwe2.language' range='[2.9.0.v201511100907,2.9.0.v201511100907]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.mwe2.runtime' range='[2.9.0.v201511100512,2.9.0.v201511100512]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.mwe.core' range='[1.3.20.v201511100512,1.3.20.v201511100512]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.emf.mwe.utils' range='[1.3.20.v201511100512,1.3.20.v201511100512]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.mondo.collaboration.security.lens.offline.server.feature.feature.jar' range='[1.0.0.201602212109,1.0.0.201602212109]'>
+        <filter>
+          (org.eclipse.update.install.features=true)
+        </filter>
+      </required>
+    </requires>
+    <touchpoint id='null' version='0.0.0'/>
+    <licenses size='1'>
+      <license uri='http://www.example.com/license' url='http://www.example.com/license'>
+        [Enter License Description here.]
+      </license>
+    </licenses>
+    <copyright uri='http://www.example.com/copyright' url='http://www.example.com/copyright'>
+      [Enter Copyright Description here.]
+    </copyright>
+  </unit>
+  <unit id='org.mondo.collaboration.security.lens.offline.server.feature.feature.jar' version='1.0.0.201602212109'>
+    <properties size='6'>
+      <property name='org.eclipse.equinox.p2.name' value='MONDO Offline Collaboration Server'/>
+      <property name='org.eclipse.equinox.p2.description' value='[Enter Feature Description here.]'/>
+      <property name='org.eclipse.equinox.p2.description.url' value='http://www.example.com/description'/>
+      <property name='maven-groupId' value='org.mondo.collaboration.security'/>
+      <property name='maven-artifactId' value='org.mondo.collaboration.security.lens.offline.server.feature'/>
+      <property name='maven-version' value='1.0.0-SNAPSHOT'/>
+    </properties>
+    <provides size='3'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='org.mondo.collaboration.security.lens.offline.server.feature.feature.jar' version='1.0.0.201602212109'/>
+      <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='feature' version='1.0.0'/>
+      <provided namespace='org.eclipse.update.feature' name='org.mondo.collaboration.security.lens.offline.server.feature' version='1.0.0.201602212109'/>
+    </provides>
+    <filter>
+      (org.eclipse.update.install.features=true)
+    </filter>
+    <artifacts size='1'>
+      <artifact classifier='org.eclipse.update.feature' id='org.mondo.collaboration.security.lens.offline.server.feature' version='1.0.0.201602212109'/>
+    </artifacts>
+    <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+    <touchpointData size='1'>
+      <instructions size='1'>
+        <instruction key='zipped'>
+          true
+        </instruction>
+      </instructions>
+    </touchpointData>
+    <licenses size='1'>
+      <license uri='http://www.example.com/license' url='http://www.example.com/license'>
+        [Enter License Description here.]
+      </license>
+    </licenses>
+    <copyright uri='http://www.example.com/copyright' url='http://www.example.com/copyright'>
+      [Enter Copyright Description here.]
+    </copyright>
+  </unit>
+</units>
