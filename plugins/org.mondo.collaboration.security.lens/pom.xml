@@ -19,7 +19,10 @@
 			<resource>
 				<directory>src</directory>
 			</resource>
-			<resource>
+      <resource>
+				<directory>src-gen</directory>
+			</resource>
+      <resource>
 				<directory>xtend-gen</directory>
 			</resource>
 		</resources>

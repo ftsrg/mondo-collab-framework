@@ -24,13 +24,13 @@ import org.eclipse.incquery.runtime.matchers.context.IQueryRuntimeContext;
  *
  */
 public class MondoLensEngineContext implements IEngineContext {
-	
+
 
 	private MondoLensScope scope;
 	private IncQueryEngine engine;
 	private IIndexingErrorListener errorListener;
 	private Logger logger;
-	
+
 	private MondoLensRuntimeContext runtimeContext;
 	private MondoLensBaseIndex baseIndex;
 
@@ -54,14 +54,14 @@ public class MondoLensEngineContext implements IEngineContext {
 		return baseIndex;
 	}
 
-	@Override
-	public void initializeBackends(IQueryBackendInitializer initializer) throws IncQueryException {
-		initializer.initializeWith(getRuntimeContext());
-	}
 //	@Override
-//	public IQueryRuntimeContext getQueryRuntimeContext() throws IncQueryException {
-//		return getRuntimeContext();
+//	public void initializeBackends(IQueryBackendInitializer initializer) throws IncQueryException {
+//		initializer.initializeWith(getRuntimeContext());
 //	}
+	@Override
+	public IQueryRuntimeContext getQueryRuntimeContext() throws IncQueryException {
+		return getRuntimeContext();
+	}
 
 	private IQueryRuntimeContext getRuntimeContext() {
 		if (runtimeContext == null) {
