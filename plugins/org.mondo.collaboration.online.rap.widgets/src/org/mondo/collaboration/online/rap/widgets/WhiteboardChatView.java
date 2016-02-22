@@ -27,8 +27,6 @@ import org.mondo.collaboration.online.rap.UISessionManager;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 
-import swing2swt.layout.BorderLayout;
-
 @SuppressWarnings("serial")
 public class WhiteboardChatView extends WhiteboardGenericView {
 

@@ -23,6 +23,9 @@
 
   <modules>
     <module>../../releng/org.mondo.collaboration.security.targetplatform</module>
+    <module>../../plugins/org.mondo.collaboration.online.core</module>
+    <module>../../plugins/org.mondo.collaboration.online.rap</module>
+    <module>../../plugins/org.mondo.collaboration.online.rap.widgets</module>
     <module>../../plugins/org.mondo.collaboration.security.lens</module>
     <module>../../plugins/org.mondo.collaboration.security.lens.offline.cli</module>
     <module>../../plugins/org.mondo.collaboration.security.lens.offline.daemon.api</module>
@@ -39,7 +42,7 @@
     <module>../../features/org.mondo.collaboration.security.macl.feature</module>
     <module>../../features/org.mondo.collaboration.security.mpbl.feature</module>
     <module>../../features/org.mondo.collaboration.security.lens.offline.server.feature</module>
-    <!--<module>../../features/org.mondo.collaboration.security.online.server.feature</module>-->
+    <module>../../features/org.mondo.collaboration.security.online.server.feature</module>
     <module>../../releng/org.mondo.collaboration.security.updatesite</module>
   </modules>
 
