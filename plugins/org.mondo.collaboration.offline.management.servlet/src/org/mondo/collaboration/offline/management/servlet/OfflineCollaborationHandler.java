@@ -41,14 +41,28 @@ public class OfflineCollaborationHandler implements Iface {
 	@Override
 	public void regenerateFrontRepositories(String goldRepoURL) throws GoldRepoNotFound,
 			UnauthorizedRepositoryOperation, OfflineCollaborationInternalError, TException {
-		// TODO Auto-generated method stub
+		System.out.println("regenerateFrontRepositories call");
+		System.out.println("\tfor repo " + goldRepoURL);
+		if (httpRequest == null)
+			System.out.println("\trequest is NULL!!!!! ");
+		else if (httpRequest.getUserPrincipal() == null)
+			System.out.println("\tuser principal is NULL!!!!! ");
+		else
+			System.out.println("\tby user " + httpRequest.getUserPrincipal().getName());
 	}
 
 	@Override
 	public String getMyFrontRepositoryURL(String goldRepoURL) throws GoldRepoNotFound,
 			UnauthorizedRepositoryOperation, OfflineCollaborationInternalError, TException {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("getMyFrontRepositoryURL call");
+		System.out.println("\tfor repo " + goldRepoURL);
+		if (httpRequest == null)
+			System.out.println("\trequest is NULL!!!!! ");
+		else if (httpRequest.getUserPrincipal() == null)
+			System.out.println("\tuser principal is NULL!!!!! ");
+		else
+			System.out.println("\tby user " + httpRequest.getUserPrincipal().getName());
+		return "fake://url.org";
 	}
 
 }

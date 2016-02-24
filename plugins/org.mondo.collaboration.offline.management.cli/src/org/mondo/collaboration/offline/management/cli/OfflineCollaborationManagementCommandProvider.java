@@ -70,7 +70,7 @@ public class OfflineCollaborationManagementCommandProvider implements CommandPro
 		}
 
 		public OfflineCollaboration.Client connect() throws Exception {
-			ThriftProtocol clientProtocol = ThriftProtocol.guessFromURL(managementUrl);
+			ThriftProtocol clientProtocol = ThriftProtocol.JSON;
 			
 			Client client = APIUtils.connectTo(OfflineCollaboration.Client.class, managementUrl, clientProtocol, userName, password);
 			return client;
