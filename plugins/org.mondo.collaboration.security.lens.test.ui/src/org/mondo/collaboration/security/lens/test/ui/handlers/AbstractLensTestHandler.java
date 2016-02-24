@@ -11,6 +11,7 @@
 
 package org.mondo.collaboration.security.lens.test.ui.handlers;
 
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.incquery.runtime.api.IPatternMatch;
@@ -102,13 +104,12 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 	        		frontBaseURI,
 	        		frontResourceSet);
 	        
-	        
-			LiveTable correspondenceTable = EObjectCorrespondence.buildEObjectCorrespondenceTable(
-						goldIndexer, 
-						DefaultEMFUniqueIDFunctions.forBaseURI(goldBaseURI),
-						frontIndexer, 
-						DefaultEMFUniqueIDFunctions.forBaseURI(frontBaseURI)
-			);
+			Map<Object, Collection<EObject>> goldIDs = EObjectCorrespondence.applyObjectToUniqueIdentifier(goldIndexer, 
+					DefaultEMFUniqueIDFunctions.forBaseURI(goldBaseURI));
+			Map<Object, Collection<EObject>> frontIDs = EObjectCorrespondence.applyObjectToUniqueIdentifier(frontIndexer, 
+					DefaultEMFUniqueIDFunctions.forBaseURI(frontBaseURI));
+			LiveTable correspondenceTable = 
+					EObjectCorrespondence.buildEObjectCorrespondenceTable(goldIDs, frontIDs);
 	        Map<CorrespondenceKey, LiveTable> correspondenceTables = new EnumMap<CorrespondenceKey, LiveTable>(CorrespondenceKey.class);
 	        correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
 	        //correspondenceTables.put(CorrespondenceKey.RESOURCE, new LiveTable());
