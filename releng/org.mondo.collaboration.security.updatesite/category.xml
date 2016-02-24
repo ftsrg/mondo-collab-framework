@@ -6,10 +6,10 @@
    <feature url="features/org.mondo.collaboration.security.macl.feature_1.0.0.qualifier.jar" id="org.mondo.collaboration.security.macl.feature" version="1.0.0.qualifier">
       <category name="org.mondo.collaboration.security.client"/>
    </feature>
-   <feature url="features/org.mondo.collaboration.security.lens.offline.server.feature_1.0.0.qualifier.jar" id="org.mondo.collaboration.security.macl.feature" version="1.0.0.qualifier">
+   <feature url="features/org.mondo.collaboration.security.lens.offline.server.feature_1.0.0.qualifier.jar" id="org.mondo.collaboration.security.lens.offline.server.feature" version="1.0.0.qualifier">
       <category name="org.mondo.collaboration.security.server"/>
    </feature>
-   <feature url="features/org.mondo.collaboration.security.online.server.feature_1.0.0.qualifier.jar" id="org.mondo.collaboration.security.macl.feature" version="1.0.0.qualifier">
+   <feature url="features/org.mondo.collaboration.security.online.server.feature_1.0.0.qualifier.jar" id="org.mondo.collaboration.security.online.server.feature" version="1.0.0.qualifier">
       <category name="org.mondo.collaboration.security.server"/>
    </feature>
    <category-def name="org.mondo.collaboration.security.client" label="MONDO Collaboration Client"/>
