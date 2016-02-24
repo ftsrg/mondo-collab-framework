@@ -2,7 +2,8 @@
 <feature
       id="org.mondo.collaboration.security.lens.offline.server.feature"
       label="MONDO Offline Collaboration Server"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      provider-name="Budapest University of Technology and Economics">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
