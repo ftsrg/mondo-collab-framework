@@ -5,8 +5,8 @@
 #add-front-repository
 # OK   * svnadmin create repository, if it does not exist
 # OK   * copy hooks, if it does not exist
-# cat, grep   * add entry to ../config/gen/user-front.properties, if it does not exist
-#    * execute lens from gold to front
+# OK   * add entry to ../config/gen/user_front.properties, if it does not exist
+# OK   * execute lens from gold to front
 
 # TODO create help message here
 #if [ $# -lt 1 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == ""]; then
@@ -39,7 +39,7 @@ if [ -e $SVN_FRONT_REPO_FULL_PATH ]; then
     echo "Could not create front repo \"$SVN_FRONT_REPO_FULL_PATH\", because that name is already used in that folder for a non-svn repository"
     exit 2
   fi 
-  # If it is a repository, go on
+ # If it is a repository, go on
 fi
 
 set +e
@@ -55,7 +55,24 @@ echo "$DIR/../hooks/pre-commit \$1 \$2 " >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-
 chmod +x $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 echo "Create Pre-Commit hook"
 
-#TODO add to properties file --- ??? 
+
+
+set +e
+IS_CONFIG_FILE_EXIST=$(cat $DIR/../config/gen/user_front.properties 1>/dev/null 2>&1)
+RETURN_VALUE=$?
+set -e
+
+if [ 0 -ne $RETURN_VALUE ]; then
+  echo "$USER_NAME=$FRONT_REPO" > $DIR/../config/gen/user_front.properties
+else
+  IS_USER_IN_CONFIG=$(cat $DIR/../config/gen/user_front.properties | grep $USER_NAME)
+  if [ -z "$IS_USER_IN_CONFIG" ]; then
+    echo "$USER_NAME=$FRONT_REPO" >> $DIR/../config/gen/user_front.properties
+  elif [[ $IS_USER_IN_CONFIG != "$USER_NAME=$FRONT_REPO" ]]; then
+    echo "Error: inconsistent user_front.properties file. Entry to be added: $USER_NAME=$FRONT_REPO; existing: $IS_USER_IN_CONFIG"
+    exit 3
+  fi
+fi 
 
 
 #SVN checkouts
