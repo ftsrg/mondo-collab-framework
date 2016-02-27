@@ -1,59 +1,81 @@
 #!/bin/bash
-#DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DIR=/mondo
-. $DIR/config.properties
 
 # Pre-commit script is responsible for execute the "put back" method of our lens when a client commits changes to a front repository.
 # This hook has to be placed into the hooks directory of every front repository.
 # For the configuration, set the following variables:
 
-GOLD_REPOS_URL="$URL/$SVN_PATH_URL/$GOLD_REPO_NAME"		  #URL of the gold repository
-export PATH=$PATH:$JAVA_HOME
+# - If $ADMIN is the committer, we don't have to do anything here.
+# - If $LOCK_FILE exists, we have to reject the commit request.
 
-replace {
+# 1. Clear temporary folder
+# 2. Checkout gold to $TEMP_GOLD
+# 3. Get the changes from the front repository
+# 4. Get the commit message
+# 5. Create the temporary folder for the current front repository $TEMP_FRONT
+# 6. Check that the rule and query files exists in $TEMP_GOLD
+#     if not, we don't have to run lens transformation
+# 7. Start iterating over the changes
+# 8. Step into the $TEMP_GOLD
+# 9. Add all changes to svn
+#10. Store multi-line commit message
+#11. Execute commit on the gold repository
+#12. Remove lock file
+
+set -e # Exit from the script if any subcommand or pipeline returns an error.
+
+# Replace from $2 to $3 in $1
+function replace {
     echo "${1/$2/$3}"
 }
 
-CURRENT_FRONT_REPOS="$1"
-CURRENT_FRONT_REPOS_URL="$URL$CURRENT_FRONT_REPOS"
-TXN="$2"
-
-TEMP_GOLD="$TEMP/tempGoldPre/$GOLD_REPO_NAME"
-TEMP_FRONT="$TEMP/tempFront/Current$CURRENT_FRONT_REPOS"
-FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)
-
-CURRENT_FRONT_REPOS_NAME=$(replace $CURRENT_FRONT_REPOS "/$SVN_PATH_URL" "")
-
-LOG="$DIR/pre-commit.log"
-
-timestamp() {
+# Default functions for logging
+function timestamp {
+  # returns the current time
   date +"%Y-%m-%d_%H-%M-%S"
 }
 
-log() {
+# logger function
+function log {
+  # append the current time and $1 arg to the log file
   echo "$(timestamp) $1" 1>>$LOG
 }
 
-log "-------------------------------------------------------"
-log "Executing Pre-commit"
-log "Parameters"
-log "      TXN $TXN"
-log "      URL $URL"
-log "      GOLD_REPOS $GOLD_REPO_NAME"
-log "      GOLD_REPOS_URL $GOLD_REPOS_URL"
-log "      CURRENT_REPOS $CURRENT_FRONT_REPOS"
-log "      CURRENT_REPOS_URL $CURRENT_FRONT_REPOS_URL"
-log "      TEMP $TEMP"
-log "      LENS_SCRIPT $LENS_SCRIPT"
-log "      JAVA_HOME $JAVA_HOME"
-log "      MODEL_EXTENSIONS $MODEL_EXTENSIONS"
-log "      ADMIN_USER $ADMIN_USER"
-log "      ADMIN_PWD $ADMIN_PWD"
-log "      TEMP_GOLD $TEMP_GOLD"
-log "      TEMP_FRONT $TEMP_FRONT"
-log "      FRONT_USER $FRONT_USER"
+# concate path parts and includes a slash "/" if necessary
+function concate_path_parts {
+  for part in "$@"
+  do
+      case "$result" in
+      */)
+          result=$result$part
+          ;;
+      *)
+          result=$result/$part
+          ;;
+      esac
+  done
+  echo $result
+}
 
-set -e
+# Get the current directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Load the configuration files
+. $DIR/load_config.properties
+. $CONFIG_DIR/config.properties
+
+# Setting the parameters
+CURRENT_FRONT_REPOS="$1"                                                            #Current front repository
+CURRENT_FRONT_REPOS_URL=$(concate_path_parts $URL $CURRENT_FRONT_REPOS)             #URL of current front repository
+GOLD_REPOS_URL=$(concate_path_parts $URL $SVN_PATH_URL $GOLD_REPO_NAME)	            #URL of the gold repository
+TEMP_GOLD=$(concate_path_parts $TEMP "TEMP_GOLD_PRECOMMIT" $GOLD_REPO_NAME)         #Gold repository temporary folder
+TEMP_FRONT=$(concate_path_parts $TEMP "TEMP_FRONT" "CURRENT" $CURRENT_FRONT_REPOS)  #Front repository temporary folder
+TXN="$2"                                                                            #TXN number of commit
+FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)                           #Current user
+CURRENT_FRONT_REPOS_NAME=$(replace $CURRENT_FRONT_REPOS "/$SVN_PATH_URL" "")        #Remove SVN_PATH from repository
+LOG="$LOG_DIR/pre-commit.log"                                                           #Log file
+
+log "======================================================="
+log "Executing Pre-commit"
 
 if [ "$FRONT_USER" = "$ADMIN_USER" ]; then
   log "Admin was the committer. Nothing to do right now"
@@ -61,25 +83,49 @@ if [ "$FRONT_USER" = "$ADMIN_USER" ]; then
   exit 0
 fi
 
-log "Clear temp folder - $TEMP"
+# Check for a lock file
+if [ -f $LOCK_FILE ]; then
+  log "File exists, we have to reject your commit".
+  echo echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
+  exit 1
+else
+  touch $LOCK_FILE
+fi
+
+log "Step 1: clear temp folder - $TEMP"
 rm -rf $TEMP/*
 
-log "Checkout gold - from $GOLD_REPOS_URL to $TEMP_GOLD"
+log "Step 2: checkout gold - from $GOLD_REPOS_URL to $TEMP_GOLD"
 svn checkout $GOLD_REPOS_URL $TEMP_GOLD -q --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
 
-log "Get change list"
+log "Step 3: get change list"
 changes=$(svnlook changed -t $TXN $CURRENT_FRONT_REPOS)
 
-log "Get commit message"
+log "Step 4: get commit message"
 MSG=$(svnlook log -t $TXN $CURRENT_FRONT_REPOS)
 
+log "Step 5: create temporary front folder: $TEMP_FRONT"
 mkdir -p $TEMP_FRONT
 
-obfuscatorSeed="seed_$CURRENT_FRONT_REPOS_NAME"
-obfuscatorSalt="salt_$CURRENT_FRONT_REPOS_NAME"
-obfuscatorPrefix="mondo"
+log "Step 6: check that the rules and queries files exist"
+LENS_CAN_EXECUTE=false;
+if [ ! -f "$TEMP_GOLD/$ACCESS_CONTROL_RULES" ]
+then
+  if [ ! -f "$TEMP_GOLD/$ACCESS_CONTROL_QUERIES"]
+  then
+    LENS_CAN_EXECUTE=true;
+    log "* Both files exist"
 
-log "Start iterating over the changes"
+    obfuscatorSeed="seed_$CURRENT_FRONT_REPOS_NAME"
+    obfuscatorSalt="salt_$CURRENT_FRONT_REPOS_NAME"
+    obfuscatorPrefix="mondo"
+
+  fi
+else
+  log "* Files don't exist"
+fi
+
+log "Step 7: Start iterating over the changes"
 counter=0
 for line in $changes; do
    val=$(($counter % 2))
@@ -109,9 +155,12 @@ for line in $changes; do
           svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$TEMP_FRONT/$nextChange"
           if [[ $nextChange =~ .${MODEL_EXTENSIONS}$ ]]
           then
-            log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
-            log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
-            $LENS_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$TEMP_GOLD/$ACCESS_CONTROL_RULES" "$TEMP_GOLD/$ACCESS_CONTROL_QUERIES"
+            if [ $LENS_CAN_EXECUTE = true ]
+            then
+              log "     -> Action: Execute lens $TEMP_FRONT/$nextChange"
+              log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
+              $LENS_INVOKE_SCRIPT $FRONT_USER $TEMP_GOLD/$nextChange $TEMP_FRONT/$nextChange -performPutback $TEMP $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$TEMP_GOLD/$ACCESS_CONTROL_RULES" "$TEMP_GOLD/$ACCESS_CONTROL_QUERIES"
+            fi
           else
             log "     -> Action: Copy to gold $TEMP_FRONT/$nextChange"
             cp -rf $TEMP_FRONT/$nextChange $TEMP_GOLD/$nextChange
@@ -129,20 +178,25 @@ for line in $changes; do
    counter=$((counter+1))
 done
 
-log "Step into the gold folder"
+log "Step 8: Step into the gold folder"
 cd $TEMP_GOLD
 
-log "Add changes to SVN"
+log "Step 9: Add changes to SVN"
 svn add --force * --auto-props --parents --depth infinity -q
 
-log "Store commit message"
+log "Step 10: Store commit message"
 echo "$MSG" 1>"svn-commit.tmp"
 
-log "Commit changes to the gold"
+log "Step 11: Commit changes to the gold"
 svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
 
-log "Remove temporary files"
-rm -rf $TEMP/*
+#log "Step 12: Remove temporary files"
+#rm -rf $TEMP/*
+
+log "Step 12: Remove lock file"
+rm -r $LOCK_FILE
+
 
 log "Pre-commit finished successfully"
+log "-------------------------------------------------------"
 exit 0
