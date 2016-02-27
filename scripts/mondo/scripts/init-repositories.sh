@@ -1,71 +1,64 @@
 #!/bin/bash
 
-# $1 config file
-# $2 front_list file
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-set -e
-
-if [ $# -lt 1 -o "$1" == "--help" -o "$1" == "" ]; then
-  echo "Usage: $0 <config.properties> [<front_list.properties>]"
+if [ "$1" == "--help" ]; then
+  echo "Usage: $0 [--delete] [--apache2 | --apache]"
+  echo " -dg | --delete-gold: Delete the gold repository if it already exist"
+  echo " --apache | --apache2: Decide the username of Apache. For Apache: apache.apache, For Apache2: www-data:www-data"
   exit
 fi
 
-CONFIG=$1
-FRONT_LIST=$2
-. $CONFIG
-. $FRONT_LIST
+set -e
 
-echo "Default configuration..."
-cp $CONFIG $CONFIG_DIR/config.properties
-cp $FRONT_LIST $CONFIG_DIR/front_list.properties
-echo "* Config files copied"
-cp $DIR/lens-executor.sh $LENS_SCRIPT
-cp $DIR/invoker.jar $LENS_INVOKER
-echo "CONFIG_DIR=$CONFIG_DIR" >> $LENS_DIR/config.properties
-echo "* Lens Invoker copied"
-mkdir -p $TEMP
-mkdir -p $LOCK_DIR
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "Generating Gold Repository (0/5)"
-rm -rf $SVN_PATH_OS/$GOLD_REPO_NAME
-echo "(1/6) Cleanup previous mess"
-svnadmin create $SVN_PATH_OS/$GOLD_REPO_NAME
-echo "(2/6) Gold Repo created"
-chown -R $SVN_USER_OS /$SVN_PATH_OS/$GOLD_REPO_NAME
-echo "(3/6) Permissons added"
-cp $DIR/../../mondo-server-hooks/svn/post-commit $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
+# Load config file
+. $DIR/../config/config.properties
+
+# Check parameter
+if [ "$1" == "--delete-gold" -o "$2" == "--delete-gold" ]; then
+  # Delete if exists
+  if [ -d $SVN_PATH_OS/$GOLD_REPO_NAME ]; then
+    echo "Delete existing gold repository in $SVN_PATH_OS/$GOLD_REPO_NAME"
+    rm -rf $SVN_PATH_OS/$GOLD_REPO_NAME
+  fi
+fi
+
+if [ "$1" == "--apache" -o "$2" == "--apache" ]; then
+  APACHE_USER="apache.apache"
+fi
+if [ "$1" == "--apache2" -o "$2" == "--apache2" ]; then
+  APACHE_USER="www-data:www-data"
+fi
+
+if [ ! -d $SVN_PATH_OS/$GOLD_REPO_NAME ]; then
+  echo "Create Gold Repository: $SVN_PATH_OS/$GOLD_REPO_NAME"
+  svnadmin create $SVN_PATH_OS/$GOLD_REPO_NAME
+  if [ -z $APACHE_USER ]; then
+    echo "Apache username:"
+    APACHE_USER=$(cat)
+  fi
+  chown -R $APACHE_USER /$SVN_PATH_OS/$GOLD_REPO_NAME
+
+else
+  echo "Gold Repository already exists: $SVN_PATH_OS/$GOLD_REPO_NAME"
+fi
+
+echo "#!/bin/sh" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
+echo "set -e" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
+echo "$DIR/../hooks/post-commit \$1 \$2 " >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 chmod +x $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
-echo "(4/6) Post-commit hook copied"
-echo "CONFIG_DIR=$CONFIG_DIR" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/config.properties
-echo "LOCK_FILE=$LOCK_DIR/.lock-front" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/config.properties
-echo "GOLD_LOCK_FILE=$LOCK_DIR/.lock-gold" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/config.properties
-echo "(5/6) Configurators copied"
+echo "Create Post-Commit hook"
 
-echo "Generating Front Repositories..."
-for entry in $FRONT_REPOS_NAME_WITH_ROLE; do
-  oldIFS=$IFS
-  IFS=':'
-  set x $entry
-  FRONT_REPO_NAME="$2"
-  FRONT_USER="$3"
-  IFS=$oldIFS
+if [ -f $DIR/../config/gen/user_front.properties ]; then
+  echo "User-Front mapping exists in $DIR/../config/gen/user_front.properties"
+  USER_FRONT_MAPPING=$(cat $DIR/../config/gen/user_front.properties)
+  for entry in $USER_FRONT_MAPPING; do
+    oldIFS=$IFS
+    IFS='='
+    set x $entry
+    USER=$2
+    REPO=$3
 
-  echo "Generating ($FRONT_REPO_NAME) Repository (0/5)"
-  rm -rf $SVN_PATH_OS/$FRONT_REPO_NAME
-  echo "(1/5) Cleanup previous mess"
-  svnadmin create $SVN_PATH_OS/$FRONT_REPO_NAME
-  echo "(2/5) Gold Repo created"
-  chown -R $SVN_USER_OS /$SVN_PATH_OS/$FRONT_REPO_NAME
-  echo "(3/5) Permissons added"
-  cp $DIR/../../mondo-server-hooks/svn/pre-commit $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/pre-commit
-  chmod +x $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/pre-commit
-  echo "(4/5) Pre-commit hook copied"
-  echo "CONFIG_DIR=$CONFIG_DIR" >> $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/config.properties
-  echo "LOCK_FILE=$LOCK_DIR/.lock-front" >> $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/config.properties
-  echo "GOLD_LOCK_FILE=$LOCK_DIR/.lock-gold" >> $SVN_PATH_OS/$FRONT_REPO_NAME/hooks/config.properties
-  echo "(5/6) Configurators copied"
-done
-
-echo "WARNING! Permissions for the repositories have to be set manually"
+    $DIR/../scripts/add-front-repository.sh $REPO $USER
+  done
+fi
