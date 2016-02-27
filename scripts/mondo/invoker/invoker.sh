@@ -4,7 +4,11 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $DIR/config.properties
 . $CONFIG_DIR/config.properties
 
-LOG="$LENS_DIR/lens.log"
+LENS_INVOKER_DIR=$DIR/../invoker
+LENS_INVOKER_SCRIPT=$LENS_DIR/invoke.sh
+LENS_INVOKER_JAR=$LENS_DIR/invoker.jar
+
+LOG="./lens.log"
 
 function timestamp() {
   date +"%Y-%m-%d_%H-%M-%S"
@@ -51,7 +55,7 @@ log "java -jar $LENS_INVOKER $LENS_DAEMON_PORT/thrift-local/lens-daemon $GOLD_CO
 set -e
 
 #set +e
-java -jar $LENS_INVOKER $LENS_DAEMON_PORT/thrift-local/lens-daemon $GOLD_COMMAND $GOLD $FRONT_COMMAND $FRONT $MACL_COMMAND $MACL $EIQ_COMMAND $EIQ $USER_COMMAND $USER $TYPE -configuration $TEMP -data $TEMP $OBF_SALT_COMMAND $OBF_SALT $OBF_SEED_COMMAND $OBF_SEED $OBF_PREFIX_COMMAND $OBF_PREFIX -uniqueIDScheme $UNIQUE_SCHEME_ID
+java -jar $LENS_INVOKER_JAR $LENS_DAEMON_PORT/thrift-local/lens-daemon $GOLD_COMMAND $GOLD $FRONT_COMMAND $FRONT $MACL_COMMAND $MACL $EIQ_COMMAND $EIQ $USER_COMMAND $USER $TYPE -configuration $TEMP -data $TEMP $OBF_SALT_COMMAND $OBF_SALT $OBF_SEED_COMMAND $OBF_SEED $OBF_PREFIX_COMMAND $OBF_PREFIX -uniqueIDScheme $UNIQUE_SCHEME_ID
 #ret=$?
 #log "$ret"
 #set -e
