@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$1" == "--help" ]; then
-  echo "Usage: $0 [--delete] [--apache2 | --apache]"
+if [ "$1" == "--help" -o "$1" == "-h" ]; then
+  echo "Usage: $(basename $0) [--delete] [--apache2 | --apache]"
   echo " -dg | --delete-gold: Delete the gold repository if it already exist"
   echo " --apache | --apache2: Decide the username of Apache. For Apache: apache.apache, For Apache2: www-data:www-data"
   exit
@@ -38,7 +38,6 @@ if [ ! -d $SVN_PATH_OS/$GOLD_REPO_NAME ]; then
     APACHE_USER=$(cat)
   fi
   chown -R $APACHE_USER /$SVN_PATH_OS/$GOLD_REPO_NAME
-
 else
   echo "Gold Repository already exists: $SVN_PATH_OS/$GOLD_REPO_NAME"
 fi

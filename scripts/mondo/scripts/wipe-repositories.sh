@@ -1,13 +1,14 @@
 #!/bin/bash
 
+if [ "$1" == "--help" -o "$1" == "-h" ]; then
+  echo "Usage: $(basename $0) [--force]"
+  echo "--force execute the command without any question"
+  exit
+fi
+
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-if [ "$1" == "--help" ]; then
-  echo "Usage: $0 [--force]"
-  exit
-fi
 
 if [ "$1" == "--force" ]; then
   FORCE=true

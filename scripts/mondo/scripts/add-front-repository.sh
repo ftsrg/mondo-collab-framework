@@ -1,19 +1,11 @@
 #!/bin/bash
 
-
-
-#add-front-repository
-# OK   * svnadmin create repository, if it does not exist
-# OK   * copy hooks, if it does not exist
-# OK   * add entry to ../config/gen/user_front.properties, if it does not exist
-# OK   * execute lens from gold to front
-
-# TODO create help message here
-#if [ $# -lt 1 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == ""]; then
-#  echo "Usage: $0 <config.properties> <front_list.properties>"
-#  echo " - front_list should contains only new front repos"
-#  exit
-#fi
+if [ $# -lt 1 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == ""]; then
+  echo "Usage: $(basename $0) <repository name> <user name>"
+  echo " - repository name: the name of the new front repository"
+  echo " - user name: the name of the user who has access to the new front repository"
+  exit
+fi
 
 set -e
 
@@ -38,7 +30,7 @@ if [ -e $SVN_FRONT_REPO_FULL_PATH ]; then
   if [ 0 -ne $RETURN_VALUE ]; then
     echo "Could not create front repo \"$SVN_FRONT_REPO_FULL_PATH\", because that name is already used in that folder for a non-svn repository"
     exit 2
-  fi 
+  fi
  # If it is a repository, go on
 fi
 
@@ -72,7 +64,7 @@ else
     echo "Error: inconsistent user_front.properties file. Entry to be added: $USER_NAME=$FRONT_REPO; existing: $IS_USER_IN_CONFIG"
     exit 3
   fi
-fi 
+fi
 
 
 #SVN checkouts
@@ -88,7 +80,7 @@ FRONT_REPO_URL=$URL/$SVN_PATH_URL/$FRONT_REPO
 $WORKSPACE_FRONT=$DIR/../workspace/add-front-repository/$USER_NAME/front
 svn checkout "$FRONT_REPO_URL" "$WORKSPACE_FRONT" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
 
-# Create the --exclude parameter for rsync to ignore the .svn folder and the model files 
+# Create the --exclude parameter for rsync to ignore the .svn folder and the model files
 EXCLUDES="--exclude=\".svn\""
 
 IFS_OLD=$IFS
@@ -116,4 +108,3 @@ for EXTENSION in $MODEL_EXTENSIONS; do
   IFS=","
 done
 IFS=$IFS_OLD_1
-
