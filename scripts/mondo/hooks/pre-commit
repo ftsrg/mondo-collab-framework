@@ -23,6 +23,28 @@
 
 set -e # Exit from the script if any subcommand or pipeline returns an error.
 
+# Get the current directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Load the configuration files
+. $DIR/../config/config.properties
+
+function known_model_extension {
+  contains=false
+
+  IFS_OLD=$IFS
+  IFS=","
+  for extension in $MODEL_EXTENSIONS
+  do
+    if [[ $1 =~ .${extension}$ ]]; then
+      contains=true
+    fi
+  done
+  IFS=IFS_OLD
+
+  echo "$contains"
+}
+
 # Replace from $2 to $3 in $1
 function replace {
     echo "${1/$2/$3}"
@@ -56,12 +78,6 @@ function concate_path_parts {
   echo $result
 }
 
-# Get the current directory
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-# Load the configuration files
-. $DIR/../config/config.properties
-
 # Setting the parameters
 
 LOCK_FILE=$DIR/../locks/.lock-front
@@ -70,8 +86,8 @@ WORKSPACE=$DIR/../workspace
 CURRENT_FRONT_REPOS="$1"                                                                          #Current front repository
 CURRENT_FRONT_REPOS_URL=$(concate_path_parts $URL $CURRENT_FRONT_REPOS)                           #URL of current front repository
 GOLD_REPOS_URL=$(concate_path_parts $URL $SVN_PATH_URL $GOLD_REPO_NAME)	                          #URL of the gold repository
-WORKSPACE_GOLD=$(concate_path_parts $WORKSPACE "WORKSPACE_GOLD_PRECOMMIT" $GOLD_REPO_NAME)        #Gold repository WORKSPACEorary folder
-WORKSPACE_FRONT=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "CURRENT" $CURRENT_FRONT_REPOS) #Front repository WORKSPACEorary folder
+WORKSPACE_GOLD=$(concate_path_parts $WORKSPACE "WORKSPACE_GOLD_PRECOMMIT" $GOLD_REPO_NAME)        #Gold repository WORKSPACE folder
+WORKSPACE_FRONT=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "CURRENT" $CURRENT_FRONT_REPOS) #Front repository WORKSPACE folder
 TXN="$2"                                                                                          #TXN number of commit
 FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)                                         #Current user
 CURRENT_FRONT_REPOS_NAME=$(replace $CURRENT_FRONT_REPOS "/$SVN_PATH_URL" "")                      #Remove SVN_PATH from repository
@@ -107,7 +123,7 @@ changes=$(svnlook changed -t $TXN $CURRENT_FRONT_REPOS)
 log "Step 4: get commit message"
 MSG=$(svnlook log -t $TXN $CURRENT_FRONT_REPOS)
 
-log "Step 5: create WORKSPACEorary front folder: $WORKSPACE_FRONT"
+log "Step 5: create WORKSPACE front folder: $WORKSPACE_FRONT"
 mkdir -p $WORKSPACE_FRONT
 
 log "Step 6: check that the rules and queries files exist"
@@ -156,13 +172,16 @@ for line in $changes; do
             mkdir -p $BASEDIR
           fi
           svnlook cat -t $TXN $CURRENT_FRONT_REPOS $nextChange > "$WORKSPACE_FRONT/$nextChange"
-          if [[ $nextChange =~ .${MODEL_EXTENSIONS}$ ]]
+          if [ $(known_model_extension $nextChange) = true ]
           then
             if [ $LENS_CAN_EXECUTE = true ]
             then
               log "     -> Action: Execute lens $WORKSPACE_FRONT/$nextChange"
               log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
               $DIR/../invoker/invoker.sh $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$WORKSPACE_GOLD/$ACCESS_CONTROL_RULES" "$WORKSPACE_GOLD/$ACCESS_CONTROL_QUERIES"
+            else
+              log "     -> Action: Have to be copied to gold $WORKSPACE_FRONT/$nextChange"
+              cp -rf $WORKSPACE_FRONT/$nextChange $WORKSPACE_GOLD/$nextChange
             fi
           else
             log "     -> Action: Copy to gold $WORKSPACE_FRONT/$nextChange"

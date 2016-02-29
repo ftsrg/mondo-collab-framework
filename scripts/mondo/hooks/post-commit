@@ -21,6 +21,28 @@
 
 set -e # Exit from the script if any subcommand or pipeline returns an error.
 
+# Get the current directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Load the configuration files
+. $DIR/../config/config.properties
+
+function known_model_extension {
+  contains=false
+
+  IFS_OLD=$IFS
+  IFS=","
+  for extension in $MODEL_EXTENSIONS
+  do
+    if [[ $1 =~ .${extension}$ ]]; then
+      contains=true
+    fi
+  done
+  IFS=$IFS_OLD
+
+  echo "$contains"
+}
+
 # Replace from $2 to $3 in $1
 function replace {
     echo "${1/$2/$3}"
@@ -53,12 +75,6 @@ function concate_path_parts {
   done
   echo $result
 }
-
-# Get the current directory
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-# Load the configuration files
-. $DIR/../config/config.properties
 
 # Setting the parameters
 
@@ -162,13 +178,13 @@ for entry in $USER_FRONT_MAPPING; do
                 mkdir -p $BASEDIR
               fi
               svnlook cat -t $TXN $GOLD_REPOS_URL $nextChange > "$CURRENT_REPO/$nextChange"
-              if [[ $nextChange =~ .${MODEL_EXTENSIONS}$ ]]
+              if [ $(known_model_extension $nextChange) = true ]
               then
                 if [ $LENS_CAN_EXECUTE = true ]
                 then
                   log "     -> Action: Execute lens $CURRENT_REPO/$nextChange"
                   log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
-                  $LENS_INVOKE_SCRIPT $FRONT_USER $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange '-performGet' $WORKSPACE $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$WORKSPACE_GOLD/$ACCESS_CONTROL_RULES" "$WORKSPACE_GOLD/$ACCESS_CONTROL_QUERIES"
+                  $DIR/../invoker/invoker.sh $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performGet $WORKSPACE $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$WORKSPACE_GOLD/$ACCESS_CONTROL_RULES" "$WORKSPACE_GOLD/$ACCESS_CONTROL_QUERIES"
                 fi
               else
                 log "     -> Action: Copy to gold $CURRENT_REPO/$nextChange"
