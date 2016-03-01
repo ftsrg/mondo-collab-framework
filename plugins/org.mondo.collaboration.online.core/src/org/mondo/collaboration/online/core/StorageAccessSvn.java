@@ -101,17 +101,17 @@ public class StorageAccessSvn extends StorageAccess {
 				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, NodeType.Folder, parent, this,
 						gold + "/" + entry));
 			}
-			if (entry.endsWith(getExtension())) {
+			if (endsWith(entry, getExtensions())) {
 				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, NodeType.Model, parent,
 						this, gold + "/" + entry));
 			}
 		}
 		return nodes;
 	}
-
+	
 	@Override
 	public URI startSession(String path) throws Exception {
-		Assert.isLegal(path.endsWith(getExtension()));
+		Assert.isLegal(endsWith(path, getExtensions()));
 		String filePath = internalCheckoutFile(path);
 		URI fileURI = URI.createFileURI(filePath);
 		
@@ -122,6 +122,14 @@ public class StorageAccessSvn extends StorageAccess {
 		return fileURI;
 	}
 
+	private static boolean endsWith(String entry, String[] possibleEnds) {
+		for (String end : possibleEnds) {
+			if(entry.endsWith(end))
+				return true;
+		}
+		return false;
+	}
+	
 	private void internalLockFile(String path) {
 		internalLockFile(path, getUsername(), getPassword(), true);
 	}

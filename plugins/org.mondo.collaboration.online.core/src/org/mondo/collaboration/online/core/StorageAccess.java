@@ -156,8 +156,9 @@ public abstract class StorageAccess {
 	 * @return the repository location
 	 */
 	public static String getRepository() {
-		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.repository.gold");
-		return ret == null ? "http://localhost/svn/wt-demo" : ret;
+		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.repository.gold");
+		String retSystem = System.getProperty("mondo.repository.gold");
+		return retBundle == null ? retSystem : retBundle;
 	}
 
 	/**
@@ -165,9 +166,10 @@ public abstract class StorageAccess {
 	 * 
 	 * @return the lens specific extension
 	 */
-	public static String getExtension() {
-		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.extension");
-		return ret == null ? "wtspec4m" : ret;
+	public static String[] getExtensions() {
+		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.extensions");
+		String retSystem = System.getProperty("mondo.extensions");
+		return retBundle == null ? retSystem.split(",") : retBundle.split(",");
 	}
 
 	/**
@@ -176,8 +178,9 @@ public abstract class StorageAccess {
 	 * @return a temporary folder, where the application can store files
 	 */
 	public static String getTempFolder() {
-		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.temporary.folder");
-		return ret == null ? "/home/vialpando/Eclipse/MondoOnline/server" : ret;
+		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.workspace.folder");
+		String retSystem = System.getProperty("mondo.workspace.folder");
+		return retBundle == null ? retSystem : retBundle;
 	}
 
 	/**
@@ -186,8 +189,9 @@ public abstract class StorageAccess {
 	 * @return the Eiq file location to be check out
 	 */
 	public static String getEiqFile() {
-		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.eiq");
-		return ret == null ? "http://localhost/svn/wt-demo/macl.project/src/macl/project/queries.eiq" : ret;
+		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.eiq");
+		String retSystem = System.getProperty("mondo.eiq");
+		return retBundle == null ? retSystem : retBundle;
 	}
 
 	/**
@@ -196,8 +200,9 @@ public abstract class StorageAccess {
 	 * @return the MACL file location to be check out
 	 */
 	public static String getMaclFile() {
-		String ret = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.macl");
-		return ret == null ? "http://localhost/svn/wt-demo/macl.project/src/macl/project/rules.macl" : ret;
+		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.macl");
+		String retSystem = System.getProperty("mondo.macl");
+		return retBundle == null ? retSystem : retBundle;
 	}
 
 	/**
