@@ -16,5 +16,4 @@ Export-Package: org.mondo.collaboration.online.rap.widgets
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.mondo.collaboration.online.rap.widgets.Activator
 Import-Package: javax.servlet.http
-Bundle-ClassPath: .,
- swing2swt.jar
+Bundle-ClassPath: .
