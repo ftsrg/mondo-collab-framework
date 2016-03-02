@@ -17,6 +17,7 @@ rm -rf $WORKSPACE/*
 rm -rf $WORKSPACE/.svn
 
 rm ../scripts/mondo/lock/.lock-gold
+rm ../scripts/mondo/lock/.lock-front
 
 rm ../scripts/mondo/hooks/post-commit.log
 rm ../scripts/mondo/hooks/pre-commit.log

@@ -7,11 +7,11 @@
 # - If $ADMIN is the committer, we don't have to do anything here.
 # - If $LOCK_FILE exists, we have to reject the commit request.
 
-# 1. Clear WORKSPACEorary folder
+# 1. Clear WORKSPACE folder
 # 2. Checkout gold to $WORKSPACE_GOLD
 # 3. Get the changes from the front repository
 # 4. Get the commit message
-# 5. Create the WORKSPACEorary folder for the current front repository $WORKSPACE_FRONT
+# 5. Create the WORKSPACE folder for the current front repository $WORKSPACE_FRONT
 # 6. Check that the rule and query files exists in $WORKSPACE_GOLD
 #     if not, we don't have to run lens transformation
 # 7. Start iterating over the changes
@@ -68,12 +68,17 @@ function concate_path_parts {
   for part in "$@"
   do
       if [ "$part" != "$result" ]; then
+        if [[ $part == \/* ]]; then
+          part_updated=${part:1}
+        else
+          part_updated=$part
+        fi
         case "$result" in
         */)
-            result=$result$part
+            result=$result$part_updated
             ;;
         *)
-            result=$result/$part
+            result=$result/$part_updated
             ;;
         esac
       fi
@@ -88,8 +93,8 @@ WORKSPACE=$DIR/../workspace
 
 CURRENT_FRONT_REPOS="$1"                                                                          #Current front repository
 CURRENT_FRONT_REPOS_URL=$(concate_path_parts $URL $CURRENT_FRONT_REPOS)                           #URL of current front repository
-GOLD_REPOS_URL=$(concate_path_parts $URL $SVN_PATH_URL $GOLD_REPO_NAME)	                          #URL of the gold repository
-WORKSPACE_GOLD=$(concate_path_parts $WORKSPACE "WORKSPACE_GOLD_PRECOMMIT" $GOLD_REPO_NAME)        #Gold repository WORKSPACE folder
+GOLD_REPOS_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)	                          #URL of the gold repository
+WORKSPACE_GOLD=$(concate_path_parts $WORKSPACE "WORKSPACE_GOLD_PRECOMMIT" $SVN_PATH_OS $GOLD_REPO_NAME)        #Gold repository WORKSPACE folder
 WORKSPACE_FRONT=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "CURRENT" $CURRENT_FRONT_REPOS) #Front repository WORKSPACE folder
 TXN="$2"                                                                                          #TXN number of commit
 FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)                                         #Current user
@@ -131,22 +136,22 @@ mkdir -p $WORKSPACE_FRONT
 
 log "Step 6: check that the rules and queries files exist"
 LENS_CAN_EXECUTE=false;
-if [ ! -f "$WORKSPACE_GOLD/$ACCESS_CONTROL_RULES" ]
+if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT) ]
 then
-  if [ ! -f "$WORKSPACE_GOLD/$ACCESS_CONTROL_QUERIES"]
+  if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT) ]
   then
     LENS_CAN_EXECUTE=true;
     log "* Both files exist"
 
-    obfuscatorSeed="seed_$CURRENT_FRONT_REPOS_NAME"
-    obfuscatorSalt="salt_$CURRENT_FRONT_REPOS_NAME"
-    obfuscatorPrefix="mondo"
-
+    OBFUSCATOR_SEED="seed_$CURRENT_FRONT_REPOS_NAME"
+    OBFUSCATOR_SALT="salt_$CURRENT_FRONT_REPOS_NAME"
+    OBFUSCATOR_PREFIX="mondo"
   fi
 else
   log "* Files don't exist"
 fi
 
+LENS_DIR="$DIR/../invoker/invoker.sh"
 log "Step 7: Start iterating over the changes"
 counter=0
 for line in $changes; do
@@ -180,8 +185,9 @@ for line in $changes; do
             if [ $LENS_CAN_EXECUTE = true ]
             then
               log "     -> Action: Execute lens $WORKSPACE_FRONT/$nextChange"
-              log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
-              $DIR/../invoker/invoker.sh $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$WORKSPACE_GOLD/$ACCESS_CONTROL_RULES" "$WORKSPACE_GOLD/$ACCESS_CONTROL_QUERIES"
+              chmod oa+rw $WORKSPACE_GOLD/$nextChange
+              chmod oa+rw $WORKSPACE_FRONT/$nextChange
+              $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT
             else
               log "     -> Action: Have to be copied to gold $WORKSPACE_FRONT/$nextChange"
               cp -rf $WORKSPACE_FRONT/$nextChange $WORKSPACE_GOLD/$nextChange

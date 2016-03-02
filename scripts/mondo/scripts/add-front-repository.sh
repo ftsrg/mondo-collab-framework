@@ -180,3 +180,5 @@ cd $WORKSPACE_FRONT
 svn add --force * --auto-props --parents --depth infinity -q
 echo "$COMMIT_MSG" 1>"svn-commit.tmp"
 svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+
+rm -rf $DIR/../workspace/add-front-repository
