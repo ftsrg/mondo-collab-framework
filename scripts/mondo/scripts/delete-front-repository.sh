@@ -59,7 +59,9 @@ else
     RET=$(cat $DIR/../config/gen/user_front.properties | grep "=$FRONT_REPO_NAME")
     echo "Remove the following entries:"
     echo "$RET"
+    set +e
     RET=$(cat $DIR/../config/gen/user_front.properties | grep -v "=$FRONT_REPO_NAME")
+    set -e
     echo "$RET" > $DIR/../config/gen/user_front.properties
     echo "Removed entries from $DIR/../config/gen/user_front.properties"
   else

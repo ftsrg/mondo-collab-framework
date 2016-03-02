@@ -30,7 +30,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 function known_model_extension {
   contains=false
 
-  IFS_OLD=$IFS
+  IFS_OLD_SUB=$IFS
   IFS=","
   for extension in $MODEL_EXTENSIONS
   do
@@ -38,7 +38,7 @@ function known_model_extension {
       contains=true
     fi
   done
-  IFS=$IFS_OLD
+  IFS=$IFS_OLD_SUB
 
   echo "$contains"
 }
@@ -62,23 +62,31 @@ function log {
 
 # concate path parts and includes a slash "/" if necessary
 function concate_path_parts {
+  result=$1
   for part in "$@"
   do
-      case "$result" in
-      */)
-          result=$result$part
-          ;;
-      *)
-          result=$result/$part
-          ;;
-      esac
+      if [ "$part" != "$result" ]; then
+        if [[ $part == \/* ]]; then
+          part_updated=${part:1}
+        else
+          part_updated=$part
+        fi
+        case "$result" in
+        */)
+            result=$result$part_updated
+            ;;
+        *)
+            result=$result/$part_updated
+            ;;
+        esac
+      fi
   done
   echo $result
 }
 
 # Setting the parameters
 
-LOCK_FILE=$DIR/../locks/.lock-gold
+LOCK_FILE=$DIR/../lock/.lock-gold
 WORKSPACE=$DIR/../workspace
 
 GOLD_REPOS="$1"                                                                          # Gold repository
@@ -87,24 +95,26 @@ WORKSPACE_GOLD=$(concate_path_parts $WORKSPACE "WORKSPACE_GOLD_POSTCOMMIT" $GOLD
 WORKSPACE_FRONTS=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "Additional")         # WORKSPACEorary folder for all the front reposiroties
 WORKSPACE_CURRENT=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "CURRENT")           # WORKSPACEorary folder of the current "committer" front repository
 REV="$2"                                                                                 # Revision number
-LOG="./post-commit.log"                                                           # Log file
+LOG="$DIR/post-commit.log"                                                           # Log file
 
 log "======================================================="
 log "Executing Post-commit"
+log $GOLD_REPOS
+
 
 # Check for a lock file
-if [ -f $GOLD_LOCK_FILE ]; then
+if [ -f $LOCK_FILE ]; then
   log "File exists, we have to reject your commit".
   echo echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
   exit 1
 else
-  touch $GOLD_LOCK_FILE
+  touch $LOCK_FILE
 fi
 
 log "Step 1: clear WORKSPACE_FRONTS - $WORKSPACE_FRONTS"
 rm -rf $WORKSPACE_FRONTS
 
-log "Step 2: clear WORKSPACEGold folder - $WORKSPACE_GOLD"
+log "Step 2: clear WORKSPACE Gold folder - $WORKSPACE_GOLD"
 rm -rf "$WORKSPACE_GOLD"
 
 log "Step 3: checkout gold - from $GOLD_REPOS_URL to $WORKSPACE_GOLD"
@@ -112,9 +122,9 @@ svn checkout "$GOLD_REPOS_URL" "$WORKSPACE_GOLD" -r $REV --username $ADMIN_USER 
 
 log "Step 4: check that the rules and queries files exist"
 LENS_CAN_EXECUTE=false;
-if [ ! -f "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT" ]
+if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT) ]
 then
-  if [ ! -f "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT"]
+  if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT) ]
   then
     LENS_CAN_EXECUTE=true;
     log "* Both files exist"
@@ -126,43 +136,38 @@ else
 fi
 
 log "Step 5: get change list"
-changes=$(svnlook changed -t $TXN $CURRENT_FRONT_REPOS)
+changes=$(svnlook changed -r $REV $GOLD_REPOS)
+
+LENS_DIR="$DIR/../invoker/invoker.sh"
 
 log "Step 6: iterate over the front list"
 USER_FRONT_MAPPING=$(cat $DIR/../config/gen/user_front.properties)
 for entry in $USER_FRONT_MAPPING; do
   oldIFS=$IFS
-  IFS=':'
+  IFS='='
   set x $entry
-  FRONT_REPO="$2" # Front repository, stored in front_list.properties file
-  FRONT_USER="$3" # Username for the lens, stored in front_list.properties file
+  FRONT_USER="$2" # Username for the lens, stored in front_list.properties file
+  FRONT_REPOS="$3" # Front repository, stored in front_list.properties file
   CURRENT_REPO=$(concate_path_parts $WORKSPACE_FRONTS $FRONT_REPOS) # WORKSPACEorary folder the current front repository
-  CURRENT_REPO_URL=$(concate_path_parts $URL $SVN_PATH_URL $FRONT_REPO) # URL of the current front repository
-  TRIGGER_REPO=$(concate_path_parts $WORKSPACE_CURRENT $SVN_PATH_URL $FRONT_REPOS) # Possible trigger repository folder to test
+  CURRENT_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $FRONT_REPOS) # URL of the current front repository
+  TRIGGER_REPO=$(concate_path_parts $WORKSPACE_CURRENT $SVN_URL_PATH $FRONT_REPOS) # Possible trigger repository folder to test
   log "* processing: $FRONT_REPOS in the name of $FRONT_USER"
   # If this is not the current repo
-  if [ ! -d  $TRIGGER_REPO]; then
+  if [ ! -d  $TRIGGER_REPO ]; then
     log "* Note: Another front repo triggered the process - $TRIGGER_REPO not exists"
     log "* checkout the repository - from $CURRENT_REPO_URL to $CURRENT_REPO"
     svn checkout "$CURRENT_REPO_URL" "$CURRENT_REPO" --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
     # log "* synchronizing the source tree $WORKSPACE_GOLD/ $CURRENT_REPO"
     # log "* rsync -av --exclude='.svn' $WORKSPACE_GOLD/ $CURRENT_REPO"
     # rsync -av --exclude=".svn" $WORKSPACE_GOLD/ $CURRENT_REPO
-    IFS="
-"
+    IFS=$'\n'
     log "* start iterating over the changes"
     counter=0
     for line in $changes; do
-       val=$(($counter % 2))
-       if [ $val = 0 ]
-       then
-           nextType=$line
-       fi
-       if [ $val = 1 ]
-       then
-       	nextChange=$line
+       nextType=${line:0:1}
+       nextChange=${line:4}
         log "     -> Change: $nextType $nextChange"
-      	if [ $nextType = "A" ] || [ $nextType = "U" ] || [ $nextType = "UU" ]
+      	if [[ "$nextType" == "A" ]] || [[ "$nextType" == "U" ]] || [[ "$nextType" == "UU" ]]
       	then
       	   case $nextChange in
            		*/)
@@ -177,14 +182,24 @@ for entry in $USER_FRONT_MAPPING; do
               then
                 mkdir -p $BASEDIR
               fi
-              svnlook cat -t $TXN $GOLD_REPOS_URL $nextChange > "$CURRENT_REPO/$nextChange"
-              if [ $(known_model_extension $nextChange) = true ]
+              if [[ "$(known_model_extension $nextChange)" == "true" ]]
               then
-                if [ $LENS_CAN_EXECUTE = true ]
+                if [[ "$LENS_CAN_EXECUTE" == "true" ]]
                 then
                   log "     -> Action: Execute lens $CURRENT_REPO/$nextChange"
-                  log "Obfuscator $obfuscatorSeed $obfuscatorSalt $obfuscatorPrefix"
-                  $DIR/../invoker/invoker.sh $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performGet $WORKSPACE $obfuscatorSalt $obfuscatorSeed $obfuscatorPrefix "$WORKSPACE_GOLD/$ACCESS_CONTROL_RULES" "$WORKSPACE_GOLD/$ACCESS_CONTROL_QUERIES"
+
+                  OBFUSCATOR_SEED="seed_$CURRENT_REPO"
+                  OBFUSCATOR_SALT="salt_$CURRENT_REPO"
+                  OBFUSCATOR_PREFIX="mondo"
+
+                  svnlook cat -r $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
+                  chmod oa+rw $CURRENT_REPO/$nextChange
+
+                  log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT"
+                  $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT
+                else
+                  log "     -> Action: Cannot execute lens. Copy to gold $CURRENT_REPO/$nextChange"
+                  cp -rf $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange
                 fi
               else
                 log "     -> Action: Copy to gold $CURRENT_REPO/$nextChange"
@@ -193,22 +208,20 @@ for entry in $USER_FRONT_MAPPING; do
               ;;
       	   esac
         fi
-
-      	if [ $nextType = "D" ]
+      	if [ $nextType == "D" ]
       	then
           log "     -> Action: Delete $CURRENT_REPO/$nextChange"
           rm -rf "$CURRENT_REPO/$nextChange"
         fi
-       fi
-       counter=$((counter+1))
     done
     IFS="$oldIFS"
 
     log "Step 6.3: get commit message"
-    MSG=$(svnlook log )
+    log "svn log -q -v --xml --with-all-revprops $WORKSPACE_GOLD"
+    MSG=$(svn log -q -v --xml --with-all-revprops $WORKSPACE_GOLD --username $ADMIN_USER --password $ADMIN_PWD | grep msg | sed -e "s/<msg>\([^<]*\)<\/msg>/\1/g")
     log "* commit message is: $MSG"
     log "Step 6.4: get author name"
-    AUTHOR=$(svn log -r $REV $GOLD_REPOS | grep -E '\|' | cut -f2 -d'|' | sort | uniq)
+    AUTHOR=$(svn log -r $REV  $WORKSPACE_GOLD --username $ADMIN_USER --password $ADMIN_PWD | grep -E '\|' | cut -f2 -d'|' | sort | uniq)
     log "* author name is: $AUTHOR"
     log "* step into the current folder - $CURRENT_REPO"
     cd $CURRENT_REPO
@@ -216,7 +229,7 @@ for entry in $USER_FRONT_MAPPING; do
     log "Step 6.5 add all modifications to svn"
     svn add --force * --auto-props --parents --depth infinity -q
 
-    log "Step 6.6 store message into a WORKSPACEorary file"
+    log "Step 6.6 store message into a WORKSPACE file"
     echo "$MSG" 1>"svn-commit.tmp"
 
     log "Step 6.7 execute commit"
@@ -226,11 +239,8 @@ for entry in $USER_FRONT_MAPPING; do
   fi
 done
 
-#rm -rf $WORKSPACE_FRONTS/*
-#rm -rf $WORKSPACE_GOLD/*
-
 log "Step 12: Remove lock file"
-rm $GOLD_LOCK_FILE
+rm $LOCK_FILE
 
 log "Post-commit finished successfully"
 log "-------------------------------------------------------"

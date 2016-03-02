@@ -45,7 +45,8 @@ fi
 echo "#!/bin/sh" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "set -e" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "$DIR/../hooks/post-commit \$1 \$2 " >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
-chmod +x $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
+chmod 755 $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
+chown -R $APACHE_USER $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "Create Post-Commit hook"
 
 if [ -f $DIR/../config/gen/user_front.properties ]; then
@@ -58,6 +59,6 @@ if [ -f $DIR/../config/gen/user_front.properties ]; then
     USER=$2
     REPO=$3
 
-    $DIR/../scripts/add-front-repository.sh $REPO $USER
+    $DIR/../scripts/add-front-repository.sh $REPO $USER $APACHE_USER
   done
 fi

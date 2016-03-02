@@ -64,23 +64,26 @@ function log {
 
 # concate path parts and includes a slash "/" if necessary
 function concate_path_parts {
+  result=$1
   for part in "$@"
   do
-      case "$result" in
-      */)
-          result=$result$part
-          ;;
-      *)
-          result=$result/$part
-          ;;
-      esac
+      if [ "$part" != "$result" ]; then
+        case "$result" in
+        */)
+            result=$result$part
+            ;;
+        *)
+            result=$result/$part
+            ;;
+        esac
+      fi
   done
   echo $result
 }
 
 # Setting the parameters
 
-LOCK_FILE=$DIR/../locks/.lock-front
+LOCK_FILE=$DIR/../lock/.lock-front
 WORKSPACE=$DIR/../workspace
 
 CURRENT_FRONT_REPOS="$1"                                                                          #Current front repository
@@ -91,7 +94,7 @@ WORKSPACE_FRONT=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "CURRENT" $CUR
 TXN="$2"                                                                                          #TXN number of commit
 FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)                                         #Current user
 CURRENT_FRONT_REPOS_NAME=$(replace $CURRENT_FRONT_REPOS "/$SVN_PATH_URL" "")                      #Remove SVN_PATH from repository
-LOG="./pre-commit.log"                                                                     #Log file
+LOG="$DIR/pre-commit.log"                                                                     #Log file
 
 log "======================================================="
 log "Executing Pre-commit"
