@@ -1,134 +1,189 @@
+/*
+ -----------------------------------------------------------------------------
+  (c) Copyright IBM Corp. 2003  All rights reserved.
+
+ The sample program(s) is/are owned by International Business Machines
+ Corporation or one of its subsidiaries ("IBM") and is/are copyrighted and
+ licensed, not sold.
+
+ You may copy, modify, and distribute this/these sample program(s) in any form
+ without payment to IBM, for any purpose including developing, using, marketing
+ or distributing programs that include or are derivative works of the sample
+ program(s).
+
+ The sample program(s) is/are provided to you on an "AS IS" basis, without
+ warranty of any kind.  IBM HEREBY EXPRESSLY DISCLAIMS ALL WARRANTIES, EITHER
+ EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  Some jurisdictions do
+ not allow for the exclusion or limitation of implied warranties, so the above
+ limitations or exclusions may not apply to you.  IBM shall not be liable for
+ any damages you suffer as a result of using, modifying or distributing the
+ sample program(s) or its/their derivatives.
+
+ Each copy of any portion of this/these sample program(s) or any derivative
+ work, must include the above copyright notice and disclaimer of warranty.
+
+ -----------------------------------------------------------------------------
+*/
 package org.mondo.collaboration.online.rap.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.*;
 
-class BorderLayout extends Layout {
-	// Region constants.
-	public static final int NORTH = 0;
-	public static final int SOUTH = 1;
-	public static final int CENTER = 2;
-	public static final int EAST = 3;
-	public static final int WEST = 4;
+/**
+ * Port of AWT BorderLayout to SWT.
+ * @author Yannick Saillet
+ */
+public class BorderLayout extends AWTLayout {
+  public final static String CENTER = "Center";
+  public final static String EAST = "East";
+  public final static String NORTH = "North";
+  public final static String SOUTH = "South";
+  public final static String WEST = "West";
 
+  //-----------------------
+
+  private int hgap, vgap;
+  private Control centerChild, eastChild, northChild, southChild, westChild;
+
+  public BorderLayout() {
+    super();
+  }
+
+  public BorderLayout(int hgap, int vgap) {
+    this.hgap = hgap;
+    this.vgap = vgap;
+  }
+
+  protected Point computeSize(
+    Composite composite,
+    int wHint,
+    int hHint,
+    boolean flushCache) {
+    readLayoutData(composite);
+    Point size = new Point(0, 0);
+
+    Point preferredSize;
+    if (northChild != null) {
+      preferredSize =
+        getPreferredSize(northChild, wHint, SWT.DEFAULT, flushCache);
+      size.y += preferredSize.y + vgap;
+    }
+    if (southChild != null) {
+      preferredSize =
+        getPreferredSize(southChild, wHint, SWT.DEFAULT, flushCache);
+      size.y += preferredSize.y + vgap;
+    }
+    if (westChild != null) {
+      preferredSize =
+        getPreferredSize(westChild, SWT.DEFAULT, hHint, flushCache);
+      size.x += preferredSize.x + hgap;
+    }
+    if (eastChild != null) {
+      preferredSize =
+        getPreferredSize(eastChild, SWT.DEFAULT, hHint, flushCache);
+      size.x += preferredSize.x + hgap;
+    }
+    if (centerChild != null) {
+      preferredSize = getPreferredSize(centerChild, wHint, hHint, flushCache);
+      size.x += preferredSize.x;
+      size.y += preferredSize.y;
+    }
+    return size;
+  }
+
+  protected void layout(Composite composite, boolean flushCache) {
+    readLayoutData(composite);
+    Rectangle clientArea = composite.getClientArea();
+	    int top = clientArea.y;
+	    int bottom = clientArea.y + clientArea.height;
+	    int left = clientArea.x;
+	    int right = clientArea.x + clientArea.width;
+	
+	    Point preferredSize;
+	    if (northChild != null) {
+	      preferredSize =
+	        getPreferredSize(northChild, clientArea.width, SWT.DEFAULT, flushCache);
+	      northChild.setBounds(left, top, right - left, preferredSize.y);
+	      top += preferredSize.y + vgap;
+	    }
+	    if (southChild != null) {
+	      preferredSize =
+	        getPreferredSize(southChild, clientArea.width, SWT.DEFAULT, flushCache);
+	      southChild.setBounds(
+	        left,
+	        bottom - preferredSize.y,
+	        right - left,
+	        preferredSize.y);
+	      bottom -= preferredSize.y + vgap;
+	    }
+	    if (westChild != null) {
+	      preferredSize =
+	        getPreferredSize(westChild, SWT.DEFAULT, bottom - top, flushCache);
+	      westChild.setBounds(left, top, preferredSize.x, bottom - top);
+	      left += preferredSize.x + hgap;
+	    }
+	    if (eastChild != null) {
+	      preferredSize =
+	        getPreferredSize(eastChild, SWT.DEFAULT, bottom - top, flushCache);
+	      eastChild.setBounds(
+	        right - preferredSize.x,
+	        top,
+	        preferredSize.x,
+	        bottom - top);
+	      right -= preferredSize.x + hgap;
+	    }
+	    if (centerChild != null) {
+	      centerChild.setBounds(left, top, right - left, bottom - top);
+	    }
+	  }
+	
+	  /**
+	   * Read the layout data of the children of a composite.
+	   * @param composite the parent composite
+	   */
+	  private void readLayoutData(Composite composite) {
+	    northChild = southChild = eastChild = westChild = centerChild = null;
+	    Control[] children = composite.getChildren();
+	    for (int i = 0; i < children.length; i++) {
+	      //if (!children[i].isVisible())
+	      //  continue;
+	      Object layoutData = children[i].getLayoutData();
+	      if (NORTH.equals(layoutData))
+	        northChild = children[i];
+	      else if (SOUTH.equals(layoutData))
+	        southChild = children[i];
+	      else if (EAST.equals(layoutData))
+	        eastChild = children[i];
+	      else if (WEST.equals(layoutData))
+	        westChild = children[i];
+	      else
+	        centerChild = children[i];
+	    }
+	  }
 	/**
-	 * Indicates the region that a control belongs to.
-	 * 
+	 * @return Returns the hgap.
 	 */
-	public static class BorderData {
-		public int region = CENTER; // default.
-
-		public BorderData() {
-		}
-
-		public BorderData(int region) {
-			this.region = region;
-		}
+	public int getHgap() {
+	        return hgap;
 	}
-
-	// Controls in all the regions.
-	public Control[] controls = new Control[5];
-
-	// Cached sizes.
-	Point[] sizes;
-
-	// Preferred width and height
-	int width;
-	int height;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.swt.widgets.Layout#computeSize(org.eclipse.swt.widgets.
-	 * Composite, int, int, boolean)
+	/**
+	 * @param hgap The hgap to set.
 	 */
-	protected Point computeSize(Composite composite, int wHint, int hHint, boolean flushCache) {
-
-		if (sizes == null || flushCache == true)
-			refreshSizes(composite.getChildren());
-		int w = wHint;
-		int h = hHint;
-		if (w == SWT.DEFAULT)
-			w = width;
-		if (h == SWT.DEFAULT)
-			h = height;
-
-		return new Point(w, h);
+	public void setHgap(int hgap) {
+	        this.hgap = hgap;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.swt.widgets.Layout#layout(org.eclipse.swt.widgets.Composite,
-	 * boolean)
+	/**
+	 * @return Returns the vgap.
 	 */
-	protected void layout(Composite composite, boolean flushCache) {
-		if (flushCache || sizes == null)
-			refreshSizes(composite.getChildren());
-
-		Rectangle clientArea = composite.getClientArea();
-
-		// Enough space for all.
-		if (controls[NORTH] != null) {
-			controls[NORTH].setBounds(clientArea.x, clientArea.y, clientArea.width, sizes[NORTH].y);
-		}
-		if (controls[SOUTH] != null) {
-			controls[SOUTH].setBounds(clientArea.x, clientArea.y + clientArea.height - sizes[SOUTH].y, clientArea.width,
-					sizes[SOUTH].y);
-		}
-		if (controls[WEST] != null) {
-			controls[WEST].setBounds(clientArea.x, clientArea.y + sizes[NORTH].y, sizes[WEST].x,
-					clientArea.height - sizes[NORTH].y - sizes[SOUTH].y);
-		}
-		if (controls[EAST] != null) {
-			controls[EAST].setBounds(clientArea.x + clientArea.width - sizes[EAST].x, clientArea.y + sizes[NORTH].y,
-					sizes[EAST].x, clientArea.height - sizes[NORTH].y - sizes[SOUTH].y);
-		}
-		if (controls[CENTER] != null) {
-			controls[CENTER].setBounds(clientArea.x + sizes[WEST].x, clientArea.y + sizes[NORTH].y,
-					clientArea.width - sizes[WEST].x - sizes[EAST].x,
-					clientArea.height - sizes[NORTH].y - sizes[SOUTH].y);
-		}
-
+	public int getVgap() {
+	        return vgap;
 	}
-
-	private void refreshSizes(Control[] children) {
-		for (int i = 0; i < children.length; i++) {
-			Object layoutData = children[i].getLayoutData();
-			if (layoutData == null || (!(layoutData instanceof BorderData)))
-				continue;
-			BorderData borderData = (BorderData) layoutData;
-			if (borderData.region < 0 || borderData.region > 4) // Invalid.
-				continue;
-			controls[borderData.region] = children[i];
-		}
-
-		width = 0;
-		height = 0;
-
-		if (sizes == null)
-			sizes = new Point[5];
-
-		for (int i = 0; i < controls.length; i++) {
-			Control control = controls[i];
-			if (control == null) {
-				sizes[i] = new Point(0, 0);
-			} else {
-				sizes[i] = control.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-			}
-		}
-
-		width = Math.max(width, sizes[NORTH].x);
-		width = Math.max(width, sizes[WEST].x + sizes[CENTER].x + sizes[EAST].x);
-		width = Math.max(width, sizes[SOUTH].x);
-
-		height = Math.max(Math.max(sizes[WEST].y, sizes[EAST].y), sizes[CENTER].y) + sizes[NORTH].y + sizes[SOUTH].y;
-
+	/**
+	 * @param vgap The vgap to set.
+	 */
+	public void setVgap(int vgap) {
+	        this.vgap = vgap;
 	}
-
-}
+	}
