@@ -15,6 +15,30 @@
 	<build>
 	    <plugins>
         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <archive>
+                  <manifest>
+                      <addClasspath>true</addClasspath>
+                      <classpathPrefix>lib</classpathPrefix>
+                      <mainClass>org.mondo.collaboration.security.lens.offline.daemon.OfflineLensLocalDaemonInvoker</mainClass>
+                      <useUniqueVersions>false</useUniqueVersions>
+                  </manifest>
+              </archive>
+            </configuration>
+        </plugin>
+        <!--<plugin>
              <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-dependency-plugin</artifactId>
              <executions>
@@ -41,16 +65,13 @@
 	                <archive>
 	                    <manifest>
 	                        <addClasspath>true</addClasspath>
-	                        <classpathPrefix>lib/</classpathPrefix>
+	                        <classpathPrefix>lib</classpathPrefix>
 	                        <mainClass>org.mondo.collaboration.security.lens.offline.daemon.OfflineLensLocalDaemonInvoker</mainClass>
 	                        <useUniqueVersions>false</useUniqueVersions>
 	                    </manifest>
-                      <manifestEntries>
-                          <Class-Path>lib/</Class-Path>
-                      </manifestEntries>
 	                </archive>
 	            </configuration>
-	        </plugin>
+	        </plugin>-->
         	<plugin>
 	            <groupId>org.apache.thrift.tools</groupId>
 	            <artifactId>maven-thrift-plugin</artifactId>
