@@ -25,6 +25,7 @@ import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.incquery.runtime.emf.EMFScope;
 import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
+import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.bx.LensTransformationExecution;
@@ -37,6 +38,7 @@ import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.LiveTable;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
+import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -55,6 +57,7 @@ public class OfflineCollaborationSession {
 	private final UniqueIDSchemeFactory uniqueIDFactory;
 	private User user;
 	private Policy policy;
+	private PropertyBasedLockingModel lockingModel;
 	private DataTypeObfuscator<String> stringObfuscator;
 	
 	private final RelationalLensXform lens;
@@ -67,6 +70,7 @@ public class OfflineCollaborationSession {
 	 * @param uniqueIDFactory the scheme for identifying model elements
 	 * @param policy the policy model determining access control privileges
 	 * @param user the user for which the org.mondo.collaboration.security.lens.bx.offline mapping is conducted
+	 * @param lockingModel the model containing locks  (optional)
 	 * @param stringObfuscator the attribute obfuscator seeded for the specific user
 	 * @throws IncQueryException 
 	 */
@@ -76,6 +80,7 @@ public class OfflineCollaborationSession {
 			EObjectCorrespondence.UniqueIDSchemeFactory uniqueIDFactory,
 			Policy policy, 
 			User user,
+			PropertyBasedLockingModel lockingModel,
 			DataTypeObfuscator<String> stringObfuscator) throws IncQueryException {
 		super();
 		this.goldConfinementURI = goldConfinementURI;
@@ -85,6 +90,7 @@ public class OfflineCollaborationSession {
 		this.uniqueIDFactory = uniqueIDFactory;
         this.policy = policy;
         this.user = user;
+		this.lockingModel = lockingModel;
 		this.stringObfuscator = stringObfuscator;
 		
 		this.lens = setupLens();
@@ -98,6 +104,9 @@ public class OfflineCollaborationSession {
 				user, 
 				ImmutableSet.of(goldResourceSet), 
 				new BaseIndexOptions());
+        LockArbiter lockArbiter = new LockArbiter(
+        		arbiter, 
+        		lockingModel);
 
 		// security container: parent folder of main resource?
 		ModelIndexer goldIndexer = new ModelIndexer(
@@ -120,7 +129,7 @@ public class OfflineCollaborationSession {
         correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
         //correspondenceTables.put(CorrespondenceKey.RESOURCE, new LiveTable());
         
-		MondoLensScope scope = new MondoLensScope(arbiter, goldIndexer, frontIndexer, correspondenceTables);
+		MondoLensScope scope = new MondoLensScope(arbiter, lockArbiter, goldIndexer, frontIndexer, correspondenceTables);
 		
 		return new RelationalLensXform(scope, user, stringObfuscator);
 	}

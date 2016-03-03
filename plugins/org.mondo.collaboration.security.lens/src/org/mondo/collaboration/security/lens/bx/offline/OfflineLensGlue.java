@@ -41,6 +41,8 @@ import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandalo
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
 import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
+import org.mondo.collaboration.security.mpbl.xtext.MondoPropertyBasedLockingStandaloneSetup;
+import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
 /**
  * Glue code that takes a list of string parameters, configures and executes an org.mondo.collaboration.security.lens.bx.offline collaboration lens, and returns the results.
@@ -84,6 +86,7 @@ public class OfflineLensGlue {
     private static final String GOLD_MODEL_ROOTS_PATH_OPTION        = "-gold";
     private static final String FRONT_MODEL_ROOTS_PATH_OPTION       = "-front";
     private static final String ACCESS_CONTROL_MODEL_PATH_OPTION    = "-macl";
+    private static final String LOCK_MODEL_PATH_OPTION    			= "-mbpl";
     private static final String SECURITY_QUERIES_PATH_OPTION        = "-eiq";
     private static final String REPOSITORY_ROOT_PATH_OPTION         = "-repositoryRoot";
     private static final String WORKSPACE_MAPPING_PATH_OPTION       = "-workspaceMapping";
@@ -111,6 +114,7 @@ public class OfflineLensGlue {
     static {
         EMFPatternLanguageStandaloneSetup.doSetup();
         AccessControlLanguageStandaloneSetup.doSetup();
+        MondoPropertyBasedLockingStandaloneSetup.doSetup();
     }
     
     private OfflineLensGlue(String[] argArray, Logger logger) throws FileNotFoundException, IOException, IncQueryException, CoreException {
@@ -122,6 +126,7 @@ public class OfflineLensGlue {
         String policyPath               =  getSingletonCLIOptionValue(argArray, ACCESS_CONTROL_MODEL_PATH_OPTION,   PATH_VALUE);
         String userName                 =  getSingletonCLIOptionValue(argArray, USER_NAME_OPTION,                   USER_VALUE);
         String uniqueIDSchemeExtension  =  getSingletonCLIOptionValue(argArray, UNIQUE_ID_SCHEME_OPTION,            EXTENSION_VALUE);
+        String lockFilePath           	=  getOptionalCLIOptionValue( argArray, LOCK_MODEL_PATH_OPTION,             PATH_VALUE, null);
         String obfuscatorSeed           =  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SEED_OPTION,             STRING_VALUE, null);
         String obfuscatorSalt           =  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SALT_OPTION,             STRING_VALUE, "");
         String obfuscatorPrefix         =  getOptionalCLIOptionValue( argArray, OBFUSCATOR_PREFIX_OPTION,           STRING_VALUE, "");
@@ -152,7 +157,9 @@ public class OfflineLensGlue {
         
         ResourceSet goldResourceSet     = loadModelRoots(goldPaths, performGet); // TODO use resourceSetProvider?
         ResourceSet frontResourceSet    = loadModelRoots(frontPaths, performPutback); // TODO use resourceSetProvider?
-        Resource policyResource         = loadPolicyModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
+        Resource policyResource         = loadQueryBasedModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
+        Resource lockResource        	= lockFilePath == null ? null : 
+        	loadQueryBasedModel(lockFilePath, securityQueryPaths); // TODO use resourceSetProvider?
         
         final UniqueIDSchemeFactory uniqueIDSchemeFactory = EObjectCorrespondence.getRegisteredIDProviderFactory(uniqueIDSchemeExtension);
         if (uniqueIDSchemeFactory == null) {
@@ -176,9 +183,21 @@ public class OfflineLensGlue {
         if (user == null)
             throw new OfflineLensParametrizationException(String.format("User of name %s not found in MACL resource %s", userName, policyResource.getURI()));
         
+        PropertyBasedLockingModel lockModel = null;
+        if (lockFilePath != null) {
+        	final EList<EObject> lockModelContents = lockResource.getContents();
+        	if (lockModelContents.isEmpty())
+        		throw new OfflineLensParametrizationException(String.format("Empty or non-existing MBPL resource %s", lockResource.getURI()));
+        	try {
+        		lockModel = (PropertyBasedLockingModel) lockModelContents.get(0);
+        	} catch (ClassCastException ex) {
+        		throw new OfflineLensParametrizationException(String.format("Could not interpret as a locking model: MBPL resource %s", lockResource.getURI()));
+        	}                	
+        }
+        
         if (logger.isDebugEnabled()) logger.debug("Setting up lens...");
         
-        session = new OfflineCollaborationSession(
+		session = new OfflineCollaborationSession(
                 goldConfinementURI, 
                 goldResourceSet, 
                 frontConfinementURI, 
@@ -186,6 +205,7 @@ public class OfflineLensGlue {
                 uniqueIDSchemeFactory,
                 policy, 
                 user,
+                lockModel, 
                 stringObfuscator);
     }
     
@@ -203,12 +223,12 @@ public class OfflineLensGlue {
         URIWorkspaceMappingsHelper.applyLocalMappings(resourceSet, repositoryRootPath, workspaceMappings);
         return resourceSet;
     }
-    private Resource loadPolicyModel(String policyPath, List<String> securityQueryPaths) {
+    private Resource loadQueryBasedModel(String queryBasedModelPath, List<String> securityQueryPaths) {
         ResourceSet model = newResourceSet();
         for (String eiqPath : securityQueryPaths) {
             getResourceAtPath(model, eiqPath, true);
         }
-        return getResourceAtPath(model, policyPath, true);
+        return getResourceAtPath(model, queryBasedModelPath, true);
     }
     private Resource getResourceAtPath(ResourceSet model, String path, boolean mustExist) {
         final URI fileURI = URI.createFileURI(path);

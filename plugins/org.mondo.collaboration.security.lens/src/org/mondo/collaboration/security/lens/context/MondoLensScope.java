@@ -21,6 +21,7 @@ import org.eclipse.incquery.runtime.api.scope.IIndexingErrorListener;
 import org.eclipse.incquery.runtime.api.scope.IncQueryScope;
 import org.eclipse.incquery.runtime.matchers.context.IInputKey;
 import org.mondo.collaboration.security.lens.arbiter.Asset;
+import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind;
 import org.mondo.collaboration.security.lens.context.keys.CollabLensModelInputKey;
@@ -51,13 +52,15 @@ import org.mondo.collaboration.security.lens.util.LiveTable;
 public class MondoLensScope extends IncQueryScope {
 	
 	private SecurityArbiter arbiter;
+	private LockArbiter lockArbiter;
 	private ModelIndexer goldIndexer;
 	private ModelIndexer frontIndexer;
 	private Map<CorrespondenceKey, LiveTable> correspondenceTables;
 
 
-	public MondoLensScope(SecurityArbiter arbiter, ModelIndexer goldIndexer, ModelIndexer frontIndexer, Map<CorrespondenceKey, LiveTable> correspondenceTables) {
+	public MondoLensScope(SecurityArbiter arbiter, LockArbiter lockArbiter, ModelIndexer goldIndexer, ModelIndexer frontIndexer, Map<CorrespondenceKey, LiveTable> correspondenceTables) {
 		this.arbiter = arbiter;
+		this.lockArbiter = lockArbiter;
 		this.goldIndexer = goldIndexer;
 		this.frontIndexer = frontIndexer;
 		this.correspondenceTables = correspondenceTables;
@@ -119,6 +122,10 @@ public class MondoLensScope extends IncQueryScope {
 		return arbiter;
 	}
 
+	public LockArbiter getLockArbiter() {
+		return lockArbiter;
+	}
+
 
 	public ModelIndexer getGoldIndexer() {
 		return goldIndexer;
@@ -129,6 +136,7 @@ public class MondoLensScope extends IncQueryScope {
 		return frontIndexer;
 	}
 
+	
 
 	public Map<CorrespondenceKey, LiveTable> getCorrespondenceTables() {
 		return correspondenceTables;

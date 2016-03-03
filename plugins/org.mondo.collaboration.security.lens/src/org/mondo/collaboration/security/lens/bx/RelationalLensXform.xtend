@@ -53,6 +53,9 @@ import org.apache.log4j.Logger
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason
 import org.mondo.collaboration.security.lens.bx.LensTransformationExecution.UndoableManipulationAction
 import org.mondo.collaboration.security.lens.bx.AbortReason.WriteAuthorizationDenial
+import org.mondo.collaboration.security.lens.arbiter.LockArbiter
+import org.mondo.collaboration.security.lens.bx.AbortReason.LockViolationDenial
+import org.mondo.collaboration.security.lens.arbiter.LockArbiter.LockMonitoringSession
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -104,7 +107,20 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	}
 	public def doPutback(boolean rollbackGoldIfDenied) {
 		val trExec = new LensTransformationExecution(this, '''PUTBACK.«nextTransformationSequenceID++»''')
-		fireAllRules(getRuleEngineForPutback, trExec)		
+		
+		val LockArbiter.LockMonitoringSession lockSession =	scope.lockArbiter.openSession(user.name)
+		try {
+			fireAllRules(getRuleEngineForPutback, trExec)		
+			
+			if (trExec.abortReason == null) {
+				val violation = lockSession.anyLockViolation
+				if (violation != null) {
+					trExec.abort(new LockViolationDenial(user.name, violation.key, violation.value))
+				}
+			}
+		} finally {
+			lockSession.close();
+		}
 		
 		if (rollbackGoldIfDenied && trExec.abortReason instanceof DenialReason) {
 			val undoStack = trExec.undoStack

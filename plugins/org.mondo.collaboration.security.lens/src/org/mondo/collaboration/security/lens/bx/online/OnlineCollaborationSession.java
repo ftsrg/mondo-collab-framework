@@ -36,6 +36,7 @@ import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
+import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.bx.LensTransformationExecution;
@@ -72,6 +73,7 @@ public class OnlineCollaborationSession {
 	private final UniqueIDSchemeFactory uniqueIDFactory;
 	private final Resource policyResource;
 	private final SecurityArbiter arbiter;
+	private final LockArbiter lockArbiter;
 	private final ModelIndexer goldIndexer;
 	private final AccessControlModel accessControlModel;
 	
@@ -87,6 +89,7 @@ public class OnlineCollaborationSession {
 	 * For serializing concurrent modifications by Legs
 	 */
     Lock mutex = new ReentrantLock();
+
 	
 	/**
 	 * @param goldConfinementURI the writable area in the folder hierarchy for the gold model
@@ -109,6 +112,8 @@ public class OnlineCollaborationSession {
 				null /*user*/, 
 				ImmutableSet.of(goldResourceSet), 
 				new BaseIndexOptions());
+		
+		lockArbiter = new LockArbiter(arbiter, null /* no locks taken into account in online mode */);
 		
 		goldIndexer = new ModelIndexer(
         		goldConfinementURI,
@@ -282,7 +287,7 @@ public class OnlineCollaborationSession {
 			correspondenceTables = new EnumMap<CorrespondenceKey, LiveTable>(CorrespondenceKey.class);
 	        correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
 	        
-			scope = new MondoLensScope(arbiter, goldIndexer, frontIndexer, correspondenceTables);
+			scope = new MondoLensScope(arbiter, lockArbiter, goldIndexer, frontIndexer, correspondenceTables);
 			
 			return new RelationalLensXform(scope, user, stringObfuscator);
 		}
