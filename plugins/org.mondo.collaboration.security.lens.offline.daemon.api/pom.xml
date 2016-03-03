@@ -4,7 +4,7 @@
   <artifactId>org.mondo.collaboration.security.lens.offline.daemon.api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>org.mondo.collaboration.security.lens.offline.daemon.api</name>
-  
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -14,6 +14,25 @@
 
 	<build>
 	    <plugins>
+        <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-dependency-plugin</artifactId>
+             <executions>
+                 <execution>
+                     <id>copy-dependencies</id>
+                     <phase>prepare-package</phase>
+                     <goals>
+                         <goal>copy-dependencies</goal>
+                     </goals>
+                     <configuration>
+                         <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                         <overWriteReleases>false</overWriteReleases>
+                         <overWriteSnapshots>false</overWriteSnapshots>
+                         <overWriteIfNewer>true</overWriteIfNewer>
+                     </configuration>
+                 </execution>
+             </executions>
+          </plugin>
 	        <plugin>
 	            <groupId>org.apache.maven.plugins</groupId>
 	            <artifactId>maven-jar-plugin</artifactId>
@@ -26,14 +45,17 @@
 	                        <mainClass>org.mondo.collaboration.security.lens.offline.daemon.OfflineLensLocalDaemonInvoker</mainClass>
 	                        <useUniqueVersions>false</useUniqueVersions>
 	                    </manifest>
+                      <manifestEntries>
+                          <Class-Path>lib/</Class-Path>
+                      </manifestEntries>
 	                </archive>
 	            </configuration>
-	        </plugin>	        
+	        </plugin>
         	<plugin>
 	            <groupId>org.apache.thrift.tools</groupId>
 	            <artifactId>maven-thrift-plugin</artifactId>
 	            <version>0.1.11</version>
-	
+
 	            <executions>
 	                <execution>
 	                    <id>thrift-sources</id>
@@ -50,12 +72,12 @@
 	                    </goals>
 	                </execution>
 	            </executions>
-	
+
 	        </plugin>
 	    </plugins>
 	    <pluginManagement>
 	        <plugins>
-	            <!--This plugin's configuration is used to store Eclipse m2e settings 
+	            <!--This plugin's configuration is used to store Eclipse m2e settings
 	                only. It has no influence on the Maven build itself. -->
 	            <plugin>
 	                <groupId>org.eclipse.m2e</groupId>
