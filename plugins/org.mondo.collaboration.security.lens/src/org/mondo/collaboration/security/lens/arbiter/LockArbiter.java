@@ -69,7 +69,9 @@ public class LockArbiter {
 	 */
 	public LockArbiter(SecurityArbiter secArbiter, PropertyBasedLockingModel lockingModel) throws IncQueryException {
 		this.secArbiter = secArbiter;
-		this.lockingModel = lockingModel == null ? dummyLockingModel() : lockingModel;
+		if (lockingModel == null)
+			lockingModel = dummyLockingModel();
+		this.lockingModel = lockingModel;
 		queryEngine = secArbiter.getPolicyQueryEngine();
 		
 		Multimap<IQuerySpecification<?>, Lock> lockQueries = HashMultimap.create();

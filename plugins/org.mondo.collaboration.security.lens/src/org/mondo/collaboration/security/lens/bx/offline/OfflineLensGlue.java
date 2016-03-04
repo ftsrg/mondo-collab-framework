@@ -86,7 +86,7 @@ public class OfflineLensGlue {
     private static final String GOLD_MODEL_ROOTS_PATH_OPTION        = "-gold";
     private static final String FRONT_MODEL_ROOTS_PATH_OPTION       = "-front";
     private static final String ACCESS_CONTROL_MODEL_PATH_OPTION    = "-macl";
-    private static final String LOCK_MODEL_PATH_OPTION    			= "-mbpl";
+    private static final String LOCK_MODEL_PATH_OPTION    			= "-mpbl";
     private static final String SECURITY_QUERIES_PATH_OPTION        = "-eiq";
     private static final String REPOSITORY_ROOT_PATH_OPTION         = "-repositoryRoot";
     private static final String WORKSPACE_MAPPING_PATH_OPTION       = "-workspaceMapping";
@@ -159,7 +159,7 @@ public class OfflineLensGlue {
         ResourceSet frontResourceSet    = loadModelRoots(frontPaths, performPutback); // TODO use resourceSetProvider?
         Resource policyResource         = loadQueryBasedModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
         Resource lockResource        	= lockFilePath == null ? null : 
-        	loadQueryBasedModel(lockFilePath, securityQueryPaths); // TODO use resourceSetProvider?
+        	getResourceAtPath(policyResource.getResourceSet(), lockFilePath, true); // TODO unshare resourceSet?
         
         final UniqueIDSchemeFactory uniqueIDSchemeFactory = EObjectCorrespondence.getRegisteredIDProviderFactory(uniqueIDSchemeExtension);
         if (uniqueIDSchemeFactory == null) {
@@ -187,11 +187,11 @@ public class OfflineLensGlue {
         if (lockFilePath != null) {
         	final EList<EObject> lockModelContents = lockResource.getContents();
         	if (lockModelContents.isEmpty())
-        		throw new OfflineLensParametrizationException(String.format("Empty or non-existing MBPL resource %s", lockResource.getURI()));
+        		throw new OfflineLensParametrizationException(String.format("Empty or non-existing MPBL resource %s", lockResource.getURI()));
         	try {
         		lockModel = (PropertyBasedLockingModel) lockModelContents.get(0);
         	} catch (ClassCastException ex) {
-        		throw new OfflineLensParametrizationException(String.format("Could not interpret as a locking model: MBPL resource %s", lockResource.getURI()));
+        		throw new OfflineLensParametrizationException(String.format("Could not interpret as a locking model: MPBL resource %s", lockResource.getURI()));
         	}                	
         }
         
