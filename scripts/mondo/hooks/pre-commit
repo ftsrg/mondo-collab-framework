@@ -227,6 +227,8 @@ svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quie
 log "Step 12: Remove lock file"
 rm -r $LOCK_FILE
 
+rm -rf $WORKSPACE_GOLD
+rm -rf $WORKSPACE_FRONT
 
 log "Pre-commit finished successfully"
 log "-------------------------------------------------------"

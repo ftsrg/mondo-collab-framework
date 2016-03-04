@@ -242,6 +242,9 @@ done
 log "Step 12: Remove lock file"
 rm $LOCK_FILE
 
+rm -rf $WORKSPACE_GOLD
+rm -rf $WORKSPACE_FRONTS
+
 log "Post-commit finished successfully"
 log "-------------------------------------------------------"
 exit 0

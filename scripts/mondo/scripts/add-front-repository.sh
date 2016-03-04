@@ -102,7 +102,7 @@ if [ 0 -ne $RETURN_VALUE ]; then
 else
   echo "User-Front mapping exists."
   set +e
-  IS_USER_IN_CONFIG=$(cat $DIR/../config/gen/user_front.properties | grep $USER_NAME)
+  IS_USER_IN_CONFIG=$(cat $DIR/../config/gen/user_front.properties | grep "$USER_NAME=")
   set -e
   if [ -z "$IS_USER_IN_CONFIG" ]; then
     echo "User is not in the config."
@@ -130,7 +130,10 @@ if [ 0 -ne $RETURN_VALUE ]; then
   exit 0
 fi
 set -e
-echo "Message is $COMMIT_MSG"
+if [ "$COMMIT_MSG" == "" ]; then
+  echo "Exited"
+  exit 0
+fi
 
 # front
 FRONT_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $FRONT_REPO_NAME)
@@ -150,7 +153,6 @@ EXCLUDES="--exclude=\".svn\""
 #done
 #IFS=IFS_OLD
 
-echo "rsync -av $EXCLUDES $WORKSPACE_GOLD/ $WORKSPACE_FRONT"
 cp -r $WORKSPACE_GOLD/* $WORKSPACE_FRONT/
 
 # Execute lens for every model file
