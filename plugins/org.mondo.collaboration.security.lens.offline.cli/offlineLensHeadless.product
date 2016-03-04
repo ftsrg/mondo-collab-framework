@@ -30,6 +30,8 @@
       <plugin id="com.google.inject.multibindings" fragment="true"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="de.itemis.xtext.antlr"/>
+      <plugin id="es.ikerlan.wt.emf.model"/>
+      <plugin id="es.ikerlan.wt.emf.mondocollab"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.inject"/>
       <plugin id="javax.servlet"/>
@@ -51,10 +53,22 @@
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filebuffers"/>
       <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.aix.ppc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.aix.ppc64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.hpux.ia64" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.java7" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc64le" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.resources.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
@@ -85,10 +99,15 @@
       <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
       <plugin id="org.eclipse.equinox.p2.repository"/>
       <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.region" fragment="true"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.incquery.patternlanguage"/>
       <plugin id="org.eclipse.incquery.patternlanguage.emf"/>
@@ -106,6 +125,8 @@
       <plugin id="org.eclipse.jdt.core.manipulation"/>
       <plugin id="org.eclipse.jdt.debug"/>
       <plugin id="org.eclipse.jdt.launching"/>
+      <plugin id="org.eclipse.jetty.osgi-servlet-api"/>
+      <plugin id="org.eclipse.jetty.osgi.alpn.fragment" fragment="true"/>
       <plugin id="org.eclipse.ltk.core.refactoring"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
@@ -127,10 +148,12 @@
       <plugin id="org.eclipse.xtext.util"/>
       <plugin id="org.eclipse.xtext.xbase"/>
       <plugin id="org.eclipse.xtext.xbase.lib"/>
+      <plugin id="org.eclipse.xtext.xtext.generator"/>
       <plugin id="org.mondo.collaboration.security.lens"/>
       <plugin id="org.mondo.collaboration.security.lens.offline.cli"/>
       <plugin id="org.mondo.collaboration.security.macl.xtext"/>
       <plugin id="org.mondo.collaboration.security.macl.xtext.rule"/>
+      <plugin id="org.mondo.collaboration.security.mpbl.xtext"/>
       <plugin id="org.objectweb.asm"/>
       <plugin id="org.tukaani.xz"/>
       <plugin id="org.w3c.css.sac"/>
