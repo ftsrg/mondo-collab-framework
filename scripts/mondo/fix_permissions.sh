@@ -17,11 +17,27 @@ else
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-chown -R $APACHE_USER $DIR/mondo/hooks
-chown -R $APACHE_USER $DIR/mondo/hooks/pre-commit
-chown -R $APACHE_USER $DIR/mondo/hooks/post-commit
-chown -R $APACHE_USER $DIR/mondo/invoker
-chown -R $APACHE_USER $DIR/mondo/invoker/invoker.jar
-chown -R $APACHE_USER $DIR/mondo/invoker/invoker.sh
-chown -R $APACHE_USER $DIR/mondo/lock
-chown -R $APACHE_USER $DIR/mondo/workspace
+chown -R $APACHE_USER $DIR/../mondo
+chmod 777 $DIR/../mondo
+chown -R $APACHE_USER $DIR/../../scripts
+chmod 777 $DIR/../../scripts
+chown -R $APACHE_USER $DIR/config
+chmod 777 $DIR/config
+chown -R $APACHE_USER $DIR/scripts
+chmod 777 $DIR/scripts
+chown -R $APACHE_USER $DIR/hooks
+chmod 777 $DIR/hooks
+chown -R $APACHE_USER $DIR/hooks/pre-commit
+chmod 777 $DIR/hooks/pre-commit
+chown -R $APACHE_USER $DIR/hooks/post-commit
+chmod 777 $DIR/hooks/post-commit
+chown -R $APACHE_USER $DIR/invoker
+chmod 777 $DIR/invoker
+chown -R $APACHE_USER $DIR/invoker/invoker.jar
+chmod 777 $DIR/invoker/invoker.jar
+chown -R $APACHE_USER $DIR/invoker/invoker.sh
+chmod 777 $DIR/invoker/invoker.sh
+chown -R $APACHE_USER $DIR/lock
+chmod 777 $DIR/lock
+chown -R $APACHE_USER $DIR/workspace
+chmod 777 $DIR/workspace
