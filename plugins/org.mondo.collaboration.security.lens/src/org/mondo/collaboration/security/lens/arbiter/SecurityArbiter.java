@@ -132,7 +132,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	private RuleConflictResolver ruleConflictResolver;
 	private AdvancedIncQueryEngine policyQueryEngine;
 	private SpecificationBuilder specBuilder;
-	
+
 	private Map<Rule, Asset.Factory> assetFactories = new HashMap<>();
 	
 	/**
@@ -355,4 +355,9 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		return new AuthorizationQueries(user);
 	}
 	
+	
+	public SpecificationBuilder getSpecBuilder() {
+		return specBuilder;
+	}
+
 }

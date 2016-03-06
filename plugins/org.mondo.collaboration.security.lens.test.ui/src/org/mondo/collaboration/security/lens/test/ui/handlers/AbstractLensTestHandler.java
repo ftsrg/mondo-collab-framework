@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
+import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.RelationalLensXform;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
@@ -91,6 +92,7 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 	        User userFilter = null;
 	
 	        SecurityArbiter arbiter = SecurityArbiter.create(policyResource, goldResourceSet, userFilter);
+	        LockArbiter lockArbiter = new LockArbiter(arbiter, null);
 	        
 	        // security container: parent folder of main resource?
 	        final URI goldBaseURI = URI.createPlatformResourceURI(goldFile./*getParent().*/getFullPath().toString(), false);
@@ -114,7 +116,7 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 	        correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
 	        //correspondenceTables.put(CorrespondenceKey.RESOURCE, new LiveTable());
 	        
-			MondoLensScope scope = new MondoLensScope(arbiter, goldIndexer, frontIndexer, correspondenceTables);
+			MondoLensScope scope = new MondoLensScope(arbiter, lockArbiter, goldIndexer, frontIndexer, correspondenceTables);
 			
 			doTest(scope, policyFile, goldFile, frontFile, policyResource, goldResource, frontResource); 
 		

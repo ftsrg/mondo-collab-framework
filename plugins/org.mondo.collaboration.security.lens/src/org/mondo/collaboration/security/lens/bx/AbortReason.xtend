@@ -16,6 +16,7 @@ import org.eclipse.incquery.runtime.api.IPatternMatch
 import org.eclipse.xtend.lib.annotations.Data
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
 import org.mondo.collaboration.security.lens.arbiter.Asset
+import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock
 
 /**
  * Represent the reason the lens execution has been aborted.
@@ -60,6 +61,23 @@ public interface AbortReason {
 		
 		override prettyPrintProblem() {
 			'''Permission denied - user "«user.name»" has no authorization for writing «assetClass.simpleName» at «authMatch.prettyPrint»'''
+		}
+		
+	}
+	@Data
+	public static class LockViolationDenial implements DenialReason {
+		val String manipulatorUserName
+		val Lock lock
+		val IPatternMatch violatingMatch
+		//val IPatternMatch lhsMatch
+		
+		override logAbortion(Logger logger, String executionFullID) {
+			logger.warn(
+			'''Aborting execution of «executionFullID»: «prettyPrintProblem»''')
+		}	
+		
+		override prettyPrintProblem() {
+			'''Operation by user "«manipulatorUserName»" violates lock granted to «lock.owner.name» at query match «violatingMatch.prettyPrint»'''
 		}
 		
 	}
