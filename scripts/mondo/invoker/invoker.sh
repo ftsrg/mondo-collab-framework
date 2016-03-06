@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 LENS_INVOKER_JAR=$DIR/invoker.jar
 
-LOG="$DIR/lens.log"
+LOG="$DIR/../log/lens.log"
 
 function timestamp() {
   date +"%Y-%m-%d_%H-%M-%S"

@@ -44,7 +44,7 @@ fi
 
 echo "#!/bin/sh" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "set -e" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
-echo "$DIR/../hooks/post-commit \$1 \$2 " >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
+echo "$DIR/../hooks/gold-pre-commit.sh \$1 \$2 " >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 chmod 755 $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 chown -R $APACHE_USER $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "Create Post-Commit hook"

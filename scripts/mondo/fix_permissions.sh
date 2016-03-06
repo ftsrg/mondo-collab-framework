@@ -27,10 +27,10 @@ chown -R $APACHE_USER $DIR/scripts
 chmod 777 $DIR/scripts
 chown -R $APACHE_USER $DIR/hooks
 chmod 777 $DIR/hooks
-chown -R $APACHE_USER $DIR/hooks/pre-commit
-chmod 777 $DIR/hooks/pre-commit
-chown -R $APACHE_USER $DIR/hooks/post-commit
-chmod 777 $DIR/hooks/post-commit
+chown -R $APACHE_USER $DIR/hooks/front-pre-commit.sh
+chmod 777 $DIR/hooks/front-pre-commit.sh
+chown -R $APACHE_USER $DIR/hooks/gold-pre-commit.sh
+chmod 777 $DIR/hooks/gold-pre-commit.sh
 chown -R $APACHE_USER $DIR/invoker
 chmod 777 $DIR/invoker
 chown -R $APACHE_USER $DIR/invoker/invoker.jar
