@@ -6,7 +6,11 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.mondo.collaboration.offline.management.client.ui.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.commands,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ uk.ac.york.mondo.integration.api.dt;bundle-version="1.0.0",
+ org.eclipse.equinox.security,
+ org.apache.log4j,
+ org.mondo.collaboration.offline.management.cli;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

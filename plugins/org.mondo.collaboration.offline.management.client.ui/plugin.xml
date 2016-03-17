@@ -44,5 +44,13 @@
             name="MONDO">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.mondo.collaboration.offline.management.client.ui.MONDOServerView"
+            id="org.mondo.collaboration.offline.management.client.ui.MONDOServerView"
+            name="MONDO Server View">
+      </view>
+   </extension>
 
 </plugin>
