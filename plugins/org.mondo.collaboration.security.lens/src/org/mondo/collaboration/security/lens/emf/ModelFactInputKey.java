@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
 
 /**
  * The input keys of various model fact kinds.

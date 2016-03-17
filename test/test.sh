@@ -1,5 +1,9 @@
 #!/bin/bash
 
+function replace_slash {
+  ${1//\//-}
+}
+
 # concate path parts and includes a slash "/" if necessary
 function concate_path_parts {
   result=$1
@@ -42,7 +46,4 @@ function known_model_extension {
   echo "$contains"
 }
 
-echo $(known_model_extension "a.asd")
-echo $(known_model_extension "a.bsd")
-echo $(known_model_extension "a.csd")
-echo $(known_model_extension "a.dsd")
+echo $(replace_slash "a/asdds/adss")

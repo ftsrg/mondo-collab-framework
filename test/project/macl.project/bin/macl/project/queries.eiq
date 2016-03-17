@@ -1,0 +1,43 @@
+package macl.project
+
+import "http://WTSpec4M/5.0M"
+import "http://www.eclipse.org/emf/2002/Ecore"
+
+pattern objectRoot(root : WT) {
+	WT(root);
+}
+
+pattern objectAllObject(object : EObject) {
+	EObject(object);
+}
+
+pattern objectNotIO(object : EObject) {
+	neg find objectIO(object);
+	neg find objectRoot(object);
+}
+
+pattern objectIO(object : EObject) {
+	SystemInput(object);
+}
+
+pattern objectSubsystemWithName(subSystem : MainSubsystem, name) {
+	MainSubsystem.sysId(subSystem, name);
+}
+
+pattern objectIOFaultTimerVariable(object : EObject) {
+	SystemInput(object);
+} or {
+	SystemOutput(object);
+} or {
+	SystemFault(object);
+} or {
+	SystemParam(object);
+} or {
+	SystemTimer(object);
+} or {
+	SystemVariable(object);
+}
+
+pattern attributeenabled(wtc : wtc, value) {
+	wtc.enabled(wtc, value);
+}

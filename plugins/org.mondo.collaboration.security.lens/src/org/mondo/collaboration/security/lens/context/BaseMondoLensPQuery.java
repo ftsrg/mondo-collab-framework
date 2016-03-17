@@ -13,8 +13,8 @@ package org.mondo.collaboration.security.lens.context;
 
 import java.util.List;
 
-import org.eclipse.incquery.runtime.matchers.psystem.queries.BasePQuery;
-import org.eclipse.incquery.runtime.matchers.psystem.queries.PParameter;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.BasePQuery;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameter;
 
 /**
  * Generic PQuery useful for lens queries

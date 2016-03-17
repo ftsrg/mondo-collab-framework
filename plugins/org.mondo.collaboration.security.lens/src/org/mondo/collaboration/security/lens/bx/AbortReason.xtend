@@ -12,7 +12,7 @@
 package org.mondo.collaboration.security.lens.bx
 
 import org.apache.log4j.Logger
-import org.eclipse.incquery.runtime.api.IPatternMatch
+import org.eclipse.viatra.query.runtime.api.IPatternMatch
 import org.eclipse.xtend.lib.annotations.Data
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
 import org.mondo.collaboration.security.lens.arbiter.Asset

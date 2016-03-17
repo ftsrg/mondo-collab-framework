@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ASCII"?>
+<wtc:WT xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:wtc="http://WTSpec4M/5.0M" sysId="WindPower4MONDO" model="WindPower4MONDO">
+  <itsInputs sysId="I_1" description="Input 1"/>
+  <itsInputs sysId="I_2" description="Input 2"/>
+  <itsInputs sysId="I_3" description="Input 3"/>
+  <itsInputs sysId="I_4" description="Input 4"/>
+  <itsInputs sysId="I_5" description="Input 5"/>
+</wtc:WT>

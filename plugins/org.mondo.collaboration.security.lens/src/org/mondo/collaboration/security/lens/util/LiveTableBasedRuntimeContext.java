@@ -14,11 +14,11 @@ package org.mondo.collaboration.security.lens.util;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
-import org.eclipse.incquery.runtime.matchers.context.IQueryMetaContext;
-import org.eclipse.incquery.runtime.matchers.context.IQueryRuntimeContext;
-import org.eclipse.incquery.runtime.matchers.context.IQueryRuntimeContextListener;
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.context.IQueryMetaContext;
+import org.eclipse.viatra.query.runtime.matchers.context.IQueryRuntimeContext;
+import org.eclipse.viatra.query.runtime.matchers.context.IQueryRuntimeContextListener;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;

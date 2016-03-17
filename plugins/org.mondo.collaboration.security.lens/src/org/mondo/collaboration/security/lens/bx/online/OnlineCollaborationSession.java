@@ -30,11 +30,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
-import org.eclipse.incquery.runtime.emf.EMFScope;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.eclipse.viatra.query.runtime.base.api.BaseIndexOptions;
+import org.eclipse.viatra.query.runtime.emf.EMFScope;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
@@ -99,7 +99,7 @@ public class OnlineCollaborationSession {
 	 * @throws IncQueryException 
 	 */
 	public OnlineCollaborationSession(URI goldConfinementURI, ResourceSet goldResourceSet,
-			UniqueIDSchemeFactory uniqueIDFactory, Resource policyResource, String ownerUsername, String ownerPassword) throws IncQueryException {
+			UniqueIDSchemeFactory uniqueIDFactory, Resource policyResource, String ownerUsername, String ownerPassword) throws ViatraQueryException {
 		super();
 		this.goldConfinementURI = goldConfinementURI;
 		this.goldResourceSet = goldResourceSet;

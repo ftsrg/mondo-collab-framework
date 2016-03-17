@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ASCII"?>
+<wtc:WT xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:wtc="http://WTSpec4M/5.0M"
+    sysId="WindPower4MONDO"
+    model="WindPower4MONDO">
+  <itsSubsystems
+      sysId="Subsystem_4"
+      description="Description for Subsystem_4"/>
+  <itsSubsystems
+      sysId="Subsystem_5"
+      description="Description for Subsystem_5"/>
+  <itsInputs
+      sysId="I_1"
+      description="Input 1"/>
+  <itsInputs
+      sysId="I_2"
+      description="Input 2"/>
+  <itsInputs
+      sysId="I_3"
+      description="Input 3"/>
+  <itsInputs
+      sysId="I_4"
+      description="Input 4"/>
+  <itsInputs
+      sysId="I_5"
+      description="Input 5"/>
+  <itsOutputs
+      sysId="O_1"
+      description="Output 1"/>
+  <itsOutputs
+      sysId="O_2"
+      description="Output 2"/>
+  <itsOutputs
+      sysId="O_3"
+      description="Output 3"/>
+  <itsOutputs
+      sysId="O_4"
+      description="Output 4"/>
+  <itsOutputs
+      sysId="O_5"
+      description="Output 5"/>
+  <itsParams
+      sysId="P_1"
+      description="Parameter 1"/>
+  <itsParams
+      sysId="P_2"
+      description="Parameter 2"/>
+  <itsTimers
+      sysId="T_1"
+      description="Timer 1"/>
+  <itsTimers
+      sysId="T_2"
+      description="Timer 2"/>
+  <itsFaults
+      sysId="A_1"
+      description="Alarm 1"/>
+  <itsFaults
+      sysId="A_2"
+      description="Alarm 2"/>
+  <itsFaults
+      sysId="A_3"
+      description="Alarm 3"/>
+</wtc:WT>

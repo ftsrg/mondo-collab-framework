@@ -12,8 +12,8 @@
 package org.mondo.collaboration.security.lens.relational
 
 import java.util.Set
-import org.eclipse.incquery.runtime.api.IQuerySpecification
-import org.eclipse.incquery.runtime.evm.api.RuleSpecification
+import org.eclipse.viatra.query.runtime.api.IQuerySpecification
+import org.eclipse.viatra.transformation.evm.api.RuleSpecification
 import org.eclipse.xtend.lib.annotations.Data
 
 /**

@@ -109,16 +109,16 @@
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.help"/>
-      <plugin id="org.eclipse.incquery.patternlanguage"/>
-      <plugin id="org.eclipse.incquery.patternlanguage.emf"/>
-      <plugin id="org.eclipse.incquery.patternlanguage.generator"/>
-      <plugin id="org.eclipse.incquery.runtime"/>
-      <plugin id="org.eclipse.incquery.runtime.base"/>
-      <plugin id="org.eclipse.incquery.runtime.base.itc"/>
-      <plugin id="org.eclipse.incquery.runtime.evm"/>
-      <plugin id="org.eclipse.incquery.runtime.matchers"/>
-      <plugin id="org.eclipse.incquery.runtime.rete"/>
-      <plugin id="org.eclipse.incquery.runtime.rete.recipes"/>
+      <plugin id="org.eclipse.viatra.query.patternlanguage"/>
+      <plugin id="org.eclipse.viatra.query.patternlanguage.emf"/>
+      <plugin id="org.eclipse.viatra.query.patternlanguage.generator"/>
+      <plugin id="org.eclipse.viatra.query.runtime"/>
+      <plugin id="org.eclipse.viatra.query.runtime.base"/>
+      <plugin id="org.eclipse.viatra.query.runtime.base.itc"/>
+      <plugin id="org.eclipse.viatra.transformation.evm"/>
+      <plugin id="org.eclipse.viatra.query.runtime.matchers"/>
+      <plugin id="org.eclipse.viatra.query.runtime.rete"/>
+      <plugin id="org.eclipse.viatra.query.runtime.rete.recipes"/>
       <plugin id="org.eclipse.jdt.compiler.apt" fragment="true"/>
       <plugin id="org.eclipse.jdt.compiler.tool" fragment="true"/>
       <plugin id="org.eclipse.jdt.core"/>

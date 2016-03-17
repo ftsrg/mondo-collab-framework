@@ -15,17 +15,17 @@ import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
 import java.util.Set
 import org.eclipse.emf.ecore.EAttribute
-import org.eclipse.incquery.runtime.api.IncQueryEngine
-import org.eclipse.incquery.runtime.evm.api.Activation
-import org.eclipse.incquery.runtime.evm.api.Context
-import org.eclipse.incquery.runtime.evm.api.RuleEngine
-import org.eclipse.incquery.runtime.evm.api.RuleSpecification
-import org.eclipse.incquery.runtime.evm.specific.RuleEngines
-import org.eclipse.incquery.runtime.matchers.psystem.IExpressionEvaluator
-import org.eclipse.incquery.runtime.matchers.psystem.IValueProvider
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.PatternMatchCounter
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine
+import org.eclipse.viatra.transformation.evm.api.Activation
+import org.eclipse.viatra.transformation.evm.api.Context
+import org.eclipse.viatra.transformation.evm.api.RuleEngine
+import org.eclipse.viatra.transformation.evm.api.RuleSpecification
+import org.eclipse.viatra.transformation.evm.specific.RuleEngines
+import org.eclipse.viatra.query.runtime.matchers.psystem.IExpressionEvaluator
+import org.eclipse.viatra.query.runtime.matchers.psystem.IValueProvider
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.PatternMatchCounter
+import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.mondo.collaboration.security.lens.arbiter.Asset
@@ -48,7 +48,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static org.mondo.collaboration.security.lens.context.keys.WhichModel.*
 import static org.mondo.collaboration.security.lens.emf.ModelFactInputKey.*
-import org.eclipse.incquery.runtime.api.IPatternMatch
+import org.eclipse.viatra.query.runtime.api.IPatternMatch
 import org.apache.log4j.Logger
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason
 import org.mondo.collaboration.security.lens.bx.LensTransformationExecution.UndoableManipulationAction
@@ -175,14 +175,14 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	
 	private def createRuleEngine(Iterable<Set<RuleSpecification>> rules) {
-			val ruleEngine = RuleEngines::createIncQueryRuleEngine(getIncQueryEngine())
+			val ruleEngine = RuleEngines::createViatraQueryRuleEngine(getViatraQueryEngine())
 			ruleEngine.conflictResolver = priorityResolver
 			Iterables::concat(rules).forEach[rule | ruleEngine.addRule(rule)]
 			return ruleEngine
 	}
 	
-	def getIncQueryEngine() {
-		IncQueryEngine::on(scope)
+	def getViatraQueryEngine() {
+		ViatraQueryEngine::on(scope)
 	}
 	
 	private def inModel(ModelFactInputKey inputkey, WhichModel model) {
@@ -329,7 +329,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	
 	def ActionStep checkWriteAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
 		val authDeniedQuery = authorizationQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::WRITE)
-		val authDeniedMatcher = authDeniedQuery.getMatcher(incQueryEngine)
+		val authDeniedMatcher = authDeniedQuery.getMatcher(viatraQueryEngine)
 		return [
 			val Object[] valueArray = assetVariables.map[name | variables.get(name)]
 			val authMatch = authDeniedQuery.newMatch(valueArray)

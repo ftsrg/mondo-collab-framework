@@ -2,7 +2,7 @@ package org.mondo.collaboration.security.mpbl.server.dto;
 
 import java.io.Serializable;
 
-import org.eclipse.incquery.patternlanguage.patternLanguage.PatternModel;
+import org.eclipse.viatra.query.patternlanguage.patternLanguage.PatternModel;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
 /**

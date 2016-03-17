@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.incquery.patternlanguage.annotation">
+         point="org.eclipse.viatra.query.patternlanguage.annotation">
       <annotation
             language="MACL"
             name="SecurityObject">

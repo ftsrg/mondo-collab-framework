@@ -17,56 +17,56 @@
    </license>
 
    <plugin
-         id="org.eclipse.incquery.runtime.base"
+         id="org.eclipse.viatra.query.runtime.base"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.incquery.patternlanguage.emf"
+         id="org.eclipse.viatra.query.patternlanguage.emf"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.incquery.runtime.base.itc"
+         id="org.eclipse.viatra.query.runtime.base.itc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.incquery.runtime.rete"
+         id="org.eclipse.viatra.query.runtime.rete"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.incquery.patternlanguage"
+         id="org.eclipse.viatra.query.patternlanguage"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.incquery.runtime"
+         id="org.eclipse.viatra.query.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.incquery.runtime.evm"
+         id="org.eclipse.viatra.transformation.evm"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.incquery.runtime.matchers"
+         id="org.eclipse.viatra.query.runtime.matchers"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -80,7 +80,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.incquery.runtime.rete.recipes"
+         id="org.eclipse.viatra.query.runtime.rete.recipes"
          download-size="0"
          install-size="0"
          version="0.0.0"

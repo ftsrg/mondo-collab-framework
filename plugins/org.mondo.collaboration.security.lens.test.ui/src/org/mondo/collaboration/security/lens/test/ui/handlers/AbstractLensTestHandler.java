@@ -27,8 +27,8 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.incquery.runtime.api.IPatternMatch;
-import org.eclipse.incquery.runtime.api.IncQueryMatcher;
+import org.eclipse.viatra.query.runtime.api.IPatternMatch;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryMatcher;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -133,7 +133,7 @@ public abstract class AbstractLensTestHandler extends AbstractHandler {
 	    return resourceSet.getResource(fileURI, true);
 	}
 
-	protected void printMatchSet(IncQueryMatcher<? extends IPatternMatch> matcher) {
+	protected void printMatchSet(ViatraQueryMatcher<? extends IPatternMatch> matcher) {
 		System.out.println("-----------------");
 		System.out.println("Matches of query: " + matcher.getPatternName());
 		for (IPatternMatch match : matcher.getAllMatches()) {

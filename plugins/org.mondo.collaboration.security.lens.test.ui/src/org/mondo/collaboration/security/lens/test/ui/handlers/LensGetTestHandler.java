@@ -13,8 +13,8 @@ package org.mondo.collaboration.security.lens.test.ui.handlers;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.incquery.runtime.api.IQuerySpecification;
-import org.eclipse.incquery.runtime.api.IncQueryEngine;
+import org.eclipse.viatra.query.runtime.api.IQuerySpecification;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine;
 import org.mondo.collaboration.security.lens.bx.RelationalLensXform;
 import org.mondo.collaboration.security.lens.context.MondoLensScope;
 
@@ -30,7 +30,7 @@ public class LensGetTestHandler extends AbstractLensTestHandler {
 	{
 		RelationalLensXform lens = setupLensForBob(scope, policyResource);
 		
-		IncQueryEngine iqEngine = IncQueryEngine.on(scope);
+		ViatraQueryEngine iqEngine = IncQueryEngine.on(scope);
 		for (IQuerySpecification query : lens.getQueries()) {
 			printMatchSet(iqEngine.getMatcher(query));
 		}

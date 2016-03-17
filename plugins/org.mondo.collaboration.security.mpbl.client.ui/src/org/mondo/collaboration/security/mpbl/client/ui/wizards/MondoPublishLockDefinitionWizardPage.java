@@ -1,9 +1,9 @@
 package org.mondo.collaboration.security.mpbl.client.ui.wizards;
 
-import org.eclipse.incquery.patternlanguage.emf.eMFPatternLanguage.ClassType;
-import org.eclipse.incquery.patternlanguage.emf.eMFPatternLanguage.PatternModel;
-import org.eclipse.incquery.patternlanguage.patternLanguage.Pattern;
-import org.eclipse.incquery.patternlanguage.patternLanguage.Variable;
+import org.eclipse.viatra.query.patternlanguage.emf.eMFPatternLanguage.ClassType;
+import org.eclipse.viatra.query.patternlanguage.emf.eMFPatternLanguage.PatternModel;
+import org.eclipse.viatra.query.patternlanguage.patternLanguage.Pattern;
+import org.eclipse.viatra.query.patternlanguage.patternLanguage.Variable;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;

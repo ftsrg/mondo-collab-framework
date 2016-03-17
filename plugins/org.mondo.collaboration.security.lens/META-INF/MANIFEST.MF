@@ -16,16 +16,16 @@ Export-Package: org.mondo.collaboration.security.lens.arbiter,
  org.mondo.collaboration.security.lens.util,
  org.mondo.collaboration.security.lens.util.uri
 Require-Bundle: org.mondo.collaboration.security.macl.xtext;bundle-version="1.0.0",
- org.eclipse.incquery.runtime.evm;bundle-version="[1.1.0,1.3.0)",
  org.eclipse.emf.ecore,
- org.eclipse.incquery.runtime.matchers,
- org.eclipse.incquery.runtime;visibility:=reexport,
  org.eclipse.xtend.lib;bundle-version="2.8.3",
- org.eclipse.incquery.patternlanguage.emf,
  org.mondo.collaboration.security.macl.xtext.rule,
  org.mondo.collaboration.security.mpbl.xtext;bundle-version="1.0.0",
  org.eclipse.core.runtime;bundle-version="3.11.0",
  org.eclipse.viatra.modelobfuscator.runtime;bundle-version="0.7.0",
- com.google.guava
+ com.google.guava,
+ org.eclipse.viatra.transformation.evm;bundle-version="[1.2.0,2.0.0)",
+ org.eclipse.viatra.query.runtime.matchers,
+ org.eclipse.viatra.query.runtime;visibility:=reexport,
+ org.eclipse.viatra.query.patternlanguage.emf
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.log4j;version="1.0.0"

@@ -6,7 +6,7 @@
     modelName="MACLRule" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     complianceLevel="6.0" copyrightFields="false" editPluginID="org.mondo.collaboration.security.macl.xtext.rule.edit"
     editorPluginID="org.mondo.collaboration.security.macl.xtext.rule.editor" runtimeVersion="2.11"
-    usedGenPackages="platform:/resource/org.eclipse.incquery.patternlanguage/model/generated/PatternLanguage.genmodel#//patternLanguage">
+    usedGenPackages="platform:/resource/org.eclipse.viatra.query.patternlanguage/model/generated/PatternLanguage.genmodel#//patternLanguage">
   <genPackages prefix="MACLRule" basePackage="org.mondo.collaboration.security.macl.xtext.rule"
       disposableProviderFactory="true" fileExtensions="maclr" ecorePackage="MACLRule.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="MACLRule.ecore#//RuleRights">

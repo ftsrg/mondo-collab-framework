@@ -17,12 +17,12 @@ import java.util.Set
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
-import org.eclipse.incquery.runtime.api.IPatternMatch
-import org.eclipse.incquery.runtime.api.IQuerySpecification
-import org.eclipse.incquery.runtime.matchers.psystem.annotations.PAnnotation
-import org.eclipse.incquery.runtime.matchers.psystem.annotations.ParameterReference
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple
+import org.eclipse.viatra.query.runtime.api.IPatternMatch
+import org.eclipse.viatra.query.runtime.api.IQuerySpecification
+import org.eclipse.viatra.query.runtime.matchers.psystem.annotations.PAnnotation
+import org.eclipse.viatra.query.runtime.matchers.psystem.annotations.ParameterReference
+import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple
 import org.eclipse.xtend.lib.annotations.Data
 
 /**

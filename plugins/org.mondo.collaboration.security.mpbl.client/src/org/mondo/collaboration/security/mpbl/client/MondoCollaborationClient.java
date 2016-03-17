@@ -2,7 +2,7 @@ package org.mondo.collaboration.security.mpbl.client;
 
 import java.util.Map;
 
-import org.eclipse.incquery.patternlanguage.emf.eMFPatternLanguage.PatternModel;
+import org.eclipse.viatra.query.patternlanguage.emf.eMFPatternLanguage.PatternModel;
 import org.mondo.collaboration.security.mpbl.server.dto.LockDTO;
 import org.mondo.collaboration.security.mpbl.server.dto.LockDefinitionQueryDTO;
 import org.mondo.collaboration.security.mpbl.server.dto.ResponseLockDTO;

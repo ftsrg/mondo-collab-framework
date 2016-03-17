@@ -1,0 +1,75 @@
+user admin
+user anIOManager user anotherIOManager
+user aManager user anotherManager
+user anSSManager user anotherSSManager
+user Peter user Mary user John
+user aServiceEngineer user anotherServiceEngineer
+user alice user bob user cecil
+
+group PrincipalEngineer {
+	admin
+}
+
+group IOManager {
+	anIOManager, anotherIOManager, alice, cecil
+}
+
+group Manager {
+	aManager, anotherManager, bob
+}
+
+group SubSystemManager {
+	anSSManager, anotherSSManager
+}
+
+group SpecSubSystemManager {
+	Peter, Mary, John
+}
+
+group ServiceEngineer {
+	aServiceEngineer, anotherServiceEngineer
+}
+
+policy DemoPolicy first-applicable {
+
+	rule restrictRoot deny W to IOManager, Manager, SubSystemManager, SpecSubSystemManager, ServiceEngineer {
+		query "macl.project.objectRoot"
+	}
+
+    rule allowIO permit RW to IOManager {
+		query "macl.project.objectIO"
+	}
+
+	rule denyAllNotIO deny RW to IOManager {
+		query "macl.project.objectNotIO"
+	}
+
+	rule disableIO deny W to Manager {
+		query "macl.project.objectIO"
+	}
+
+	rule disableIOFaultTimerVariable deny W to SubSystemManager {
+		query "macl.project.objectIOFaultTimerVariable"
+	}
+
+	/*
+	rule enableGenerator permit RW to Peter {
+		query "macl.project.objectSubsystemWithName"
+		bind name value "Generator"
+	}
+
+	rule enableConverter permit RW to Mary {
+		query "macl.project.objectSubsystemWithName"
+		bind name value "Converter"
+	}
+
+	rule enablePitch permit RW to John {
+		query "macl.project.objectSubsystemWithName"
+		bind name value "Pitch"
+	}
+
+	rule denyAll deny W to SpecSubSystemManager {
+		query "macl.project.objectAllObject"
+	}
+	*/
+}

@@ -1,6 +1,6 @@
 package org.mondo.collaboration.security.mpbl.client.ui.util;
 
-import org.eclipse.incquery.patternlanguage.patternLanguage.Variable;
+import org.eclipse.viatra.query.patternlanguage.patternLanguage.Variable;
 
 public class LockModel {
     

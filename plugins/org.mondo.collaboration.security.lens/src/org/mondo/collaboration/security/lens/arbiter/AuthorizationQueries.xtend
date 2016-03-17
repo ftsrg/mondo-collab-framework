@@ -17,11 +17,11 @@ import java.util.List
 import java.util.Map
 import java.util.Set
 import org.eclipse.emf.ecore.EReference
-import org.eclipse.incquery.runtime.api.IQuerySpecification
-import org.eclipse.incquery.runtime.matchers.psystem.IExpressionEvaluator
-import org.eclipse.incquery.runtime.matchers.psystem.IValueProvider
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.ConstantValue
+import org.eclipse.viatra.query.runtime.api.IQuerySpecification
+import org.eclipse.viatra.query.runtime.matchers.psystem.IExpressionEvaluator
+import org.eclipse.viatra.query.runtime.matchers.psystem.IValueProvider
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.ConstantValue
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.mondo.collaboration.security.lens.arbiter.Asset.AttributeAsset
 import org.mondo.collaboration.security.lens.arbiter.Asset.ObjectAsset

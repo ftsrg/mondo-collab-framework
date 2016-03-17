@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.incquery.runtime.api.IncQueryEngine;
-import org.eclipse.incquery.runtime.api.scope.IEngineContext;
-import org.eclipse.incquery.runtime.api.scope.IIndexingErrorListener;
-import org.eclipse.incquery.runtime.api.scope.IncQueryScope;
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine;
+import org.eclipse.viatra.query.runtime.api.scope.IEngineContext;
+import org.eclipse.viatra.query.runtime.api.scope.IIndexingErrorListener;
+import org.eclipse.viatra.query.runtime.api.scope.QueryScope;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
 import org.mondo.collaboration.security.lens.arbiter.Asset;
 import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
@@ -49,7 +49,7 @@ import org.mondo.collaboration.security.lens.util.LiveTable;
  * @author Bergmann Gabor
  *
  */
-public class MondoLensScope extends IncQueryScope {
+public class MondoLensScope extends QueryScope {
 	
 	private SecurityArbiter arbiter;
 	private LockArbiter lockArbiter;
@@ -68,7 +68,7 @@ public class MondoLensScope extends IncQueryScope {
 	
 
 	@Override
-	protected IEngineContext createEngineContext(IncQueryEngine engine, IIndexingErrorListener errorListener, org.apache.log4j.Logger logger) {
+	protected IEngineContext createEngineContext(ViatraQueryEngine engine, IIndexingErrorListener errorListener, org.apache.log4j.Logger logger) {
 		return new MondoLensEngineContext(this, engine, errorListener, logger);
 	}
 

@@ -12,7 +12,7 @@
 package org.mondo.collaboration.security.lens.relational
 
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
-import org.eclipse.incquery.runtime.matchers.psystem.PBody
+import org.eclipse.viatra.query.runtime.matchers.psystem.PBody
 
 /**
  * Generates constraints into rule precondition patterns, also exposing the variables to which it can bind value.

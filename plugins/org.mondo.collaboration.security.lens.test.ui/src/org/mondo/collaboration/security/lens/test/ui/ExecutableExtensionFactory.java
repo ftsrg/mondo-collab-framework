@@ -11,7 +11,7 @@
 
 package org.mondo.collaboration.security.lens.test.ui;
 
-import org.eclipse.incquery.patternlanguage.emf.ui.EMFPatternLanguageExecutableExtensionFactory;
+import org.eclipse.viatra.query.patternlanguage.emf.ui.EMFPatternLanguageExecutableExtensionFactory;
 import org.osgi.framework.Bundle;
 
 /**

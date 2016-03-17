@@ -91,7 +91,7 @@
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any">
          <menu
-               id="org.eclipse.incquery.tooling.ui.navigator.popup"
+               id="org.eclipse.viatra.query.tooling.ui.navigator.popup"
                label="EMF-IncQuery">
             <command
                    commandId="org.mondo.collaboration.security.mpbl.client.ui.publishlock"
@@ -101,7 +101,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="org.eclipse.incquery.tooling.ui.eiq.file">
+                        definitionId="org.eclipse.viatra.query.tooling.ui.eiq.file">
                   </reference>
                </visibleWhen>
             </command>
@@ -124,7 +124,7 @@
                <with
                      variable="activeEditorId">
                   <equals
-                        value="org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguage">
+                        value="org.eclipse.viatra.query.patternlanguage.emf.EMFPatternLanguage">
                   </equals>
                </with>
             </visibleWhen>
@@ -217,7 +217,7 @@
    <extension
          point="org.eclipse.core.expressions.definitions">
       <definition
-            id="org.eclipse.incquery.tooling.ui.eiq.file">
+            id="org.eclipse.viatra.query.tooling.ui.eiq.file">
          <with
                variable="selection">
             <iterate

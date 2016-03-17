@@ -1,6 +1,6 @@
 package org.mondo.collaboration.security.mpbl.client.ui.wizards;
 
-import org.eclipse.incquery.patternlanguage.emf.eMFPatternLanguage.PatternModel;
+import org.eclipse.viatra.query.patternlanguage.emf.eMFPatternLanguage.PatternModel;
 import org.eclipse.jface.wizard.Wizard;
 
 public class MondoPublishLockDefinitionWizard extends Wizard {

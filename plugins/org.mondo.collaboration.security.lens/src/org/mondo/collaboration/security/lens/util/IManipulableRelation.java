@@ -11,7 +11,7 @@
 
 package org.mondo.collaboration.security.lens.util;
 
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
 
 /**
  * Represents a write-only interface of a dynamic set of {@link Tuple}s. 

@@ -23,22 +23,22 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.incquery.runtime.api.GenericPatternMatch;
-import org.eclipse.incquery.runtime.api.GenericPatternMatcher;
-import org.eclipse.incquery.runtime.api.IncQueryEngine;
-import org.eclipse.incquery.runtime.matchers.psystem.IExpressionEvaluator;
-import org.eclipse.incquery.runtime.matchers.psystem.IValueProvider;
-import org.eclipse.incquery.runtime.matchers.psystem.PBody;
-import org.eclipse.incquery.runtime.matchers.psystem.PVariable;
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExportedParameter;
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation;
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.NegativePatternCall;
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.ConstantValue;
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint;
-import org.eclipse.incquery.runtime.matchers.psystem.queries.BasePQuery;
-import org.eclipse.incquery.runtime.matchers.psystem.queries.PParameter;
-import org.eclipse.incquery.runtime.matchers.psystem.queries.QueryInitializationException;
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
+import org.eclipse.viatra.query.runtime.api.GenericPatternMatch;
+import org.eclipse.viatra.query.runtime.api.GenericPatternMatcher;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine;
+import org.eclipse.viatra.query.runtime.matchers.psystem.IExpressionEvaluator;
+import org.eclipse.viatra.query.runtime.matchers.psystem.IValueProvider;
+import org.eclipse.viatra.query.runtime.matchers.psystem.PBody;
+import org.eclipse.viatra.query.runtime.matchers.psystem.PVariable;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExportedParameter;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.NegativePatternCall;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.ConstantValue;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.TypeConstraint;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.BasePQuery;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameter;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.QueryInitializationException;
+import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple;
 import org.mondo.collaboration.security.lens.arbiter.Asset.ObjectAsset;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind;
 import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification;
@@ -62,7 +62,7 @@ public class LensQueryTestHandler extends AbstractLensTestHandler {
 	protected void doTest(MondoLensScope scope, IFile policyFile, IFile goldFile, IFile frontFile,
 			Resource policyResource, Resource goldResource, Resource frontResource) throws Exception 
 	{
-		IncQueryEngine engine = IncQueryEngine.on(scope);
+		ViatraQueryEngine engine = IncQueryEngine.on(scope);
 		printMatchSet(engine.getMatcher(Q_MAPPED_RESOURCE));
 		printMatchSet(engine.getMatcher(Q_OBJECT_PERMITTED));
 		printMatchSet(engine.getMatcher(Q_GET_OBJECT_MAPPED));

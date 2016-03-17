@@ -14,9 +14,9 @@ package org.mondo.collaboration.security.lens.relational
 import com.google.common.collect.ImmutableMap
 import java.util.Map
 import java.util.Set
-import org.eclipse.incquery.runtime.evm.api.RuleSpecification
-import org.eclipse.incquery.runtime.evm.specific.resolver.FixedPriorityConflictResolver
-import org.eclipse.incquery.runtime.matchers.context.IInputKey
+import org.eclipse.viatra.transformation.evm.api.RuleSpecification
+import org.eclipse.viatra.transformation.evm.specific.resolver.FixedPriorityConflictResolver
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey
 import org.mondo.collaboration.security.lens.util.ILiveRelation
 import org.mondo.collaboration.security.lens.util.IManipulableRelation
 

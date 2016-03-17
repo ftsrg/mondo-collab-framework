@@ -18,14 +18,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.incquery.patternlanguage.patternLanguage.Pattern;
-import org.eclipse.incquery.runtime.api.AdvancedIncQueryEngine;
-import org.eclipse.incquery.runtime.api.GenericPatternGroup;
-import org.eclipse.incquery.runtime.api.IMatchUpdateListener;
-import org.eclipse.incquery.runtime.api.IPatternMatch;
-import org.eclipse.incquery.runtime.api.IQuerySpecification;
-import org.eclipse.incquery.runtime.api.IncQueryMatcher;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
+import org.eclipse.viatra.query.patternlanguage.patternLanguage.Pattern;
+import org.eclipse.viatra.query.runtime.api.AdvancedViatraQueryEngine;
+import org.eclipse.viatra.query.runtime.api.GenericQueryGroup;
+import org.eclipse.viatra.query.runtime.api.IMatchUpdateListener;
+import org.eclipse.viatra.query.runtime.api.IPatternMatch;
+import org.eclipse.viatra.query.runtime.api.IQuerySpecification;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryMatcher;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Bind;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Binding;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Group;
@@ -52,14 +52,14 @@ public class LockArbiter {
 	
 	
 	private SecurityArbiter secArbiter;
-	private AdvancedIncQueryEngine queryEngine;
+	private AdvancedViatraQueryEngine queryEngine;
 	private PropertyBasedLockingModel lockingModel; 
 	
 	private Map<Lock, Set<String>> lockOwnerNames = new HashMap<Lock, Set<String>>();
 	// a lock is only relevant for an active user if they are not the (co)owner
 	private Map<String, Set<Lock>> locksRelevantForUser = new HashMap<String, Set<Lock>>();
 	
-	private Map<Lock, IncQueryMatcher<? extends IPatternMatch>> matcherForLock = new HashMap<Lock, IncQueryMatcher<? extends IPatternMatch>>();
+	private Map<Lock, ViatraQueryMatcher<? extends IPatternMatch>> matcherForLock = new HashMap<Lock, ViatraQueryMatcher<? extends IPatternMatch>>();
 	private Map<Lock, IPatternMatch> bindingForLock = new HashMap<Lock, IPatternMatch>();
 
 	/**
@@ -67,7 +67,7 @@ public class LockArbiter {
 	 * @param lockingModel the locking model. May be null if there are no locks.
 	 * @throws IncQueryException
 	 */
-	public LockArbiter(SecurityArbiter secArbiter, PropertyBasedLockingModel lockingModel) throws IncQueryException {
+	public LockArbiter(SecurityArbiter secArbiter, PropertyBasedLockingModel lockingModel) throws ViatraQueryException {
 		this.secArbiter = secArbiter;
 		if (lockingModel == null)
 			lockingModel = dummyLockingModel();
@@ -88,7 +88,7 @@ public class LockArbiter {
 		return MondoPropertyBasedLockingFactory.eINSTANCE.createPropertyBasedLockingModel();
 	}
 
-	private void preprocessLock(Lock lock, Multimap<IQuerySpecification<?>, Lock> lockQueryAccumulator) throws IncQueryException {
+	private void preprocessLock(Lock lock, Multimap<IQuerySpecification<?>, Lock> lockQueryAccumulator) throws ViatraQueryException {
 		final Pattern pattern = lock.getPattern();
 		if (pattern == null || pattern.eIsProxy())
 			throw new IllegalArgumentException("Cannot resolve query of lock: " + lock);
@@ -96,7 +96,7 @@ public class LockArbiter {
 		lockOwnerNames.put(lock, new HashSet<String>());
 		registerLockOwnership(lock, lock.getOwner());
 				
-		IQuerySpecification<? extends IncQueryMatcher<? extends IPatternMatch>> query = 
+		IQuerySpecification<? extends ViatraQueryMatcher<? extends IPatternMatch>> query = 
 				secArbiter.getSpecBuilder().getOrCreateSpecification(pattern);
 		lockQueryAccumulator.put(query, lock);
 		
@@ -120,11 +120,11 @@ public class LockArbiter {
 			}
 		}
 	}
-	private void preInitializeMatchers(Multimap<IQuerySpecification<?>, Lock> lockQueries) throws IncQueryException {
+	private void preInitializeMatchers(Multimap<IQuerySpecification<?>, Lock> lockQueries) throws ViatraQueryException {
 		if (! lockQueries.isEmpty())
-			new GenericPatternGroup(lockQueries.keySet()).prepare(queryEngine);
+			new GenericQueryGroup(lockQueries.keySet()).prepare(queryEngine);
 		for (IQuerySpecification<?> lockQuery : lockQueries.keySet()) {
-			IncQueryMatcher<? extends IPatternMatch> matcher = queryEngine.getMatcher(lockQuery);
+			ViatraQueryMatcher<? extends IPatternMatch> matcher = queryEngine.getMatcher(lockQuery);
 			for (Lock lock : lockQueries.get(lockQuery)) {
 				matcherForLock.put(lock, matcher);
 			}
@@ -159,7 +159,7 @@ public class LockArbiter {
 								UpdateDirection.REMOVE, HashMultimap.create()								
 								)
 						);
-		Multimap<IncQueryMatcher<? extends IPatternMatch>, MatchUpdateListener> listeners = HashMultimap.create();
+		Multimap<ViatraQueryMatcher<? extends IPatternMatch>, MatchUpdateListener> listeners = HashMultimap.create();
 		
 		
 		public LockMonitoringSession (String activeUserName) {
@@ -185,7 +185,7 @@ public class LockArbiter {
 		
 		@Override
 		public void close() throws Exception {
-			for (Entry<IncQueryMatcher<? extends IPatternMatch>, MatchUpdateListener> entry : listeners.entries()) {
+			for (Entry<ViatraQueryMatcher<? extends IPatternMatch>, MatchUpdateListener> entry : listeners.entries()) {
 				queryEngine.removeMatchUpdateListener(entry.getKey(), entry.getValue());
 			}
 		}
@@ -193,7 +193,7 @@ public class LockArbiter {
 		
 		private void initLockMonitoringRule(final Lock lock) { //, Set<RuleSpecification<IPatternMatch>> lockEnforcingRuleAccumulator) {
 			MatchUpdateListener listener = new MatchUpdateListener(lock);
-			IncQueryMatcher<? extends IPatternMatch> matcher = matcherForLock.get(lock);
+			ViatraQueryMatcher<? extends IPatternMatch> matcher = matcherForLock.get(lock);
 			
 			queryEngine.addMatchUpdateListener(matcher, listener, false);
 			listeners.put(matcher, listener);

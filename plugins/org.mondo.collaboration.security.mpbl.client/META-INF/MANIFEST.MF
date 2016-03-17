@@ -4,11 +4,11 @@ Bundle-Name: Client
 Bundle-SymbolicName: org.mondo.collaboration.security.mpbl.client;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.mondo.collaboration.security.mpbl.client.Activator
+Export-Package: org.mondo.collaboration.security.mpbl.client
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.eclipse.incquery.patternlanguage.emf,
- org.mondo.collaboration.security.mpbl.server;bundle-version="1.0.0"
+ org.mondo.collaboration.security.mpbl.server;bundle-version="1.0.0",
+ org.eclipse.viatra.query.patternlanguage.emf
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.mondo.collaboration.security.mpbl.client

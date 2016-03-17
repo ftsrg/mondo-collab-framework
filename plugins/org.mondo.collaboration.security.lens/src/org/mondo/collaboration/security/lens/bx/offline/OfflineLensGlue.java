@@ -28,8 +28,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
+import org.eclipse.viatra.query.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
@@ -117,7 +117,7 @@ public class OfflineLensGlue {
         MondoPropertyBasedLockingStandaloneSetup.doSetup();
     }
     
-    private OfflineLensGlue(String[] argArray, Logger logger) throws FileNotFoundException, IOException, IncQueryException, CoreException {
+    private OfflineLensGlue(String[] argArray, Logger logger) throws FileNotFoundException, IOException, ViatraQueryException, CoreException {
         this.logger = logger;        
         
         List<String> goldPaths          =  getRequiredCLIOptionValues(argArray, GOLD_MODEL_ROOTS_PATH_OPTION,       PATH_VALUE);

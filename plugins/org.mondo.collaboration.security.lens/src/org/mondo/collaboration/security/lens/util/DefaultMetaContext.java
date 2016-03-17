@@ -16,9 +16,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
-import org.eclipse.incquery.runtime.matchers.context.IQueryMetaContext;
-import org.eclipse.incquery.runtime.matchers.context.InputKeyImplication;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.context.IQueryMetaContext;
+import org.eclipse.viatra.query.runtime.matchers.context.InputKeyImplication;
 
 /**
  * Gives the default answers for all input keys.

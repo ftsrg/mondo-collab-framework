@@ -9,7 +9,7 @@ import org.eclipse.xtext.scoping.Scopes
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Rule
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.common.util.URI
-import org.eclipse.incquery.patternlanguage.patternLanguage.Pattern
+import org.eclipse.viatra.query.patternlanguage.patternLanguage.Pattern
 
 /**
  * This class contains custom scoping description.
