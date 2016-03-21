@@ -120,11 +120,11 @@ rm -rf "$WORKSPACE_GOLD"
 log "Step 3: checkout gold - from $GOLD_REPOS_URL to $WORKSPACE_GOLD"
 svn checkout "$GOLD_REPOS_URL" "$WORKSPACE_GOLD" -r $REV --username $ADMIN_USER --password $ADMIN_PWD
 
-log "Step 4: check that the rules and queries files exist"
+log "Step 4: check that the rule, query and lock files exist"
 LENS_CAN_EXECUTE=false;
 if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT) ]
 then
-  if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT) ]
+  if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT) ]
   then
     LENS_CAN_EXECUTE=true;
     log "* Both files exist"
@@ -195,8 +195,8 @@ for entry in $USER_FRONT_MAPPING; do
                   svnlook cat -r $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
                   chmod oa+rw $CURRENT_REPO/$nextChange
 
-                  log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT"
-                  $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT
+                  log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
+                  $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT
                 else
                   log "     -> Action: Cannot execute lens. Copy to gold $CURRENT_REPO/$nextChange"
                   cp -rf $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange
