@@ -3,10 +3,17 @@ package org.mondo.collaboration.offline.management.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.thrift.TException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 
 import uk.ac.york.mondo.integration.api.GoldRepoNotFound;
 import uk.ac.york.mondo.integration.api.OfflineCollaboration.Iface;
@@ -26,20 +33,6 @@ import uk.ac.york.mondo.integration.api.utils.APIUtils.ThriftProtocol;
  *******************************************************************************/
 public class OfflineCollaborationHandler implements Iface {
 
-	private ThriftProtocol protocol;
-	private HttpServletRequest httpRequest;
-
-	public OfflineCollaborationHandler(ThriftProtocol protocol, HttpServletRequest httpRequest) {
-		this.protocol = protocol;
-		this.httpRequest = httpRequest;
-	}
-	/**
-	 * Only to be used from {@link OfflineManagementThriftProcessorFactory} to retrieve the
-	 * original process map.
-	 */
-	OfflineCollaborationHandler() {
-		this(null, null);
-	}
 
 	public static String getScriptsFolder() {
 		String retBundle = Activator.getContext().getBundle().getBundleContext().getProperty("mondo.scripts.folder");
@@ -53,15 +46,8 @@ public class OfflineCollaborationHandler implements Iface {
 			UnauthorizedRepositoryOperation, OfflineCollaborationInternalError, TException {
 		System.out.println("regenerateFrontRepositories call");
 		System.out.println("\tfor repo " + goldRepoURL);
-		if (httpRequest == null){
-			System.out.println("\trequest is NULL!!!!! ");
-		}
-		else if (httpRequest.getUserPrincipal() == null) {
-			System.out.println("\tuser principal is NULL!!!!! ");
-		}
-		else {
-			System.out.println("\tby user " + httpRequest.getUserPrincipal().getName());
-		}
+		System.out.println("UserPrincipal from the manager: "+ SecurityUtils.getSubject().getPrincipal());
+		
 		
 		try {
 			
@@ -84,19 +70,9 @@ public class OfflineCollaborationHandler implements Iface {
 			UnauthorizedRepositoryOperation, OfflineCollaborationInternalError, TException {
 		System.out.println("getMyFrontRepositoryURL call");
 		System.out.println("\tfor repo " + goldRepoURL);
-		if (httpRequest == null){
-			System.out.println("\trequest is NULL!!!!! ");
-		}
-		else if (httpRequest.getUserPrincipal() == null){
-			System.out.println("\tuser principal is NULL!!!!! ");
-		}
-		else {
-			System.out.println("\tby user " + httpRequest.getUserPrincipal().getName());
-		}
-		
 		String frontRepoURL = null;
 		try {
-			String userName = httpRequest.getUserPrincipal().getName();
+			String userName = "";//((UserPrincipal) SecurityUtils.getSubject().getPrincipal()).getName();
 			String scriptsFolder = getScriptsFolder();
 			ProcessBuilder processBuilder = new ProcessBuilder(scriptsFolder + "/get-front-repository.sh", userName);
 			Process p = processBuilder.start();
@@ -108,7 +84,47 @@ public class OfflineCollaborationHandler implements Iface {
 			throw new OfflineCollaborationInternalError(e.getMessage());
 		}
 		
-		return frontRepoURL;
+		String rapPath = getRAPPathFromExtensionRegistry();
+		
+		return frontRepoURL + "|" + rapPath;
 	}
+
+	private String getRAPPathFromExtensionRegistry() {
+
+		IExtensionRegistry reg = Platform.getExtensionRegistry();
+		IExtensionPoint poi;
+
+		String rapPath = null;
+
+		if (reg != null) {
+			poi = reg.getExtensionPoint("org.eclipse.emf.ecp.makeithappen.application.sample.rap.entrypoint");
+			if (poi != null) {
+				IExtension[] exts = poi.getExtensions();
+
+				for (IExtension ext : exts) {
+					IConfigurationElement[] els = ext.getConfigurationElements();
+					for (IConfigurationElement el : els) {
+						if (el.getName().equals("path")) {
+							rapPath = el.getValue();
+						}
+					}
+				}
+			}
+		}
+		return rapPath;
+	}
+	@Override
+	public List<String> listGoldRepositories()
+			throws UnauthorizedRepositoryOperation, OfflineCollaborationInternalError, TException {
+		System.out.println("ListGoldRepositories");
+		return null;
+	}
+	@Override
+	public String getOnlineCollaborationURL(String goldRepoURL)
+			throws GoldRepoNotFound, UnauthorizedRepositoryOperation, OfflineCollaborationInternalError, TException {
+		System.out.println("getOnlineCollaborationURL");
+		return null;
+	}
+	
 
 }
