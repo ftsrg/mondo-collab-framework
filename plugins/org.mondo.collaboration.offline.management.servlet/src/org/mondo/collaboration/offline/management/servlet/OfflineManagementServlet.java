@@ -1,7 +1,5 @@
 package org.mondo.collaboration.offline.management.servlet;
 
-import org.apache.thrift.TProcessor;
-import org.apache.thrift.protocol.TProtocolFactory;
 import org.apache.thrift.server.TServlet;
 
 import uk.ac.york.mondo.integration.api.OfflineCollaboration;

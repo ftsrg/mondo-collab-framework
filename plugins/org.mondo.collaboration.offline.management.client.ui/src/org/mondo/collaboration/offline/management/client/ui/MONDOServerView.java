@@ -1,23 +1,17 @@
 package org.mondo.collaboration.offline.management.client.ui;
 
+import java.net.URL;
 import java.util.Dictionary;
-
-import javax.annotation.ManagedBean;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -26,11 +20,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 import org.mondo.collaboration.offline.management.cli.OfflineCollaborationManagementCommandProvider;
-import org.mondo.collaboration.offline.management.client.ui.MONDOServerView.SimpleCredentialsDialog;
 import org.osgi.framework.Bundle;
 
 import uk.ac.york.mondo.integration.api.dt.prefs.CredentialsStore;
@@ -86,16 +80,6 @@ public class MONDOServerView extends ViewPart {
 		frontRepoURL.setSize(54, 27);
 		frontRepoURL.setEditable(false);
 
-		Button btnResetFromGold = new Button(userDataComposite, SWT.NONE);
-		btnResetFromGold.setSize(129, 31);
-		btnResetFromGold.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				MessageDialog.openInformation(getSite().getShell(), "Info", "Reset from gold pressed");
-			}
-		});
-		btnResetFromGold.setText("Reset from gold repo");
-
 		Composite serversComposite = new Composite(parent, SWT.NONE);
 		serversComposite.setLayout(new GridLayout(1, false));
 
@@ -126,6 +110,53 @@ public class MONDOServerView extends ViewPart {
 		loadListOfServers(list);
 		
 		userName.setEnabled(false);
+				new Label(userDataComposite, SWT.NONE);
+		
+				Button btnResetFromGold = new Button(userDataComposite, SWT.NONE);
+				btnResetFromGold.setSize(129, 31);
+				
+				btnResetFromGold.setText("Reset from gold repo");
+				
+				Button btnOpenOnlineCollaboration = new Button(userDataComposite, SWT.NONE);
+				btnOpenOnlineCollaboration.setText("Open online collaboration login screen in browser");
+				
+				btnResetFromGold.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						String[] selection = list.getSelection();
+						Credentials credentials;
+						String managementURL;
+						if (selection != null && selection.length > 0) {
+							credentials = getCredentials(selection[0]);
+							managementURL = selection[0];
+						} else {
+							credentials = null;
+							managementURL = "";
+						}
+						
+						if(credentials == null || credentials.getUsername() == ""){
+							return;
+						}
+
+						CommandInterpreter commandInterpreter = new CommandInterpreterForOfflineThrift(credentials, managementURL);
+
+						OfflineCollaborationManagementCommandProvider commandProvider = new OfflineCollaborationManagementCommandProvider();
+						try {
+							commandProvider._offlineCollaborationRegenerateFrontRepositories(commandInterpreter);
+							MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_INFORMATION | SWT.OK);
+							messageBox.setText("Success.");
+							messageBox.setMessage("Front repository regenerated.");
+							messageBox.open();
+						} catch (Exception e1) {
+							String message = "Error occured while regenerating";
+							logger.error(message);
+							MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_INFORMATION | SWT.ERROR);
+							messageBox.setText("MONDO server management error");
+							messageBox.setMessage("Error occured while regenerating.");
+							messageBox.open();
+						}
+					}
+				});
 		list.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -167,85 +198,16 @@ public class MONDOServerView extends ViewPart {
 					managementURL = "";
 				}
 
-				CommandInterpreter commandInterpreter = new CommandInterpreter() {
-
-					private int argumentIndex = 0;
-					private String user;
-					private String pass;
-
-					@Override
-					public String nextArgument() {
-						String argument = null;
-						user = credentials.getUsername();
-						pass = credentials.getPassword();
-						if(argumentIndex == 0){
-							if ("".equals(user) && "".equals(pass)) {
-								// TODO get credentials for custom url
-								SimpleCredentialsDialog simpleCredentialsDialog = new SimpleCredentialsDialog(Display.getCurrent().getActiveShell());
-								simpleCredentialsDialog.open();
-								user = simpleCredentialsDialog.getUser();
-								pass = simpleCredentialsDialog.getPassword();
-							}
-						}
-						switch (argumentIndex) {
-						case 0:
-							// "managementUrl";
-							argument = CUSTOM_URL_TEXT.equals(managementURL) ? customURL.getText() : managementURL;
-							break;
-						case 1:
-							// "username";
-							argument = user;
-							break;
-						case 2:
-							// "password";
-							argument = pass;
-							break;
-						case 3:
-							// "goldRepositoryUrl";
-							argument = "placeholder.unused.dummy.url";
-							break;
-
-						default:
-							break;
-						}
-						argumentIndex++;
-						return argument;
-					}
-
-					@Override
-					public Object execute(String cmd) {
-						return null;
-					}
-
-					@Override
-					public void print(Object o) {
-					}
-
-					@Override
-					public void println() {
-					}
-
-					@Override
-					public void println(Object o) {
-					}
-
-					@Override
-					public void printStackTrace(Throwable t) {
-					}
-
-					@Override
-					public void printDictionary(Dictionary<?, ?> dic, String title) {
-					}
-
-					@Override
-					public void printBundleResource(Bundle bundle, String resource) {
-					}
-
-				};
+				if(credentials == null || credentials.getUsername() == ""){
+					return;
+				}
+				
+				CommandInterpreter commandInterpreter = new CommandInterpreterForOfflineThrift(credentials, managementURL);
 
 				OfflineCollaborationManagementCommandProvider commandProvider = new OfflineCollaborationManagementCommandProvider();
 				try {
-					frontRepoURL.setText( (String) commandProvider._offlineCollaborationGetMyFrontRepositoryURL(commandInterpreter));
+					String urlString = (String) commandProvider._offlineCollaborationGetMyFrontRepositoryURL(commandInterpreter);
+					frontRepoURL.setText(urlString);
 				} catch (Exception e1) {
 					String message = "Could not get front repository URL from server " + managementURL;
 					logger.error(message);
@@ -254,6 +216,46 @@ public class MONDOServerView extends ViewPart {
 			}
 			
 			
+		});
+		btnOpenOnlineCollaboration.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String[] selection = list.getSelection();
+				Credentials credentials;
+				String managementURL;
+				if (selection != null && selection.length > 0) {
+					credentials = getCredentials(selection[0]);
+					managementURL = selection[0];
+				} else {
+					credentials = null;
+					managementURL = "";
+				}
+				
+				if(credentials == null || credentials.getUsername() == ""){
+					return;
+				}
+				
+				CommandInterpreter commandInterpreter = new CommandInterpreterForOfflineThrift(credentials, managementURL);
+				
+				OfflineCollaborationManagementCommandProvider commandProvider = new OfflineCollaborationManagementCommandProvider();
+				try {
+					String rapPath = (String) commandProvider._offlineCollaborationGetOnlineCollaborationURL(commandInterpreter);
+					URL u = new URL(managementURL);
+					System.out.println(u.getHost());
+					String rapURL = u.getProtocol() +"://"+ u.getHost() + ":" + u.getPort() + rapPath;
+					org.eclipse.swt.program.Program.launch(rapURL);
+//					MessageBox mb = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_INFORMATION | SWT.OK);
+//					mb.setMessage(rapURL );
+//					mb.open();
+				} catch (Exception e1) {
+					String message = "Could not get online collaboration URL from server " + managementURL;
+					logger.error(message);
+					MessageBox mb = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_ERROR | SWT.OK);
+					mb.setText("MONDO server management error");
+					mb.setMessage(message);
+					mb.open();
+				}
+			}
 		});
 		
 		createActions();
@@ -331,7 +333,89 @@ public class MONDOServerView extends ViewPart {
 	public void setFocus() {
 		// Set the focus
 	}
+
+	private final class CommandInterpreterForOfflineThrift implements CommandInterpreter {
+		private int argumentIndex = 0;
+		private String user;
+		private String pass;
+		private Credentials credentials;
+		private String managementURL;
+
+		public CommandInterpreterForOfflineThrift(Credentials credentials, String managementURL) {
+			this.credentials = credentials;
+			this.managementURL = managementURL;
+		}
+
+		@Override
+		public String nextArgument() {
+			String argument = null;
+			user = credentials.getUsername();
+			pass = credentials.getPassword();
+			if(argumentIndex == 0){
+				if ("".equals(user) && "".equals(pass)) {
+					// TODO get credentials for custom url
+					SimpleCredentialsDialog simpleCredentialsDialog = new SimpleCredentialsDialog(Display.getCurrent().getActiveShell());
+					simpleCredentialsDialog.open();
+					user = simpleCredentialsDialog.getUser();
+					pass = simpleCredentialsDialog.getPassword();
+				}
+			}
+			switch (argumentIndex) {
+			case 0:
+				// "managementUrl";
+				argument = CUSTOM_URL_TEXT.equals(managementURL) ? customURL.getText() : managementURL;
+				break;
+			case 1:
+				// "username";
+				argument = user;
+				break;
+			case 2:
+				// "password";
+				argument = pass;
+				break;
+			case 3:
+				// "goldRepositoryUrl";
+				argument = "placeholder.unused.dummy.url";
+				break;
+
+			default:
+				break;
+			}
+			argumentIndex++;
+			return argument;
+		}
+
+		@Override
+		public Object execute(String cmd) {
+			return null;
+		}
+
+		@Override
+		public void print(Object o) {
+		}
+
+		@Override
+		public void println() {
+		}
+
+		@Override
+		public void println(Object o) {
+		}
+
+		@Override
+		public void printStackTrace(Throwable t) {
+		}
+
+		@Override
+		public void printDictionary(Dictionary<?, ?> dic, String title) {
+		}
+
+		@Override
+		public void printBundleResource(Bundle bundle, String resource) {
+		}
+	}
 	
+
 	public class SimpleCredentialsDialog extends Dialog {
 		  private Text userText;
 		  private Text passwordText;

@@ -19,6 +19,8 @@ public class OfflineCollaborationManagementCommandProvider implements CommandPro
 		sbuf.append("offlineCollaborationHelp - lists all the available commands for the Offline Collaboration Management Interface\n");
 		sbuf.append("offlineCollaborationRegenerateFrontRepositories <managementUrl> <username> <password> <goldRepositoryUrl> - regenerate all front repositories based on the gold repository\n\t");
 		sbuf.append("offlineCollaborationGetMyFrontRepositoryURL <managementUrl> <username> <password> <goldRepositoryUrl> - retrieve the front repository URL for the given user\n\t");
+		sbuf.append("offlineCollaborationListGoldRepositoryURLs <managementUrl> <username> <password> - list all gold repositories maintained by the given MONDO server\n\t");
+		sbuf.append("offlineCollaborationGetOnlineCollaborationURL <managementUrl> <username> <password> - get online collaboration login screen URL\n\t");
 		return sbuf.toString();
 	}
 	
@@ -41,11 +43,29 @@ public class OfflineCollaborationManagementCommandProvider implements CommandPro
 			client.getInputProtocol().getTransport().close();			
 		}
 	}
+	
+	public Object _offlineCollaborationListGoldRepositoryURLs(CommandInterpreter intp) throws Exception {
+		ParsedArguments parsedArguments = new ParsedArguments(intp);
+		Client client = parsedArguments.connect();
+		try {
+			return client.listGoldRepositories();
+		} finally {
+			client.getInputProtocol().getTransport().close();			
+		}
+	}
+	public Object _offlineCollaborationGetOnlineCollaborationURL(CommandInterpreter intp) throws Exception {
+		ParsedArguments parsedArguments = new ParsedArguments(intp);
+		Client client = parsedArguments.connect();
+		try {
+			return client.getOnlineCollaborationURL(parsedArguments.goldRepositoryUrl);
+		} finally {
+			client.getInputProtocol().getTransport().close();			
+		}
+	}
+
 	public Object _offlineCollaborationHelp(CommandInterpreter intp) {
 		return getHelp();
 	}
-	
-
 	
 	private static class ParsedArguments {
 		String managementUrl;
