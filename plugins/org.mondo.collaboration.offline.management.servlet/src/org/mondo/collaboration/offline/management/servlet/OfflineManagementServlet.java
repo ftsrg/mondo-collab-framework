@@ -1,7 +1,8 @@
 package org.mondo.collaboration.offline.management.servlet;
 
-import org.mondo.collaboration.offline.management.servlet.util.RequestAwareThriftServlet;
+import org.apache.thrift.server.TServlet;
 
+import uk.ac.york.mondo.integration.api.OfflineCollaboration;
 import uk.ac.york.mondo.integration.api.utils.APIUtils.ThriftProtocol;
 
 /*******************************************************************************
@@ -14,23 +15,18 @@ import uk.ac.york.mondo.integration.api.utils.APIUtils.ThriftProtocol;
  * Contributors:
  *    Gabor Bergmann - initial API and implementation
  *******************************************************************************/
-public class OfflineManagementServlet extends RequestAwareThriftServlet {
-
+public class OfflineManagementServlet extends TServlet {
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6509336680278155129L;
 
-	
-	public OfflineManagementServlet(OfflineManagementThriftProcessorFactory factory) {
-		super(factory, factory.getProtocol().getProtocolFactory());
-	}
-	
 	public OfflineManagementServlet() {
-		this(new OfflineManagementThriftProcessorFactory(ThriftProtocol.JSON));
+		super(
+				new OfflineCollaboration.Processor<OfflineCollaboration.Iface>(new OfflineCollaborationHandler()), 
+				ThriftProtocol.JSON.getProtocolFactory()
+		);
 	}
 	
-//	public OfflineManagementServlet() throws Exception {
-//		super(new OfflineCollaboration.Processor<OfflineCollaboration.Iface>(new OfflineCollaborationHandler()), new TJSONProtocol.Factory());
-//	}
 }
