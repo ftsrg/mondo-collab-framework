@@ -100,6 +100,7 @@ public class StorageAccessSvn extends StorageAccess {
 				entry = entry.substring(0, entry.length() - 1);
 				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, NodeType.Folder, parent, this,
 						gold + "/" + entry));
+				continue;
 			}
 			if (endsWith(entry, getExtensions())) {
 				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, NodeType.Model, parent,

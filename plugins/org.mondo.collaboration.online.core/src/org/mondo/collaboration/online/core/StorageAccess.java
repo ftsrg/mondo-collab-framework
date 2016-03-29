@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * Classes inherited from StorageAccess responsible for accessing to the
@@ -37,6 +39,8 @@ public abstract class StorageAccess {
 	private Logger logger = Logger.getLogger(StorageAccess.class);
 	private StorageModel model;
 
+	public static final String[] DEFAULT_EXTENSIONS = new String[] { "macl", "mpbl", "eiq" };
+	
 	public StorageAccess(String username, String password) throws FileNotFoundException, IOException {
 		this.username = username;
 		this.password = password;
@@ -169,7 +173,9 @@ public abstract class StorageAccess {
 	public static String[] getExtensions() {
 		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.extensions");
 		String retSystem = System.getProperty("mondo.extensions");
-		return retBundle == null ? retSystem.split(",") : retBundle.split(",");
+		List<String> retExtensions = Lists.newArrayList(retBundle == null ? retSystem.split(",") : retBundle.split(","));
+		retExtensions.addAll(Arrays.asList(DEFAULT_EXTENSIONS));
+		return retExtensions.toArray(new String[0]);
 	}
 
 	/**
