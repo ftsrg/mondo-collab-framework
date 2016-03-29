@@ -149,6 +149,7 @@ then
     OBFUSCATOR_SALT="salt_$CURRENT_FRONT_REPOS_NAME"
     OBFUSCATOR_PREFIX="mondo"
     if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT) ]
+    then
       LENS_EXECUTE_WITH_LOCK=true;
       log "* Lock file exists"
     fi
@@ -193,10 +194,13 @@ for line in $changes; do
               log "     -> Action: Execute lens $WORKSPACE_FRONT/$nextChange"
               chmod oa+rw $WORKSPACE_GOLD/$nextChange
               chmod oa+rw $WORKSPACE_FRONT/$nextChange
-              if [ $LENS_EXECUTE_WITH_LOCK = true]
+              if [ $LENS_EXECUTE_WITH_LOCK = true ]
+              then
+                log "     -> Lens is using locking feature"
                 $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT
               else
-                $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT
+                log "     -> Only Access Control rules will be used"
+                $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT
               fi
             else
               log "     -> Action: Have to be copied to gold $WORKSPACE_FRONT/$nextChange"
