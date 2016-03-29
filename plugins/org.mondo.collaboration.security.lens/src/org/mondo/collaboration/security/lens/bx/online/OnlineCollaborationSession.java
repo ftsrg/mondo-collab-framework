@@ -71,7 +71,8 @@ public class OnlineCollaborationSession {
 	private final URI goldConfinementURI;
 	private final ResourceSet goldResourceSet;
 	private final UniqueIDSchemeFactory uniqueIDFactory;
-	private final Resource policyResource;
+	private Resource policyResource;
+	private Resource lockResource;
 	private final SecurityArbiter arbiter;
 	private final LockArbiter lockArbiter;
 	private final ModelIndexer goldIndexer;
@@ -90,21 +91,24 @@ public class OnlineCollaborationSession {
 	 */
     Lock mutex = new ReentrantLock();
 
+
 	
 	/**
 	 * @param goldConfinementURI the writable area in the folder hierarchy for the gold model
 	 * @param goldResourceSet the gold model
 	 * @param uniqueIDFactory the scheme for identifying model elements
-	 * @param policyResource the resource of the policy model
+	 * @param policyResource the resource of the initial policy model
+	 * @param lockResource the resource of the initial lock model, can be null if no locks used
 	 * @throws IncQueryException 
 	 */
 	public OnlineCollaborationSession(URI goldConfinementURI, ResourceSet goldResourceSet,
-			UniqueIDSchemeFactory uniqueIDFactory, Resource policyResource, String ownerUsername, String ownerPassword) throws IncQueryException {
+			UniqueIDSchemeFactory uniqueIDFactory, Resource policyResource, Resource lockResource, String ownerUsername, String ownerPassword) throws IncQueryException {
 		super();
 		this.goldConfinementURI = goldConfinementURI;
 		this.goldResourceSet = goldResourceSet;
 		this.uniqueIDFactory = uniqueIDFactory;
 		this.policyResource = policyResource;
+		this.lockResource = lockResource;
 		
 		accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
 		arbiter = new SecurityArbiter(
@@ -113,7 +117,7 @@ public class OnlineCollaborationSession {
 				ImmutableSet.of(goldResourceSet), 
 				new BaseIndexOptions());
 		
-		lockArbiter = new LockArbiter(arbiter, null /* no locks taken into account in online mode */);
+		lockArbiter = LockArbiter.create(arbiter, lockResource);
 		
 		goldIndexer = new ModelIndexer(
         		goldConfinementURI,
@@ -144,6 +148,20 @@ public class OnlineCollaborationSession {
 			}
 		});
 		autosaveThread.start();
+	}
+	
+	/**
+	 * Reinitialize the session with a new policy and lock resource
+	 * @param policyResource the resource of the new policy model
+	 * @param lockResource the resource of the new lock model, can be null if no locks used
+	 * @throws IncQueryException
+	 */
+	public void reinitializeWith(Resource policyResource, Resource lockResource) throws IncQueryException {
+		this.policyResource = policyResource;
+		this.lockResource = lockResource;
+		
+		arbiter.reinitializeWith(policyResource);
+		lockArbiter.reinitializeWith(lockResource);
 	}
 	
 	public URI getGoldConfinementURI() {

@@ -166,5 +166,20 @@ public class LiveTable implements ILiveRelation, IManipulableRelation {
 		}
 		
 	}
+
+	/**
+	 * Clears the table of all stored tuples and discards existing internal index structures. 
+	 * Listener subscriptions, however, are retained.
+	 */
+	public void clear() {
+		indexes.clear();
+		
+		for (Tuple tuple : tuples) {
+			for (Dispatcher dispatcher : dispatchers.values()) {
+				dispatcher.update(tuple, false);
+			}
+		}
+		tuples.clear();
+	}
 	
 }

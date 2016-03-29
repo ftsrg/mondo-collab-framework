@@ -33,7 +33,6 @@ import org.eclipse.incquery.runtime.api.GenericPatternGroup;
 import org.eclipse.incquery.runtime.api.IMatchUpdateListener;
 import org.eclipse.incquery.runtime.api.IPatternMatch;
 import org.eclipse.incquery.runtime.api.IQuerySpecification;
-import org.eclipse.incquery.runtime.api.IncQueryEngine;
 import org.eclipse.incquery.runtime.api.IncQueryMatcher;
 import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
 import org.eclipse.incquery.runtime.emf.EMFScope;
@@ -88,13 +87,20 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 			ResourceSet goldResourceSet,
 			User userFilter) throws IncQueryException 
 	{
-		AccessControlModel accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
+		Policy policyModel = extractPolicyElement(policyResource);
 		SecurityArbiter arbiter = new SecurityArbiter(
-				accessControlModel.getPolicy(), 
+				policyModel, 
 				userFilter, 
 				ImmutableSet.of(goldResourceSet), 
 				new BaseIndexOptions());
 		return arbiter;
+	}
+
+
+	private static Policy extractPolicyElement(Resource policyResource) {
+		AccessControlModel accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
+		Policy policyModel = accessControlModel.getPolicy();
+		return policyModel;
 	}	
 	
 	public static enum OperationKind {
@@ -125,18 +131,20 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		}
 	}
 	
-	private final Policy policy;
 	private Role roleRestriction;
 	private Set<? extends Notifier> goldModelRoots; 
+	private BaseIndexOptions indexOptions;
 	
-	private RuleConflictResolver ruleConflictResolver;
+
+	
+	private Policy policy;
 	private AdvancedIncQueryEngine policyQueryEngine;
 	private SpecificationBuilder specBuilder;
-
-	private Map<Rule, Asset.Factory> assetFactories = new HashMap<>();
+	private RuleConflictResolver ruleConflictResolver;
+	private Map<Rule, Asset.Factory> assetFactories;
 	
 	/**
-	 * @param policy the policy describing the security rules to be applied
+	 * @param policy the initial policy describing the security rules to be applied
 	 * @param roleRestriction if not null, only this role will be considered; if null, all roles will be considered
 	 * @param goldModelRoots the roots of the gold model
 	 * @param indexOptions 
@@ -144,9 +152,40 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	 */
 	public SecurityArbiter(Policy policy, Role roleRestriction, Set<? extends Notifier> goldModelRoots, BaseIndexOptions indexOptions) throws IncQueryException {
 		super();
-		this.policy = policy;
 		this.roleRestriction = roleRestriction;
 		this.goldModelRoots = goldModelRoots;
+		this.indexOptions = indexOptions;
+
+		reinitializeWith(policy);
+		
+	}
+
+
+	/**
+	 * Call if there is a new access control policy to parse. 
+	 * @param policyResource the new policy describing the security rules to be applied
+	 */
+	public void reinitializeWith(Resource policyResource) throws IncQueryException {
+		reinitializeWith(extractPolicyElement(policyResource));
+	}
+	
+	/**
+	 * Call if there is a new access control policy to parse. 
+	 * @param policy the new policy describing the security rules to be applied
+	 */
+	public void reinitializeWith(Policy policy) throws IncQueryException {
+		this.policy = policy;
+		
+		// clear up internal data structures
+		for (OperationKind operationKind : OperationKind.values()) {
+			for (Class<? extends Asset> assetClass : Asset.getKinds()) {
+				results.get(operationKind).get(assetClass).clear();
+			}			
+		}		
+		for (OperationKind op : OperationKind.values()) {
+			currentRights.get(op).clear();
+		}
+		assetFactories = new HashMap<>();
 		
 		List<Rule> rules = new ArrayList<>();
 		for (EObject ruleObject : policy.getRules()) {
@@ -163,7 +202,11 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 					"Unsupported conflict resolution: " + policy.getType());
 		this.ruleConflictResolver = new FirstApplicableResolution(rules);
 
-		policyQueryEngine = AdvancedIncQueryEngine.from(IncQueryEngine.on(new EMFScope(goldModelRoots, indexOptions)));
+		if (policyQueryEngine != null) 
+			policyQueryEngine.wipe();
+		else 
+			policyQueryEngine = AdvancedIncQueryEngine.createUnmanagedEngine(
+					new EMFScope(this.goldModelRoots, this.indexOptions));
 		this.specBuilder = new SpecificationBuilder();
 		
 		Set<IQuerySpecification<?>> ruleQueries = new HashSet<>();
@@ -174,7 +217,6 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		for (final Rule rule : rules) {
 			initRuleListeners(rule);
 		}
-		
 	}
 
 
