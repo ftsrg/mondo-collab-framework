@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="MONDO Integration Target Platform" sequenceNumber="327">
+<?pde version="3.8"?><target includeMode="feature" name="MONDO Integration Target Platform" sequenceNumber="328">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.team.svn.feature.group" version="3.0.1.I20150722-1700"/>
@@ -201,15 +201,15 @@
 <repository location="http://download.eclipse.org/ecp/releases/releases_target_17"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.rap.equinox.target.feature.feature.group" version="3.1.0.20151215-1144"/>
-<unit id="org.eclipse.rap.feature.feature.group" version="3.1.0.20151215-1144"/>
-<unit id="org.eclipse.rap.sdk.feature.feature.group" version="3.1.0.20151215-1144"/>
-<repository location="http://download.eclipse.org/rt/rap/3.1/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.rap.sdk.feature.group" version="2.11.1.v20150806-0404"/>
 <unit id="org.eclipse.e4.rcp.feature.group" version="1.4.0.v20150603-0857"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.rap.feature.feature.group" version="3.1.0.20160322-1037"/>
+<unit id="org.eclipse.rap.sdk.feature.feature.group" version="3.1.0.20160322-1037"/>
+<unit id="org.eclipse.rap.equinox.target.feature.feature.group" version="3.1.0.20160321-1405"/>
+<repository location="http://download.eclipse.org/rt/rap/3.1/"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
