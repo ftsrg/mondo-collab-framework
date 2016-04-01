@@ -7,10 +7,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -25,6 +31,10 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.part.EditorPart;
+import org.mondo.collaboration.online.core.LensSessionManager;
+import org.mondo.collaboration.online.core.OnlineLeg;
+import org.mondo.collaboration.online.core.StorageAccess;
+import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 
 public class MONDOTextEditor extends EditorPart {
 
@@ -48,26 +58,54 @@ public class MONDOTextEditor extends EditorPart {
 			printWriter.write(text.getText());
 			printWriter.close();
 			
-			String username = ModelExplorer.getCurrentStorageAccess().getUsername();
-			String password = ModelExplorer.getCurrentStorageAccess().getPassword();
+			StorageAccess currentStorageAccess = ModelExplorer.getCurrentStorageAccess();
+			String username = currentStorageAccess.getUsername();
+			String password = currentStorageAccess.getPassword();
 			
 			String commitMessage = "";
 			// TODO add other supported extensions here for with corresponding commit messages
+//			boolean hasMACLUpdated = false;
+//			boolean hasMPBLUpdated = false;
 			if (uri.fileExtension().equals("eiq")) {
 				commitMessage = "Auto message: Queries file committed.";
 			} else if (uri.fileExtension().equals("macl")) {
 				commitMessage = "Auto message: Lock file committed.";
+//				hasMACLUpdated = true;
 			} else if (uri.fileExtension().equals("mpbl")) {
 				commitMessage = "Auto mesage: Lock file committed.";
+//				hasMPBLUpdated = true;
 			}
 			
-			ModelExplorer.getCurrentStorageAccess().commit(uri.toString(), commitMessage, username, password);
-
+			currentStorageAccess.commit(uri.toString(), commitMessage, username, password);
+			
+			List<Resource> policyAndLockModels = currentStorageAccess.loadPolicyAndLockModels();
+			Resource policy = policyAndLockModels.get(0);
+			Resource lock = policyAndLockModels.get(1);
+			
+			Collection<OnlineLeg> onlineLegs = LensSessionManager.getAllOnlineLegs();
+			Set<OnlineCollaborationSession> onlineSessions = new HashSet<OnlineCollaborationSession>();
+			for (OnlineLeg onlineLeg : onlineLegs) {
+				OnlineCollaborationSession onlineCollaborationSession = onlineLeg.getOnlineCollaborationSession();
+				if(!onlineSessions.contains(onlineCollaborationSession)){
+					onlineSessions.add(onlineCollaborationSession);
+					onlineCollaborationSession.reinitializeWith(policy, lock);
+				}
+			}
 			setDirty(false);
-		} catch (IOException e) {
+		} catch (IOException | IncQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private Resource reloadMPBL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Resource reloadMACL() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

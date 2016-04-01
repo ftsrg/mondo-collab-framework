@@ -23,6 +23,7 @@ public class StorageAccessSvn extends StorageAccess {
 		super(username, password);
 		internalEiq = URI.createFileURI(internalCheckoutFile(getEiqFile(), true));
 		internalMacl = URI.createFileURI(internalCheckoutFile(getMaclFile(), true));
+		internalMpbl = URI.createFileURI(internalCheckoutFile(getMpblFile(), true));
 	}
 
 	public static final String SVN_LIST_COMMAND = "svn list %s --username=%s --password=%s --non-interactive --no-auth-cache";
@@ -44,6 +45,7 @@ public class StorageAccessSvn extends StorageAccess {
 	private Logger logger = Logger.getLogger(StorageAccessSvn.class);
 	private URI internalEiq;
 	private URI internalMacl;
+	private URI internalMpbl;
 
 	@Override
 	public String login() {
@@ -223,6 +225,11 @@ public class StorageAccessSvn extends StorageAccess {
 	}
 
 	@Override
+	protected URI getInternalMpblFile() {
+		return internalMpbl;
+	}
+
+	@Override
 	public ExecutionResponse commit(String path, String msg, String ownerUsername, String ownerPassword) {
 		URI fullUri = URI.createURI(path);
 		String file = fullUri.lastSegment();
@@ -284,4 +291,5 @@ public class StorageAccessSvn extends StorageAccess {
 		
 		return response;
 	}
+
 }

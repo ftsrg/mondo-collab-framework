@@ -91,8 +91,14 @@ public class OnlineCollaborationSession {
 	 */
     Lock mutex = new ReentrantLock();
 
-
+	public Resource getPolicyResource() {
+		return policyResource;
+	}
 	
+	public Resource getLockResource() {
+		return lockResource;
+	}
+
 	/**
 	 * @param goldConfinementURI the writable area in the folder hierarchy for the gold model
 	 * @param goldResourceSet the gold model
@@ -262,7 +268,7 @@ public class OnlineCollaborationSession {
 		protected RelationalLensXform setupLens(boolean startWithGet) {
 			User user = SecurityArbiter.getUserByName(accessControlModel, userName);
 			if (user == null)
-				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, policyResource.getURI()));
+				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, getPolicyResource().getURI()));
 
 			ModelIndexer frontIndexer = new ModelIndexer(
 	        		frontConfinementURI,
