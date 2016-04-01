@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -77,6 +78,16 @@ public class OnlineCollaborationSession {
 	private final LockArbiter lockArbiter;
 	private final ModelIndexer goldIndexer;
 	private final AccessControlModel accessControlModel;
+	
+	public Map<String, Set<String>> getLockMappingsToUsers() {
+		Map<String, Set<String>> lockNamesToUsers = new HashMap<String, Set<String>>();
+		Map<org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock, Set<String>> lockAndOwnerNames = lockArbiter.getLockOwnerNames();
+		Set<org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock> keySet = lockAndOwnerNames.keySet();
+		for (org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock l: keySet) {
+			lockNamesToUsers.put(l.getPattern().getName(), lockAndOwnerNames.get(l));
+		}
+		return lockNamesToUsers;
+	}
 	
 	private final String ownerUsername;
 	private final String ownerPassword;

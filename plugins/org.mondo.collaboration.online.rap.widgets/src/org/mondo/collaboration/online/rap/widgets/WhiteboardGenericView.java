@@ -1,6 +1,8 @@
 package org.mondo.collaboration.online.rap.widgets;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
@@ -12,7 +14,12 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;
+import org.mondo.collaboration.online.core.LensSessionManager;
+import org.mondo.collaboration.online.core.OnlineLeg;
+import org.mondo.collaboration.online.core.StorageAccess;
+import org.mondo.collaboration.online.core.StorageAccessFactory;
 import org.mondo.collaboration.online.rap.UINotifierManager;
+import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 
 import com.google.common.util.concurrent.FutureCallback;
 

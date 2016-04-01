@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -77,11 +78,26 @@ public class MONDOTextEditor extends EditorPart {
 			
 			Collection<OnlineLeg> onlineLegs = LensSessionManager.getAllOnlineLegs();
 			Set<OnlineCollaborationSession> onlineSessions = new HashSet<OnlineCollaborationSession>();
+			boolean firstLock = true;
 			for (OnlineLeg onlineLeg : onlineLegs) {
 				OnlineCollaborationSession onlineCollaborationSession = onlineLeg.getOnlineCollaborationSession();
 				if(!onlineSessions.contains(onlineCollaborationSession)){
 					onlineSessions.add(onlineCollaborationSession);
 					onlineCollaborationSession.reinitializeWith(policy, lock);
+					if(firstLock){
+						firstLock=false;
+						String message = "";
+						Map<String, Set<String>> locksToUsers = onlineCollaborationSession.getLockMappingsToUsers();
+						Set<String> keySet = locksToUsers.keySet();
+						for (String lockName : keySet) {
+							message += lockName + System.lineSeparator();
+							Set<String> userNames = locksToUsers.get(lockName);
+							for (String userName : userNames) {
+								message += "\t" + userName + System.lineSeparator();								
+							}
+						}
+						ModelLogView.addMessage("Locks are updated. Users and their locks:" + System.lineSeparator() + message, uri);
+					}
 				}
 			}
 			setDirty(false);

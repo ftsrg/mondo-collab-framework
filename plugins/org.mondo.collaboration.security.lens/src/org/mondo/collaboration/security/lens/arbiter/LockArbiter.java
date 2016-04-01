@@ -312,4 +312,8 @@ public class LockArbiter {
 		}
 	}
 
+	public Map<Lock, Set<String>> getLockOwnerNames() {
+		return lockOwnerNames;
+	}
+
 }

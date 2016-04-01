@@ -47,7 +47,7 @@ public class ModelLogView extends WhiteboardGenericView {
 	}
 	
 	public static void addMessage(String message, URI uri){
-		String fullLog = messages.get(uri);
+		String fullLog = messages.get(uri) == null? "" : messages.get(uri);
 		fullLog = message + lineDelimiter + fullLog;
 		messages.put(uri, fullLog);
 		
