@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -12,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
@@ -20,10 +20,8 @@ import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
@@ -48,7 +46,6 @@ public class MONDOTextEditor extends EditorPart {
 	private URI uri;
 	
 	public MONDOTextEditor() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -63,17 +60,13 @@ public class MONDOTextEditor extends EditorPart {
 			String password = currentStorageAccess.getPassword();
 			
 			String commitMessage = "";
-			// TODO add other supported extensions here for with corresponding commit messages
-//			boolean hasMACLUpdated = false;
-//			boolean hasMPBLUpdated = false;
+			// add other supported extensions here for with corresponding commit messages
 			if (uri.fileExtension().equals("eiq")) {
-				commitMessage = "Auto message: Queries file committed.";
+				commitMessage = "Auto message, queries file committed.";
 			} else if (uri.fileExtension().equals("macl")) {
-				commitMessage = "Auto message: Lock file committed.";
-//				hasMACLUpdated = true;
+				commitMessage = "Auto message, Lock file committed.";
 			} else if (uri.fileExtension().equals("mpbl")) {
-				commitMessage = "Auto mesage: Lock file committed.";
-//				hasMPBLUpdated = true;
+				commitMessage = "Auto mesage, Lock file committed.";
 			}
 			
 			currentStorageAccess.commit(uri.toString(), commitMessage, username, password);
@@ -93,19 +86,8 @@ public class MONDOTextEditor extends EditorPart {
 			}
 			setDirty(false);
 		} catch (IOException | IncQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.getLogger(getClass()).error(e.getMessage());
 		}
-	}
-
-	private Resource reloadMPBL() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private Resource reloadMACL() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -115,8 +97,6 @@ public class MONDOTextEditor extends EditorPart {
 
 	@Override
 	public void init(IEditorSite arg0, IEditorInput arg1) throws PartInitException {
-		// TODO Auto-generated method stub
-
 		URIEditorInput uriInput = (URIEditorInput) arg1;
 
 		uri = uriInput.getURI();
@@ -126,40 +106,27 @@ public class MONDOTextEditor extends EditorPart {
 		try {
 			fileReader = new FileReader(file);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.getLogger(getClass()).error(e.getMessage());
 		}
-		BufferedReader reader = new BufferedReader(fileReader);
 
 		content = "";
 
 		String line = null;
-		try {
+		try (BufferedReader reader = new BufferedReader(fileReader)) {
 			line = reader.readLine();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		while (line != null) {
+			while (line != null) {
 
-			content = content.concat(line);
-
-			try {
+				content = content.concat(line);
 				line = reader.readLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
+				if (line != null) {
+					content = content.concat(System.lineSeparator());
+				}
 			}
-			if (line != null) {
-				content = content.concat(System.lineSeparator());
-			}
-		}
 
-		try {
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.getLogger(getClass()).error(e.getMessage());
 		}
 
 		setSite(arg0);
@@ -202,8 +169,6 @@ public class MONDOTextEditor extends EditorPart {
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void setDirty(boolean dirty) {
