@@ -28,5 +28,15 @@
             name="Whiteboard Chat">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.mondo.collaboration.online.rap.widgets.MONDOTextEditor"
+            default="false"
+            extensions="macl,mpbl,eiq"
+            id="org.mondo.collaboration.online.rap.widgets.mondotexteditor"
+            name="MONDO Text Editor">
+      </editor>
+   </extension>
 
 </plugin>
