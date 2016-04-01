@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
@@ -87,10 +89,15 @@ public abstract class StorageAccess {
 
 	public abstract FileStatus checkFileStatus(String path) throws Exception;
 	
-	public Resource loadPolicyModel() {
+	public List<Resource> loadPolicyAndLockModels() {
 		ResourceSetImpl resourceSet = new ResourceSetImpl();
 		resourceSet.getResource(getInternalEiqFile(), true);
-		return resourceSet.getResource(getInternalMaclFile(), true);
+		Resource policy = resourceSet.getResource(getInternalMaclFile(), true);
+		Resource lock = resourceSet.getResource(getInternalMpblFile(), true);
+		ArrayList<Resource> policyAndLock = Lists.newArrayList();
+		policyAndLock.add(policy);
+		policyAndLock.add(lock);
+		return policyAndLock;
 	}
 
 	protected ExecutionResponse internalExecuteProcess(String cmd) throws Exception {
@@ -210,6 +217,17 @@ public abstract class StorageAccess {
 		String retSystem = System.getProperty("mondo.macl");
 		return retBundle == null ? retSystem : retBundle;
 	}
+	
+	/**
+	 * Returns the MPBL file location to be check out
+	 * 
+	 * @return the MPBL file location to be check out
+	 */
+	public static String getMpblFile() {
+		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.mpbl");
+		String retSystem = System.getProperty("mondo.mpbl");
+		return retBundle == null ? retSystem : retBundle;
+	}
 
 	/**
 	 * Returns the path of Eiq file on the file system.
@@ -224,6 +242,13 @@ public abstract class StorageAccess {
 	 * @return the path of Macl file on the file system.
 	 */
 	protected abstract URI getInternalMaclFile();
+	
+	/**
+	 * Returns the path of MPBL file on the file system.
+	 * 
+	 * @return the path of MPBL file on the file system.
+	 */
+	protected abstract URI getInternalMpblFile();
 
 	/**
 	 * Returns the user specific obfuscator

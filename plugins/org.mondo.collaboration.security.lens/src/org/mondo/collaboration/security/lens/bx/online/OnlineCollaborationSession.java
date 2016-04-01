@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -78,6 +79,16 @@ public class OnlineCollaborationSession {
 	private final ModelIndexer goldIndexer;
 	private final AccessControlModel accessControlModel;
 	
+	public Map<String, Set<String>> getLockMappingsToUsers() {
+		Map<String, Set<String>> lockNamesToUsers = new HashMap<String, Set<String>>();
+		Map<org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock, Set<String>> lockAndOwnerNames = lockArbiter.getLockOwnerNames();
+		Set<org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock> keySet = lockAndOwnerNames.keySet();
+		for (org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock l: keySet) {
+			lockNamesToUsers.put(l.getPattern().getName(), lockAndOwnerNames.get(l));
+		}
+		return lockNamesToUsers;
+	}
+	
 	private final String ownerUsername;
 	private final String ownerPassword;
 	
@@ -91,8 +102,14 @@ public class OnlineCollaborationSession {
 	 */
     Lock mutex = new ReentrantLock();
 
-
+	public Resource getPolicyResource() {
+		return policyResource;
+	}
 	
+	public Resource getLockResource() {
+		return lockResource;
+	}
+
 	/**
 	 * @param goldConfinementURI the writable area in the folder hierarchy for the gold model
 	 * @param goldResourceSet the gold model
@@ -149,6 +166,7 @@ public class OnlineCollaborationSession {
 		});
 		autosaveThread.start();
 	}
+	
 	
 	/**
 	 * Reinitialize the session with a new policy and lock resource
@@ -262,7 +280,7 @@ public class OnlineCollaborationSession {
 		protected RelationalLensXform setupLens(boolean startWithGet) {
 			User user = SecurityArbiter.getUserByName(accessControlModel, userName);
 			if (user == null)
-				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, policyResource.getURI()));
+				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, getPolicyResource().getURI()));
 
 			ModelIndexer frontIndexer = new ModelIndexer(
 	        		frontConfinementURI,

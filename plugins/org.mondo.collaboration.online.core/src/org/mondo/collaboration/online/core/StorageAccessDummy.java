@@ -52,6 +52,11 @@ public class StorageAccessDummy extends StorageAccess {
 	}
 
 	@Override
+	protected URI getInternalMpblFile() {
+		return URI.createFileURI(internalMaclFile);
+	}
+
+	@Override
 	public ExecutionResponse commit(String path, String message, OnlineLeg leg) {
 		return new ExecutionResponse(Collections.emptyList(), Collections.emptyList());
 	}
