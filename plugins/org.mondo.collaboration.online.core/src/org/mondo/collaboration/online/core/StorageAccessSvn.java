@@ -265,6 +265,10 @@ public class StorageAccessSvn extends StorageAccess {
 		String folder = replaceLast(path, file, "");
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
 
+		if(!new File(temp + file).exists()) {
+			return FileStatus.Normal; 
+		}
+		
 		String[] cmd = {
 				"/bin/sh",
 				"-c",
