@@ -198,9 +198,9 @@ public class MONDOServerView extends ViewPart {
 					managementURL = "";
 				}
 
-				if(credentials == null || credentials.getUsername() == ""){
-					return;
-				}
+//				if(credentials == null || credentials.getUsername() == ""){
+//					return;
+//				}
 				
 				CommandInterpreter commandInterpreter = new CommandInterpreterForOfflineThrift(credentials, managementURL);
 
