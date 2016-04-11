@@ -33,16 +33,17 @@ fi
 if [ ! -d $SVN_PATH_OS/$GOLD_REPO_NAME ]; then
   echo "Create Gold Repository: $SVN_PATH_OS/$GOLD_REPO_NAME"
   svnadmin create $SVN_PATH_OS/$GOLD_REPO_NAME
-  if [ -z $APACHE_USER ]; then
-    echo "Apache username:"
-    APACHE_USER=$(cat)
-  fi
-  chown -R $APACHE_USER /$SVN_PATH_OS/$GOLD_REPO_NAME
 else
   echo "Gold Repository already exists: $SVN_PATH_OS/$GOLD_REPO_NAME"
 fi
 
-echo "#!/bin/sh" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
+if [ -z $APACHE_USER ]; then
+  echo "Apache username:"
+  APACHE_USER=$(cat)
+fi
+chown -R $APACHE_USER /$SVN_PATH_OS/$GOLD_REPO_NAME
+
+echo "#!/bin/sh" > $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "set -e" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 echo "$DIR/../hooks/gold-pre-commit.sh \$1 \$2 " >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit
 chmod 755 $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/post-commit

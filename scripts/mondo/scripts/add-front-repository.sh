@@ -83,7 +83,7 @@ if [ -n "$IS_PERMISSION_DENIED" ]; then
 fi
 chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH
 
-echo "#!/bin/sh" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+echo "#!/bin/sh" > $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 echo "set -e" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 echo "$DIR/../hooks/front-pre-commit.sh \$1 \$2 " >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 chmod 755 $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
