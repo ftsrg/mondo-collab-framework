@@ -61,11 +61,13 @@ ret=$?
 log "$ret"
 set -e
 if [ 253 = "$ret" ]; then
+  rm $DIR/../lock/.lock-front
   log "Mondo Lock is violated"
   echo "Mondo Lock is violated" 1>&2
   exit 1
 elif [ 0 -ne "$ret" ];
 then
+   rm .lock-front
    log "Mondo Exception: Security access violated. Error code $ret"
    echo "Mondo Exception: Security access violated. Error code $ret" 1>&2
    exit 1
