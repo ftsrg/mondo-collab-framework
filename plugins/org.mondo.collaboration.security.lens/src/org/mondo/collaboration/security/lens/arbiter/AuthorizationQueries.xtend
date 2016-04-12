@@ -208,6 +208,18 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 			]
 		)	
 		
+	@Accessors(PUBLIC_GETTER) 
+	private val IQuerySpecification unReassignableSrcReference = 
+		composeParametrizableQuery('''«fullyQualifiedName».«OperationKind::WRITE».unreassignable.«ReferenceAsset.simpleName»''', 
+			#[varSrc, varEReference]) [ #{singleBody(#{
+				filteredGoldReference(#[varSrc, varEReference, varTrg], "to-one") [!isMany()]
+			})}]
+	@Accessors(PUBLIC_GETTER) 
+	private val IQuerySpecification unReassignableTrgReference = 
+		composeParametrizableQuery('''«fullyQualifiedName».«OperationKind::WRITE».unreassignable.«ReferenceAsset.simpleName»''', 
+			#[varEReference, varTrg]) [ #{singleBody(#{
+				filteredGoldReference(#[varSrc, varEReference, varTrg], "one-to") [EOpposite != null && !EOpposite.isMany()]
+			})}]
 		
 		
 	@Accessors(PUBLIC_GETTER) 
@@ -231,7 +243,7 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 	val Set<IQuerySpecification> allQueries = ImmutableSet::copyOf(Iterables::concat(
 		Iterables::concat(explicitDenialQuery.values.map[values]),
 		Iterables::concat(effectivelyDeniedQuery.values.map[values]),
-		ImmutableSet::of(explicitObfuscateQuery, effectivelyObfuscatedAttribute, frozenObject)
+		ImmutableSet::of(explicitObfuscateQuery, effectivelyObfuscatedAttribute, frozenObject, unReassignableSrcReference, unReassignableTrgReference)
 	))
 	 
 		
@@ -242,6 +254,8 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 	public static val varTrg = "trg"
 	public static val varContainer = "container"
 	public static val varValue = "value"
+	
+	public static val varOtherValue = "otherValue"
 	
 	public static val varJudgement = "judgement"
 	public static val varUser = "user"

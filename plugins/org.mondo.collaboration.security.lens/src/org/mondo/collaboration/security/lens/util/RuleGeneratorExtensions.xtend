@@ -55,6 +55,7 @@ import org.eclipse.incquery.runtime.evm.api.Context
 import org.eclipse.incquery.runtime.api.IncQueryMatcher
 import org.mondo.collaboration.security.lens.bx.LensTransformationExecution
 import org.mondo.collaboration.security.lens.bx.AbortReason.RuntimeExceptionAbort
+import org.eclipse.xtext.xbase.lib.Functions.Function1
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -113,29 +114,29 @@ public class RuleGeneratorExtensions {
 	// queries
 	public def composeQuery(String queryFullyQualifiedName, Iterable<? extends QueryTemplate>... conjunctiveTemplates) {
 		val allTemplates = Iterables::concat(conjunctiveTemplates)
-		new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
-			queryFullyQualifiedName,
-			gatherParameters(allTemplates)
-		) {
-			override protected doGetContainedBodies() throws QueryInitializationException {
-				#{singleBody(allTemplates)}
-			}
-		})		
+		composeParametrizableQuery(queryFullyQualifiedName, gatherParameters(allTemplates)) [
+			#{singleBody(allTemplates)}
+		]
 	}
 	public def composeDisjunctiveQuery(String queryFullyQualifiedName, Iterable<? extends QueryTemplate>... disjunctiveTemplates) {
+		composeParametrizableQuery(queryFullyQualifiedName, gatherParameters(disjunctiveTemplates)) [
+			ImmutableSet.copyOf(disjunctiveTemplates.map[template | singleBody(template)])
+		]
+	}
+	public def composeParametrizableQuery(String queryFullyQualifiedName, Iterable<String> uniqueParameterVariables, Function1<PQuery, Set<PBody>> bodiesTemplate) {
 		new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
 			queryFullyQualifiedName,
-			gatherParameters(disjunctiveTemplates)
+			makePParameterList(uniqueParameterVariables)
 		) {
 			override protected doGetContainedBodies() throws QueryInitializationException {
-				ImmutableSet.copyOf(disjunctiveTemplates.map[template | singleBody(template)])
+				bodiesTemplate.apply(this)
 			}
 		})		
 	}
 	public def gatherParameters(Iterable<? extends QueryTemplate>... disjunctiveTemplates) {
 		val setOfUniqueVariablesPerBody = disjunctiveTemplates.map[bodyTemplates | ImmutableSet::copyOf(Iterables::concat(bodyTemplates.map[deducedVariables])) as Set<String>]
 		val commonVariables = setOfUniqueVariablesPerBody.reduce [ x, y | Sets::intersection(x,y)]
-		makePParameterList(commonVariables)
+		commonVariables
 	}
 	public def makePParameterList(Iterable<String> uniqueVariables) {
 		ImmutableList.copyOf(uniqueVariables.map[new PParameter(it)])

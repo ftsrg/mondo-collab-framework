@@ -56,6 +56,7 @@ import org.mondo.collaboration.security.lens.bx.AbortReason.WriteAuthorizationDe
 import org.mondo.collaboration.security.lens.arbiter.LockArbiter
 import org.mondo.collaboration.security.lens.bx.AbortReason.LockViolationDenial
 import org.mondo.collaboration.security.lens.arbiter.LockArbiter.LockMonitoringSession
+import org.mondo.collaboration.security.lens.arbiter.Asset.ReferenceAsset
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -255,6 +256,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			)
 			readAuthorization += checkReadAuthorization(Asset.ReferenceAsset, varGoldSrc, varEReference, varGoldTrg)
 			writeAuthorization += checkWriteAuthorization(Asset.ReferenceAsset, varGoldSrc, varEReference, varGoldTrg)
+			additivePreAuthorization += preAuthorizeReferenceAddition()
 		]
 		rules += new RelationalRuleSpecification => [
 			name = "attributes"
@@ -335,6 +337,23 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			val authMatch = authDeniedQuery.newMatch(valueArray)
 			if (authDeniedMatcher.hasMatch(authMatch)) {
 				transformationExecution.abort(new WriteAuthorizationDenial(user, assetClass, authMatch))
+			}
+		]
+	}
+	
+	def ActionStep preAuthorizeReferenceAddition() { // varGoldSrc, varEReference, varGoldTrg
+		val unreassignableSrcQuery = authorizationQueries.unReassignableSrcReference
+		val unreassignableTrgQuery = authorizationQueries.unReassignableTrgReference
+		val unreassignableSrcMatcher = unreassignableSrcQuery.getMatcher(incQueryEngine)
+		val unreassignableTrgMatcher = unreassignableTrgQuery.getMatcher(incQueryEngine)
+		return [
+			val unreassignableSrcMatch = unreassignableSrcQuery.newMatch(variables.get(varGoldSrc), variables.get(varEReference))
+			if (unreassignableSrcMatcher.hasMatch(unreassignableSrcMatch)) {
+				transformationExecution.abort(new WriteAuthorizationDenial(user, ReferenceAsset, unreassignableSrcMatch))
+			}
+			val unreassignableTrgMatch = unreassignableTrgQuery.newMatch(variables.get(varEReference), variables.get(varGoldTrg))
+			if (unreassignableTrgMatcher.hasMatch(unreassignableTrgMatch)) {
+				transformationExecution.abort(new WriteAuthorizationDenial(user, ReferenceAsset, unreassignableTrgMatch))
 			}
 		]
 	}
