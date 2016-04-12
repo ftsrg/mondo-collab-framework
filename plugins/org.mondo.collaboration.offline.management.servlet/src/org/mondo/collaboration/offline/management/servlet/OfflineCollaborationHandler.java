@@ -47,10 +47,8 @@ public class OfflineCollaborationHandler implements Iface {
 			UnauthorizedRepositoryOperation, OfflineCollaborationInternalError, TException {
 		try {
 			String scriptsFolder = getScriptsFolder();
-			ProcessBuilder builder1 = new ProcessBuilder(scriptsFolder + "/wipe-repositories.sh", "--force");
+			ProcessBuilder builder1 = new ProcessBuilder(scriptsFolder + "/reset-front-repositories.sh", "--apache2");
 			/* Process process1 = */ builder1.start();
-			ProcessBuilder builder2 = new ProcessBuilder(scriptsFolder + "/init-repositories.sh", "--apache2");
-			/* Process process2 = */ builder2.start();
 		} catch (IOException e) {
 			throw new OfflineCollaborationInternalError(e.getMessage());
 		}
