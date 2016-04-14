@@ -87,7 +87,7 @@ public class MONDOServerView extends ViewPart {
 		lblListOfMondo.setSize(128, 17);
 		lblListOfMondo.setText("List of MONDO servers");
 
-		List list = new List(serversComposite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		final List list = new List(serversComposite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		Button btnReloadListOf = new Button(serversComposite, SWT.NONE);
