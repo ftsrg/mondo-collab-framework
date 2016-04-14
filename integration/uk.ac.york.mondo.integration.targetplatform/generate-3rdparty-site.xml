@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build-site">
+	<target name="init">
+		<tstamp/>
+		<property name="sitedir" location="thirdparty-nonp2"/>
+		<property name="ecfdir" location="thirdparty-ecf-nightly"/>
+	</target>
+
+	<!-- Packages everything we don't have in p2 update sites to a p2 update site, which we can upload to Github Pages and use from Tycho (Tycho only works with unpacked p2 repos). -->
+	<target name="build-site" depends="init">
+		<delete dir="${sitedir}"/>
+		<mkdir dir="${sitedir}/features"/>
+		<mkdir dir="${sitedir}/plugins"/>
+		<delete dir="${sitedir}" includes="*.jar"/>
+
+		<pde.exportPlugins
+			useworkspacecompiledclasses="true"
+			allowbinarycycles="true"
+			exporttype="folder"
+			plugins="atl-mr,org.eclipse.m2m.atl.emftvm,org.eclipse.m2m.atl.emftvm.trace"
+			destination="${sitedir}"
+		/>
+		<eclipse.convertPath resourcepath="/uk.ac.york.mondo.integration.targetplatform/bundles/" property="itarget_plugins" />
+
+		<copy todir="${sitedir}/plugins">
+			<fileset dir="${itarget_plugins}" includes="*.jar"/>
+		</copy>
+	</target>
+
+	<target name="publish-site" depends="init">
+		<eclipse.publish.featuresAndBundles
+			repository="file:/${sitedir}/"
+			category="file:/${basedir}/category-3rdparty.xml"
+			compress="true"
+			append="true">
+			<features dir="${sitedir}/features" />
+			<bundles dir="${sitedir}/plugins" />
+		</eclipse.publish.featuresAndBundles>
+	</target>
+
+	<target name="mirror-ecf-site" depends="init">
+		<p2.mirror source="http://build.ecf-project.org/repo/N-HEAD-sdk.feature/lastSuccessful/archive/site.p2/">
+			<destination kind="metadata" location="file://${ecfdir}" name="ECF" />
+			<destination kind="artifact" location="file://${ecfdir}" name="ECF" />
+			<iu id="org.eclipse.ecf.core.ssl.feature.feature.group" />
+			<iu id="org.eclipse.ecf.filetransfer.feature.feature.group" />
+			<iu id="org.eclipse.ecf.core.feature.feature.group" />
+			<iu id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" />
+			<iu id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" />
+			<iu id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" />
+		</p2.mirror>
+	</target>
+</project>

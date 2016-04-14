@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.model.references.definition.ext">
+      <client
+            Id="uk.ac.york.mondo.integration.hawk.emf.emfsplitter.client"
+            class="uk.ac.york.mondo.integration.hawk.emf.emfsplitter.HawkCrossReferences">
+      </client>
+   </extension>
+
+</plugin>
