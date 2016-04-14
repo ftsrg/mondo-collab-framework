@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.mondo.collaboration.security</groupId>
-    <artifactId>org.mondo.collaboration.security</artifactId>
+    <groupId>uk.ac.york.mondo.integration</groupId>
+    <artifactId>mondo-integration</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>../../releng/org.mondo.collaboration.security.parent/pom.xml</relativePath>
+    <relativePath>../../integration/pom.xml</relativePath>
   </parent>
   <groupId>org.mondo.collaboration.security</groupId>
   <artifactId>org.mondo.collaboration.offline.management.servlet</artifactId>

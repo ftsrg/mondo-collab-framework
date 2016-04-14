@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.generator;bundle-version="2.8.4",
  org.eclipse.emf.mwe2.launch;bundle-version="2.8.1"
 Import-Package: org.apache.log4j
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.mondo.collaboration.security.macl.xtext.rule,
  org.mondo.collaboration.security.macl.xtext.rule.services,
  org.mondo.collaboration.security.macl.xtext.rule.mACLRule,
