@@ -178,6 +178,11 @@ public class OnlineCollaborationSession {
 		this.policyResource = policyResource;
 		this.lockResource = lockResource;
 		
+		if (logger.isDebugEnabled())
+			logger.debug(String.format("Reinitializing online session with policy resource %s and lock resource %s", 
+				policyResource == null ? "<null>" : policyResource.getURI(), 
+				lockResource == null ? "<null>" : lockResource.getURI()));
+		
 		arbiter.reinitializeWith(policyResource);
 		lockArbiter.reinitializeWith(lockResource);
 	}
@@ -239,7 +244,7 @@ public class OnlineCollaborationSession {
 			this(userName, stringObfuscator,
 			        true,
 					new ResourceSetImpl(), 
-					FAKE_MAIN_RESOURCE_URI);
+					FAKE_MAIN_RESOURCE_URI.appendSegment(userName));
 		}
 		
 		/**
