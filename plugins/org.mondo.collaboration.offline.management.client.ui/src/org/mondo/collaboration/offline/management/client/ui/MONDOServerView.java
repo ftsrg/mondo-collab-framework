@@ -1,12 +1,18 @@
 package org.mondo.collaboration.offline.management.client.ui;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Dictionary;
+import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
+import org.apache.thrift.TException;
+import org.apache.thrift.transport.TTransportException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,24 +29,34 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.browser.IWebBrowser;
+import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.part.ViewPart;
-import org.mondo.collaboration.offline.management.cli.OfflineCollaborationManagementCommandProvider;
-import org.osgi.framework.Bundle;
 
+import uk.ac.york.mondo.integration.api.GoldRepoNotFound;
+import uk.ac.york.mondo.integration.api.OfflineCollaboration;
+import uk.ac.york.mondo.integration.api.OfflineCollaboration.Client;
+import uk.ac.york.mondo.integration.api.OfflineCollaborationInternalError;
+import uk.ac.york.mondo.integration.api.UnauthorizedRepositoryOperation;
 import uk.ac.york.mondo.integration.api.dt.prefs.CredentialsStore;
 import uk.ac.york.mondo.integration.api.dt.prefs.CredentialsStore.Credentials;
 import uk.ac.york.mondo.integration.api.dt.prefs.Server;
 import uk.ac.york.mondo.integration.api.dt.prefs.ServerStore;
+import uk.ac.york.mondo.integration.api.utils.APIUtils;
+import uk.ac.york.mondo.integration.api.utils.APIUtils.ThriftProtocol;
 
 public class MONDOServerView extends ViewPart {
 
 	private static final String CUSTOM_URL_TEXT = "Custom URL...";
+	private static final String DUMMY_URL = "dummy.url";
 	public static final String ID = "org.mondo.collaboration.offline.management.client.ui.MONDOView"; //$NON-NLS-1$
 	private Text frontRepoURL;
 	private Text userName;
 	private Text customURL;
 
 	private static Logger logger = Logger.getLogger(MONDOServerView.class);
+	private Credentials credentials;
 
 	public MONDOServerView() {
 	}
@@ -55,7 +71,9 @@ public class MONDOServerView extends ViewPart {
 
 		Composite userDataComposite = new Composite(parent, SWT.NONE);
 		userDataComposite.setLayout(new GridLayout(1, false));
-		// TODO what should happen here? Call thrift API? How?
+
+		Label lblUserSpecificDetails = new Label(userDataComposite, SWT.NONE);
+		lblUserSpecificDetails.setText("User specific details:");
 
 		Button btnGetMyFront = new Button(userDataComposite, SWT.NONE);
 		btnGetMyFront.setSize(111, 31);
@@ -108,61 +126,158 @@ public class MONDOServerView extends ViewPart {
 		customURL.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		loadListOfServers(list);
-		
+
 		userName.setEnabled(false);
-				new Label(userDataComposite, SWT.NONE);
+
+		Label label = new Label(userDataComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+
+		Label lblGlobalActions = new Label(userDataComposite, SWT.NONE);
+		lblGlobalActions.setText("Other actions:");
+
+		Button btnOpenOnlineCollaboration = new Button(userDataComposite, SWT.NONE);
+		btnOpenOnlineCollaboration.setText("Open online collaboration login screen in browser");
+		btnOpenOnlineCollaboration.addSelectionListener(createOnlineCollaborationListener(list));
+
+		Button btnResetFromGold = new Button(userDataComposite, SWT.NONE);
+		btnResetFromGold.setSize(129, 31);
+
+		btnResetFromGold.setText("Reset all repositories based on gold");
+
+		btnResetFromGold.addSelectionListener(createResetListener(list));
+		list.addSelectionListener(createListSelectionListener(list));
+
+		btnGetMyFront.addSelectionListener(createGetFrontListener(list));
+
+		createActions();
+		initializeToolBar();
+		initializeMenu();
+	}
+	
+	private OfflineCollaboration.Client createClient(List list) {
+		String[] selection = list.getSelection();
+		Credentials credentials;
+		String managementURL = getManagementURL(selection);
+
+		URI url;
+		try {
+			url = new URI(managementURL);
+			String scheme = url.getScheme();
+			if(scheme == null ){
+				MessageBox uriErrorBox = new MessageBox(getSite().getShell());
+				uriErrorBox.setText("Server URI malformed");
+				uriErrorBox.setMessage("Missing URI scheme (e.g. http://, https://)");			
+				logger.log(Priority.ERROR,"Missing URI scheme (e.g. http://, https://)");				
+				return null;
+			}
+		} catch (URISyntaxException e1) {
+			MessageBox uriErrorBox = new MessageBox(getSite().getShell());
+			uriErrorBox.setText("Server URI malformed");
+			uriErrorBox.setMessage(e1.getMessage());			
+			logger.log(Priority.ERROR, e1.getMessage());
+			return null;
+		}
+		credentials = loadCredentials(selection);
 		
-				Button btnResetFromGold = new Button(userDataComposite, SWT.NONE);
-				btnResetFromGold.setSize(129, 31);
-				
-				btnResetFromGold.setText("Reset from gold repo");
-				
-				Button btnOpenOnlineCollaboration = new Button(userDataComposite, SWT.NONE);
-				btnOpenOnlineCollaboration.setText("Open online collaboration login screen in browser");
-				
-				btnResetFromGold.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						String[] selection = list.getSelection();
-						Credentials credentials;
-						String managementURL;
-						if (selection != null && selection.length > 0) {
-							credentials = getCredentials(selection[0]);
-							managementURL = selection[0];
-						} else {
-							credentials = null;
-							managementURL = "";
-						}
-						
-						if(credentials == null || credentials.getUsername() == ""){
-							return;
-						}
+		Client client = null;
+		try {
+			client = APIUtils.connectTo(OfflineCollaboration.Client.class, managementURL, ThriftProtocol.JSON, credentials.getUsername(), credentials.getPassword());
+		} catch (TTransportException e) {
+			MessageBox transportErrorBox = new MessageBox(getSite().getShell());
+			transportErrorBox.setText("Transport exception occured");
+			transportErrorBox.setMessage(e.getMessage());
+			logger.log(Priority.ERROR, e.getMessage());
+		} catch (URISyntaxException e) {
+			MessageBox uriErrorBox = new MessageBox(getSite().getShell());
+			uriErrorBox.setText("Server URI malformed");
+			uriErrorBox.setMessage(e.getMessage());			
+			logger.log(Priority.ERROR, e.getMessage());
+		}
+		
+		return client;
+	}
 
-						CommandInterpreter commandInterpreter = new CommandInterpreterForOfflineThrift(credentials, managementURL);
+	private Credentials loadCredentials(String[] selection) {
+		if (selection != null && selection.length > 0) {
+			credentials = getCredentials(selection[0]);
+		} else {
+			credentials = new Credentials("", "");
+		}
+		
+		if (selection[0].equals(CUSTOM_URL_TEXT)) {
+			SimpleCredentialsDialog credentialsDialog = new SimpleCredentialsDialog(getSite().getShell());
+			int open = credentialsDialog.open();
+			if(open == IDialogConstants.OK_ID){
+				String user = credentialsDialog.getUser();
+				String password = credentialsDialog.getPassword();
+				credentials = new Credentials(user, password);
+			}
+		}
+		return credentials;
+	}
 
-						OfflineCollaborationManagementCommandProvider commandProvider = new OfflineCollaborationManagementCommandProvider();
-						try {
-							commandProvider._offlineCollaborationRegenerateFrontRepositories(commandInterpreter);
-							MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_INFORMATION | SWT.OK);
-							messageBox.setText("Success.");
-							messageBox.setMessage("Front repository regenerated.");
-							messageBox.open();
-						} catch (Exception e1) {
-							String message = "Error occured while regenerating";
-							logger.error(message);
-							MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_INFORMATION | SWT.ERROR);
-							messageBox.setText("MONDO server management error");
-							messageBox.setMessage("Error occured while regenerating.");
-							messageBox.open();
-						}
+	private String getManagementURL(String[] selection) {
+		String managementURL;
+		if (selection != null && selection.length > 0) {
+			managementURL = selection[0];
+		} else {
+			managementURL = "";
+		}
+		if (managementURL.equals(CUSTOM_URL_TEXT)) {
+			managementURL = customURL.getText();
+		}
+		return managementURL;
+	}
+
+	private SelectionAdapter createGetFrontListener(List list) {
+		return new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Client client = createClient(list);
+
+				String myFrontRepositoryURL;
+				String shortError = null;
+				String message = null;
+				try {
+					myFrontRepositoryURL = client.getMyFrontRepositoryURL("");
+					frontRepoURL.setText(myFrontRepositoryURL);
+					Credentials credentials = MONDOServerView.this.credentials;
+					userName.setText(credentials.getUsername());
+				} catch (GoldRepoNotFound e1) {
+					shortError = "Gold Repository Not Found";
+					message = e1.getMessage() == null ? shortError : e1.getMessage();
+				} catch (UnauthorizedRepositoryOperation e1) {
+					shortError = "Unauthorized Repository Operation";
+					message = e1.getMessage() == null ? shortError : e1.getMessage();
+				} catch (OfflineCollaborationInternalError e1) {
+					shortError = "Offline Collaboration Internal Error";
+					message = e1.getMessage() == null ? shortError : e1.getMessage();
+				} catch (TException e1) {
+					shortError = "Transport Error";
+					message = e1.getMessage() == null ? shortError : e1.getMessage();
+				} catch (NullPointerException e1) {
+					shortError = "Unable To Connect To Server";
+					message = e1.getMessage() == null ? "Unable To Connect To Server. Make sure that the URL is correct." : e1.getMessage();
+				} finally {
+					if(shortError != null || message != null){
+						MessageBox mb = new MessageBox(getSite().getShell());
+						mb.setText(shortError);
+						mb.setMessage(message);
+						mb.open();
+						logger.error(message);
 					}
-				});
-		list.addSelectionListener(new SelectionListener() {
-			
+				}
+			}
+		};
+	}
+
+	private SelectionListener createListSelectionListener(List list) {
+		return new SelectionListener() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				for (String url : list.getSelection()) {
-					if(CUSTOM_URL_TEXT.equals(url)){
+					if (CUSTOM_URL_TEXT.equals(url)) {
 						userName.setEnabled(false);
 						userName.setText("");
 						frontRepoURL.setText("");
@@ -174,79 +289,56 @@ public class MONDOServerView extends ViewPart {
 				userName.setText("");
 				return;
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
-		});
+		};
+	}
 
-		btnGetMyFront.addSelectionListener(new SelectionAdapter() {
+
+
+	private SelectionAdapter createResetListener(List list) {
+		return new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				Client client = createClient(list);
 
-				String[] selection = list.getSelection();
-				Credentials credentials;
-				String managementURL;
-				if (selection != null && selection.length > 0) {
-					credentials = getCredentials(selection[0]);
-					userName.setText(credentials.getUsername());
-					managementURL = selection[0];
-				} else {
-					credentials = null;
-					managementURL = "";
-				}
-
-//				if(credentials == null || credentials.getUsername() == ""){
-//					return;
-//				}
-				
-				CommandInterpreter commandInterpreter = new CommandInterpreterForOfflineThrift(credentials, managementURL);
-
-				OfflineCollaborationManagementCommandProvider commandProvider = new OfflineCollaborationManagementCommandProvider();
 				try {
-					String urlString = (String) commandProvider._offlineCollaborationGetMyFrontRepositoryURL(commandInterpreter);
-					frontRepoURL.setText(urlString);
+					client.regenerateFrontRepositories(DUMMY_URL);
+					MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_INFORMATION | SWT.OK);
+					messageBox.setText("Success.");
+					messageBox.setMessage("Front repositories regenerated, locks released.");
+					messageBox.open();
 				} catch (Exception e1) {
-					String message = "Could not get front repository URL from server " + managementURL;
+					String message = "Error occured while regenerating";
 					logger.error(message);
-					frontRepoURL.setText(message);
+					MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_INFORMATION | SWT.ERROR);
+					messageBox.setText("MONDO server management error");
+					messageBox.setMessage("Error occured while regenerating.");
+					messageBox.open();
 				}
 			}
-			
-			
-		});
-		btnOpenOnlineCollaboration.addSelectionListener(new SelectionAdapter() {
+
+		};
+	}
+
+	private SelectionAdapter createOnlineCollaborationListener(List list) {
+		return new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String[] selection = list.getSelection();
-				Credentials credentials;
-				String managementURL;
-				if (selection != null && selection.length > 0) {
-					credentials = getCredentials(selection[0]);
-					managementURL = selection[0];
-				} else {
-					credentials = null;
-					managementURL = "";
-				}
+				Client client = createClient(list);
 				
-				if(credentials == null || credentials.getUsername() == ""){
-					return;
-				}
-				
-				CommandInterpreter commandInterpreter = new CommandInterpreterForOfflineThrift(credentials, managementURL);
-				
-				OfflineCollaborationManagementCommandProvider commandProvider = new OfflineCollaborationManagementCommandProvider();
+				String managementURL = getManagementURL(list.getSelection());
 				try {
-					String rapPath = (String) commandProvider._offlineCollaborationGetOnlineCollaborationURL(commandInterpreter);
+					String rapPath = client.getOnlineCollaborationURL(DUMMY_URL);
 					URL u = new URL(managementURL);
 					System.out.println(u.getHost());
-					String rapURL = u.getProtocol() +"://"+ u.getHost() + ":" + u.getPort() + rapPath;
-					org.eclipse.swt.program.Program.launch(rapURL);
-//					MessageBox mb = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_INFORMATION | SWT.OK);
-//					mb.setMessage(rapURL );
-//					mb.open();
+					String rapURL = u.getProtocol() + "://" + u.getHost() + ":" + u.getPort() + rapPath;
+					final IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().createBrowser(
+							IWorkbenchBrowserSupport.AS_VIEW | IWorkbenchBrowserSupport.NAVIGATION_BAR, null, null,
+							null);
+					browser.openURL(new URL(rapURL));
 				} catch (Exception e1) {
 					String message = "Could not get online collaboration URL from server " + managementURL;
 					logger.error(message);
@@ -256,11 +348,7 @@ public class MONDOServerView extends ViewPart {
 					mb.open();
 				}
 			}
-		});
-		
-		createActions();
-		initializeToolBar();
-		initializeMenu();
+		};
 	}
 
 	private void loadListOfServers(List list) {
@@ -334,88 +422,6 @@ public class MONDOServerView extends ViewPart {
 		// Set the focus
 	}
 
-	private final class CommandInterpreterForOfflineThrift implements CommandInterpreter {
-		private int argumentIndex = 0;
-		private String user;
-		private String pass;
-		private Credentials credentials;
-		private String managementURL;
-
-		public CommandInterpreterForOfflineThrift(Credentials credentials, String managementURL) {
-			this.credentials = credentials;
-			this.managementURL = managementURL;
-		}
-
-		@Override
-		public String nextArgument() {
-			String argument = null;
-			user = credentials.getUsername();
-			pass = credentials.getPassword();
-			if(argumentIndex == 0){
-				if ("".equals(user) && "".equals(pass)) {
-					// TODO get credentials for custom url
-					SimpleCredentialsDialog simpleCredentialsDialog = new SimpleCredentialsDialog(Display.getCurrent().getActiveShell());
-					simpleCredentialsDialog.open();
-					user = simpleCredentialsDialog.getUser();
-					pass = simpleCredentialsDialog.getPassword();
-				}
-			}
-			switch (argumentIndex) {
-			case 0:
-				// "managementUrl";
-				argument = CUSTOM_URL_TEXT.equals(managementURL) ? customURL.getText() : managementURL;
-				break;
-			case 1:
-				// "username";
-				argument = user;
-				break;
-			case 2:
-				// "password";
-				argument = pass;
-				break;
-			case 3:
-				// "goldRepositoryUrl";
-				argument = "placeholder.unused.dummy.url";
-				break;
-
-			default:
-				break;
-			}
-			argumentIndex++;
-			return argument;
-		}
-
-		@Override
-		public Object execute(String cmd) {
-			return null;
-		}
-
-		@Override
-		public void print(Object o) {
-		}
-
-		@Override
-		public void println() {
-		}
-
-		@Override
-		public void println(Object o) {
-		}
-
-		@Override
-		public void printStackTrace(Throwable t) {
-		}
-
-		@Override
-		public void printDictionary(Dictionary<?, ?> dic, String title) {
-		}
-
-		@Override
-		public void printBundleResource(Bundle bundle, String resource) {
-		}
-	}
-	
-
 	public class SimpleCredentialsDialog extends Dialog {
 		  private Text userText;
 		  private Text passwordText;
@@ -440,7 +446,6 @@ public class MONDOServerView extends ViewPart {
 			userText.setText(user);
 
 			Label passwordLabel = new Label(container, SWT.NONE);
-//			passwordLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 			passwordLabel.setText("Password:");
 
 			passwordText = new Text(container, SWT.BORDER | SWT.PASSWORD);
@@ -466,5 +471,7 @@ public class MONDOServerView extends ViewPart {
 		}
 
 	}
+	
+
 	
 }
