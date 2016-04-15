@@ -178,6 +178,9 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 			],#[
 				explicitDenialQuery.get(AttributeAsset).get(OperationKind::READ)
 					.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
+			],#[
+				positiveRecursiveCall(#{varEObject -> varContained}),
+				goldContainmentReference(#[varEObject, varEReference, varContained])
 			]
 		)
 	private val IQuerySpecification effectivelyFrozenAttribute = 
@@ -204,7 +207,10 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 				typeConstraint(REFERENCE_KEY.inGoldModel, #[varSrc, varEReference, varTrg])
 			], #[
 				frozenObject.positiveCall(#{varEObject -> varTrg}),
-				filteredGoldReference(#[varSrc, varEReference, varTrg], "containment or reverse navigable") [isContainment || (EOpposite != null)]
+				filteredGoldReference(#[varSrc, varEReference, varTrg], "reverse navigable") [EOpposite != null]
+			], #[
+				effectivelyUnremovableObject.positiveCall(#{varEObject -> varTrg}),
+				goldContainmentReference(#[varSrc, varEReference, varTrg])
 			]
 		)	
 		
@@ -253,9 +259,8 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 	public static val varSrc = "src"
 	public static val varTrg = "trg"
 	public static val varContainer = "container"
+	public static val varContained = "contained"
 	public static val varValue = "value"
-	
-	public static val varOtherValue = "otherValue"
 	
 	public static val varJudgement = "judgement"
 	public static val varUser = "user"
