@@ -1,0 +1,19 @@
+#!/bin/sh
+
+Checkuser () {
+  ret=false
+  getent passwd $1 >/dev/null 2>&1 && ret=true
+  $ret
+}
+
+if $(Checkuser www-data); then
+  user="www-data:www-data"
+elif $(Checkuser apache); then
+  user="apache:apache"
+fi
+
+chown -R $user /etc/mondo
+find /etc/mondo -type d -exec chmod 755 {} \;
+find /etc/mondo -type f -exec chmod 777 {} \;
+find /etc/mondo/scripts -type f -exec chmod 777 {} \;
+chmod 777 /etc/mondo/config/
