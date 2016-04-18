@@ -32,7 +32,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 function known_model_extension {
   contains=false
 
-  IFS_OLD=$IFS
+  IFS_OLD_SUB=$IFS
   IFS=","
   for extension in $MODEL_EXTENSIONS
   do
@@ -40,7 +40,7 @@ function known_model_extension {
       contains=true
     fi
   done
-  IFS=IFS_OLD
+  IFS=$IFS_OLD_SUB
 
   echo "$contains"
 }
@@ -114,7 +114,7 @@ fi
 # Check for a lock file
 if [ -f $LOCK_FILE ]; then
   log "File exists, we have to reject your commit".
-  echo echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
+  echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
   exit 1
 else
   touch $LOCK_FILE

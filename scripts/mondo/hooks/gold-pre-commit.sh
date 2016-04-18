@@ -105,7 +105,7 @@ log $GOLD_REPOS
 # Check for a lock file
 if [ -f $LOCK_FILE ]; then
   log "File exists, we have to reject your commit".
-  echo echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
+  echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
   exit 1
 else
   touch $LOCK_FILE
@@ -117,8 +117,12 @@ rm -rf $WORKSPACE_FRONTS
 log "Step 2: clear WORKSPACE Gold folder - $WORKSPACE_GOLD"
 rm -rf "$WORKSPACE_GOLD"
 
-log "Step 3: checkout gold - from $GOLD_REPOS_URL to $WORKSPACE_GOLD"
-svn checkout "$GOLD_REPOS_URL" "$WORKSPACE_GOLD" -r $REV --username $ADMIN_USER --password $ADMIN_PWD
+ log "Step 3: checkout lens related files from $GOLD_REPOS_URL to $WORKSPACE_GOLD"
+svn checkout "$GOLD_REPOS_URL" "$WORKSPACE_GOLD" --username $ADMIN_USER --password $ADMIN_PWD
+
+mkdir -p "$(dirname "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT")" && svnlook cat -t $REV $GOLD_REPOS $PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT > "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"
+mkdir -p "$(dirname "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT")" && svnlook cat -t $REV $GOLD_REPOS $PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT > "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
+
 
 log "Step 4: check that the rule, query and lock files exist"
 LENS_CAN_EXECUTE=false;
@@ -136,7 +140,7 @@ else
 fi
 
 log "Step 5: get change list"
-changes=$(svnlook changed -r $REV $GOLD_REPOS)
+changes=$(svnlook changed -t $REV $GOLD_REPOS)
 
 LENS_DIR="$DIR/../invoker/invoker.sh"
 
@@ -182,6 +186,10 @@ for entry in $USER_FRONT_MAPPING; do
               then
                 mkdir -p $BASEDIR
               fi
+
+              svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
+              chmod oa+rw $CURRENT_REPO/$nextChange
+
               if [[ "$(known_model_extension $nextChange)" == "true" ]]
               then
                 if [[ "$LENS_CAN_EXECUTE" == "true" ]]
@@ -192,18 +200,13 @@ for entry in $USER_FRONT_MAPPING; do
                   OBFUSCATOR_SALT="salt_$CURRENT_REPO"
                   OBFUSCATOR_PREFIX="mondo"
 
-                  svnlook cat -r $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
-                  chmod oa+rw $CURRENT_REPO/$nextChange
-
                   log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
-                  $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT
+                  $LENS_DIR $FRONT_USER $CURRENT_REPO/$nextChange $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT
                 else
                   log "     -> Action: Cannot execute lens. Copy to gold $CURRENT_REPO/$nextChange"
-                  cp -rf $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange
                 fi
               else
-                log "     -> Action: Copy to gold $CURRENT_REPO/$nextChange"
-                cp -rf $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange
+                log "     -> Action: Copy to gold"
               fi
               ;;
       	   esac
@@ -221,7 +224,7 @@ for entry in $USER_FRONT_MAPPING; do
     MSG=$(svn log -q -v --xml --with-all-revprops $WORKSPACE_GOLD --username $ADMIN_USER --password $ADMIN_PWD | grep msg | sed -e "s/<msg>\([^<]*\)<\/msg>/\1/g")
     log "* commit message is: $MSG"
     log "Step 6.4: get author name"
-    AUTHOR=$(svn log -r $REV  $WORKSPACE_GOLD --username $ADMIN_USER --password $ADMIN_PWD | grep -E '\|' | cut -f2 -d'|' | sort | uniq)
+    AUTHOR=$(svnlook log -t $REV  $GOLD_REPOS | grep -E '\|' | cut -f2 -d'|' | sort | uniq)
     log "* author name is: $AUTHOR"
     log "* step into the current folder - $CURRENT_REPO"
     cd $CURRENT_REPO
