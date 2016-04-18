@@ -32,8 +32,8 @@ public class LensActivator extends Plugin implements BundleActivator {
 		super.start(context);
 		plugin = this;
 
-		URL confURL = getBundle().getEntry("log4j.properties");
-		PropertyConfigurator.configure(FileLocator.toFileURL(confURL).getFile());
+//		URL confURL = getBundle().getEntry("log4j.properties");
+//		PropertyConfigurator.configure(FileLocator.toFileURL(confURL).getFile());
 
 		AccessControlLanguageStandaloneSetup.doSetup();
 		MondoPropertyBasedLockingStandaloneSetup.doSetup();

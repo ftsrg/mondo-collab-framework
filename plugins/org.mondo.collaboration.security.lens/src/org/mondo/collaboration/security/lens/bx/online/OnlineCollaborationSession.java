@@ -185,6 +185,10 @@ public class OnlineCollaborationSession {
 		
 		arbiter.reinitializeWith(policyResource);
 		lockArbiter.reinitializeWith(lockResource);
+		
+		for (Leg leg : legs) {
+			leg.reinitialize();
+		}
 	}
 	
 	public URI getGoldConfinementURI() {
@@ -229,10 +233,14 @@ public class OnlineCollaborationSession {
 		private final ResourceSet frontResourceSet;
 		
 		private MondoLensScope scope;
-		private final RelationalLensXform lens;
+		private RelationalLensXform lens;
 		private Map<CorrespondenceKey, LiveTable> correspondenceTables;
 		
 		private Set<Object> uniqueIdentifiers;
+		private ModelIndexer frontIndexer;
+		private UniqueIDScheme goldObjectToUniqueIdentifier;
+		private UniqueIDScheme frontObjectToUniqueIdentifier;
+		private LiveTable correspondenceTable;
 
 		/**
 		 * Creates an in-memory front model for the user and immediately synchronizes the gold model onto it.
@@ -270,11 +278,8 @@ public class OnlineCollaborationSession {
 			this.frontResourceSet = frontResourceSet;
 			
 			legs.add(this);
-			this.lens = setupLens(startWithGet);
-			
-			if (startWithGet) {
-			    overWriteFromGold();
-			}
+			setupScope(startWithGet);
+			setupLens(startWithGet);
 		}
 		
 		/**
@@ -282,23 +287,39 @@ public class OnlineCollaborationSession {
 		 * <p> Must read the front model. For Transactional EMF or other model-level R/W access control, 
 		 *        subclass and override to wrap in a read-enabled transaction.
 		 */
-		protected RelationalLensXform setupLens(boolean startWithGet) {
+		protected void setupLens(boolean startWithGet) {
 			User user = SecurityArbiter.getUserByName(accessControlModel, userName);
 			if (user == null)
 				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, getPolicyResource().getURI()));
+			
+			lens = new RelationalLensXform(scope, user, stringObfuscator);
+			
+			if (startWithGet) {
+			    overWriteFromGold();
+			}
 
-			ModelIndexer frontIndexer = new ModelIndexer(
+		} 
+
+		/**
+		 * Sets up the preliminaries.
+		 * <p> Must read the front model if startWithGet is false. For Transactional EMF or other model-level R/W access control, 
+		 *        subclass and override to wrap in a read-enabled transaction.
+		 */
+		protected void setupScope(boolean startWithGet) {
+			frontIndexer = new ModelIndexer(
 	        		frontConfinementURI,
 	        		frontResourceSet);
 
-			UniqueIDScheme goldObjectToUniqueIdentifier = uniqueIDFactory.apply(goldConfinementURI);
-			Map<Object, Collection<EObject>> goldIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(goldIndexer, goldObjectToUniqueIdentifier);
-			UniqueIDScheme frontObjectToUniqueIdentifier = uniqueIDFactory.apply(frontConfinementURI);
-			Map<Object, Collection<EObject>> frontIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(frontIndexer, frontObjectToUniqueIdentifier);
+			goldObjectToUniqueIdentifier = uniqueIDFactory.apply(goldConfinementURI);
+			frontObjectToUniqueIdentifier = uniqueIDFactory.apply(frontConfinementURI);
 			
-			// if using in-memory resource with fake URI, then front model is initially empty, no need to gather EObject correspondences
-			LiveTable correspondenceTable = startWithGet ? new LiveTable() :	
-				EObjectCorrespondence.buildEObjectCorrespondenceTable(goldIndex, frontIndex);
+			if (startWithGet) {
+				correspondenceTable = new LiveTable();
+			}	else {
+				Map<Object, Collection<EObject>> goldIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(goldIndexer, goldObjectToUniqueIdentifier);
+				Map<Object, Collection<EObject>> frontIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(frontIndexer, frontObjectToUniqueIdentifier);
+				correspondenceTable = EObjectCorrespondence.buildEObjectCorrespondenceTable(goldIndex, frontIndex);
+			}
 			
 			uniqueIdentifiers = Sets.newHashSet();
 			correspondenceTable.addListener(new FlatTuple(null, null), new Listener() {
@@ -329,8 +350,13 @@ public class OnlineCollaborationSession {
 	        correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
 	        
 			scope = new MondoLensScope(arbiter, lockArbiter, goldIndexer, frontIndexer, correspondenceTables);
-			
-			return new RelationalLensXform(scope, user, stringObfuscator);
+		}
+		
+		/**
+		 * Wipe existing lens transformation if access control model is changed
+		 */
+		public void reinitialize() {
+			setupLens(true);
 		}
 		
 		
@@ -435,7 +461,7 @@ public class OnlineCollaborationSession {
 		}
 
 		public UniqueIDScheme getUniqueIDScheme() {
-			return uniqueIDFactory.apply(frontConfinementURI);
+			return frontObjectToUniqueIdentifier;
 		}
 		
 		public Map<CorrespondenceKey, LiveTable> getCorrespondenceTables() {
