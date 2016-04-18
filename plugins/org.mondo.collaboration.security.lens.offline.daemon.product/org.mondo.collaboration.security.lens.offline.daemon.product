@@ -3,7 +3,6 @@
 
 <product name="Mondo Offline Collaboration Lens Local Daemon" uid="LensOfflineDaemonProduct" id="org.mondo.collaboration.security.lens.offline.daemon.product.LensOfflineDaemonProduct" application="org.mondo.collaboration.security.lens.offline.daemon.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -21,7 +20,6 @@
 
    <windowImages/>
 
-
    <launcher name="mondo-lens-local-daemon">
       <solaris/>
       <win useIco="false">
@@ -29,10 +27,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="ch.qos.logback.classic"/>
@@ -203,11 +199,14 @@
       <plugin id="org.mondo.collaboration.security.lens.offline.daemon.servlet"/>
       <plugin id="org.mondo.collaboration.security.macl.xtext"/>
       <plugin id="org.mondo.collaboration.security.macl.xtext.rule"/>
+      <plugin id="org.mondo.collaboration.security.mpbl.xtext"/>
       <plugin id="org.objectweb.asm"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.tukaani.xz"/>
+      <plugin id="uk.ac.york.mondo.integration.server.gzip" fragment="true"/>
+      <plugin id="uk.ac.york.mondo.integration.server.logback" fragment="true"/>
    </plugins>
 
    <configurations>

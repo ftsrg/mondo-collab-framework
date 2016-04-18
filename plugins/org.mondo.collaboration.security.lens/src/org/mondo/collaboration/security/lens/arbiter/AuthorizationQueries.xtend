@@ -126,14 +126,6 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 			]
 		)	
 
-	private val IQuerySpecification effectivelyFrozenObject = composeDisjunctiveQuery('''«fullyQualifiedName».«OperationKind::WRITE».effectivelyDenied.«ObjectAsset.simpleName»''',
-			#[
-				explicitDenialQuery.get(ObjectAsset).get(OperationKind::WRITE).positiveCall(#{varEObject -> varEObject})
-			], #[
-				effectivelyHiddenObject.positiveCallKeepNames
-			]
-		)
-		
 	private val IQuerySpecification effectivelyHiddenAttribute = 
 		composeDisjunctiveQuery('''«fullyQualifiedName».«OperationKind::READ».effectivelyDenied.«AttributeAsset.simpleName»''',
 			#[
@@ -142,15 +134,6 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 			], #[
 				effectivelyHiddenObject.positiveCall(#{varEObject -> varEObject}),
 				typeConstraint(ATTRIBUTE_KEY.inGoldModel, #[varEObject, varEAttribute, varValue])
-			]
-		)	
-	private val IQuerySpecification effectivelyFrozenAttribute = 
-		composeDisjunctiveQuery('''«fullyQualifiedName».«OperationKind::WRITE».effectivelyDenied.«AttributeAsset.simpleName»''',
-			#[
-				explicitDenialQuery.get(AttributeAsset).get(OperationKind::WRITE)
-					.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
-			], #[
-				effectivelyHiddenAttribute.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
 			]
 		)	
 	@Accessors(PUBLIC_GETTER) 
@@ -177,6 +160,41 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 			]
 		)	
 		
+		
+	private val IQuerySpecification frozenObject = composeDisjunctiveQuery('''«fullyQualifiedName».«OperationKind::WRITE».frozen.«ObjectAsset.simpleName»''',
+			#[
+				explicitDenialQuery.get(ObjectAsset).get(OperationKind::WRITE).positiveCall(#{varEObject -> varEObject})
+			], #[
+				effectivelyHiddenObject.positiveCallKeepNames
+			]
+		)
+	private val IQuerySpecification effectivelyUnremovableObject = composeDisjunctiveQuery('''«fullyQualifiedName».«OperationKind::WRITE».effectivelyDenied.«ObjectAsset.simpleName»''',
+			#[
+				frozenObject.positiveCallKeepNames
+			], #[
+				effectivelyHiddenReference.positiveCall(#{varSrc -> varEObject, varEReference -> varEReference, varTrg -> varTrg})
+			], #[
+				effectivelyHiddenReference.positiveCall(#{varSrc -> varSrc, varEReference -> varEReference, varTrg -> varEObject})
+			],#[
+				explicitDenialQuery.get(AttributeAsset).get(OperationKind::READ)
+					.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
+			],#[
+				positiveRecursiveCall(#{varEObject -> varContained}),
+				goldContainmentReference(#[varEObject, varEReference, varContained])
+			]
+		)
+	private val IQuerySpecification effectivelyFrozenAttribute = 
+		composeDisjunctiveQuery('''«fullyQualifiedName».«OperationKind::WRITE».effectivelyDenied.«AttributeAsset.simpleName»''',
+			#[
+				explicitDenialQuery.get(AttributeAsset).get(OperationKind::WRITE)
+					.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
+			], #[
+				effectivelyHiddenAttribute.positiveCall(#{varEObject -> varEObject, varEAttribute -> varEAttribute})
+			], #[
+				frozenObject.positiveCall(#{varEObject -> varEObject}),
+				typeConstraint(ATTRIBUTE_KEY.inGoldModel, #[varEObject, varEAttribute, varValue])
+			]
+		)	
 	private val IQuerySpecification effectivelyFrozenReference = 
 		composeDisjunctiveQuery('''«fullyQualifiedName».«OperationKind::WRITE».effectivelyDenied.«ReferenceAsset.simpleName»''',
 			#[
@@ -185,20 +203,36 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 			], #[
 				effectivelyHiddenReference.positiveCall(#{varSrc -> varSrc, varEReference -> varEReference, varTrg -> varTrg})
 			], #[
-				effectivelyFrozenObject.positiveCall(#{varEObject -> varSrc}),
+				frozenObject.positiveCall(#{varEObject -> varSrc}),
 				typeConstraint(REFERENCE_KEY.inGoldModel, #[varSrc, varEReference, varTrg])
 			], #[
-				effectivelyFrozenObject.positiveCall(#{varEObject -> varTrg}),
-				filteredGoldReference(#[varSrc, varEReference, varTrg], "containment or reverse navigable") [isContainment || (EOpposite != null)]
+				frozenObject.positiveCall(#{varEObject -> varTrg}),
+				filteredGoldReference(#[varSrc, varEReference, varTrg], "reverse navigable") [EOpposite != null]
+			], #[
+				effectivelyUnremovableObject.positiveCall(#{varEObject -> varTrg}),
+				goldContainmentReference(#[varSrc, varEReference, varTrg])
 			]
 		)	
+		
+	@Accessors(PUBLIC_GETTER) 
+	private val IQuerySpecification unReassignableSrcReference = 
+		composeParametrizableQuery('''«fullyQualifiedName».«OperationKind::WRITE».unreassignable.«ReferenceAsset.simpleName»''', 
+			#[varSrc, varEReference]) [ #{singleBody(#{
+				filteredGoldReference(#[varSrc, varEReference, varTrg], "to-one") [!isMany()]
+			})}]
+	@Accessors(PUBLIC_GETTER) 
+	private val IQuerySpecification unReassignableTrgReference = 
+		composeParametrizableQuery('''«fullyQualifiedName».«OperationKind::WRITE».unreassignable.«ReferenceAsset.simpleName»''', 
+			#[varEReference, varTrg]) [ #{singleBody(#{
+				filteredGoldReference(#[varSrc, varEReference, varTrg], "one-to") [EOpposite != null && !EOpposite.isMany()]
+			})}]
 		
 		
 	@Accessors(PUBLIC_GETTER) 
 	val Map<Class<? extends Asset>, Map<OperationKind, IQuerySpecification>> effectivelyDeniedQuery = #{
 		ObjectAsset -> #{
 			OperationKind::READ -> effectivelyHiddenObject,
-			OperationKind::WRITE -> effectivelyFrozenObject
+			OperationKind::WRITE -> effectivelyUnremovableObject
 		},
 		AttributeAsset -> #{
 			OperationKind::READ -> effectivelyHiddenAttribute,
@@ -215,7 +249,7 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 	val Set<IQuerySpecification> allQueries = ImmutableSet::copyOf(Iterables::concat(
 		Iterables::concat(explicitDenialQuery.values.map[values]),
 		Iterables::concat(effectivelyDeniedQuery.values.map[values]),
-		ImmutableSet::of(explicitObfuscateQuery, effectivelyObfuscatedAttribute)
+		ImmutableSet::of(explicitObfuscateQuery, effectivelyObfuscatedAttribute, frozenObject, unReassignableSrcReference, unReassignableTrgReference)
 	))
 	 
 		
@@ -225,6 +259,7 @@ class AuthorizationQueries extends AbstractAuthorizationQueries {
 	public static val varSrc = "src"
 	public static val varTrg = "trg"
 	public static val varContainer = "container"
+	public static val varContained = "contained"
 	public static val varValue = "value"
 	
 	public static val varJudgement = "judgement"
