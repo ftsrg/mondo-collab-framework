@@ -12,9 +12,10 @@ import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 public class StorageAccessDummy extends StorageAccess {
 
-	private String internalEiqFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
-	private String internalMaclFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
-	private String filepath = "/home/marci/git/mondo-demo-wt/Demo/demo.project/simplified-example.wtspec4m";
+	private String internalEiqFile = "/home/meres/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
+	private String internalMaclFile = "/home/meres/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
+	private String internalMpblFile = "/home/meres/git/mondo-demo-wt/Demo/macl.project/src/macl/project/lock.mpbl";
+	private String filepath = "/home/meres/git/mondo-demo-wt/Demo/demo.project/simplified-example.wtspec4m";
 	private StorageModelNode node;
 
 	public StorageAccessDummy(String username, String password) throws FileNotFoundException, IOException {
@@ -53,7 +54,7 @@ public class StorageAccessDummy extends StorageAccess {
 
 	@Override
 	protected URI getInternalMpblFile() {
-		return URI.createFileURI(internalMaclFile);
+		return URI.createFileURI(internalMpblFile);
 	}
 
 	@Override
