@@ -57,6 +57,7 @@ import org.mondo.collaboration.security.lens.arbiter.LockArbiter
 import org.mondo.collaboration.security.lens.bx.AbortReason.LockViolationDenial
 import org.mondo.collaboration.security.lens.arbiter.LockArbiter.LockMonitoringSession
 import org.mondo.collaboration.security.lens.arbiter.Asset.ReferenceAsset
+import org.eclipse.incquery.runtime.api.AdvancedIncQueryEngine
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -75,6 +76,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	@Accessors(PUBLIC_GETTER) DataTypeObfuscator<String> stringObfuscator
 
 	@Accessors(PUBLIC_GETTER) AuthorizationQueries authorizationQueries
+	AdvancedIncQueryEngine engine
 	
 	new(MondoLensScope scope, User user, DataTypeObfuscator<String> stringObfuscator) {
 		super(scope.manipulables, scope.queriables)
@@ -82,8 +84,9 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		this.scope = scope
 		this.stringObfuscator = stringObfuscator
 		
+		this.engine = AdvancedIncQueryEngine.createUnmanagedEngine(scope)
 		this.authorizationQueries = scope.arbiter.instantiateAuthorizationQuerySpecificationsForUser(user)
-		
+
 		addRules
 		operationalize
 	}
@@ -182,8 +185,10 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			return ruleEngine
 	}
 	
+	
+
 	def getIncQueryEngine() {
-		IncQueryEngine::on(scope)
+		engine
 	}
 	
 	private def inModel(ModelFactInputKey inputkey, WhichModel model) {
@@ -362,6 +367,11 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	def QueryTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
 		authorizationQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
 	}
+	
+	def void dispose() {
+		engine.dispose
+	}
+	
 //		return new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
 //			'''«fullyQualifiedName».readDenied.«assetClass.simpleName»''',
 //			makePParameterList(assetVariables) //, #[varUser])
