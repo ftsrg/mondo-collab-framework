@@ -77,7 +77,6 @@ public class OnlineCollaborationSession {
 	private final SecurityArbiter arbiter;
 	private final LockArbiter lockArbiter;
 	private final ModelIndexer goldIndexer;
-	private final AccessControlModel accessControlModel;
 	
 	public Map<String, Set<String>> getLockMappingsToUsers() {
 		Map<String, Set<String>> lockNamesToUsers = new HashMap<String, Set<String>>();
@@ -127,7 +126,7 @@ public class OnlineCollaborationSession {
 		this.policyResource = policyResource;
 		this.lockResource = lockResource;
 		
-		accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
+		AccessControlModel accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
 		arbiter = new SecurityArbiter(
 				accessControlModel.getPolicy(), 
 				null /*user*/, 
@@ -288,7 +287,7 @@ public class OnlineCollaborationSession {
 		 *        subclass and override to wrap in a read-enabled transaction.
 		 */
 		protected void setupLens(boolean startWithGet) {
-			User user = SecurityArbiter.getUserByName(accessControlModel, userName);
+			User user = SecurityArbiter.getUserByName((AccessControlModel) arbiter.getPolicy().eContainer(), userName);
 			if (user == null)
 				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, getPolicyResource().getURI()));
 			
@@ -356,6 +355,7 @@ public class OnlineCollaborationSession {
 		 * Wipe existing lens transformation if access control model is changed
 		 */
 		public void reinitialize() {
+			lens.dispose();
 			setupLens(true);
 		}
 		
