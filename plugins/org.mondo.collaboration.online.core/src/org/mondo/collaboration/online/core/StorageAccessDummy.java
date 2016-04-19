@@ -12,10 +12,14 @@ import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 public class StorageAccessDummy extends StorageAccess {
 
+	private String internalLockFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/lock.mpbl";
 	private String internalEiqFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
 	private String internalMaclFile = "/home/marci/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
 	private String filepath = "/home/marci/git/mondo-demo-wt/Demo/demo.project/simplified-example.wtspec4m";
-	private StorageModelNode node;
+	private StorageModelNode file;
+	private StorageModelNode lock;
+	private StorageModelNode rule;
+	private StorageModelNode query;
 
 	public StorageAccessDummy(String username, String password) throws FileNotFoundException, IOException {
 		super(username, password);
@@ -28,8 +32,11 @@ public class StorageAccessDummy extends StorageAccess {
 
 	@Override
 	public Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent, String gold) {
-		node = new StorageModelNode(model, "example.wtspec4m", filepath, NodeType.Model, null, this, "/dummyLocation");
-		return Arrays.asList(node);
+		file = new StorageModelNode(model, "example.wtspec4m", filepath, NodeType.Model, null, this, "/file");
+		lock = new StorageModelNode(model, "lock.mpbl", internalLockFile, NodeType.Model, null, this, "/lock");
+		rule = new StorageModelNode(model, "rule.macl", internalMaclFile, NodeType.Model, null, this, "/rule");
+		query = new StorageModelNode(model, "query.eiq", internalEiqFile, NodeType.Model, null, this, "/query");
+		return Arrays.asList(file, lock, rule, query);
 	}
 
 	@Override
@@ -53,7 +60,7 @@ public class StorageAccessDummy extends StorageAccess {
 
 	@Override
 	protected URI getInternalMpblFile() {
-		return URI.createFileURI(internalMaclFile);
+		return URI.createFileURI(internalLockFile);
 	}
 
 	@Override
