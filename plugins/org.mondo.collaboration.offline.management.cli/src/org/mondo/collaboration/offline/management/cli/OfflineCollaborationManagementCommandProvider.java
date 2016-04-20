@@ -16,15 +16,15 @@ public class OfflineCollaborationManagementCommandProvider implements CommandPro
 	public String getHelp() {
 		StringBuffer sbuf = new StringBuffer();
 		sbuf.append("---OFFLINE COLLABORATION MANAGEMENT (commands are case insensitive, <> means required, [] means optional)---\n\t");
-		sbuf.append("offlineCollaborationHelp - lists all the available commands for the Offline Collaboration Management Interface\n");
-		sbuf.append("offlineCollaborationRegenerateFrontRepositories <managementUrl> <username> <password> <goldRepositoryUrl> - regenerate all front repositories based on the gold repository\n\t");
-		sbuf.append("offlineCollaborationGetMyFrontRepositoryURL <managementUrl> <username> <password> <goldRepositoryUrl> - retrieve the front repository URL for the given user\n\t");
-		sbuf.append("offlineCollaborationListGoldRepositoryURLs <managementUrl> <username> <password> - list all gold repositories maintained by the given MONDO server\n\t");
-		sbuf.append("offlineCollaborationGetOnlineCollaborationURL <managementUrl> <username> <password> - get online collaboration login screen URL\n\t");
+		sbuf.append("collabHelp - lists all the available commands for the Offline Collaboration Management Interface\n");
+		sbuf.append("collabRegenFronts <managementUrl> <username> <password> <goldRepositoryUrl> - regenerate all front repositories based on the gold repository\n\t");
+		sbuf.append("collabGetMyFront <managementUrl> <username> <password> <goldRepositoryUrl> - retrieve the front repository URL for the given user\n\t");
+		sbuf.append("collabListGolds <managementUrl> <username> <password> - list the URLs of all gold repositories maintained by the given MONDO server\n\t");
+		sbuf.append("collabGetOnline <managementUrl> <username> <password> - get online collaboration login screen URL\n\t");
 		return sbuf.toString();
 	}
 	
-	public Object _offlineCollaborationRegenerateFrontRepositories(CommandInterpreter intp) throws Exception {
+	public Object _collabRegenFronts(CommandInterpreter intp) throws Exception {
 		ParsedArguments parsedArguments = new ParsedArguments(intp);
 		Client client = parsedArguments.connect();
 		try {
@@ -34,7 +34,7 @@ public class OfflineCollaborationManagementCommandProvider implements CommandPro
 			client.getInputProtocol().getTransport().close();			
 		}
 	}
-	public Object _offlineCollaborationGetMyFrontRepositoryURL(CommandInterpreter intp) throws Exception {
+	public Object _collabGetMyFront(CommandInterpreter intp) throws Exception {
 		ParsedArguments parsedArguments = new ParsedArguments(intp);
 		Client client = parsedArguments.connect();
 		try {
@@ -44,7 +44,7 @@ public class OfflineCollaborationManagementCommandProvider implements CommandPro
 		}
 	}
 	
-	public Object _offlineCollaborationListGoldRepositoryURLs(CommandInterpreter intp) throws Exception {
+	public Object _collabListGolds(CommandInterpreter intp) throws Exception {
 		ParsedArguments parsedArguments = new ParsedArguments(intp);
 		Client client = parsedArguments.connect();
 		try {
@@ -53,7 +53,7 @@ public class OfflineCollaborationManagementCommandProvider implements CommandPro
 			client.getInputProtocol().getTransport().close();			
 		}
 	}
-	public Object _offlineCollaborationGetOnlineCollaborationURL(CommandInterpreter intp) throws Exception {
+	public Object _collabGetOnline(CommandInterpreter intp) throws Exception {
 		ParsedArguments parsedArguments = new ParsedArguments(intp);
 		Client client = parsedArguments.connect();
 		try {
@@ -63,7 +63,7 @@ public class OfflineCollaborationManagementCommandProvider implements CommandPro
 		}
 	}
 
-	public Object _offlineCollaborationHelp(CommandInterpreter intp) {
+	public Object _collabHelp(CommandInterpreter intp) {
 		return getHelp();
 	}
 	
