@@ -22,4 +22,7 @@ sed -i "s/<date>/$1/g" changelog
 now=$(date +"%a, %d %b %Y %T %z")
 sed -i "s/<current_time>/$now/g" changelog
 cd ..
-debuild --lintian-opts --profile debian
+debuild -us -uc --lintian-opts -i -b --profile debian
+echo $?
+
+exit 0
