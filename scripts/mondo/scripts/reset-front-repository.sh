@@ -69,9 +69,7 @@ find "$DIR/../lock/" -mindepth 1 -depth -print0 | grep -vEzZ '(\.git(/|$)|/\.git
 
 USER_NAME=$1
 
-echo "################"
-
-echo "Resetting for user $USER_NAME"
+echo "Resetting for user $USER_NAME..."
 
 USER_FOUND=false
 
@@ -102,7 +100,7 @@ fi
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 SVN_FRONT_REPO_FULL_PATH=$SVN_PATH_OS/$FRONT_REPO_NAME
-echo front repo path: $SVN_FRONT_REPO_FULL_PATH
+#echo front repo path: $SVN_FRONT_REPO_FULL_PATH
 
 
 # Step 0: (re)create the front repository 
@@ -136,7 +134,7 @@ chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH
 WORKSPACE="$DIR/../workspace"
 
 LAST_REVISION=`svn info $GOLD_REPO_URL --username $ADMIN_USER --password $ADMIN_PWD |grep '^Revision:' | sed -e 's/^Revision: //'`
-REVISION="87"
+REVISION="1"
 
 ################################################################################################################################################
 
@@ -180,9 +178,9 @@ while [ $REVISION -le "$LAST_REVISION" ]; do
 		IFS=$IFS_OLD
 		for FILE_NAME in $(find $WORKSPACE_FRONT -name "*.$EXTENSION"); do 
 			MODEL_FILE=$(replace $FILE_NAME $WORKSPACE_GOLD "")
-	echo "###########################"
-	echo $MODEL_FILE
-	echo "###########################"
+			# echo "###########################"
+			# echo $MODEL_FILE
+			# echo "###########################"
 			echo "Executing lens for $MODEL_FILE"
 			echo "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
 			#chmod oa+rw $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE)
@@ -193,7 +191,7 @@ while [ $REVISION -le "$LAST_REVISION" ]; do
 	done
 	IFS=$IFS_OLD
 
-	echo "Models transformed for user $USER_NAME at revision $REVISION."
+	echo "Models available in gold revision $REVISION transformed for user $USER_NAME."
 
 
 	# Step 5 force add all files
@@ -217,7 +215,7 @@ while [ $REVISION -le "$LAST_REVISION" ]; do
 
 	CURRENT_DIR=`pwd`
 	cd $WORKSPACE_FRONT
-	svn update
+	svn update >>/dev/null
 	# the actual commit
 	svn commit -F $WORKSPACE_FRONT"/"svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
 	cd $CURRENT_DIR
