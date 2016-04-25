@@ -240,7 +240,16 @@ public class MONDOServerView extends ViewPart {
 				String message = null;
 				try {
 					myFrontRepositoryURL = client.getMyFrontRepositoryURL("");
-					frontRepoURL.setText(myFrontRepositoryURL);
+					
+					String managementURL = getManagementURL(list.getSelection());
+
+					URI url = new URI(managementURL);
+					String scheme = url.getScheme();
+					String host = url.getHost();
+					int port = url.getPort();
+					
+					
+					frontRepoURL.setText(scheme + "://" + host + "/svn/"+myFrontRepositoryURL);
 					Credentials credentials = MONDOServerView.this.credentials;
 					userName.setText(credentials.getUsername());
 				} catch (GoldRepoNotFound e1) {
@@ -258,6 +267,9 @@ public class MONDOServerView extends ViewPart {
 				} catch (NullPointerException e1) {
 					shortError = "Unable To Connect To Server";
 					message = e1.getMessage() == null ? "Unable To Connect To Server. Make sure that the URL is correct." : e1.getMessage();
+				} catch (URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				} finally {
 					if(shortError != null || message != null){
 						MessageBox mb = new MessageBox(getSite().getShell());
