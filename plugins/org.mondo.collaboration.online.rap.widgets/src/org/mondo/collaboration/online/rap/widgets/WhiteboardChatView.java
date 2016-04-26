@@ -16,9 +16,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.mondo.collaboration.online.core.LensSessionManager;
 import org.mondo.collaboration.online.rap.UINotifierManager;
@@ -26,11 +28,6 @@ import org.mondo.collaboration.online.rap.UISessionManager;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Label;
 
 @SuppressWarnings("serial")
 public class WhiteboardChatView extends WhiteboardGenericView {
@@ -97,10 +94,6 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout(2, false));
 		{
-//			Composite composite = new Composite(container, SWT.NONE);
-//			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, true, 1, 1));
-//			composite.setLayout(new GridLayout(1, false));
-
 			userList = new TableViewer(container);
 			Table table = userList.getTable();
 			table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
@@ -122,7 +115,6 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 		
 		Button btnSend = new Button(container, SWT.None);
 		btnSend.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		// btnSend.setLayoutData(BorderLayout.EAST);
 		btnSend.setText("Send");
 		btnSend.addMouseListener(new MouseAdapter() {
 			@Override
