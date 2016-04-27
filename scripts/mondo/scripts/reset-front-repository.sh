@@ -4,8 +4,9 @@
 
 if [ $# -le 1 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
 	echo "This script resets a front repository for a given user by iterating over all revisions in the gold repository and applying the transformation for the different versions of the models."
-	echo "Usage: $(basename $0) username (<apache_user> | --apache | --apache2)"
-	echo "    username the name of the user whose front repository should be reset"
+	echo "Usage: $(basename $0) <username> <gold repository url> (<apache_user> | --apache | --apache2)"
+	echo "    username: the name of the user whose front repository should be reset"
+	echo "    gold repository url: the public url of the gold repository"
 	echo "    apache_user: the user name of Apache, or alternatively give:"
 	echo "        --apache: apache_user=\"apache.apache\" "
 	echo "        --apache2: apache_user=\"www-data.www-data\" "
@@ -44,22 +45,40 @@ function replace {
 # do not stop at errors
 set -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-
-if [ "$2" == "--apache" ]; then
+if [ "$3" == "--apache" ]; then
 	APACHE_USER="apache.apache"
-elif [ "$2" == "--apache2" ]; then
+elif [ "$3" == "--apache2" ]; then
 	APACHE_USER="www-data:www-data" 
 else
-	APACHE_USER="$2"
+	APACHE_USER="$3"
 fi
 
 
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# Find the gold repository name according to the given public gold URL
+GIVEN_GOLD_URL=$2
+while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
+
+  GOLD_REPO_PUBLIC_URL=$(echo $LINE | cut -d'=' -f 1)
+  GOLD_REPO_NAME=$(echo $LINE | cut -d'=' -f 2)
+
+  if [[ $GIVEN_GOLD_URL == $GOLD_REPO_PUBLIC_URL ]]; then
+    GOLD_REPO_NOT_FOUND=false
+    break
+  fi
+done < "$DIR/../config/gold-url-local-mapping.properties"
+
+if  $GOLD_REPO_NOT_FOUND ; then
+  echo "Could not resolve location on server of gold repository with public URL $GIVEN_GOLD_URL"
+  exit 1
+fi
+GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
+
 # Load config file using the source command
-. $DIR/../config/config.properties
+. $DIR/../config/$GOLD_REPO_NAME/config.properties
+
 
 # Delete locks
 # TODO delete only the locks that belong to the given user
@@ -87,7 +106,7 @@ while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
 		break
 	fi
 
-done < "$DIR/../config/gen/user_front.properties"
+done < "$DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties"
 
 # exit if user was not found
 if [ "$USER_FOUND" = false ] ; then

@@ -1,9 +1,10 @@
 #!/bin/bash
 
-if [ $# -lt 2 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
-  echo "Usage: $(basename $0) <repository name> <user name> (<apache_user> | --apache | --apache2)"
+if [ $# -lt 3 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
+  echo "Usage: $(basename $0) <repository name> <user name> <gold repository url> (<apache_user> | --apache | --apache2)"
   echo " - repository name: the name of the new front repository"
   echo " - user name: the name of the user who has access to the new front repository"
+  echo " - gold repository url: the full public url for the gold repository"
   echo " - apache_user: the user name of Apache"
   echo " --apache: apache_user=\"apache.apache\" "
   echo " --apache2: apache_user=\"www-data.www-data\" "
@@ -44,18 +45,37 @@ set -e
 FRONT_REPO_NAME=$1
 USER_NAME=$2
 
-if [ "$3" == "--apache" ]; then
+if [ "$4" == "--apache" ]; then
   APACHE_USER="apache.apache"
-elif [ "$3" == "--apache2" ]; then
+elif [ "$4" == "--apache2" ]; then
   APACHE_USER="www-data:www-data"
 else
-  APACHE_USER="$3"
+  APACHE_USER="$4"
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# Find the gold repository name according to the given public gold URL
+GIVEN_GOLD_URL=$3
+while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
+
+  GOLD_REPO_PUBLIC_URL=$(echo $LINE | cut -d'=' -f 1)
+  GOLD_REPO_NAME=$(echo $LINE | cut -d'=' -f 2)
+
+  if [[ $GIVEN_GOLD_URL == $GOLD_REPO_PUBLIC_URL ]]; then
+    GOLD_REPO_NOT_FOUND=false
+    break
+  fi
+done < "$DIR/../config/gold-url-local-mapping.properties"
+
+if  $GOLD_REPO_NOT_FOUND ; then
+  echo "Could not resolve location on server of gold repository with public URL $GIVEN_GOLD_URL"
+  exit 1
+fi
+GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
+
 # Load config file using the source command
-. $DIR/../config/config.properties
+. $DIR/../config/$GOLD_REPO_NAME/config.properties
 
 SVN_FRONT_REPO_FULL_PATH=$SVN_PATH_OS/$FRONT_REPO_NAME
 
@@ -92,21 +112,21 @@ chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 echo "Create Pre-Commit hook"
 
 set +e
-IS_CONFIG_FILE_EXIST=$(cat $DIR/../config/gen/user_front.properties 1>/dev/null 2>&1)
+IS_CONFIG_FILE_EXIST=$(cat $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties 1>/dev/null 2>&1)
 RETURN_VALUE=$?
 set -e
 
 if [ 0 -ne $RETURN_VALUE ]; then
   echo "User-Front mapping does not exist."
-  echo "$USER_NAME=$FRONT_REPO_NAME" > $DIR/../config/gen/user_front.properties
+  echo "$USER_NAME=$FRONT_REPO_NAME" > $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties
 else
   echo "User-Front mapping exists."
   set +e
-  IS_USER_IN_CONFIG=$(cat $DIR/../config/gen/user_front.properties | grep "$USER_NAME=")
+  IS_USER_IN_CONFIG=$(cat $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties | grep "$USER_NAME=")
   set -e
   if [ -z "$IS_USER_IN_CONFIG" ]; then
     echo "User is not in the config."
-    echo "$USER_NAME=$FRONT_REPO_NAME" >> $DIR/../config/gen/user_front.properties
+    echo "$USER_NAME=$FRONT_REPO_NAME" >> $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties
   elif [[ $IS_USER_IN_CONFIG != "$USER_NAME=$FRONT_REPO_NAME" ]]; then
     echo "Error: inconsistent user_front.properties file. Entry to be added: $USER_NAME=$FRONT_REPO_NAME; existing: $IS_USER_IN_CONFIG"
     exit 3
