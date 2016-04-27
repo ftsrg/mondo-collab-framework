@@ -41,3 +41,5 @@ chown -R $APACHE_USER $DIR/lock
 chmod 777 $DIR/lock
 chown -R $APACHE_USER $DIR/workspace
 chmod 777 $DIR/workspace
+chown -R $APACHE_USER $DIR/log
+chmod 777 $DIR/log
