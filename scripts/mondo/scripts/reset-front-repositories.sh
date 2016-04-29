@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ $# -lt 2 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
-  echo "Usage: $(basename $0) <public gold url> (<apache_user> | --apache | --apache2)"
-  echo " - public gold url: the public URL of the gold repository for which the fronts should be reset"
+  echo "Usage: $(basename $0) <public_gold_name> (<apache_user> | --apache | --apache2)"
+  echo " - public_gold_name: the name of the gold repository for which the fronts should be reset"
   echo " - apache_user: the user name of Apache"
   echo " --apache: apache_user=\"apache.apache\" "
   echo " --apache2: apache_user=\"www-data.www-data\" "
@@ -52,23 +52,8 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Find the gold repository name according to the given public gold URL
-GIVEN_GOLD_URL=$1
-while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
+GOLD_REPO_NAME=$1
 
-  GOLD_REPO_PUBLIC_URL=$(echo $LINE | cut -d'=' -f 1)
-  GOLD_REPO_NAME=$(echo $LINE | cut -d'=' -f 2)
-
-  if [[ $GIVEN_GOLD_URL == $GOLD_REPO_PUBLIC_URL ]]; then
-    GOLD_REPO_NOT_FOUND=false
-    break
-  fi
-done < "$DIR/../config/gold-url-local-mapping.properties"
-
-if  $GOLD_REPO_NOT_FOUND ; then
-  echo "Could not resolve location on server of gold repository with public URL $GIVEN_GOLD_URL"
-  exit 1
-fi
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 # Load config file using the source command
@@ -91,7 +76,7 @@ while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
 	echo $USER_NAME
 	echo $FRONT_REPO_NAME
 
-	./reset-front-repository.sh $USER_NAME $GOLD_REPO_PUBLIC_URL $APACHE_USER
+	./reset-front-repository.sh $USER_NAME $GOLD_REPO_NAME $APACHE_USER
 
 done < "$DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties"
 

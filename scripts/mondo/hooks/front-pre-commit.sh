@@ -27,7 +27,7 @@ set -e # Exit from the script if any subcommand or pipeline returns an error.
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Load the configuration files
-. $DIR/../config/config.properties
+. $DIR/../config/$3/config.properties
 
 function known_model_extension {
   contains=false

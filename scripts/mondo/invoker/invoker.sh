@@ -3,7 +3,8 @@
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $DIR/../config/config.properties
+
+. $DIR/../config/${12}/config.properties
 
 LENS_INVOKER_JAR=$DIR/invoker.jar
 

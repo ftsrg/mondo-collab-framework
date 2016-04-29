@@ -1,10 +1,10 @@
 #!/bin/bash
 
 if [ $# -lt 3 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
-  echo "Usage: $(basename $0) <repository name> <user name> <gold repository url> (<apache_user> | --apache | --apache2)"
+  echo "Usage: $(basename $0) <repository name> <user name> <gold repository name> (<apache_user> | --apache | --apache2)"
   echo " - repository name: the name of the new front repository"
   echo " - user name: the name of the user who has access to the new front repository"
-  echo " - gold repository url: the full public url for the gold repository"
+  echo " - gold repository name: the name of the gold repository"
   echo " - apache_user: the user name of Apache"
   echo " --apache: apache_user=\"apache.apache\" "
   echo " --apache2: apache_user=\"www-data.www-data\" "
@@ -55,23 +55,8 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Find the gold repository name according to the given public gold URL
-GIVEN_GOLD_URL=$3
-while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
+GOLD_REPO_NAME=$3
 
-  GOLD_REPO_PUBLIC_URL=$(echo $LINE | cut -d'=' -f 1)
-  GOLD_REPO_NAME=$(echo $LINE | cut -d'=' -f 2)
-
-  if [[ $GIVEN_GOLD_URL == $GOLD_REPO_PUBLIC_URL ]]; then
-    GOLD_REPO_NOT_FOUND=false
-    break
-  fi
-done < "$DIR/../config/gold-url-local-mapping.properties"
-
-if  $GOLD_REPO_NOT_FOUND ; then
-  echo "Could not resolve location on server of gold repository with public URL $GIVEN_GOLD_URL"
-  exit 1
-fi
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 # Load config file using the source command
@@ -105,7 +90,7 @@ chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH
 
 echo "#!/bin/sh" > $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 echo "set -e" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
-echo "$DIR/../hooks/front-pre-commit.sh \$1 \$2 " >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+echo "$DIR/../hooks/front-pre-commit.sh \$1 \$2 $GOLD_REPO_NAME" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 chmod 755 $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 
@@ -193,7 +178,7 @@ for EXTENSION in $MODEL_EXTENSIONS; do
     echo "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
     chmod oa+rw $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE)
     chmod oa+rw $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE)
-    $LENS_DIR $USER_NAME $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE) $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE) "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
+    $LENS_DIR $USER_NAME $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE) $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE) "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT" "$GOLD_REPO_NAME"
   done
   IFS=","
 done

@@ -1,9 +1,10 @@
 #!/bin/bash
 
 function help {
-  echo "Usage: $(basename $0) <gold repository url> (--apache2 | --apache) [--delete-gold]"
-  echo " -dg | --delete-gold: Delete the gold repository if it already exist"
-  echo " --apache | --apache2: Decide the username of Apache. For Apache: apache.apache, For Apache2: www-data:www-data"
+  echo "Usage: $(basename $0) <gold repository name> (--apache2 | --apache) [--delete-gold]"
+  echo "  gold repository name: the name of the gold repository"
+  echo "  --apache | --apache2: Decide the username of Apache. For Apache: apache.apache, For Apache2: www-data:www-data"
+  echo "  -dg | --delete-gold: Delete the gold repository if it already exist"
   exit
 }
 
@@ -49,22 +50,8 @@ function concate_path_parts {
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Find the gold repository name according to the given public gold URL
-GIVEN_GOLD_URL=$1
-while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
+GOLD_REPO_NAME=$1
 
-  GOLD_REPO_PUBLIC_URL=$(echo $LINE | cut -d'=' -f 1)
-  GOLD_REPO_NAME=$(echo $LINE | cut -d'=' -f 2)
-  if [[ $GIVEN_GOLD_URL == $GOLD_REPO_PUBLIC_URL ]]; then
-    GOLD_REPO_NOT_FOUND=false
-    break
-  fi
-done < "$DIR/../config/gold-url-local-mapping.properties"
-
-if  $GOLD_REPO_NOT_FOUND ; then
-  echo "Could not resolve location on server of gold repository with public URL $GIVEN_GOLD_URL"
-  exit 1
-fi
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 # Load config file using the source command
@@ -94,7 +81,7 @@ chown -R $APACHE_USER /$SVN_PATH_OS/$GOLD_REPO_NAME
 
 echo "#!/bin/sh" > $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/pre-commit
 echo "set -e" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/pre-commit
-echo "$DIR/../hooks/gold-pre-commit.sh \$1 \$2 " >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/pre-commit
+echo "$DIR/../hooks/gold-pre-commit.sh \$1 \$2 $GOLD_REPO_NAME" >> $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/pre-commit
 chmod 755 $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/pre-commit
 chown -R $APACHE_USER $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/pre-commit
 echo "Create Post-Commit hook"
@@ -112,6 +99,6 @@ if [ -f $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties ]; then
     USER=$2
     REPO=$3
 
-    $DIR/../scripts/add-front-repository.sh $REPO $USER $GOLD_REPO_PUBLIC_URL $APACHE_USER
+    $DIR/../scripts/add-front-repository.sh $REPO $USER $GOLD_REPO_NAME $APACHE_USER
   done
 fi

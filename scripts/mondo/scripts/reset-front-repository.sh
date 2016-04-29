@@ -4,9 +4,9 @@
 
 if [ $# -le 1 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
 	echo "This script resets a front repository for a given user by iterating over all revisions in the gold repository and applying the transformation for the different versions of the models."
-	echo "Usage: $(basename $0) <username> <gold repository url> (<apache_user> | --apache | --apache2)"
+	echo "Usage: $(basename $0) <username> <gold_repository_name> (<apache_user> | --apache | --apache2)"
 	echo "    username: the name of the user whose front repository should be reset"
-	echo "    gold repository url: the public url of the gold repository"
+	echo "    gold_repository_name: the name of the gold repository"
 	echo "    apache_user: the user name of Apache, or alternatively give:"
 	echo "        --apache: apache_user=\"apache.apache\" "
 	echo "        --apache2: apache_user=\"www-data.www-data\" "
@@ -57,23 +57,8 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Find the gold repository name according to the given public gold URL
-GIVEN_GOLD_URL=$2
-while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
+GOLD_REPO_NAME=$2
 
-  GOLD_REPO_PUBLIC_URL=$(echo $LINE | cut -d'=' -f 1)
-  GOLD_REPO_NAME=$(echo $LINE | cut -d'=' -f 2)
-
-  if [[ $GIVEN_GOLD_URL == $GOLD_REPO_PUBLIC_URL ]]; then
-    GOLD_REPO_NOT_FOUND=false
-    break
-  fi
-done < "$DIR/../config/gold-url-local-mapping.properties"
-
-if  $GOLD_REPO_NOT_FOUND ; then
-  echo "Could not resolve location on server of gold repository with public URL $GIVEN_GOLD_URL"
-  exit 1
-fi
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 # Load config file using the source command
@@ -204,7 +189,7 @@ while [ $REVISION -le "$LAST_REVISION" ]; do
 			echo "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
 			#chmod oa+rw $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE)
 			chmod oa+rw $MODEL_FILE
-			$LENS_DIR $USER_NAME $MODEL_FILE $MODEL_FILE "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
+			$LENS_DIR $USER_NAME $MODEL_FILE $MODEL_FILE "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT" "$GOLD_REPO_NAME"
 	  done
 	  IFS=","
 	done

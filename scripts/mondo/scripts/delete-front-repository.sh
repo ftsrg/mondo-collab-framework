@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ $# -lt 2 -o "$1" == "--help" -o "$1" == "-h" ]; then
-  echo "Usage: $(basename $0) <front-repo-name> <gold-repo-url> [--force]"
+  echo "Usage: $(basename $0) <front-repo-name> <gold-repository-name> [--force]"
   echo "- front-repo-name: name of the front repository that you want to delete"
-  echo "- gold-repo-url: the public URL of the gold repository to which the front repository belongs"
+  echo "- gold-repository-name: the name of the gold repository to which the front repository belongs"
   echo "--force execute the command without any question"
   exit
 fi
@@ -36,25 +36,11 @@ function concate_path_parts {
 }
 
 
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Find the gold repository name according to the given public gold URL
-GIVEN_GOLD_URL=$2
-while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
+GOLD_REPO_NAME=$2
 
-  GOLD_REPO_PUBLIC_URL=$(echo $LINE | cut -d'=' -f 1)
-  GOLD_REPO_NAME=$(echo $LINE | cut -d'=' -f 2)
-
-  if [[ $GIVEN_GOLD_URL == $GOLD_REPO_PUBLIC_URL ]]; then
-    GOLD_REPO_NOT_FOUND=false
-    break
-  fi
-done < "$DIR/../config/gold-url-local-mapping.properties"
-
-if  $GOLD_REPO_NOT_FOUND ; then
-  echo "Could not resolve location on server of gold repository with public URL $GIVEN_GOLD_URL"
-  exit 1
-fi
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 
