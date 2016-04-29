@@ -40,6 +40,7 @@ import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Po
 import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -145,7 +146,7 @@ public class OfflineCollaborationSession {
                 lens.doGet();
 		
         if (! lensExecution.isAborted()) 
-            saveResources(frontResourceSet, frontConfinementURI);
+            saveResources(lens.getScope(), frontConfinementURI, false);
         
         return lensExecution.extractDenialReason();
 	}
@@ -161,7 +162,7 @@ public class OfflineCollaborationSession {
 		        lens.doPutback(false /* no need to roll back, will be discarded instead */);
 		
 		if (! lensExecution.isAborted()) 
-		    saveResources(goldResourceSet, goldConfinementURI);
+		    saveResources(lens.getScope(), goldConfinementURI, true);
         
         return lensExecution.extractDenialReason();
 	}
@@ -170,10 +171,16 @@ public class OfflineCollaborationSession {
 	 * Saves those resources of the ResourceSet that fall within specified confinement boundaries
 	 * @throws IOException 
 	 */
-	public static void saveResources(ResourceSet resourceSet, URI confinementURI) throws IOException {
+	public static void saveResources(MondoLensScope scope, URI confinementURI, boolean isGold) throws IOException {
+		ResourceSet resourceSet = (isGold? scope.getGoldIndexer() : scope.getFrontIndexer()).getRoot();
+		
+		ImmutableMap<Object, Object> saveOptions = ImmutableMap.of(
+			MondoLensScope.class, scope,
+			"isGold", isGold);
+		
 		for (Resource resource : resourceSet.getResources()) {
 			if (resource.isLoaded() && isconfined(resource, confinementURI))
-				resource.save(Collections.emptyMap());
+				resource.save(saveOptions);
 		}
 	}
 
