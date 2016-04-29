@@ -79,7 +79,7 @@ if [ -f $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties ]; then
 
     echo "* $REPO"
     if [ $FORCE = true ]; then
-      $DIR/../scripts/delete-front-repository.sh $REPO $GOLD_REPO_PUBLIC_URL --force
+      $DIR/../scripts/delete-front-repository.sh $REPO $GOLD_REPO_NAME --force
     fi
   done
 fi
@@ -87,6 +87,6 @@ if [ $FORCE = false ]; then
   read -p "Are you sure? (y/n) " -n 1 -r
   echo ""
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    $0 --force
+    $0 $1 --force
   fi
 fi

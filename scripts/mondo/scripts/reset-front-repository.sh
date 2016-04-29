@@ -4,9 +4,9 @@
 
 if [ $# -le 1 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
 	echo "This script resets a front repository for a given user by iterating over all revisions in the gold repository and applying the transformation for the different versions of the models."
-	echo "Usage: $(basename $0) <username> <gold_repository_name> (<apache_user> | --apache | --apache2)"
-	echo "    username: the name of the user whose front repository should be reset"
+	echo "Usage: $(basename $0) <gold_repository_name> <username> (<apache_user> | --apache | --apache2)"
 	echo "    gold_repository_name: the name of the gold repository"
+	echo "    username: the name of the user whose front repository should be reset"
 	echo "    apache_user: the user name of Apache, or alternatively give:"
 	echo "        --apache: apache_user=\"apache.apache\" "
 	echo "        --apache2: apache_user=\"www-data.www-data\" "
@@ -57,7 +57,7 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-GOLD_REPO_NAME=$2
+GOLD_REPO_NAME=$1
 
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
@@ -71,7 +71,7 @@ echo "Removing rule based locks:"
 find "$DIR/../lock/" -mindepth 1 -depth -print0 | grep -vEzZ '(\.git(/|$)|/\.gitignore$)' | xargs -0 echo rm -rvf
 find "$DIR/../lock/" -mindepth 1 -depth -print0 | grep -vEzZ '(\.git(/|$)|/\.gitignore$)' | xargs -0 rm -rvf >/dev/null
 
-USER_NAME=$1
+USER_NAME=$2
 
 echo "Resetting for user $USER_NAME..."
 

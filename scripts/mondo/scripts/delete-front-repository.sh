@@ -1,10 +1,10 @@
 #!/bin/bash
 
 if [ $# -lt 2 -o "$1" == "--help" -o "$1" == "-h" ]; then
-  echo "Usage: $(basename $0) <front-repo-name> <gold-repository-name> [--force]"
-  echo "- front-repo-name: name of the front repository that you want to delete"
-  echo "- gold-repository-name: the name of the gold repository to which the front repository belongs"
-  echo "--force execute the command without any question"
+  echo "Usage: $(basename $0) <gold-repository-name> <front-repo-name> [--force]"
+  echo "  - gold-repository-name: the name of the gold repository to which the front repository belongs"
+  echo "  - front-repo-name: name of the front repository that you want to delete"
+  echo "  --force execute the command without any question"
   exit
 fi
 
@@ -39,7 +39,7 @@ function concate_path_parts {
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-GOLD_REPO_NAME=$2
+GOLD_REPO_NAME=$1
 
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
@@ -47,14 +47,14 @@ GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 # Load Config files
 . $DIR/../config/$GOLD_REPO_NAME/config.properties
 
-if [ "$2" == "--force" ]; then
+if [ "$3" == "--force" ]; then
   FORCE=true
 else
   FORCE=false
 fi
 
 CAN_EXECUTE_DELETE=true
-FRONT_REPO_NAME=$1
+FRONT_REPO_NAME=$2
 SVN_FRONT_REPO_FULL_PATH=$SVN_PATH_OS/$FRONT_REPO_NAME
 if [ ! -d $SVN_FRONT_REPO_FULL_PATH ]; then
   echo "Warning: Repository directory does not exist: $SVN_FRONT_REPO_FULL_PATH"

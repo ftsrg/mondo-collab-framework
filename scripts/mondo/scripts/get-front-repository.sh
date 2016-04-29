@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ $# -lt 2 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
-  echo "Usage: $(basename $0) <user name> <gold repository url>"
-  echo " - user name: the name of the user who has access to the new front repository"
-  echo " - gold repository url: the full public url for the gold repository"
+  echo "Usage: $(basename $0) <gold repository name> <user name>"
+  echo "  - gold repository url: the full public url for the gold repository"
+  echo "  - user name: the name of the user who has access to the new front repository"
   exit
 fi
 
@@ -34,13 +34,11 @@ function concate_path_parts {
   echo $result
 }
 
-
-USER_NAME=$1
-
+USER_NAME=$2
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-GOLD_REPO_NAME=$2
+GOLD_REPO_NAME=$1
 
 # Load config file using the source command
 . $DIR/../config/$GOLD_REPO_NAME/config.properties
