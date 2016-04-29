@@ -62,6 +62,7 @@ GOLD_REPO_NAME=$1
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 # Load config file using the source command
+. $DIR/../config/global-config.properties
 . $DIR/../config/$GOLD_REPO_NAME/config.properties
 
 

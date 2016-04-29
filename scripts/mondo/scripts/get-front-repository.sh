@@ -41,6 +41,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 GOLD_REPO_NAME=$1
 
 # Load config file using the source command
+. $DIR/../config/global-config.properties
 . $DIR/../config/$GOLD_REPO_NAME/config.properties
 
 

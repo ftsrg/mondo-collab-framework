@@ -60,6 +60,7 @@ GOLD_REPO_NAME=$1
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 # Load config file using the source command
+. $DIR/../config/global-config.properties
 . $DIR/../config/$GOLD_REPO_NAME/config.properties
 
 SVN_FRONT_REPO_FULL_PATH=$SVN_PATH_OS/$FRONT_REPO_NAME
@@ -160,33 +161,39 @@ EXCLUDES="--exclude=\".svn\""
 
 cp -r $WORKSPACE_GOLD/* $WORKSPACE_FRONT/
 
-# Execute lens for every model file
-OBFUSCATOR_SEED="seed_$FRONT_REPO_NAME"
-OBFUSCATOR_SALT="salt_$FRONT_REPO_NAME"
-OBFUSCATOR_PREFIX="mondo"
+## Execute lens for every model file
+#OBFUSCATOR_SEED="seed_$FRONT_REPO_NAME"
+#OBFUSCATOR_SALT="salt_$FRONT_REPO_NAME"
+#OBFUSCATOR_PREFIX="mondo"
+#
+#LENS_DIR="$DIR/../invoker/invoker.sh"
+#WORKSPACE="$DIR/../workspace"
+#
+#IFS_OLD=$IFS
+#IFS=","
+#for EXTENSION in $MODEL_EXTENSIONS; do
+#  IFS=$IFS_OLD
+#  for FILE_NAME in $(find $WORKSPACE_GOLD -name "*.$EXTENSION"); do # TODO test if it works properly
+#    MODEL_FILE=$(replace $FILE_NAME $WORKSPACE_GOLD "")
+#    echo "Executing lens for $MODEL_FILE"
+#    echo "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
+#    chmod oa+rw $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE)
+#    chmod oa+rw $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE)
+#    $LENS_DIR $USER_NAME $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE) $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE) "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT" "$GOLD_REPO_NAME"
+#  done
+#  IFS=","
+#done
+#IFS=$IFS_OLD
+#
+#CURRENT_DIR=`pwd`
+#
+#cd $WORKSPACE_FRONT
+#svn add --force * --auto-props --parents --depth infinity -q
+#echo "$COMMIT_MSG" 1>"svn-commit.tmp"
+#svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+#
+#rm -rf $DIR/../workspace/add-front-repository
+#
+#cd $CURRENT_DIR
 
-LENS_DIR="$DIR/../invoker/invoker.sh"
-WORKSPACE="$DIR/../workspace"
-
-IFS_OLD=$IFS
-IFS=","
-for EXTENSION in $MODEL_EXTENSIONS; do
-  IFS=$IFS_OLD
-  for FILE_NAME in $(find $WORKSPACE_GOLD -name "*.$EXTENSION"); do # TODO test if it works properly
-    MODEL_FILE=$(replace $FILE_NAME $WORKSPACE_GOLD "")
-    echo "Executing lens for $MODEL_FILE"
-    echo "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
-    chmod oa+rw $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE)
-    chmod oa+rw $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE)
-    $LENS_DIR $USER_NAME $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE) $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE) "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT" "$GOLD_REPO_NAME"
-  done
-  IFS=","
-done
-IFS=$IFS_OLD
-
-cd $WORKSPACE_FRONT
-svn add --force * --auto-props --parents --depth infinity -q
-echo "$COMMIT_MSG" 1>"svn-commit.tmp"
-svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
-
-rm -rf $DIR/../workspace/add-front-repository
+./reset-front-repository.sh $GOLD_REPO_NAME $USER_NAME $APACHE_USER

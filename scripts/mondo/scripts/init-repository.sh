@@ -55,7 +55,7 @@ GOLD_REPO_NAME=$1
 GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
 
 # Load config file using the source command
-. $DIR/../config/$GOLD_REPO_NAME/config.properties
+. $DIR/../config/global-config.properties
 
 # Check parameter
 if [ "$3" == "--delete-gold" ]; then
@@ -86,19 +86,27 @@ chmod 755 $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/pre-commit
 chown -R $APACHE_USER $SVN_PATH_OS/$GOLD_REPO_NAME/hooks/pre-commit
 echo "Create Post-Commit hook"
 
-#go on even if an error is encountered
-set +e
-
-if [ -f $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties ]; then
-  echo "User-Front mapping exists in $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties"
-  USER_FRONT_MAPPING=$(cat $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties)
-  for entry in $USER_FRONT_MAPPING; do
-    oldIFS=$IFS
-    IFS='='
-    set x $entry
-    USER=$2
-    REPO=$3
-
-    $DIR/../scripts/add-front-repository.sh $REPO $USER $GOLD_REPO_NAME $APACHE_USER
-  done
+if [ ! -d ../config/$GOLD_REPO_NAME ];
+then
+  mkdir ../config/$GOLD_REPO_NAME
 fi
+
+cp -r ../config/gold-repo-default-config/* ../config/$GOLD_REPO_NAME/
+
+
+##go on even if an error is encountered
+#set +e
+#
+#if [ -f $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties ]; then
+#  echo "User-Front mapping exists in $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties"
+#  USER_FRONT_MAPPING=$(cat $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties)
+#  for entry in $USER_FRONT_MAPPING; do
+#    oldIFS=$IFS
+#    IFS='='
+#    set x $entry
+#    USER=$2
+#    REPO=$3
+#
+#    $DIR/../scripts/add-front-repository.sh $REPO $USER $GOLD_REPO_NAME $APACHE_USER
+#  done
+#fi
