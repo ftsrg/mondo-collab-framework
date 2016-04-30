@@ -8,11 +8,11 @@ public class StorageAccessFactory {
 		SVN, Dummy
 	}
 	
-	public static StorageAccess createStorageAccess(String username, String password) throws Exception {
+	public static StorageAccess createStorageAccess(String username, String password, String repository) throws Exception {
 		if(type == Type.SVN) {
-			return new StorageAccessSvn(username, password);
+			return new StorageAccessSvn(username, password, repository);
 		} else {
-			return new StorageAccessDummy(username, password);
+			return new StorageAccessDummy(username, password, repository);
 		}
 	}
 	

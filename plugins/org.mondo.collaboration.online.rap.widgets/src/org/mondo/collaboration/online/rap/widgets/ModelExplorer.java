@@ -58,11 +58,13 @@ public class ModelExplorer extends ViewPart {
 	public static final String STORAGEACCESS = "storageaccess";
 	public static final String USERNAME = "username";
 	public static final String PASSWORD = "password";
+	public static final String REPOSITORY = "repository";
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.ModelExplorer";
 	public static final String EVENT_UPDATE_PATH = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.update.path";
 	public static final String EVENT_USER_LOGGED_IN = "org.mondo.collaboration.online.rap.widgets.ModelExplorer.user.logged.in";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat();
 
+	private Text repositoryField;
 	private Text passwordField;
 	private Text usernameField;
 
@@ -75,6 +77,7 @@ public class ModelExplorer extends ViewPart {
 	private StackLayout layout;
 	private StorageAccess access;
 	private Button remember;
+	private boolean switchViews;
 
 	/**
 	 * {@inheritDoc}
@@ -95,7 +98,7 @@ public class ModelExplorer extends ViewPart {
 
 		if (retrieveHttpSession()) {
 			try {
-				processLogin(usernameField.getText(), passwordField.getText(), true);
+				processLogin(usernameField.getText(), passwordField.getText(), repositoryField.getText(), true);
 				layout.topControl = modelExplorer;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -104,6 +107,12 @@ public class ModelExplorer extends ViewPart {
 			layout.topControl = loginForm;
 		}
 
+
+		if(switchViews) {
+			switchViews = false;
+			switchViews(access.explore());
+		}
+		
 		registerContexMenu();
 	}
 
@@ -188,12 +197,18 @@ public class ModelExplorer extends ViewPart {
 		final GridLayout layout = (GridLayout) loginPanel.getLayout();
 		layout.numColumns = 2;
 
+		final Label repositoryLabel = new Label(loginPanel, SWT.RIGHT);
+		repositoryLabel.setText("Gold Repository: "); //$NON-NLS-1$
+		repositoryField = new Text(loginPanel, SWT.SINGLE | SWT.BORDER);
+
+		
 		final Label usernameLabel = new Label(loginPanel, SWT.RIGHT);
 		usernameLabel.setText("Username: "); //$NON-NLS-1$
 		usernameField = new Text(loginPanel, SWT.SINGLE | SWT.BORDER);
 
 		final GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		usernameField.setLayoutData(data);
+		repositoryField.setLayoutData(data);
 
 		final Label passwordLabel = new Label(loginPanel, SWT.RIGHT);
 		passwordLabel.setText("Password: "); //$NON-NLS-1$
@@ -202,6 +217,7 @@ public class ModelExplorer extends ViewPart {
 
 		remember = new Button(loginPanel, SWT.CHECK);
 		remember.setText("Remember me"); //$NON-NLS-1$
+		remember.setVisible(false);
 		final Button login = new Button(loginPanel, SWT.CENTER);
 		login.setText("Login"); //$NON-NLS-1$
 		login.setLayoutData(data);
@@ -213,13 +229,13 @@ public class ModelExplorer extends ViewPart {
 			@Override
 			public void handleEvent(Event event) {
 				try {
-					processLogin(usernameField.getText(), passwordField.getText(), false);
+					processLogin(usernameField.getText(), passwordField.getText(), repositoryField.getText(), false);
 				} catch (Exception e) {
 					showMessage(parent, "Exception", e.getMessage(), SWT.ERROR | SWT.ABORT);
 				}
 			}
 		});
-
+		retrieveHttpSession();
 		return loginPanel;
 	}
 
@@ -231,9 +247,9 @@ public class ModelExplorer extends ViewPart {
 		return messageBox.open();
 	}
 
-	protected void processLogin(String username, String password, boolean internal) {
+	protected void processLogin(String username, String password, String repository, boolean internal) {
 		try {
-			internalValidateStorageAccess(username, password);
+			internalValidateStorageAccess(username, password, repository);
 			String loginReason = access.login();
 			if (loginReason != null && !internal) {
 				showMessage(container, "Login failed", loginReason, SWT.ERROR | SWT.RETRY);
@@ -244,25 +260,32 @@ public class ModelExplorer extends ViewPart {
 			// internalStoreUserData();
 			// }
 
-			internalStoreHttpSession();
+			internalStoreHttpSession(username, password, repository);
 
 			StorageModel storageModel = access.explore();
-			treeViewer.setInput(storageModel);
-			modelExplorer.setVisible(true);
-			loginForm.setVisible(false);
-			layout.topControl = modelExplorer;
-
+			if(treeViewer != null) {
+				switchViews(storageModel);
+			} else {
+				switchViews = true;
+			}
 			UINotifierManager.notifySuccess(EVENT_USER_LOGGED_IN, username);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void internalValidateStorageAccess(String username, String password) throws Exception {
+	private void switchViews(StorageModel storageModel) {
+		treeViewer.setInput(storageModel);
+		modelExplorer.setVisible(true);
+		loginForm.setVisible(false);
+		layout.topControl = modelExplorer;
+	}
+
+	private void internalValidateStorageAccess(String username, String password, String repository) throws Exception {
 		StorageAccess currentStorageAccess = getCurrentStorageAccess();
 		if (currentStorageAccess == null || !(currentStorageAccess.getUsername().equals(username)
 				&& currentStorageAccess.getPassword().equals(password))) {
-			access = StorageAccessFactory.createStorageAccess(username, password);
+			access = StorageAccessFactory.createStorageAccess(username, password, repository);
 		} else {
 			access = currentStorageAccess;
 		}
@@ -272,18 +295,21 @@ public class ModelExplorer extends ViewPart {
 	private boolean retrieveHttpSession() {
 		Object username = RWT.getUISession().getHttpSession().getAttribute(USERNAME);
 		Object password = RWT.getUISession().getHttpSession().getAttribute(PASSWORD);
+		Object repository = RWT.getUISession().getHttpSession().getAttribute(PASSWORD);
 
 		if (username != null && password != null) {
 			usernameField.setText((String) username);
 			passwordField.setText((String) password);
+			repositoryField.setText((String)repository);
 			return true;
 		}
 		return false;
 	}
 
-	private void internalStoreHttpSession() {
-		RWT.getUISession().getHttpSession().setAttribute(USERNAME, usernameField.getText());
-		RWT.getUISession().getHttpSession().setAttribute(PASSWORD, passwordField.getText());
+	private void internalStoreHttpSession(String username, String password, String repository) {
+		RWT.getUISession().getHttpSession().setAttribute(USERNAME, username);
+		RWT.getUISession().getHttpSession().setAttribute(PASSWORD, password);
+		RWT.getUISession().getHttpSession().setAttribute(REPOSITORY, repository);
 		RWT.getUISession().getHttpSession().setAttribute(STORAGEACCESS, access);
 	}
 
@@ -294,7 +320,7 @@ public class ModelExplorer extends ViewPart {
 
 	@Override
 	public void setFocus() {
-		usernameField.setFocus();
+		repositoryField.setFocus();
 	}
 
 	public boolean openEditor(IWorkbench workbench, String path) {
@@ -368,9 +394,10 @@ public class ModelExplorer extends ViewPart {
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 
-		if (!usernameField.getText().trim().isEmpty() && !passwordField.getText().trim().isEmpty()) {
+		if (!usernameField.getText().trim().isEmpty() && !passwordField.getText().trim().isEmpty() && !repositoryField.getText().trim().isEmpty()) {
 			memento.putString(USERNAME, usernameField.getText());
 			memento.putString(PASSWORD, passwordField.getText());
+			memento.putString(REPOSITORY, repositoryField.getText());
 		}
 	}
 
@@ -382,10 +409,11 @@ public class ModelExplorer extends ViewPart {
 		if (memento.getString(USERNAME) != null && memento.getString(PASSWORD) != null) {
 			try {
 				RWT.getUISession().getHttpSession().setAttribute(STORAGEACCESS, StorageAccessFactory
-						.createStorageAccess(memento.getString(USERNAME), memento.getString(PASSWORD)));
+						.createStorageAccess(memento.getString(USERNAME), memento.getString(PASSWORD), memento.getString(REPOSITORY)));
 				RWT.getUISession().getHttpSession().setAttribute(USERNAME, memento.getString(USERNAME));
 				RWT.getUISession().getHttpSession().setAttribute(PASSWORD, memento.getString(PASSWORD));
-				processLogin(memento.getString(USERNAME), memento.getString(PASSWORD), true);
+				RWT.getUISession().getHttpSession().setAttribute(REPOSITORY, memento.getString(REPOSITORY));
+				processLogin(memento.getString(USERNAME), memento.getString(PASSWORD), memento.getString(REPOSITORY), true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

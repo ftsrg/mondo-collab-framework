@@ -16,13 +16,13 @@ public class StorageAccessDummy extends StorageAccess {
 	private StorageModelNode lock;
 	private StorageModelNode rule;
 	private StorageModelNode query;
-	private String internalEiqFile = "/home/meres/git/mondo-demo-wt/Demo/macl.project/src/macl/project/queries.eiq";
-	private String internalMaclFile = "/home/meres/git/mondo-demo-wt/Demo/macl.project/src/macl/project/rules.macl";
-	private String internalMpblFile = "/home/meres/git/mondo-demo-wt/Demo/macl.project/src/macl/project/lock.mpbl";
-	private String filepath = "/home/meres/git/mondo-demo-wt/Demo/demo.project/simplified-example.wtspec4m";
+	private String internalEiqFile = "/home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/test/project/macl.project/src/macl/project/queries.eiq";
+	private String internalMaclFile = "/home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/test/project/macl.project/src/macl/project/rules.macl";
+	private String internalMpblFile = "/home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/test/project/macl.project/src/macl/project/lock.mpbl";
+	private String filepath = "/home/vialpando/Eclipse/Mondo/git/mondo-collab-framework/test/project/demo.project/simplified-example.wtspec4m";
 
-	public StorageAccessDummy(String username, String password) throws FileNotFoundException, IOException {
-		super(username, password);
+	public StorageAccessDummy(String username, String password, String repository) throws FileNotFoundException, IOException {
+		super(username, password, repository);
 	}
 
 	@Override

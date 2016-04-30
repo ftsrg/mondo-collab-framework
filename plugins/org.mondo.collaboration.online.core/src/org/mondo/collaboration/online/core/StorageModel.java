@@ -18,7 +18,7 @@ public class StorageModel {
 		initializeRoots();
 	}
 	private void initializeRoots() {
-		roots = sa.explore(this, StorageAccess.getRepository(), null, StorageAccess.getRepository());
+		roots = sa.explore(this, sa.getRepository(), null, sa.getRepository());
 	}
 	protected StorageAccess getStorageAccess() {
 		return sa;

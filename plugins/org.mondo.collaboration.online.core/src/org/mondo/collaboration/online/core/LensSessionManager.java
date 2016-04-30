@@ -199,7 +199,7 @@ public class LensSessionManager {
 
 	private static final class HttpSessionListenerImplementation implements HttpSessionListener {
 
-		public static int MAX_INTERVAL = 15 * 60; // 15 minutes
+		public static int MAX_INTERVAL = 15 + 60; // 15 minutes
 
 		private static final Logger logger = Logger.getLogger(HttpSessionListenerImplementation.class);
 

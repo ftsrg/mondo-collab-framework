@@ -19,8 +19,8 @@ public class StorageAccessSvn extends StorageAccess {
 
 	private static final String INTERNAL_ERROR_DURING_LOGIN = "Internal error during login";
 
-	public StorageAccessSvn(String username, String password) throws Exception {
-		super(username, password);
+	public StorageAccessSvn(String username, String password, String repository) throws Exception {
+		super(username, password, repository);
 		internalEiq = URI.createFileURI(internalCheckoutFile(getEiqFile(), true));
 		internalMacl = URI.createFileURI(internalCheckoutFile(getMaclFile(), true));
 		internalMpbl = URI.createFileURI(internalCheckoutFile(getMpblFile(), true));
