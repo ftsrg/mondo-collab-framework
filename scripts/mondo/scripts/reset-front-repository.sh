@@ -2,14 +2,11 @@
 
 # Help text
 
-if [ $# -le 1 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
+if [ $# -lt 2 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
 	echo "This script resets a front repository for a given user by iterating over all revisions in the gold repository and applying the transformation for the different versions of the models."
-	echo "Usage: $(basename $0) <gold_repository_name> <username> (<apache_user> | --apache | --apache2)"
+	echo "Usage: $(basename $0) <gold_repository_name> <username>"
 	echo "    gold_repository_name: the name of the gold repository"
 	echo "    username: the name of the user whose front repository should be reset"
-	echo "    apache_user: the user name of Apache, or alternatively give:"
-	echo "        --apache: apache_user=\"apache.apache\" "
-	echo "        --apache2: apache_user=\"www-data.www-data\" "
 	exit 0
 fi
 
@@ -44,15 +41,6 @@ function replace {
 
 # do not stop at errors
 set -e
-
-if [ "$3" == "--apache" ]; then
-	APACHE_USER="apache.apache"
-elif [ "$3" == "--apache2" ]; then
-	APACHE_USER="www-data:www-data" 
-else
-	APACHE_USER="$3"
-fi
-
 
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

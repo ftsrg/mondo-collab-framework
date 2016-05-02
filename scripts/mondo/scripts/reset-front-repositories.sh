@@ -1,11 +1,8 @@
 #!/bin/bash
 
-if [ $# -lt 2 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
-  echo "Usage: $(basename $0) <public_gold_name> (<apache_user> | --apache | --apache2)"
-  echo " - public_gold_name: the name of the gold repository for which the fronts should be reset"
-  echo " - apache_user: the user name of Apache"
-  echo " --apache: apache_user=\"apache.apache\" "
-  echo " --apache2: apache_user=\"www-data.www-data\" "
+if [ $# -lt 1 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
+  echo "Usage: $(basename $0) <public_gold_name>"
+  echo "   -public_gold_name: the name of the gold repository for which the fronts should be reset"
   exit
 fi
 
@@ -39,16 +36,6 @@ function replace {
 }
 
 set -e
-
-if [ "$2" == "--apache" ]; then
-  APACHE_USER="apache.apache"
-elif [ "$2" == "--apache2" ]; then
-  APACHE_USER="www-data:www-data" 
-else
-  APACHE_USER="$2"
-fi
-
-
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 

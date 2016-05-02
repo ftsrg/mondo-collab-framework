@@ -1,13 +1,10 @@
 #!/bin/bash
 
 if [ $# -lt 3 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
-  echo "Usage: $(basename $0) <gold repository name> <repository name> <user name> (<apache_user> | --apache | --apache2)"
+  echo "Usage: $(basename $0) <gold repository name> <repository name> <user name>"
   echo "  - gold repository name: the name of the gold repository"
   echo "  - repository name: the name of the new front repository"
   echo "  - user name: the name of the user who has access to the new front repository"
-  echo "  - apache_user: the user name of Apache"
-  echo "  --apache: apache_user=\"apache:apache\" "
-  echo "  --apache2: apache_user=\"www-data:www-data\" "
   exit
 fi
 
@@ -44,14 +41,6 @@ set -e
 
 FRONT_REPO_NAME=$2
 USER_NAME=$3
-
-if [ "$4" == "--apache" ]; then
-  APACHE_USER="apache.apache"
-elif [ "$4" == "--apache2" ]; then
-  APACHE_USER="www-data:www-data"
-else
-  APACHE_USER="$4"
-fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 

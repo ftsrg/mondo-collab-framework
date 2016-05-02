@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -lt 1 -o "$1" == "--help" -o "$1" == "-h" ]; then
-  echo "Usage: $(basename $0) <gold repository name>[--force]"
+  echo "Usage: $(basename $0) <gold repository name> [--force]"
   echo "gold repository name: the name of the gold repository"
   echo "--force execute the command without any question"
   exit

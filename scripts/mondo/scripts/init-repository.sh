@@ -1,9 +1,8 @@
 #!/bin/bash
 
 function help {
-  echo "Usage: $(basename $0) <gold repository name> (--apache2 | --apache) [--delete-gold]"
+  echo "Usage: $(basename $0) <gold repository name> [--delete-gold]"
   echo "  gold repository name: the name of the gold repository"
-  echo "  --apache | --apache2: Decide the username of Apache. For Apache: apache.apache, For Apache2: www-data:www-data"
   echo "  -dg | --delete-gold: Delete the gold repository if it already exist"
   exit
 }
@@ -12,14 +11,6 @@ if [ $# -lt 1 -o "$1" == "--help" -o "$1" == "-h" ]; then
   help
 fi
 set -e
-
-if [ "$2" == "--apache" ]; then
-  APACHE_USER="apache.apache"
-elif [ "$2" == "--apache2" ]; then
-  APACHE_USER="www-data:www-data"
-else
-  help
-fi
 
 # concate path parts and includes a slash "/" if necessary
 function concate_path_parts {
