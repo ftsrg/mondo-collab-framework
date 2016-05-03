@@ -34,7 +34,7 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 	public WhiteboardChatView() {
 	}
 
-	private static final String PLACEHOLDER = "User currently not in a whiteboard";
+	private static final String PLACEHOLDER = "User is currently not in a whiteboard";
 	
 	private static AddChatToWhiteboard addCallback;
 	private static RemoveFromWhiteboard removeCallback;
