@@ -16,7 +16,7 @@
 -Dhawk.artemis.host=localhost
 -Dhawk.artemis.listenAll=false
 -Dhawk.tcp.port=2080 -Dhawk.tcp.thriftProtocol=TUPLE
-lkjléj
+
 -Dmondo.scripts.folder=/home/mondo/Desktop/mondo-offline-scripts/scripts
       </vmArgs>
       <vmArgsLin>-Dsvnkit.library.gnome-keyring.enabled=false
@@ -67,7 +67,6 @@ lkjléj
       <feature id="org.eclipse.equinox.server.jetty"/>
       <feature id="org.eclipse.xsd"/>
       <feature id="org.eclipse.emf.edit"/>
-      <feature id="org.eclipse.emf.validation"/>
       <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
       <feature id="org.eclipse.emf.common"/>
@@ -75,14 +74,12 @@ lkjléj
       <feature id="org.eclipse.ecf.core.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
       <feature id="org.eclipse.ecf.core.feature"/>
-      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.feature"/>
       <feature id="org.eclipse.emf.mapping"/>
       <feature id="org.eclipse.emf.ecore.edit"/>
       <feature id="org.eclipse.epsilon.core.feature"/>
       <feature id="org.eclipse.epsilon.core.dependencies.feature"/>
       <feature id="org.eclipse.emf.mapping.ecore"/>
-      <feature id="org.eclipse.equinox.core.sdk"/>
       <feature id="org.hawk.git.feature"/>
       <feature id="org.hawk.http.feature"/>
       <feature id="org.mondo.collaboration.security.lens.offline.server.feature"/>
