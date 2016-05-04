@@ -73,7 +73,7 @@ class Hawk {
 	@doc(d="Lists the names of the available storage backends")
 	op String[*] listBackends();
 
-	@doc(d="Lists all the plugins that can be enabled: metamodel parsers, model parsers, query parsers, updaters and graph change listeners.")
+	@doc(d="Lists all the Hawk plugins that can be enabled or disabled: metamodel parsers, model parsers and graph change listeners.")
 	op String[*] listPlugins();
 
 	@doc(d="Lists the details of all Hawk instances")
@@ -96,7 +96,8 @@ class Hawk {
 
     @doc(d="Forces an immediate synchronization on a Hawk instance")
     op void syncInstance(
-		@doc(d="The name of the Hawk instance to stop") String name
+		@doc(d="The name of the Hawk instance to stop") String name,
+		@doc(d="If true, blocks the call until the synchronisation completes. False by default.", optional="true", default="false") boolean blockUntilDone
     ) throws HawkInstanceNotFound, HawkInstanceNotRunning;
 
 	@doc(d="Registers a set of file-based metamodels with a Hawk instance")
@@ -158,7 +159,7 @@ class Hawk {
 		@doc(d="Whether the repository should be frozen (true) or not (false)") Boolean isFrozen
 	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
 
-	@doc(d="Asks a Hawk instance to stop monitoring a repository")
+	@doc(d="Asks a Hawk instance to stop monitoring a repository and remove its elements from the graph")
 	op void removeRepository (
 		@doc(d="The name of the Hawk instance") String name,
 		@doc(d="The URI of the repository to stop monitoring") String uri
@@ -256,15 +257,21 @@ class Hawk {
 	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
 }
 
+@doc(d="Representation of a set of rules for either including or excluding metamodels, types or slots")
 @thrift.map(key="uri", value="metamodel")
 class EffectiveMetamodelMap {
+    @doc(d="Namespace URI of the metamodel")
     val String uri;
+    @doc(d="Types and slots within the metamodel that should be included or excluded: empty means 'all types and slots'")
     val EffectiveMetamodel[*] metamodel;
 }
 
+@doc(d="Representation of a set of rules for either including or excluding certain types and/or slots within a metamodel")
 @thrift.map(key="type", value="slots")
 class EffectiveMetamodel {
+    @doc(d="Type that should be included or excluded")
 	val String type;
+	@doc(d="Slots within the type that should be included or excluded: empty means 'all slots'")
     @thrift.set
 	val String[*] slots;
 }
@@ -471,31 +478,10 @@ by the security lens are themselves described in the repository.
 
 Nevertheless, managing the operation of the hooks and the lens relationship requires
 its own API, as this is not covered by traditional VCS protocols. The rest of the section
-describes a work-in-progress API for managing these access rules: the final version will be
-provided in D6.8, due in M30.
+describes an API for managing these access rules.
 ")
 class OfflineCollaboration {
-/*  
-  @doc(d="Adds an access control rule to the specified version control system.")
-  op void addRule(
-  	@doc(d="URL of the version control system") String repoURL,
-  	@doc(d="Specification of the access control rule") CollaborationRule rule);
 
-  @doc(d="Removes an access control rule from the specified version control system.")
-  op void removeRule(
-    @doc(d="URL of the version control system") String repoURL,
-    @doc(d="Specification of the access control rule") String ruleName) throws CollaborationRuleNotFound;
-
-  @doc(d="Updates an access control rule for the specified version control system.")
-  op void updateRule(
-    @doc(d="URL of the version control system") String repoURL,
-    @doc(d="Specification of the access control rule") CollaborationRule rule) throws CollaborationRuleNotFound;
-
-  @doc(d="Lists the access control rules for the specified version control system.")
-  op CollaborationRule[*] listRules(
-    @doc(d="URL of the version control system") String repoURL);
-*/
-		
   @doc(d="Retrieve the list of all managed gold repositories")
   op String[*] listGoldRepositories()
 		throws UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
@@ -524,19 +510,6 @@ class OfflineCollaborationInternalError {
     @doc(d="Summary description of the error. See details in server log.")
 	attr String errorMessage;
 }
-
-/*
-@doc(d="Specification of an access control rule for models")
-class CollaborationRule {
-	@doc(d="Unique identifier of the rule within the VCS") attr String name;
-	@doc(d="Specification of the access rule in the MONDO Collaboration Policy Language from D4.2") attr String body;
-}
-
-@doc(d="No collaboration rule with that name was found for the specified repository")
-class CollaborationRuleNotFound {
-	
-}
-*/
 
 @doc(d="Credentials of the client in the target VCS")
 class Credentials {
@@ -838,6 +811,7 @@ class Subscription {
 	@doc(d="Port in which the message queue server is listening") attr int port;
 	@doc(d="Address of the topic queue") attr String queueAddress;
 	@doc(d="Name of the topic queue") attr String queueName;
+	@doc(d="Whether SSL is required or not", default="false") attr boolean sslRequired;
 }
 
 @doc(d="Durability of a subscription")
@@ -847,3 +821,50 @@ enum SubscriptionDurability {
 	@doc(d="Subscription survives client disconnections and server restarts.") DURABLE;
 }
 
+// Server-side IFC export ///////////////////////////////////////////////////////////
+
+@doc(d="Options for a server-side IFC export.")
+class IFCExportOptions {
+  @doc(d="The repository for the query (or * for all repositories)", optional="true", default="*")
+  attr String repositoryPattern;
+
+  @doc(d="The file patterns for the query (e.g. *.uml)", optional="true")
+  attr String[*] filePatterns;
+
+  @doc(d="If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type.", optional="true")
+  val EffectiveMetamodelMap includeRules;
+
+  @doc(d="If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type.", optional="true")
+  val EffectiveMetamodelMap excludeRules;
+}
+
+@doc(d="Status of a server-side IFC export job.")
+enum IFCExportStatus {
+	@doc(d="The job has been scheduled but has not started yet.") SCHEDULED;
+	@doc(d="The job is currently running.") RUNNING;
+	@doc(d="The job has been cancelled.") CANCELLED;
+	@doc(d="The job has failed.") FAILED;
+	@doc(d="The job is completed.") DONE;
+}
+
+@doc(d="Information about a server-side IFC export job.")
+class IFCExportJob {
+	attr String jobID;
+	attr IFCExportStatus status;
+	attr String message;
+}
+
+@doc(d="IFC export facility for getting IFC models from MONDO server")
+class IFCExport {
+	@doc(d="Export part of a Hawk index in IFC STEP format")
+	op IFCExportJob exportAsSTEP(String hawkInstance, IFCExportOptions options);
+
+	@doc(d="List all the previously scheduled IFC export jobs")
+	op IFCExportJob[*] getJobs();
+
+	@doc(d="Retrieve the current status of the job with the specified ID")
+	op IFCExportJob getJobStatus(String jobID);
+
+	@doc(d="Cancel the job with the specified ID")
+	op boolean killJob(String jobID);
+}

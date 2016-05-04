@@ -25,6 +25,11 @@
 		   <layout>p2</layout>
 		</repository>
 		<repository>
+                   <id>bim-demo</id>
+                   <url>http://mondo.inf.mit.bme.hu/web/mondo-bim-demo/update/repository</url>
+                   <layout>p2</layout>
+                </repository>
+		<repository>
 		   <id>wt-demo</id>
 		   <url>http://mondo.inf.mit.bme.hu/web/mondo-wt-demo/update/</url>
 		   <layout>p2</layout>
@@ -119,8 +124,8 @@
 	<artifactId>tycho-compiler-plugin</artifactId>
 	<version>${tycho-version}</version>
 	<configuration>
-	  <source>1.7</source>
-	  <target>1.7</target>
+	  <source>1.8</source>
+	  <target>1.8</target>
 	</configuration>
       </plugin>
       <plugin>
