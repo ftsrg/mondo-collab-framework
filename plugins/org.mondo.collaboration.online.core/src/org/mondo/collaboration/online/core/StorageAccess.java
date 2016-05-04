@@ -66,7 +66,7 @@ public abstract class StorageAccess {
 		
 		obfuscator = new StringObfuscator(UUID.randomUUID().toString(), username);
 
-		String scriptsLocation = System.getProperty("mondo.scripts");
+		String scriptsLocation = System.getProperty("mondo.scripts.folder");
 		if(scriptsLocation == null) {
 			logger.error("MONDO Scripts location is not set. Please set it in the server.ini file.");
 		}
