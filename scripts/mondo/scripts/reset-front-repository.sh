@@ -174,11 +174,15 @@ while [ $REVISION -le "$LAST_REVISION" ]; do
 			# echo "###########################"
 			# echo $MODEL_FILE
 			# echo "###########################"
+			chmod 777 $MODEL_FILE
 			echo "Executing lens for $MODEL_FILE"
 			echo "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
 			#chmod oa+rw $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE)
 			chmod oa+rw $MODEL_FILE
-			$LENS_DIR $USER_NAME $MODEL_FILE $MODEL_FILE "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT" "$GOLD_REPO_NAME"
+			$LENS_DIR $USER_NAME $MODEL_FILE $MODEL_FILE.$EXTENSION "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT" "$GOLD_REPO_NAME"
+			rm $MODEL_FILE
+			mv $MODEL_FILE.$EXTENSION $MODEL_FILE
+			#$LENS_DIR $USER_NAME $MODEL_FILE /tmp/modelfile "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT" "$GOLD_REPO_NAME"
 	  done
 	  IFS=","
 	done
@@ -210,6 +214,9 @@ while [ $REVISION -le "$LAST_REVISION" ]; do
 	cd $WORKSPACE_FRONT
 	svn update >>/dev/null
 	# the actual commit
+	#chmod 764 $SVN_PATH_OS/$FRONT_REPO_NAME/db/txn-current-lock
+	chmod 777 -R $SVN_PATH_OS/$FRONT_REPO_NAME/*
+	#chown $APACHE_USER -R $SVN_PATH_OS/$FRONT_REPO_NAME
 	svn commit -F $WORKSPACE_FRONT"/"svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
 	cd $CURRENT_DIR
 
@@ -218,8 +225,20 @@ while [ $REVISION -le "$LAST_REVISION" ]; do
 done
 
 # repository was reset, so remove working copies
+
 rm -rf $DIR/../workspace/add-front-repository/
 
+echo "Adding hooks..."
+
+chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH
+
+echo "#!/bin/sh" > $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+echo "set -e" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+echo "$DIR/../hooks/front-pre-commit.sh \$1 \$2 $GOLD_REPO_NAME" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+chmod 755 $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+
+echo "Hooks added."
 
 echo "Resetting front repository of $USER_NAME finished successfully."
 exit 0

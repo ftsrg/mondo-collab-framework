@@ -64,7 +64,7 @@ while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
 	echo $USER_NAME
 	echo $FRONT_REPO_NAME
 
-	./reset-front-repository.sh $USER_NAME $GOLD_REPO_NAME $APACHE_USER
+	./reset-front-repository.sh $GOLD_REPO_NAME $USER_NAME
 
 done < "$DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties"
 
