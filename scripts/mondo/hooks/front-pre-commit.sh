@@ -29,6 +29,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT=$3
 
 # Load the configuration files
+. $DIR/../config/global-config.properties
 . $DIR/../config/$3/config.properties
 . $DIR/../config/global-config.properties
 
