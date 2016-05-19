@@ -26,8 +26,11 @@ set -e # Exit from the script if any subcommand or pipeline returns an error.
 # Get the current directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+ROOT=$3
+
 # Load the configuration files
 . $DIR/../config/$3/config.properties
+. $DIR/../config/global-config.properties
 
 function known_model_extension {
   contains=false
@@ -101,6 +104,7 @@ FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)                       
 CURRENT_FRONT_REPOS_NAME=$(replace $CURRENT_FRONT_REPOS "/$SVN_PATH_URL" "")                      #Remove SVN_PATH from repository
 
 LOG="$DIR/../log/front-pre-commit${CURRENT_FRONT_REPOS//\//-}.log"                                                                     #Log file
+touch $LOG
 
 log "======================================================="
 log "Executing Front-side Pre-commit on $CURRENT_FRONT_REPOS"
@@ -197,10 +201,10 @@ for line in $changes; do
               if [ $LENS_EXECUTE_WITH_LOCK = true ]
               then
                 log "     -> Lens is using locking feature"
-                $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT
+                $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT $ROOT
               else
                 log "     -> Only Access Control rules will be used"
-                $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT
+                $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT "" $3
               fi
             else
               log "     -> Action: Have to be copied to gold $WORKSPACE_FRONT/$nextChange"

@@ -24,8 +24,11 @@ set -e # Exit from the script if any subcommand or pipeline returns an error.
 # Get the current directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+ROOT=$3
+
 # Load the configuration files
 . $DIR/../config/$3/config.properties
+. $DIR/../config/global-config.properties
 
 function known_model_extension {
   contains=false
@@ -96,6 +99,7 @@ WORKSPACE_FRONTS=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "Additional")
 WORKSPACE_CURRENT=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "CURRENT")           # WORKSPACEorary folder of the current "committer" front repository
 REV="$2"                                                                                 # Revision number
 LOG="$DIR/../log/gold-pre-commit${GOLD_REPOS//\//-}.log"                                                           # Log file
+touch $LOG
 
 log "======================================================="
 log "Executing Gold Pre-commit on $GOLD_REPOS"
@@ -145,7 +149,7 @@ changes=$(svnlook changed -t $REV $GOLD_REPOS)
 LENS_DIR="$DIR/../invoker/invoker.sh"
 
 log "Step 6: iterate over the front list"
-USER_FRONT_MAPPING=$(cat $DIR/../config/gen/user_front.properties)
+USER_FRONT_MAPPING=$(cat $DIR/../config/$3/gen/user_front.properties)
 for entry in $USER_FRONT_MAPPING; do
   oldIFS=$IFS
   IFS='='
@@ -187,8 +191,10 @@ for entry in $USER_FRONT_MAPPING; do
                 mkdir -p $BASEDIR
               fi
 
-              svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
-              chmod oa+rw $CURRENT_REPO/$nextChange
+    	      EXTENSION=`echo "$nextChange" | cut -d'.' -f2`
+
+              svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange.$EXTENSION"
+              chmod oa+rw $CURRENT_REPO/$nextChange.$EXTENSION
 
               if [[ "$(known_model_extension $nextChange)" == "true" ]]
               then
@@ -196,17 +202,21 @@ for entry in $USER_FRONT_MAPPING; do
                 then
                   log "     -> Action: Execute lens $CURRENT_REPO/$nextChange"
 
+
                   OBFUSCATOR_SEED="seed_$CURRENT_REPO"
                   OBFUSCATOR_SALT="salt_$CURRENT_REPO"
                   OBFUSCATOR_PREFIX="mondo"
 
                   log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
-                  $LENS_DIR $FRONT_USER $CURRENT_REPO/$nextChange $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT
-                else
+                  $LENS_DIR $FRONT_USER $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT "" $ROOT
+                  rm $CURRENT_REPO/$nextChange.$EXTENSION
+		else
                   log "     -> Action: Cannot execute lens. Copy to gold $CURRENT_REPO/$nextChange"
+		  mv $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange
                 fi
               else
                 log "     -> Action: Copy to gold"
+		mv $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange  
               fi
               ;;
       	   esac
