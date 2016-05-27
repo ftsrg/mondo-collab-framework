@@ -199,10 +199,15 @@ public class LensSessionManager {
 
 	private static final class HttpSessionListenerImplementation implements HttpSessionListener {
 
-		public static int MAX_INTERVAL = 15 + 60; // 15 minutes
-
+		public int MAX_INTERVAL = 15*60;  
+		
 		private static final Logger logger = Logger.getLogger(HttpSessionListenerImplementation.class);
 
+		public HttpSessionListenerImplementation() {
+			if(System.getProperty("mondo.online.timeout") != null)
+				MAX_INTERVAL = Integer.parseInt(System.getProperty("mondo.online.timeout"));
+		}
+		
 		@Override
 		public void sessionDestroyed(HttpSessionEvent se) {
 			HttpSession session = se.getSession();
