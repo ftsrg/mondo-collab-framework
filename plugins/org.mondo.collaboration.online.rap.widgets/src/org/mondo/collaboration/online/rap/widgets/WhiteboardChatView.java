@@ -143,6 +143,7 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 	@Override
 	protected void updateView() {
 		super.updateView();
+		if(userList == null) return;
 		if(userList.getControl().isDisposed()) return;
 		userList.getControl().getDisplay().asyncExec(new Runnable() {
 			
@@ -156,6 +157,7 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 	@Override
 	protected void updateView(URI uri) {
 		super.updateView(uri);
+		if(userList == null) return;
 		if(userList.getControl().isDisposed()) return;
 		userList.getControl().getDisplay().asyncExec(new Runnable() {
 			
