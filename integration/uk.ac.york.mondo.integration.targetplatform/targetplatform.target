@@ -50,11 +50,13 @@
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
 <unit id="javax.inject.source" version="1.0.0.v20091030"/>
 <unit id="com.google.guava.source" version="15.0.0.v201403281430"/>
-<unit id="org.apache.commons.lang3.source" version="3.1.0.v201403281430"/>
 <unit id="org.apache.commons.beanutils.source" version="1.8.0.v201205091237"/>
 <unit id="org.apache.httpcomponents.httpcore.nio" version="4.1.0.v201101201700"/>
-<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
 <unit id="org.apache.commons.beanutils" version="1.8.0.v201205091237"/>
+<unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
+<unit id="org.apache.commons.lang3.source" version="3.1.0.v201403281430"/>
+<unit id="org.apache.commons.lang.source" version="2.6.0.v201404270220"/>
+<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
@@ -164,25 +166,32 @@
 <repository location="http://download.eclipse.org/modeling/emf/compare/updates/milestones/3.2/S201511010417/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.xtend.feature.group" version="2.2.0.v201509290912"/>
-<unit id="org.eclipse.xtend.gwt.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.0.v201511100512"/>
-<unit id="org.eclipse.xtext.sdk.source.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201511100907"/>
-<unit id="org.eclipse.xtend.sdk.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.xtend.backend.uml2types.feature.group" version="2.2.0.v201509290912"/>
-<unit id="org.eclipse.emf.mwe.core.feature.group" version="1.3.20.v201511100512"/>
-<unit id="org.eclipse.xtend.typesystem.emf.feature.group" version="2.2.0.v201509290912"/>
-<unit id="org.eclipse.xtend.backend.xsdtypes.feature.group" version="2.2.0.v201509290912"/>
-<unit id="org.eclipse.xtend.middleend.xtend.feature.group" version="2.2.0.v201509290912"/>
-<unit id="org.eclipse.xtend.backend.ui.feature.group" version="2.2.0.v201509290912"/>
-<unit id="org.eclipse.xtend.middleend.xpand.feature.group" version="2.2.0.v201509290912"/>
 <unit id="org.eclipse.emf.mwe.ui.feature.group" version="1.3.20.v201511100512"/>
-<unit id="org.eclipse.xtend.ui.feature.group" version="2.2.0.v201509290912"/>
-<unit id="org.eclipse.xtend.dependencies.feature.group" version="2.2.0.v201509290912"/>
-<unit id="org.eclipse.xpand.sdk.feature.group" version="2.2.0.v201509290912"/>
+<unit id="org.eclipse.xtend.sdk.feature.group" version="2.9.0.v201511170433"/>
+<unit id="org.eclipse.emf.mwe.core.feature.group" version="1.3.20.v201511100512"/>
+<unit id="org.eclipse.xtend.backend.sdk.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.middleend.xtend.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.typesystem.uml2.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xpand.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xpand.all.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.backend.xsdtypes.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.typesystem.emf.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xpand.support.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.typesystem.xsd.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.backend.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xpand.examples.feature.group" version="2.2.0.v201603220642"/>
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.xtend.backend.feature.group" version="2.2.0.v201509290912"/>
+<unit id="org.eclipse.xpand.ui.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.backend.uml2types.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.gwt.feature.group" version="2.9.0.v201511170433"/>
+<unit id="org.eclipse.xtend.middleend.xpand.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xpand.doc.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xpand.sdk.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.ui.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.xtend.dependencies.feature.group" version="2.2.0.v201603220642"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201511100907"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.0.v201511100512"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/milestones/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
