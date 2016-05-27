@@ -192,10 +192,9 @@ for entry in $USER_FRONT_MAPPING; do
                 mkdir -p $BASEDIR
               fi
 
-    	      EXTENSION=`echo "$nextChange" | cut -d'.' -f2`
-
-              svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange.$EXTENSION"
-              chmod oa+rw $CURRENT_REPO/$nextChange.$EXTENSION
+              filename=$(basename "$nextChange")
+              EXTENSION="${filename##*.}"
+              log "     -> Extension $EXTENSION"
 
               if [[ "$(known_model_extension $nextChange)" == "true" ]]
               then
@@ -203,6 +202,8 @@ for entry in $USER_FRONT_MAPPING; do
                 then
                   log "     -> Action: Execute lens $CURRENT_REPO/$nextChange"
 
+                  svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange.$EXTENSION"
+                  chmod oa+rw $CURRENT_REPO/$nextChange.$EXTENSION
 
                   OBFUSCATOR_SEED="seed_$CURRENT_REPO"
                   OBFUSCATOR_SALT="salt_$CURRENT_REPO"
@@ -211,13 +212,13 @@ for entry in $USER_FRONT_MAPPING; do
                   log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
                   $LENS_DIR $FRONT_USER $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT "" $ROOT
                   rm $CURRENT_REPO/$nextChange.$EXTENSION
-		else
+		            else
                   log "     -> Action: Cannot execute lens. Copy to gold $CURRENT_REPO/$nextChange"
-		  mv $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange
+                  svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
                 fi
               else
-                log "     -> Action: Copy to gold"
-		mv $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange  
+                log "     -> Action: Copy to gold $CURRENT_REPO/$nextChange"
+                svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
               fi
               ;;
       	   esac
