@@ -98,6 +98,9 @@ public abstract class StorageAccess {
 			workspaceFile.mkdirs();
 		}
 		workspace = workspacePath.toString();
+		if(!workspace.endsWith(File.separator)) {
+			workspace += File.separator;
+		}
 		
 		logger.info("Storage access is created for " + username);
 	}

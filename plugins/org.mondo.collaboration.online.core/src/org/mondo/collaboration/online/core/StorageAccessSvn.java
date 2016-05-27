@@ -100,13 +100,13 @@ public class StorageAccessSvn extends StorageAccess {
 		for (String entry : entries) {
 			if (entry.endsWith("/")) {
 				entry = entry.substring(0, entry.length() - 1);
-				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, NodeType.Folder, parent, this,
-						gold + "/" + entry));
+				nodes.add(new StorageModelNode(model, entry, (path.endsWith("/") ? path : path + "/") + entry, NodeType.Folder, parent, this,
+						(gold.endsWith("/") ? gold : gold + "/") + entry));
 				continue;
 			}
 			if (endsWith(entry, getExtensions())) {
-				nodes.add(new StorageModelNode(model, entry, path + "/" + entry, NodeType.Model, parent,
-						this, gold + "/" + entry));
+				nodes.add(new StorageModelNode(model, entry, (path.endsWith("/") ? path : path + "/") + entry, NodeType.Model, parent,	this, 
+						(gold.endsWith("/") ? gold : gold + "/") + entry));
 			}
 		}
 		return nodes;
@@ -163,7 +163,7 @@ public class StorageAccessSvn extends StorageAccess {
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(path, file, "");
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
-
+		
 		if (doCheckout) {
 			if (!new File(temp).exists()) {
 				internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, temp, getUsername(), getPassword()),
@@ -178,7 +178,7 @@ public class StorageAccessSvn extends StorageAccess {
 			internalExecuteProcess(String.format(SVN_UPDATE_COMMAND, file, getUsername(), getPassword()),
 				new String[] {}, new File(temp));
 		}
-		return temp + file;
+		return (temp.endsWith(File.separator) ? temp : temp + File.separator) + file;
 	}
 
 	@Override
