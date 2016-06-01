@@ -27,7 +27,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT=$3
 
 # Load the configuration files
-. $DIR/../config/global-config.properties
 . $DIR/../config/$3/config.properties
 . $DIR/../config/global-config.properties
 
@@ -100,6 +99,9 @@ WORKSPACE_FRONTS=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "Additional")
 WORKSPACE_CURRENT=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "CURRENT")           # WORKSPACEorary folder of the current "committer" front repository
 REV="$2"                                                                                 # Revision number
 LOG="$DIR/../log/gold-pre-commit${GOLD_REPOS//\//-}.log"                                                           # Log file
+
+COMMITTER=$(svnlook author -t $REV $GOLD_REPOS)
+
 touch $LOG
 
 log "======================================================="
@@ -192,9 +194,11 @@ for entry in $USER_FRONT_MAPPING; do
                 mkdir -p $BASEDIR
               fi
 
-              filename=$(basename "$nextChange")
+	      filename=$(basename "$nextChange")
               EXTENSION="${filename##*.}"
-              log "     -> Extension $EXTENSION"
+
+              svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange.$EXTENSION"
+              chmod oa+rw $CURRENT_REPO/$nextChange.$EXTENSION
 
               if [[ "$(known_model_extension $nextChange)" == "true" ]]
               then
@@ -202,8 +206,6 @@ for entry in $USER_FRONT_MAPPING; do
                 then
                   log "     -> Action: Execute lens $CURRENT_REPO/$nextChange"
 
-                  svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange.$EXTENSION"
-                  chmod oa+rw $CURRENT_REPO/$nextChange.$EXTENSION
 
                   OBFUSCATOR_SEED="seed_$CURRENT_REPO"
                   OBFUSCATOR_SALT="salt_$CURRENT_REPO"
@@ -212,13 +214,13 @@ for entry in $USER_FRONT_MAPPING; do
                   log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
                   $LENS_DIR $FRONT_USER $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT "" $ROOT
                   rm $CURRENT_REPO/$nextChange.$EXTENSION
-		            else
+		else
                   log "     -> Action: Cannot execute lens. Copy to gold $CURRENT_REPO/$nextChange"
-                  svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
+		  mv $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange
                 fi
               else
-                log "     -> Action: Copy to gold $CURRENT_REPO/$nextChange"
-                svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
+                log "     -> Action: Copy to gold"
+		mv $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange
               fi
               ;;
       	   esac
@@ -232,12 +234,10 @@ for entry in $USER_FRONT_MAPPING; do
     IFS="$oldIFS"
 
     log "Step 6.3: get commit message"
-    log "svn log -q -v --xml --with-all-revprops $WORKSPACE_GOLD"
-    MSG=$(svn log -q -v --xml --with-all-revprops $WORKSPACE_GOLD --username $ADMIN_USER --password $ADMIN_PWD | grep msg | sed -e "s/<msg>\([^<]*\)<\/msg>/\1/g")
+    MSG=$(svnlook log -t $REV $GOLD_REPOS)
     log "* commit message is: $MSG"
     log "Step 6.4: get author name"
-    AUTHOR=$(svnlook log -t $REV  $GOLD_REPOS | grep -E '\|' | cut -f2 -d'|' | sort | uniq)
-    log "* author name is: $AUTHOR"
+    log "* author name is: $COMMITTER"
     log "* step into the current folder - $CURRENT_REPO"
     cd $CURRENT_REPO
 
@@ -247,8 +247,8 @@ for entry in $USER_FRONT_MAPPING; do
     log "Step 6.6 store message into a WORKSPACE file"
     echo "$MSG" 1>"svn-commit.tmp"
 
-    log "Step 6.7 execute commit"
-    svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+    log "Step 6.7 execute commit in the name of $COMMITTER"
+    svn commit -F svn-commit.tmp --username $COMMITTER --password $COMMITTER --quiet --non-interactive
   else
     log "* Skipping this repo: $FRONT_USER is the current committer"
   fi
