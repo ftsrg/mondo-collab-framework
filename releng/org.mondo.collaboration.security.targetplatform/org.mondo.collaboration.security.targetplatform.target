@@ -205,9 +205,9 @@
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.rap.equinox.target.feature.feature.group" version="3.1.0.20160517-0937"/>
-<unit id="org.eclipse.rap.sdk.feature.feature.group" version="3.1.0.20160511-1131"/>
-<unit id="org.eclipse.rap.feature.feature.group" version="3.1.0.20160511-1131"/>
+<unit id="org.eclipse.rap.sdk.feature.feature.group" version="3.1.0.20160527-1719"/>
+<unit id="org.eclipse.rap.equinox.target.feature.feature.group" version="3.1.0.20160527-1553"/>
+<unit id="org.eclipse.rap.feature.feature.group" version="3.1.0.20160527-1719"/>
 <repository location="http://download.eclipse.org/rt/rap/3.1/"/>
 </location>
 </locations>
