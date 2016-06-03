@@ -44,10 +44,15 @@ public abstract class StorageAccess {
 	private static final String PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT = "PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT";
 	private static final String PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT = "PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT";
 	private static final String MODEL_EXTENSIONS = "MODEL_EXTENSIONS";
+	private static final String ADMIN_USER = "ADMIN_USER";
+	private static final String ADMIN_PWD = "ADMIN_PWD";
 	protected final String username;
 	protected final String password;
 	protected String repository;
-
+	protected String repository_structure;
+	protected String admin_username;
+	protected String admin_password;
+	
 	protected final StringObfuscator obfuscator;
 
 	private Logger logger = Logger.getLogger(StorageAccess.class);
@@ -55,14 +60,16 @@ public abstract class StorageAccess {
 
 	public static final String[] DEFAULT_EXTENSIONS = new String[] { "macl", "mpbl", "eiq" };
 	private Properties configProperties;
+	private Properties globalProperties;
+	protected Properties usersProperties;
 	private String workspace;
 	
-	public StorageAccess(String username, String password, String repository0) throws FileNotFoundException, IOException {
+	public StorageAccess(String username, String password, String repository) throws FileNotFoundException, IOException {
 		logger.setLevel(Level.ALL);
 		
 		this.username = username;
 		this.password = password;
-		this.repository = repository0;
+		this.repository = repository;
 		
 		obfuscator = new StringObfuscator(UUID.randomUUID().toString(), username);
 
@@ -70,11 +77,11 @@ public abstract class StorageAccess {
 		if(scriptsLocation == null) {
 			logger.error("MONDO Scripts location is not set. Please set it in the server.ini file.");
 		}
-		if(!repository.endsWith("/")) {
+		if(!this.repository.endsWith("/")) {
 			this.repository += "/";
 		}
-		if(!repository.startsWith("http")) {
-			this.repository = "http://" + repository;
+		if(!this.repository.startsWith("http")) {
+			this.repository = "http://" + this.repository;
 		}
 		
 		ExecutionResponse response = internalExecuteProcess("./lookup-gold-repository.sh " + this.repository, new String[0], new File(scriptsLocation));
@@ -83,14 +90,32 @@ public abstract class StorageAccess {
 			logger.error(responseString);
 		}
 		
+		Path globalConfigPath = Paths.get(scriptsLocation, "..", "config", "global-config.properties");
+		File globalConfigFile = globalConfigPath.toFile();
+		if(!globalConfigFile.exists()) {
+			logger.error("Config file not exists for " + responseString);
+		}		
+		globalProperties = new Properties();
+		globalProperties.load(new FileInputStream(globalConfigFile));
+		admin_password = globalProperties.getProperty(ADMIN_PWD);
+		admin_username = globalProperties.getProperty(ADMIN_USER);
+		repository_structure = globalProperties.getProperty("URL").replace("'", "") + globalProperties.getProperty("SVN_URL_PATH");
+		
 		Path configPath = Paths.get(scriptsLocation, "..", "config", responseString, "config.properties");
 		File configFile = configPath.toFile();
 		if(!configFile.exists()) {
 			logger.error("Config file not exists for " + responseString);
-		}
-		
+		}		
 		configProperties = new Properties();
 		configProperties.load(new FileInputStream(configFile));
+		
+		Path userConfigPath = Paths.get(scriptsLocation, "..", "config", responseString, "gen", "user_front.properties");
+		File userConfigFile = userConfigPath.toFile();
+		if(!userConfigFile.exists()) {
+			logger.error("Config file not exists for " + responseString);
+		}		
+		usersProperties = new Properties();
+		usersProperties.load(new FileInputStream(userConfigFile));
 		
 		Path workspacePath = Paths.get(scriptsLocation, "..", "workspace", "online");
 		File workspaceFile = workspacePath.toFile();
