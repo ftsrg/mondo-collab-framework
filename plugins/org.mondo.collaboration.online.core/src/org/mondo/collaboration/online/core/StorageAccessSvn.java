@@ -1,6 +1,10 @@
 package org.mondo.collaboration.online.core;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,6 +18,7 @@ import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 public class StorageAccessSvn extends StorageAccess {
 
@@ -33,7 +38,7 @@ public class StorageAccessSvn extends StorageAccess {
 	public static final String SVN_LOG_COMMAND = "svn log %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_LOCK_COMMAND = "svn lock %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_UNLOCK_COMMAND = "svn unlock %s --force --username=%s --password=%s --non-interactive --no-auth-cache";
-	public static final String SVN_COMMIT_COMMAND = "svn commit %s -m \"%s\" --username=%s --password=%s --non-interactive --no-auth-cache";
+	public static final String SVN_COMMIT_COMMAND = "svn commit %s  --encoding utf8 -F svn-commit.tmp --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String SVN_STATUS_COMMAND = "svn status %s --username=%s --password=%s --non-interactive --no-auth-cache %s";
 	public static final String SVN_REVERT_COMMAND = "svn revert %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String AWK_PRINT_COLUMN1 = "awk '{print $1}'";
@@ -248,9 +253,19 @@ public class StorageAccessSvn extends StorageAccess {
 
 		
 		internalUnlockFile(file, folder, admin_username, admin_password);
-		
-		ExecutionResponse response = internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, msg, admin_username, admin_password),
+
+		File svnCommit = Paths.get(folder, "svn-commit.tmp").toFile();
+		try {
+			svnCommit.createNewFile();
+			CharSequence message = msg;
+			Files.write(message, svnCommit, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ExecutionResponse response = internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, admin_username, admin_password),
 				new String[] {}, new File(folder));
+		
+		svnCommit.delete();
 		
 		internalLockFile(path, admin_username, admin_password, false);
 		return response;
