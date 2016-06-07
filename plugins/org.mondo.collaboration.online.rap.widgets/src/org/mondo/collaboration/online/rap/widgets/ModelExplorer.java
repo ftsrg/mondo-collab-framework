@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
@@ -33,6 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -40,6 +42,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.mondo.collaboration.online.core.LensSessionManager;
 import org.mondo.collaboration.online.core.StorageAccess;
 import org.mondo.collaboration.online.core.StorageAccess.ExecutionResponse;
 import org.mondo.collaboration.online.core.StorageAccess.FileStatus;
@@ -48,6 +51,7 @@ import org.mondo.collaboration.online.core.StorageModel;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 import org.mondo.collaboration.online.rap.UINotifierManager;
+import org.mondo.collaboration.online.rap.UISessionManager;
 
 /**
  * @author Csaba Debreceni
@@ -112,7 +116,7 @@ public class ModelExplorer extends ViewPart {
 			switchViews = false;
 			switchViews(access.explore());
 		}
-		
+
 		registerContexMenu();
 	}
 
@@ -201,7 +205,7 @@ public class ModelExplorer extends ViewPart {
 		repositoryLabel.setText("Gold Repository: "); //$NON-NLS-1$
 		repositoryField = new Text(loginPanel, SWT.SINGLE | SWT.BORDER);
 
-		
+
 		final Label usernameLabel = new Label(loginPanel, SWT.RIGHT);
 		usernameLabel.setText("Username: "); //$NON-NLS-1$
 		usernameField = new Text(loginPanel, SWT.SINGLE | SWT.BORDER);
@@ -295,7 +299,7 @@ public class ModelExplorer extends ViewPart {
 	private boolean retrieveHttpSession() {
 		Object username = RWT.getUISession().getHttpSession().getAttribute(USERNAME);
 		Object password = RWT.getUISession().getHttpSession().getAttribute(PASSWORD);
-		Object repository = RWT.getUISession().getHttpSession().getAttribute(PASSWORD);
+		Object repository = RWT.getUISession().getHttpSession().getAttribute(REPOSITORY);
 
 		if (username != null && password != null) {
 			usernameField.setText((String) username);
@@ -329,11 +333,13 @@ public class ModelExplorer extends ViewPart {
 
 		URI uri;
 		try {
-			if (access.checkFileStatus(path) == FileStatus.Modified) {
-				if(!handleModifiedFile(path, workbenchWindow.getShell()))
-					return false;
-			}
 			uri = access.startSession(path);
+
+			if(!LensSessionManager.getUriSet().contains(uri)) {
+				if (access.checkFileStatus(path) == FileStatus.Modified) {
+					handleModifiedFile(path, workbenchWindow.getShell());					
+				}
+			}
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
@@ -361,9 +367,9 @@ public class ModelExplorer extends ViewPart {
 	private boolean handleModifiedFile(String path, Shell shell) {
 
 		MessageDialog dialog = new MessageDialog(shell, "Previously Modified Model", null,
-				"The model, you are opening, is previously modified in a different session. You can commit the changes immediately, discard them, or open in the editor..",
-				MessageDialog.WARNING, new String[] { "Commit", "Discard", "Cancel" }, 0);
-		
+				"The model, you are opening, is previously modified in a different session. You can commit the changes immediately, discard them, or open in the editor.",
+				MessageDialog.WARNING, new String[] { "Commit", "Discard", "Open" }, 0);
+
 		int result = dialog.open();
 		if(result == 0) {
 			CommitMessageDialog commitMessageDialog = new CommitMessageDialog(shell);
@@ -386,7 +392,7 @@ public class ModelExplorer extends ViewPart {
 		} else {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -422,5 +428,32 @@ public class ModelExplorer extends ViewPart {
 
 	public static StorageAccess getCurrentStorageAccess() {
 		return (StorageAccess) RWT.getUISession().getHttpSession().getAttribute(STORAGEACCESS);
+	}
+	
+	public static void logout() throws PartInitException {
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbenchPage activePage = workbench.getActiveWorkbenchWindow().getActivePage();
+		IViewPart modelExplorer = activePage.findView(ModelExplorer.ID);
+		if(modelExplorer == null) {
+			modelExplorer = activePage.showView(ModelExplorer.ID);
+		}
+		if(modelExplorer != null) {
+			((ModelExplorer) modelExplorer).logoutInternal();
+		}
+	}
+	
+	private void logoutInternal() {
+		StorageAccess storageAccess = getCurrentStorageAccess();
+		
+		RWT.getUISession().getHttpSession().removeAttribute(USERNAME);
+		RWT.getUISession().getHttpSession().removeAttribute(PASSWORD);
+		RWT.getUISession().getHttpSession().removeAttribute(REPOSITORY);
+		RWT.getUISession().getHttpSession().removeAttribute(STORAGEACCESS);
+		
+		modelExplorer.setVisible(false);
+		loginForm.setVisible(true);
+		layout.topControl = loginForm;
+		
+		UINotifierManager.notifySuccess(UISessionManager.EVENT_USER_REMOVED, storageAccess.getUsername());
 	}
 }

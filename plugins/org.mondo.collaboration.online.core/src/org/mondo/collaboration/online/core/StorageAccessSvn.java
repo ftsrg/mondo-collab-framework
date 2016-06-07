@@ -42,7 +42,7 @@ public class StorageAccessSvn extends StorageAccess {
 	public static final String SVN_STATUS_COMMAND = "svn status %s --username=%s --password=%s --non-interactive --no-auth-cache %s";
 	public static final String SVN_REVERT_COMMAND = "svn revert %s --username=%s --password=%s --non-interactive --no-auth-cache";
 	public static final String AWK_PRINT_COLUMN1 = "awk '{print $1}'";
-	
+
 	public static final String SVN_DEFAULT_MESSAGE = "Committed by %s at %s";
 	public static final String ERROR_SVN_LOGIN = "Authentication failed";
 	public static final String ERROR_SVN_PREFIX = "svn: E";
@@ -90,7 +90,7 @@ public class StorageAccessSvn extends StorageAccess {
 
 	/**
 	 * Explores the repository in context of the path.
-	 * 
+	 *
 	 * @param path
 	 *            in the repository
 	 * @throws Exception
@@ -114,22 +114,22 @@ public class StorageAccessSvn extends StorageAccess {
 				continue;
 			}
 			if (endsWith(entry, getExtensions())) {
-				nodes.add(new StorageModelNode(model, entry, (path.endsWith("/") ? path : path + "/") + entry, NodeType.Model, parent,	this, 
+				nodes.add(new StorageModelNode(model, entry, (path.endsWith("/") ? path : path + "/") + entry, NodeType.Model, parent,	this,
 						(gold.endsWith("/") ? gold : gold + "/") + entry));
 			}
 		}
 		return nodes;
 	}
-	
+
 	@Override
 	public URI startSession(String path) throws Exception {
 		Assert.isLegal(endsWith(path, getExtensions()));
 		String filePath = internalCheckoutFile(path);
 		URI fileURI = URI.createFileURI(filePath);
-		
+
 		if(LensSessionManager.getUriSet().contains(fileURI))
 			return fileURI;
-		
+
 		internalLockFile(filePath);
 		return fileURI;
 	}
@@ -141,7 +141,7 @@ public class StorageAccessSvn extends StorageAccess {
 		}
 		return false;
 	}
-	
+
 	private void internalLockFile(String path) {
 		internalLockFile(path, admin_username, admin_password, true);
 	}
@@ -156,10 +156,10 @@ public class StorageAccessSvn extends StorageAccess {
 			if(folder.startsWith(getRepository()))
 				folder = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
 		}
-		
+
 		if(unlock)
 			internalUnlockFile(file, folder);
-		
+
 		internalExecuteProcess(String.format(SVN_LOCK_COMMAND, file, admin_username, admin_password), new String[] {}, new File(folder));
 	}
 
@@ -172,14 +172,14 @@ public class StorageAccessSvn extends StorageAccess {
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(path, file, "");
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
-		
+
 		if (doCheckout) {
 			if (!new File(temp).exists()) {
 				internalExecuteProcess(String.format(SVN_CHECKOUT_COMMAND, folder, replaceFirst(temp, getTempFolder(), ""), admin_username, admin_password),
 						new String[] {}, new File(getTempFolder()));
 				internalExecuteProcess(String.format(SVN_UNLOCK_COMMAND, "", admin_username, admin_password),
 						new String[] {}, new File(temp));
-				internalExecuteProcess(String.format(SVN_CLEANUP_COMMAND, admin_username, admin_password), 
+				internalExecuteProcess(String.format(SVN_CLEANUP_COMMAND, admin_username, admin_password),
 						new String[] {}, new File(temp));
 			}
 			internalExecuteProcess(String.format(SVN_UNLOCK_COMMAND, file, admin_username, admin_password),
@@ -198,7 +198,7 @@ public class StorageAccessSvn extends StorageAccess {
 	protected String internalFinishSession(URI goldConfimentUri, String ownerUsername, String ownerPassword) {
 		String file = goldConfimentUri.lastSegment();
 		String folder = replaceLast(goldConfimentUri.toFileString(), file, "");
-		
+
 		internalUnlockFile(file, folder, admin_username, admin_password);
 
 		return "Success";
@@ -207,7 +207,7 @@ public class StorageAccessSvn extends StorageAccess {
 	private void internalUnlockFile(String file, String folder) {
 		internalUnlockFile(file, folder, admin_username, admin_password);
 	}
-	
+
 	private void internalUnlockFile(String file, String folder, String username, String password) {
 		internalExecuteProcess(String.format(SVN_UNLOCK_COMMAND, file, username, password), new String[] {},
 				new File(folder));
@@ -220,6 +220,9 @@ public class StorageAccessSvn extends StorageAccess {
 
 	protected String replaceFirst(String original, String from, String to) {
 		int firstIndexOf = original.indexOf(from);
+		if(firstIndexOf == -1) {
+			return original;
+		}
 		return new StringBuilder(original).replace(firstIndexOf, firstIndexOf + from.length(), to).toString();
 	}
 
@@ -251,7 +254,7 @@ public class StorageAccessSvn extends StorageAccess {
 				folder = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
 		}
 
-		
+
 		internalUnlockFile(file, folder, admin_username, admin_password);
 
 		File svnCommit = Paths.get(folder, "svn-commit.tmp").toFile();
@@ -264,13 +267,13 @@ public class StorageAccessSvn extends StorageAccess {
 		}
 		ExecutionResponse response = internalExecuteProcess(String.format(SVN_COMMIT_COMMAND, file, admin_username, admin_password),
 				new String[] {}, new File(folder));
-		
+
 		svnCommit.delete();
-		
+
 		internalLockFile(path, admin_username, admin_password, false);
 		return response;
 	}
-	
+
 	@Override
 	public ExecutionResponse commit(String path, String msg, OnlineLeg leg) {
 		return commit(path, msg, admin_username, admin_password);
@@ -284,20 +287,20 @@ public class StorageAccessSvn extends StorageAccess {
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
 
 		if(!new File(temp + file).exists()) {
-			return FileStatus.Normal; 
+			return FileStatus.Normal;
 		}
-		
+
 		String[] cmd = {
 				"/bin/sh",
 				"-c",
 				String.format(SVN_STATUS_COMMAND, file, getUsername(), getPassword(), "| " + AWK_PRINT_COLUMN1)
 				};
-		
+
 		ExecutionResponse response = internalExecuteProcess(cmd, new String[] {}, new File(temp));
-		
+
 		if(response.getResponseList().contains("M"))
 			return FileStatus.Modified;
-		
+
 		return FileStatus.Normal;
 	}
 
@@ -310,7 +313,7 @@ public class StorageAccessSvn extends StorageAccess {
 
 		ExecutionResponse response = internalExecuteProcess(String.format(SVN_REVERT_COMMAND, file, admin_username, admin_password),
 				new String[] {}, new File(temp));
-		
+
 		return response;
 	}
 

@@ -177,14 +177,13 @@ public class LensSessionManager {
 	private static OnlineCollaborationSession createSession(URI goldURI, StorageAccess sa) {
 		try {
 			logger.info(String.format("Lens is creating for uri: %s", goldURI.toString()));
-
 			List<Resource> policyModelAndLockModels = sa.loadPolicyAndLockModels();
 			Resource policyModel = policyModelAndLockModels.get(0);
 			Resource lockModel = policyModelAndLockModels.get(1);
 			ResourceSetImpl rSet = new ResourceSetImpl();
 			rSet.getResource(goldURI, true);
 			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, rSet,
-					EObjectCorrespondence.getRegisteredIDProviderFactory(), policyModel, lockModel, sa.getUsername(), sa.getPassword());
+					EObjectCorrespondence.getRegisteredIDProviderFactory(goldURI.fileExtension() + ".mondo"), policyModel, lockModel, sa.getUsername(), sa.getPassword());
 
 			NotifierManager.notifySuccess(EVENT_WHITEBOARD_SESSION_OPENED, goldURI);
 			logger.info("Lens created");
