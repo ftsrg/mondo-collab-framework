@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="MONDO Integration Target Platform" sequenceNumber="331">
+<?pde version="3.8"?><target includeMode="feature" name="MONDO Integration Target Platform" sequenceNumber="336">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.team.svn.feature.group" version="3.0.1.I20150722-1700"/>
@@ -120,33 +120,6 @@
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.xtend.sdk.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.3.20.v201604291319"/>
-<unit id="org.eclipse.xtend.backend.sdk.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.middleend.xtend.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.typesystem.uml2.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.all.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.backend.xsdtypes.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.typesystem.emf.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.support.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.typesystem.xsd.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.backend.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.examples.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.xpand.ui.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.backend.uml2types.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.gwt.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.xtend.middleend.xpand.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.doc.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.sdk.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.ui.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.dependencies.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201604291319"/>
-<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/milestones/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.commons.collections.source" version="3.2.0.v2013030210310"/>
 <unit id="org.apache.commons.collections" version="3.2.0.v2013030210310"/>
 <unit id="javax.inject" version="1.0.0.v20091030"/>
@@ -195,6 +168,12 @@
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jdt.feature.group" version="3.11.1.v20150904-0015"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.0.v201512010527"/>
+<unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.0.1.v201108020636"/>
+<unit id="org.eclipse.xtend.sdk.feature.group" version="2.9.0.v201512010527"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
