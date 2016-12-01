@@ -14,6 +14,6 @@ This repository hold the core components of the MONDO Collaboration Framework th
 This repository features Eclipse plugins and OSGi servlets written in Java and Xtend, built using Maven, and deployed in an Eclipse update site.  The (optional) remote management components have a dependency on the [integrated MONDO Server / Client products](http://api.ning.com/files/zxy*xRp5iQ5nkfezZchGm1FfYYOcj6Gen7TgacVqJDEMU3*rPmnqKzD2fMYce5X1qa8eCnJp8047fjs3nM2hk18QufTTiOKV/D6.8IntegratedPlatformFinalVersion.pdf) and in particular the MONDO Server Thrift API; these are available from [a separate repository](https://github.com/mondo-project/mondo-integration). Instructions on installing and / or building the MONDO Collaboration Framework are available for each of the application cases listed above.  
 
 Build artifacts:
- * [![Build Status](https://build.inf.mit.bme.hu/jenkins/job/MONDO-Collaboration/badge/icon)](https://build.inf.mit.bme.hu/jenkins/job/MONDO-Collaboration)
+ * [![Build Status](https://build.incquerylabs.com/jenkins/job/MONDO-Collaboration/badge/icon)](https://build.incquerylabs.com/jenkins/job/MONDO-Collaboration)
  * [Update Site](http://mondo.inf.mit.bme.hu/web/mondo-collaboration/update/)
- * [Compressed Site (.zip)](https://build.inf.mit.bme.hu/jenkins/view/All/job/MONDO-Collaboration/lastSuccessfulBuild/artifact/releng/org.mondo.collaboration.security.updatesite/target/org.mondo.collaboration.security.updatesite-1.0.0-SNAPSHOT.zip)
+ * [Compressed Site (.zip)](https://build.incquerylabs.com/jenkins/view/All/job/MONDO-Collaboration/lastSuccessfulBuild/artifact/releng/org.mondo.collaboration.security.updatesite/target/org.mondo.collaboration.security.updatesite-1.0.0-SNAPSHOT.zip)
