@@ -32,6 +32,7 @@ public class RelationalRuleSpecification {
 	List<QueryTemplate> mappingCondition = newArrayList()
 	List<QueryTemplate> readAuthorization = newArrayList()
 	List<ActionStep> writeAuthorization = newArrayList()
+	List<ActionStep> additivePreAuthorization = newArrayList()
 	
 	extension RuleGeneratorExtensions extendUtil = RuleGeneratorExtensions::INSTANCE
 		
@@ -86,6 +87,7 @@ public class RelationalRuleSpecification {
 					correspondence.map[asRetractAction]
 				)
 			rulesForPutback += createEVMRule(putbackAddLHS, 1 * priority,
+					additivePreAuthorization,
 					gold.map[asAssertAction],
 					correspondence.map[asAssertAction],
 					writeAuthorization

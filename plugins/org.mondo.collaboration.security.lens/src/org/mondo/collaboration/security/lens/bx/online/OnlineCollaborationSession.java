@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -30,12 +31,21 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+
 import org.eclipse.viatra.query.runtime.base.api.BaseIndexOptions;
 import org.eclipse.viatra.query.runtime.emf.EMFScope;
 import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
 import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple;
 import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
+
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
+import org.eclipse.viatra.query.runtime.base.api.BaseIndexOptions;
+import org.eclipse.viatra.query.runtime.emf.EMFScope;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
+import org.mondo.collaboration.policy.rules.Model;
+import org.mondo.collaboration.policy.rules.User;
 import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
@@ -49,8 +59,6 @@ import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondenc
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.ILiveRelation.Listener;
 import org.mondo.collaboration.security.lens.util.LiveTable;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -71,11 +79,21 @@ public class OnlineCollaborationSession {
 	private final URI goldConfinementURI;
 	private final ResourceSet goldResourceSet;
 	private final UniqueIDSchemeFactory uniqueIDFactory;
-	private final Resource policyResource;
+	private Resource policyResource;
+	private Resource lockResource;
 	private final SecurityArbiter arbiter;
 	private final LockArbiter lockArbiter;
 	private final ModelIndexer goldIndexer;
-	private final AccessControlModel accessControlModel;
+	
+	public Map<String, Set<String>> getLockMappingsToUsers() {
+		Map<String, Set<String>> lockNamesToUsers = new HashMap<String, Set<String>>();
+		Map<org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock, Set<String>> lockAndOwnerNames = lockArbiter.getLockOwnerNames();
+		Set<org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock> keySet = lockAndOwnerNames.keySet();
+		for (org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock l: keySet) {
+			lockNamesToUsers.put(l.getPattern().getName(), lockAndOwnerNames.get(l));
+		}
+		return lockNamesToUsers;
+	}
 	
 	private final String ownerUsername;
 	private final String ownerPassword;
@@ -90,30 +108,43 @@ public class OnlineCollaborationSession {
 	 */
     Lock mutex = new ReentrantLock();
 
+	public Resource getPolicyResource() {
+		return policyResource;
+	}
 	
+	public Resource getLockResource() {
+		return lockResource;
+	}
+
 	/**
 	 * @param goldConfinementURI the writable area in the folder hierarchy for the gold model
 	 * @param goldResourceSet the gold model
 	 * @param uniqueIDFactory the scheme for identifying model elements
-	 * @param policyResource the resource of the policy model
+	 * @param policyResource the resource of the initial policy model
+	 * @param lockResource the resource of the initial lock model, can be null if no locks used
 	 * @throws IncQueryException 
 	 */
 	public OnlineCollaborationSession(URI goldConfinementURI, ResourceSet goldResourceSet,
+
 			UniqueIDSchemeFactory uniqueIDFactory, Resource policyResource, String ownerUsername, String ownerPassword) throws ViatraQueryException {
+
+			//UniqueIDSchemeFactory uniqueIDFactory, Resource policyResource, Resource lockResource, String ownerUsername, String ownerPassword) throws ViatraQueryException {
+
 		super();
 		this.goldConfinementURI = goldConfinementURI;
 		this.goldResourceSet = goldResourceSet;
 		this.uniqueIDFactory = uniqueIDFactory;
 		this.policyResource = policyResource;
+		this.lockResource = lockResource;
 		
-		accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
+		Model accessControlModel = (Model) policyResource.getContents().get(0);
 		arbiter = new SecurityArbiter(
 				accessControlModel.getPolicy(), 
 				null /*user*/, 
 				ImmutableSet.of(goldResourceSet), 
 				new BaseIndexOptions());
 		
-		lockArbiter = new LockArbiter(arbiter, null /* no locks taken into account in online mode */);
+		lockArbiter = LockArbiter.create(arbiter, lockResource);
 		
 		goldIndexer = new ModelIndexer(
         		goldConfinementURI,
@@ -144,6 +175,30 @@ public class OnlineCollaborationSession {
 			}
 		});
 		autosaveThread.start();
+	}
+	
+	
+	/**
+	 * Reinitialize the session with a new policy and lock resource
+	 * @param policyResource the resource of the new policy model
+	 * @param lockResource the resource of the new lock model, can be null if no locks used
+	 * @throws IncQueryException
+	 */
+	public void reinitializeWith(Resource policyResource, Resource lockResource) throws ViatraQueryException {
+		this.policyResource = policyResource;
+		this.lockResource = lockResource;
+		
+		if (logger.isDebugEnabled())
+			logger.debug(String.format("Reinitializing online session with policy resource %s and lock resource %s", 
+				policyResource == null ? "<null>" : policyResource.getURI(), 
+				lockResource == null ? "<null>" : lockResource.getURI()));
+		
+		arbiter.reinitializeWith(policyResource);
+		lockArbiter.reinitializeWith(lockResource);
+		
+		for (Leg leg : legs) {
+			leg.reinitialize();
+		}
 	}
 	
 	public URI getGoldConfinementURI() {
@@ -188,10 +243,14 @@ public class OnlineCollaborationSession {
 		private final ResourceSet frontResourceSet;
 		
 		private MondoLensScope scope;
-		private final RelationalLensXform lens;
+		private RelationalLensXform lens;
 		private Map<CorrespondenceKey, LiveTable> correspondenceTables;
 		
 		private Set<Object> uniqueIdentifiers;
+		private ModelIndexer frontIndexer;
+		private UniqueIDScheme goldObjectToUniqueIdentifier;
+		private UniqueIDScheme frontObjectToUniqueIdentifier;
+		private LiveTable correspondenceTable;
 
 		/**
 		 * Creates an in-memory front model for the user and immediately synchronizes the gold model onto it.
@@ -203,7 +262,7 @@ public class OnlineCollaborationSession {
 			this(userName, stringObfuscator,
 			        true,
 					new ResourceSetImpl(), 
-					FAKE_MAIN_RESOURCE_URI);
+					FAKE_MAIN_RESOURCE_URI.appendSegment(userName));
 		}
 		
 		/**
@@ -229,11 +288,8 @@ public class OnlineCollaborationSession {
 			this.frontResourceSet = frontResourceSet;
 			
 			legs.add(this);
-			this.lens = setupLens(startWithGet);
-			
-			if (startWithGet) {
-			    overWriteFromGold();
-			}
+			setupScope(startWithGet);
+			setupLens(startWithGet);
 		}
 		
 		/**
@@ -241,23 +297,39 @@ public class OnlineCollaborationSession {
 		 * <p> Must read the front model. For Transactional EMF or other model-level R/W access control, 
 		 *        subclass and override to wrap in a read-enabled transaction.
 		 */
-		protected RelationalLensXform setupLens(boolean startWithGet) {
-			User user = SecurityArbiter.getUserByName(accessControlModel, userName);
+		protected void setupLens(boolean startWithGet) {
+			User user = SecurityArbiter.getUserByName((Model) arbiter.getPolicy().eContainer(), userName);
 			if (user == null)
-				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, policyResource.getURI()));
+				throw new IllegalArgumentException(String.format("User of name %s not found in MACL resource %s", userName, getPolicyResource().getURI()));
+			
+			lens = new RelationalLensXform(scope, user, stringObfuscator);
+			
+			if (startWithGet) {
+			    overWriteFromGold();
+			}
 
-			ModelIndexer frontIndexer = new ModelIndexer(
+		} 
+
+		/**
+		 * Sets up the preliminaries.
+		 * <p> Must read the front model if startWithGet is false. For Transactional EMF or other model-level R/W access control, 
+		 *        subclass and override to wrap in a read-enabled transaction.
+		 */
+		protected void setupScope(boolean startWithGet) {
+			frontIndexer = new ModelIndexer(
 	        		frontConfinementURI,
 	        		frontResourceSet);
 
-			UniqueIDScheme goldObjectToUniqueIdentifier = uniqueIDFactory.apply(goldConfinementURI);
-			Map<Object, Collection<EObject>> goldIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(goldIndexer, goldObjectToUniqueIdentifier);
-			UniqueIDScheme frontObjectToUniqueIdentifier = uniqueIDFactory.apply(frontConfinementURI);
-			Map<Object, Collection<EObject>> frontIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(frontIndexer, frontObjectToUniqueIdentifier);
+			goldObjectToUniqueIdentifier = uniqueIDFactory.apply(goldConfinementURI);
+			frontObjectToUniqueIdentifier = uniqueIDFactory.apply(frontConfinementURI);
 			
-			// if using in-memory resource with fake URI, then front model is initially empty, no need to gather EObject correspondences
-			LiveTable correspondenceTable = startWithGet ? new LiveTable() :	
-				EObjectCorrespondence.buildEObjectCorrespondenceTable(goldIndex, frontIndex);
+			if (startWithGet) {
+				correspondenceTable = new LiveTable();
+			}	else {
+				Map<Object, Collection<EObject>> goldIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(goldIndexer, goldObjectToUniqueIdentifier);
+				Map<Object, Collection<EObject>> frontIndex = EObjectCorrespondence.applyObjectToUniqueIdentifier(frontIndexer, frontObjectToUniqueIdentifier);
+				correspondenceTable = EObjectCorrespondence.buildEObjectCorrespondenceTable(goldIndex, frontIndex);
+			}
 			
 			uniqueIdentifiers = Sets.newHashSet();
 			correspondenceTable.addListener(new FlatTuple(null, null), new Listener() {
@@ -288,8 +360,14 @@ public class OnlineCollaborationSession {
 	        correspondenceTables.put(CorrespondenceKey.EOBJECT, correspondenceTable);
 	        
 			scope = new MondoLensScope(arbiter, lockArbiter, goldIndexer, frontIndexer, correspondenceTables);
-			
-			return new RelationalLensXform(scope, user, stringObfuscator);
+		}
+		
+		/**
+		 * Wipe existing lens transformation if access control model is changed
+		 */
+		public void reinitialize() {
+			lens.dispose();
+			setupLens(true);
 		}
 		
 		
@@ -394,7 +472,7 @@ public class OnlineCollaborationSession {
 		}
 
 		public UniqueIDScheme getUniqueIDScheme() {
-			return uniqueIDFactory.apply(frontConfinementURI);
+			return frontObjectToUniqueIdentifier;
 		}
 		
 		public Map<CorrespondenceKey, LiveTable> getCorrespondenceTables() {

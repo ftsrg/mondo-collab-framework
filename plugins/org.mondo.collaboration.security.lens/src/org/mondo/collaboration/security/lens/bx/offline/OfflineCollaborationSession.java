@@ -13,7 +13,6 @@ package org.mondo.collaboration.security.lens.bx.offline;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -21,10 +20,17 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+
 import org.eclipse.viatra.query.runtime.base.api.BaseIndexOptions;
 import org.eclipse.viatra.query.runtime.emf.EMFScope;
 import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
+import org.eclipse.viatra.query.runtime.base.api.BaseIndexOptions;
+import org.eclipse.viatra.query.runtime.emf.EMFScope;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.mondo.collaboration.policy.rules.Policy;
+import org.mondo.collaboration.policy.rules.User;
 import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
@@ -36,10 +42,9 @@ import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondenc
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.LiveTable;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -145,7 +150,7 @@ public class OfflineCollaborationSession {
                 lens.doGet();
 		
         if (! lensExecution.isAborted()) 
-            saveResources(frontResourceSet, frontConfinementURI);
+            saveResources(lens.getScope(), frontConfinementURI, false);
         
         return lensExecution.extractDenialReason();
 	}
@@ -161,7 +166,7 @@ public class OfflineCollaborationSession {
 		        lens.doPutback(false /* no need to roll back, will be discarded instead */);
 		
 		if (! lensExecution.isAborted()) 
-		    saveResources(goldResourceSet, goldConfinementURI);
+		    saveResources(lens.getScope(), goldConfinementURI, true);
         
         return lensExecution.extractDenialReason();
 	}
@@ -170,10 +175,16 @@ public class OfflineCollaborationSession {
 	 * Saves those resources of the ResourceSet that fall within specified confinement boundaries
 	 * @throws IOException 
 	 */
-	public static void saveResources(ResourceSet resourceSet, URI confinementURI) throws IOException {
+	public static void saveResources(MondoLensScope scope, URI confinementURI, boolean isGold) throws IOException {
+		ResourceSet resourceSet = (isGold? scope.getGoldIndexer() : scope.getFrontIndexer()).getRoot();
+		
+		ImmutableMap<Object, Object> saveOptions = ImmutableMap.of(
+			MondoLensScope.class, scope,
+			"isGold", isGold);
+		
 		for (Resource resource : resourceSet.getResources()) {
 			if (resource.isLoaded() && isconfined(resource, confinementURI))
-				resource.save(Collections.emptyMap());
+				resource.save(saveOptions);
 		}
 	}
 

@@ -1,0 +1,15 @@
+Source: mondocollab
+Section: misc
+Priority: optional
+Maintainer: Csaba Debreceni <debreceni@mit.bme.hu>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+Homepage: https://github.com/FTSRG/mondo-collab-framework
+#Vcs-Git: git://git.debian.org/collab-maint/mondocollab.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/mondocollab.git;a=summary
+
+Package: mondocollab
+Architecture: all
+Depends: ${misc:Depends}
+Description: Scripts for MONDO Collaboration Framework
+  This package contains offline collaboration related shell scripts. These scripts depend on the MONDO Collaboration Server and requires a fully configured Subversion (SVN) installation with Apache.

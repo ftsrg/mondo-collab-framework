@@ -17,21 +17,14 @@
    </license>
 
    <plugin
-         id="org.mondo.collaboration.security.mpbl.client"
+         id="com.google.guava.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.mondo.collaboration.security.mpbl.client.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.mondo.collaboration.security.mpbl.server"
+         id="com.google.guava"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if [ $# -lt 2 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
-  echo "Usage: $(basename $0) <repository name> <user name> (<apache_user> | --apache | --apache2)"
-  echo " - repository name: the name of the new front repository"
-  echo " - user name: the name of the user who has access to the new front repository"
-  echo " - apache_user: the user name of Apache"
-  echo " --apache: apache_user=\"apache.apache\" "
-  echo " --apache2: apache_user=\"www-data.www-data\" "
+if [ $# -lt 3 -o "$1" == "--help" -o "$1" == "-h" -o "$1" == "" ]; then
+  echo "Usage: $(basename $0) <gold repository name> <repository name> <user name>"
+  echo "  - gold repository name: the name of the gold repository"
+  echo "  - repository name: the name of the new front repository"
+  echo "  - user name: the name of the user who has access to the new front repository"
   exit
 fi
 
@@ -41,21 +39,18 @@ function replace {
 
 set -e
 
-FRONT_REPO_NAME=$1
-USER_NAME=$2
-
-if [ "$3" == "--apache" ]; then
-  APACHE_USER="apache.apache"
-elif [ "$3" == "--apache2" ]; then
-  APACHE_USER="www-data:www-data"
-else
-  APACHE_USER="$3"
-fi
+FRONT_REPO_NAME=$2
+USER_NAME=$3
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+GOLD_REPO_NAME=$1
+
+GOLD_REPO_URL=$(concate_path_parts $URL $SVN_URL_PATH $GOLD_REPO_NAME)
+
 # Load config file using the source command
-. $DIR/../config/config.properties
+. $DIR/../config/global-config.properties
+. $DIR/../config/$GOLD_REPO_NAME/config.properties
 
 SVN_FRONT_REPO_FULL_PATH=$SVN_PATH_OS/$FRONT_REPO_NAME
 
@@ -83,30 +78,30 @@ if [ -n "$IS_PERMISSION_DENIED" ]; then
 fi
 chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH
 
-echo "#!/bin/sh" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+echo "#!/bin/sh" > $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 echo "set -e" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
-echo "$DIR/../hooks/front-pre-commit.sh \$1 \$2 " >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
+echo "$DIR/../hooks/front-pre-commit.sh \$1 \$2 $GOLD_REPO_NAME" >> $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 chmod 755 $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 chown -R $APACHE_USER $SVN_FRONT_REPO_FULL_PATH/hooks/pre-commit
 
 echo "Create Pre-Commit hook"
 
 set +e
-IS_CONFIG_FILE_EXIST=$(cat $DIR/../config/gen/user_front.properties 1>/dev/null 2>&1)
+IS_CONFIG_FILE_EXIST=$(cat $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties 1>/dev/null 2>&1)
 RETURN_VALUE=$?
 set -e
 
 if [ 0 -ne $RETURN_VALUE ]; then
   echo "User-Front mapping does not exist."
-  echo "$USER_NAME=$FRONT_REPO_NAME" > $DIR/../config/gen/user_front.properties
+  echo "$USER_NAME=$FRONT_REPO_NAME" > $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties
 else
   echo "User-Front mapping exists."
   set +e
-  IS_USER_IN_CONFIG=$(cat $DIR/../config/gen/user_front.properties | grep "$USER_NAME=")
+  IS_USER_IN_CONFIG=$(cat $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties | grep "$USER_NAME=")
   set -e
   if [ -z "$IS_USER_IN_CONFIG" ]; then
     echo "User is not in the config."
-    echo "$USER_NAME=$FRONT_REPO_NAME" >> $DIR/../config/gen/user_front.properties
+    echo "$USER_NAME=$FRONT_REPO_NAME" >> $DIR/../config/$GOLD_REPO_NAME/gen/user_front.properties
   elif [[ $IS_USER_IN_CONFIG != "$USER_NAME=$FRONT_REPO_NAME" ]]; then
     echo "Error: inconsistent user_front.properties file. Entry to be added: $USER_NAME=$FRONT_REPO_NAME; existing: $IS_USER_IN_CONFIG"
     exit 3
@@ -155,32 +150,39 @@ EXCLUDES="--exclude=\".svn\""
 
 cp -r $WORKSPACE_GOLD/* $WORKSPACE_FRONT/
 
-# Execute lens for every model file
-OBFUSCATOR_SEED="seed_$FRONT_REPO_NAME"
-OBFUSCATOR_SALT="salt_$FRONT_REPO_NAME"
-OBFUSCATOR_PREFIX="mondo"
+## Execute lens for every model file
+#OBFUSCATOR_SEED="seed_$FRONT_REPO_NAME"
+#OBFUSCATOR_SALT="salt_$FRONT_REPO_NAME"
+#OBFUSCATOR_PREFIX="mondo"
+#
+#LENS_DIR="$DIR/../invoker/invoker.sh"
+#WORKSPACE="$DIR/../workspace"
+#
+#IFS_OLD=$IFS
+#IFS=","
+#for EXTENSION in $MODEL_EXTENSIONS; do
+#  IFS=$IFS_OLD
+#  for FILE_NAME in $(find $WORKSPACE_GOLD -name "*.$EXTENSION"); do # TODO test if it works properly
+#    MODEL_FILE=$(replace $FILE_NAME $WORKSPACE_GOLD "")
+#    echo "Executing lens for $MODEL_FILE"
+#    echo "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
+#    chmod oa+rw $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE)
+#    chmod oa+rw $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE)
+#    $LENS_DIR $USER_NAME $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE) $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE) "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"     "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT" "$GOLD_REPO_NAME"
+#  done
+#  IFS=","
+#done
+#IFS=$IFS_OLD
+#
+#CURRENT_DIR=`pwd`
+#
+#cd $WORKSPACE_FRONT
+#svn add --force * --auto-props --parents --depth infinity -q
+#echo "$COMMIT_MSG" 1>"svn-commit.tmp"
+#svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+#
+#rm -rf $DIR/../workspace/add-front-repository
+#
+#cd $CURRENT_DIR
 
-LENS_DIR="$DIR/../invoker/invoker.sh"
-WORKSPACE="$DIR/../workspace"
-
-IFS_OLD=$IFS
-IFS=","
-for EXTENSION in $MODEL_EXTENSIONS; do
-  IFS=$IFS_OLD
-  for FILE_NAME in $(find $WORKSPACE_GOLD -name "*.$EXTENSION"); do # TODO test if it works properly
-    MODEL_FILE=$(replace $FILE_NAME $WORKSPACE_GOLD "")
-    echo "Executing lens for $MODEL_FILE"
-    chmod oa+rw $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE)
-    chmod oa+rw $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE)
-    $LENS_DIR $USER_NAME $(concate_path_parts $WORKSPACE_GOLD $MODEL_FILE) $(concate_path_parts $WORKSPACE_FRONT $MODEL_FILE) "-performGet" $WORKSPACE "$OBFUSCATOR_SALT" "$OBFUSCATOR_SEED" "$OBFUSCATOR_PREFIX" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT" "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT"
-  done
-  IFS=","
-done
-IFS=$IFS_OLD
-
-cd $WORKSPACE_FRONT
-svn add --force * --auto-props --parents --depth infinity -q
-echo "$COMMIT_MSG" 1>"svn-commit.tmp"
-svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
-
-rm -rf $DIR/../workspace/add-front-repository
+./reset-front-repository.sh $GOLD_REPO_NAME $USER_NAME $APACHE_USER

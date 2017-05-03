@@ -28,19 +28,23 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+
 import org.eclipse.viatra.query.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
+import org.eclipse.viatra.query.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.mondo.collaboration.policy.RulesStandaloneSetup;
+import org.mondo.collaboration.policy.rules.Model;
+import org.mondo.collaboration.policy.rules.Policy;
+import org.mondo.collaboration.policy.rules.User;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.EMFUtil;
 import org.mondo.collaboration.security.lens.util.uri.URIWorkspaceMappingsHelper;
-import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 import org.mondo.collaboration.security.mpbl.xtext.MondoPropertyBasedLockingStandaloneSetup;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
@@ -88,8 +92,10 @@ public class OfflineLensGlue {
     private static final String ACCESS_CONTROL_MODEL_PATH_OPTION    = "-macl";
     private static final String LOCK_MODEL_PATH_OPTION    			= "-mpbl";
     private static final String SECURITY_QUERIES_PATH_OPTION        = "-eiq";
-    private static final String REPOSITORY_ROOT_PATH_OPTION         = "-repositoryRoot";
-    private static final String WORKSPACE_MAPPING_PATH_OPTION       = "-workspaceMapping";
+    private static final String GOLD_REPOSITORY_ROOT_PATH_OPTION    = "-goldRepositoryRoot";
+    private static final String FRONT_REPOSITORY_ROOT_PATH_OPTION   = "-frontRepositoryRoot";
+    private static final String GOLD_WORKSPACE_MAPPING_PATH_OPTION  = "-goldWorkspaceMapping";
+    private static final String FRONT_WORKSPACE_MAPPING_PATH_OPTION = "-frontWorkspaceMapping";
     private static final String PATH_VALUE                          = "<path>";
     private static final String USER_NAME_OPTION                    = "-userName";
     private static final String USER_VALUE                          = "<userName>";
@@ -104,8 +110,6 @@ public class OfflineLensGlue {
     
     private Logger logger;
     
-    private String repositoryRootPath;
-    private Map<String, String> workspaceMappings;
     private boolean performGet;
     private boolean performPutback;
     
@@ -113,25 +117,27 @@ public class OfflineLensGlue {
 
     static {
         EMFPatternLanguageStandaloneSetup.doSetup();
-        AccessControlLanguageStandaloneSetup.doSetup();
+        RulesStandaloneSetup.doSetup();
         MondoPropertyBasedLockingStandaloneSetup.doSetup();
     }
     
     private OfflineLensGlue(String[] argArray, Logger logger) throws FileNotFoundException, IOException, ViatraQueryException, CoreException {
         this.logger = logger;        
         
-        List<String> goldPaths          =  getRequiredCLIOptionValues(argArray, GOLD_MODEL_ROOTS_PATH_OPTION,       PATH_VALUE);
-        List<String> frontPaths         =  getRequiredCLIOptionValues(argArray, FRONT_MODEL_ROOTS_PATH_OPTION,      PATH_VALUE);
-        List<String> securityQueryPaths =  getRequiredCLIOptionValues(argArray, SECURITY_QUERIES_PATH_OPTION,       PATH_VALUE);
-        String policyPath               =  getSingletonCLIOptionValue(argArray, ACCESS_CONTROL_MODEL_PATH_OPTION,   PATH_VALUE);
-        String userName                 =  getSingletonCLIOptionValue(argArray, USER_NAME_OPTION,                   USER_VALUE);
-        String uniqueIDSchemeExtension  =  getSingletonCLIOptionValue(argArray, UNIQUE_ID_SCHEME_OPTION,            EXTENSION_VALUE);
-        String lockFilePath           	=  getOptionalCLIOptionValue( argArray, LOCK_MODEL_PATH_OPTION,             PATH_VALUE, null);
-        String obfuscatorSeed           =  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SEED_OPTION,             STRING_VALUE, null);
-        String obfuscatorSalt           =  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SALT_OPTION,             STRING_VALUE, "");
-        String obfuscatorPrefix         =  getOptionalCLIOptionValue( argArray, OBFUSCATOR_PREFIX_OPTION,           STRING_VALUE, "");
-        String workspaceMappingPath     =  getOptionalCLIOptionValue( argArray, WORKSPACE_MAPPING_PATH_OPTION,      PATH_VALUE, null);
-               repositoryRootPath       =  getOptionalCLIOptionValue( argArray, REPOSITORY_ROOT_PATH_OPTION,        PATH_VALUE, ".");
+        List<String> goldPaths          	=  getRequiredCLIOptionValues(argArray, GOLD_MODEL_ROOTS_PATH_OPTION,      		PATH_VALUE);
+        List<String> frontPaths         	=  getRequiredCLIOptionValues(argArray, FRONT_MODEL_ROOTS_PATH_OPTION,      	PATH_VALUE);
+        List<String> securityQueryPaths 	=  getRequiredCLIOptionValues(argArray, SECURITY_QUERIES_PATH_OPTION,       	PATH_VALUE);
+        String policyPath              	 	=  getSingletonCLIOptionValue(argArray, ACCESS_CONTROL_MODEL_PATH_OPTION,  	 	PATH_VALUE);
+        String userName                	 	=  getSingletonCLIOptionValue(argArray, USER_NAME_OPTION,                   	USER_VALUE);
+        String uniqueIDSchemeExtension 	 	=  getSingletonCLIOptionValue(argArray, UNIQUE_ID_SCHEME_OPTION,            	EXTENSION_VALUE);
+        String lockFilePath           		=  getOptionalCLIOptionValue( argArray, LOCK_MODEL_PATH_OPTION,             	PATH_VALUE, null);
+        String obfuscatorSeed         	  	=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SEED_OPTION,             	STRING_VALUE, null);
+        String obfuscatorSalt        	   	=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_SALT_OPTION,             	STRING_VALUE, "");
+        String obfuscatorPrefix         	=  getOptionalCLIOptionValue( argArray, OBFUSCATOR_PREFIX_OPTION,           	STRING_VALUE, "");
+        String goldWorkspaceMappingPath		=  getOptionalCLIOptionValue( argArray, GOLD_WORKSPACE_MAPPING_PATH_OPTION,		PATH_VALUE, null);
+        String frontWorkspaceMappingPath	=  getOptionalCLIOptionValue( argArray, FRONT_WORKSPACE_MAPPING_PATH_OPTION,	PATH_VALUE, null);
+        String goldRepositoryRootPath       =  getOptionalCLIOptionValue( argArray, GOLD_REPOSITORY_ROOT_PATH_OPTION,       PATH_VALUE, ".");
+        String frontRepositoryRootPath      =  getOptionalCLIOptionValue( argArray, FRONT_REPOSITORY_ROOT_PATH_OPTION,      PATH_VALUE, ".");
 
         performGet = getCLISwitch(argArray, PERFORM_GET_SWITCH);
         performPutback = getCLISwitch(argArray, PERFORM_PUTBACK_SWITCH);
@@ -139,6 +145,7 @@ public class OfflineLensGlue {
             throw new OfflineLensParametrizationException(String.format("Specify either switch %s or %s", PERFORM_GET_SWITCH, PERFORM_PUTBACK_SWITCH));
         }
         
+    
         StringObfuscator stringObfuscator = null; 
         if (obfuscatorSeed == null) {
             logger.warn("WARNING: option -" + OBFUSCATOR_SEED_OPTION + " not specified, obfuctation will fail if attempted");
@@ -149,14 +156,17 @@ public class OfflineLensGlue {
         URI goldConfinementURI = URI.createFileURI(goldPaths.get(0));
         URI frontConfinementURI = URI.createFileURI(frontPaths.get(0));
         
-        if (workspaceMappingPath != null) {
-            workspaceMappings = URIWorkspaceMappingsHelper.readProjectNameToRelativePathFromProperties(workspaceMappingPath);
-        } else {
-            workspaceMappings = Collections.emptyMap();
-        }
+        final Map<String, String> goldWorkspaceMappings = 
+            	(goldWorkspaceMappingPath != null) ?
+                	URIWorkspaceMappingsHelper.readProjectNameToRelativePathFromProperties(goldWorkspaceMappingPath)
+            	: Collections.emptyMap();
+        final Map<String, String> frontWorkspaceMappings = 
+            	(frontWorkspaceMappingPath != null) ?
+                	URIWorkspaceMappingsHelper.readProjectNameToRelativePathFromProperties(frontWorkspaceMappingPath)
+            	: Collections.emptyMap();
         
-        ResourceSet goldResourceSet     = loadModelRoots(goldPaths, performGet); // TODO use resourceSetProvider?
-        ResourceSet frontResourceSet    = loadModelRoots(frontPaths, performPutback); // TODO use resourceSetProvider?
+        ResourceSet goldResourceSet     = loadModelRoots(goldPaths, performGet, goldRepositoryRootPath, goldWorkspaceMappings); // TODO use resourceSetProvider?
+        ResourceSet frontResourceSet    = loadModelRoots(frontPaths, performPutback, frontRepositoryRootPath, frontWorkspaceMappings); // TODO use resourceSetProvider?
         Resource policyResource         = loadQueryBasedModel(policyPath, securityQueryPaths); // TODO use resourceSetProvider?
         Resource lockResource        	= lockFilePath == null ? null : 
         	getResourceAtPath(policyResource.getResourceSet(), lockFilePath, true); // TODO unshare resourceSet?
@@ -169,9 +179,9 @@ public class OfflineLensGlue {
         final EList<EObject> policyModelContents = policyResource.getContents();
         if (policyModelContents.isEmpty())
             throw new OfflineLensParametrizationException(String.format("Empty or non-existing MACL resource %s", policyResource.getURI()));
-        AccessControlModel accessControlModel;
+        Model accessControlModel;
         try {
-            accessControlModel = (AccessControlModel) policyModelContents.get(0);
+            accessControlModel = (Model) policyModelContents.get(0);
         } catch (ClassCastException ex) {
             throw new OfflineLensParametrizationException(String.format("Could not interpret as an access control model: MACL resource %s", policyResource.getURI()));
         }
@@ -210,8 +220,9 @@ public class OfflineLensGlue {
     }
     
     
-    private ResourceSet loadModelRoots(List<String> paths, boolean mustExist) {
+    private ResourceSet loadModelRoots(List<String> paths, boolean mustExist, String repositoryRootPath, Map<String, String> workspaceMappings) {
         ResourceSet model = newResourceSet();
+        URIWorkspaceMappingsHelper.applyLocalMappings(model, repositoryRootPath, workspaceMappings);
         for (String path : paths) {
             getResourceAtPath(model, path, mustExist);
         }
@@ -220,7 +231,6 @@ public class OfflineLensGlue {
 
     private ResourceSetImpl newResourceSet() {
         final ResourceSetImpl resourceSet = new ResourceSetImpl();
-        URIWorkspaceMappingsHelper.applyLocalMappings(resourceSet, repositoryRootPath, workspaceMappings);
         return resourceSet;
     }
     private Resource loadQueryBasedModel(String queryBasedModelPath, List<String> securityQueryPaths) {

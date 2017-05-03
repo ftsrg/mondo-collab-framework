@@ -11,6 +11,8 @@
 
 package org.mondo.collaboration.security.lens.context.manipulables;
 
+import java.io.IOException;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
@@ -55,13 +57,21 @@ public class ResourceManipulator extends BaseEMFManipulable {
 
 	@Override
 	public Tuple assertTuple(Tuple seed) {
-//		final Resource resource = (Resource) seed.get(0);
 		final URI relativeURI = (URI) seed.get(1);
-		if (relativeURI == null || seed.get(0) != null) 
+		if (relativeURI == null) 
 			throw new IllegalArgumentException(seed.toString());
-		
 		URI resourceURI = model.getUriRelativiser().relativePathToURI(relativeURI);
-		Resource resource = EMFUtil.getOrCreateResource(root, resourceURI);
+		
+		Resource resource = (Resource) seed.get(0);
+		if (resource != null) // rolling back model fact deletion
+			try {
+				resource.load(null);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		else // loading new resource 
+			resource = EMFUtil.getOrCreateResource(root, resourceURI);
+		
 		return new FlatTuple(resource, relativeURI);
 	}
 

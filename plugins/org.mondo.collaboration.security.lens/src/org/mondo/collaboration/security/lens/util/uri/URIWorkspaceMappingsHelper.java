@@ -86,7 +86,9 @@ public class URIWorkspaceMappingsHelper {
 	}
 
 	private static String ensureTrailingSeparator(String folderPath) {
-		if (folderPath!=null && folderPath.endsWith(File.separator))
+		if (folderPath==null)
+			return File.separator;
+		else if (folderPath.endsWith(File.separator))
 			return folderPath;
 		else return folderPath + File.separator;
 	}

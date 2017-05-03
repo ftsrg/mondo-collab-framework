@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.viatra.query.runtime.api.scope.IBaseIndex;
 import org.eclipse.viatra.query.runtime.api.scope.IIndexingErrorListener;
 import org.eclipse.viatra.query.runtime.api.scope.IInstanceObserver;
-import org.eclipse.viatra.query.runtime.api.scope.ViatraBaseIndexChangeListener;;
+import org.eclipse.viatra.query.runtime.api.scope.ViatraBaseIndexChangeListener;
 
 /**
  * @author Bergmann Gabor

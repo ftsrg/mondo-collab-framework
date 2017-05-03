@@ -2,23 +2,33 @@ package org.mondo.collaboration.online.core;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
+import org.mondo.collaboration.online.core.StorageAccess.ExecutionResponse;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * Classes inherited from StorageAccess responsible for accessing to the
@@ -29,20 +39,94 @@ import com.google.common.collect.ImmutableList;
  */
 public abstract class StorageAccess {
 
+	private static final String PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT = "PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT";
+	private static final String PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT = "PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT";
+	private static final String PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT = "PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT";
+	private static final String PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT = "PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT";
+	private static final String MODEL_EXTENSIONS = "MODEL_EXTENSIONS";
+	private static final String ADMIN_USER = "ADMIN_USER";
+	private static final String ADMIN_PWD = "ADMIN_PWD";
 	protected final String username;
 	protected final String password;
-
+	protected String repository;
+	protected String repository_structure;
+	protected String admin_username;
+	protected String admin_password;
+	
 	protected final StringObfuscator obfuscator;
 
 	private Logger logger = Logger.getLogger(StorageAccess.class);
 	private StorageModel model;
 
-	public StorageAccess(String username, String password) throws FileNotFoundException, IOException {
+	public static final String[] DEFAULT_EXTENSIONS = new String[] { "macl", "mpbl", "eiq" };
+	private Properties configProperties;
+	private Properties globalProperties;
+	protected Properties usersProperties;
+	private String workspace;
+	
+	public StorageAccess(String username, String password, String repository) throws FileNotFoundException, IOException {
+		logger.setLevel(Level.ALL);
+		
 		this.username = username;
 		this.password = password;
-
+		this.repository = repository;
+		
 		obfuscator = new StringObfuscator(UUID.randomUUID().toString(), username);
 
+		String scriptsLocation = System.getProperty("mondo.scripts.folder");
+		if(scriptsLocation == null) {
+			logger.error("MONDO Scripts location is not set. Please set it in the server.ini file.");
+		}
+		if(!this.repository.endsWith("/")) {
+			this.repository += "/";
+		}
+		if(!this.repository.startsWith("http")) {
+			this.repository = "http://" + this.repository;
+		}
+		
+		ExecutionResponse response = internalExecuteProcess("./lookup-gold-repository.sh " + this.repository, new String[0], new File(scriptsLocation));
+		String responseString = response.getResponseList().get(0);
+		if(responseString.contains("Could not resolve location")) {
+			logger.error(responseString);
+		}
+		
+		Path globalConfigPath = Paths.get(scriptsLocation, "..", "config", "global-config.properties");
+		File globalConfigFile = globalConfigPath.toFile();
+		if(!globalConfigFile.exists()) {
+			logger.error("Config file not exists for " + responseString);
+		}		
+		globalProperties = new Properties();
+		globalProperties.load(new FileInputStream(globalConfigFile));
+		admin_password = globalProperties.getProperty(ADMIN_PWD);
+		admin_username = globalProperties.getProperty(ADMIN_USER);
+		repository_structure = globalProperties.getProperty("URL").replace("'", "") + globalProperties.getProperty("SVN_URL_PATH");
+		
+		Path configPath = Paths.get(scriptsLocation, "..", "config", responseString, "config.properties");
+		File configFile = configPath.toFile();
+		if(!configFile.exists()) {
+			logger.error("Config file not exists for " + responseString);
+		}		
+		configProperties = new Properties();
+		configProperties.load(new FileInputStream(configFile));
+		
+		Path userConfigPath = Paths.get(scriptsLocation, "..", "config", responseString, "gen", "user_front.properties");
+		File userConfigFile = userConfigPath.toFile();
+		if(!userConfigFile.exists()) {
+			logger.error("Config file not exists for " + responseString);
+		}		
+		usersProperties = new Properties();
+		usersProperties.load(new FileInputStream(userConfigFile));
+		
+		Path workspacePath = Paths.get(scriptsLocation, "..", "workspace", "online");
+		File workspaceFile = workspacePath.toFile();
+		if(!workspaceFile.exists()) {
+			workspaceFile.mkdirs();
+		}
+		workspace = workspacePath.toString();
+		if(!workspace.endsWith(File.separator)) {
+			workspace += File.separator;
+		}
+		
 		logger.info("Storage access is created for " + username);
 	}
 
@@ -83,10 +167,15 @@ public abstract class StorageAccess {
 
 	public abstract FileStatus checkFileStatus(String path) throws Exception;
 	
-	public Resource loadPolicyModel() {
+	public List<Resource> loadPolicyAndLockModels() {
 		ResourceSetImpl resourceSet = new ResourceSetImpl();
 		resourceSet.getResource(getInternalEiqFile(), true);
-		return resourceSet.getResource(getInternalMaclFile(), true);
+		Resource policy = resourceSet.getResource(getInternalMaclFile(), true);
+		Resource lock = resourceSet.getResource(getInternalMpblFile(), true);
+		ArrayList<Resource> policyAndLock = Lists.newArrayList();
+		policyAndLock.add(policy);
+		policyAndLock.add(lock);
+		return policyAndLock;
 	}
 
 	protected ExecutionResponse internalExecuteProcess(String cmd) throws Exception {
@@ -128,6 +217,7 @@ public abstract class StorageAccess {
 			logger.info("Process finished");
 		} catch (Exception e) {
 			logger.error("Process failed", e);
+			e.printStackTrace();
 		}
 		return new ExecutionResponse(errorList, responseList);
 	}
@@ -155,10 +245,8 @@ public abstract class StorageAccess {
 	 * 
 	 * @return the repository location
 	 */
-	public static String getRepository() {
-		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.repository.gold");
-		String retSystem = System.getProperty("mondo.repository.gold");
-		return retBundle == null ? retSystem : retBundle;
+	public String getRepository() {
+		return repository;
 	}
 
 	/**
@@ -166,10 +254,10 @@ public abstract class StorageAccess {
 	 * 
 	 * @return the lens specific extension
 	 */
-	public static String[] getExtensions() {
-		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.extensions");
-		String retSystem = System.getProperty("mondo.extensions");
-		return retBundle == null ? retSystem.split(",") : retBundle.split(",");
+	public String[] getExtensions() {
+		List<String> retExtensions = Lists.newArrayList(configProperties.getProperty(MODEL_EXTENSIONS).split(","));
+		retExtensions.addAll(Arrays.asList(DEFAULT_EXTENSIONS));
+		return retExtensions.toArray(new String[0]);
 	}
 
 	/**
@@ -177,10 +265,8 @@ public abstract class StorageAccess {
 	 * 
 	 * @return a temporary folder, where the application can store files
 	 */
-	public static String getTempFolder() {
-		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.workspace.folder");
-		String retSystem = System.getProperty("mondo.workspace.folder");
-		return retBundle == null ? retSystem : retBundle;
+	public String getTempFolder() {
+		return workspace;
 	}
 
 	/**
@@ -188,10 +274,10 @@ public abstract class StorageAccess {
 	 * 
 	 * @return the Eiq file location to be check out
 	 */
-	public static String getEiqFile() {
-		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.eiq");
-		String retSystem = System.getProperty("mondo.eiq");
-		return retBundle == null ? retSystem : retBundle;
+	public String getEiqFile() {
+		return repository + configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT)
+				.replace("$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT, 
+						configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT));
 	}
 
 	/**
@@ -199,10 +285,21 @@ public abstract class StorageAccess {
 	 * 
 	 * @return the MACL file location to be check out
 	 */
-	public static String getMaclFile() {
-		String retBundle = LensActivator.getDefault().getBundle().getBundleContext().getProperty("mondo.macl");
-		String retSystem = System.getProperty("mondo.macl");
-		return retBundle == null ? retSystem : retBundle;
+	public String getMaclFile() {
+		return repository + configProperties.getProperty(PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT)
+				.replace("$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT, 
+						configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT));
+		}
+	
+	/**
+	 * Returns the MPBL file location to be check out
+	 * 
+	 * @return the MPBL file location to be check out
+	 */
+	public String getMpblFile() {
+		return repository + configProperties.getProperty(PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT)
+				.replace("$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT, 
+						configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT));
 	}
 
 	/**
@@ -218,6 +315,13 @@ public abstract class StorageAccess {
 	 * @return the path of Macl file on the file system.
 	 */
 	protected abstract URI getInternalMaclFile();
+	
+	/**
+	 * Returns the path of MPBL file on the file system.
+	 * 
+	 * @return the path of MPBL file on the file system.
+	 */
+	protected abstract URI getInternalMpblFile();
 
 	/**
 	 * Returns the user specific obfuscator

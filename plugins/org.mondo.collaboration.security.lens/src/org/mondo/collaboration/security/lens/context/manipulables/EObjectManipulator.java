@@ -54,10 +54,12 @@ public class EObjectManipulator extends BaseEMFManipulable {
 	public Tuple assertTuple(Tuple seed) {
 		//final EObject element = (EObject) seed.get(0);
 		final EClass clazz = (EClass) seed.get(1);
-		if (seed.get(0) != null || clazz == null) 
+		if (clazz == null) 
 			throw new IllegalArgumentException(seed.toString());
 
-		EObject instance = clazz.getEPackage().getEFactoryInstance().create(clazz);
+		EObject instance = (EObject) seed.get(0); // non-null if rolling back deletion
+		if (instance == null) // have to create new object
+			instance = clazz.getEPackage().getEFactoryInstance().create(clazz);
 		model.addUnrooted(instance);
 		
 		return new FlatTuple(instance, clazz);

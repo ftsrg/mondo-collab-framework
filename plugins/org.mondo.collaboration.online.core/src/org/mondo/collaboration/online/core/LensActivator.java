@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.viatra.query.patternlanguage.PatternLanguageStandaloneSetup;
 import org.eclipse.viatra.query.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
 import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
+import org.mondo.collaboration.security.mpbl.xtext.MondoPropertyBasedLockingStandaloneSetup;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -31,10 +32,11 @@ public class LensActivator extends Plugin implements BundleActivator {
 		super.start(context);
 		plugin = this;
 
-		URL confURL = getBundle().getEntry("log4j.properties");
-		PropertyConfigurator.configure(FileLocator.toFileURL(confURL).getFile());
+//		URL confURL = getBundle().getEntry("log4j.properties");
+//		PropertyConfigurator.configure(FileLocator.toFileURL(confURL).getFile());
 
 		AccessControlLanguageStandaloneSetup.doSetup();
+		MondoPropertyBasedLockingStandaloneSetup.doSetup();
 		PatternLanguageStandaloneSetup.doSetup();
 		EMFPatternLanguageStandaloneSetup.doSetup();
 		

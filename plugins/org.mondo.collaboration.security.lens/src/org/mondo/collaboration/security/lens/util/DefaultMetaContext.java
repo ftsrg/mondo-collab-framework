@@ -47,4 +47,9 @@ public class DefaultMetaContext implements IQueryMetaContext {
 		return Collections.emptyMap();
 	}
 
+	@Override
+	public boolean canLeadOutOfScope(IInputKey key) {
+		return false;
+	}
+
 }

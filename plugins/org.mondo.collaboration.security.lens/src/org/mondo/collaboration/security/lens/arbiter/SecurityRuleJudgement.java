@@ -12,7 +12,7 @@
 package org.mondo.collaboration.security.lens.arbiter;
 
 import org.eclipse.viatra.query.runtime.api.IPatternMatch;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Rule;
+import org.mondo.collaboration.policy.rules.Rule;
 
 /**
  * Immutable object representing that the given security rule is applicable to the object or feature setting 

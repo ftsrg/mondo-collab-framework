@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="rules" nsURI="http://www.mondo.org/collaboration/policy/Rules"
+    nsPrefix="rules">
+  <eClassifiers xsi:type="ecore:EClass" name="Model">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="roles" upperBound="-1"
+        eType="#//Role" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="policy" eType="#//Policy"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Role">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="User" eSuperTypes="#//Role"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Group" eSuperTypes="#//Role">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="users" unique="false" upperBound="-1"
+        eType="#//User"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Policy">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="access" eType="#//AccessibilityLevel"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operation" eType="#//OperationType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rules" upperBound="-1"
+        eType="#//Rule" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolution" eType="#//ResolutionType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Rule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraint" eType="#//RuleConstraint"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="roles" unique="false" upperBound="-1"
+        eType="#//Role"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" eType="ecore:EClass platform:/resource/org.eclipse.viatra.query.patternlanguage/model/generated/PatternLanguage.ecore#//Pattern"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="asset" eType="#//Asset"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bindings" upperBound="-1"
+        eType="#//Binding" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="priority" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleConstraint">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="access" eType="#//AccessibilityLevel"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operation" eType="#//OperationType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Asset"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ObjectFact" eSuperTypes="#//Asset">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="ecore:EClass platform:/resource/org.eclipse.viatra.query.patternlanguage/model/generated/PatternLanguage.ecore#//Variable"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReferenceFact" eSuperTypes="#//Asset">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceVar" eType="ecore:EClass platform:/resource/org.eclipse.viatra.query.patternlanguage/model/generated/PatternLanguage.ecore#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetVar" eType="ecore:EClass platform:/resource/org.eclipse.viatra.query.patternlanguage/model/generated/PatternLanguage.ecore#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="reference" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AttributeFact" eSuperTypes="#//Asset">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="ecore:EClass platform:/resource/org.eclipse.viatra.query.patternlanguage/model/generated/PatternLanguage.ecore#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EAttribute"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Binding">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="ecore:EClass platform:/resource/org.eclipse.viatra.query.patternlanguage/model/generated/PatternLanguage.ecore#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bind" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AccessibilityLevel">
+    <eLiterals name="ALLOW" literal="allow"/>
+    <eLiterals name="DENY" value="1" literal="deny"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="OperationType">
+    <eLiterals name="READ" literal="R"/>
+    <eLiterals name="WRITE" value="1" literal="W"/>
+    <eLiterals name="READWRITE" value="2" literal="RW"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ResolutionType">
+    <eLiterals name="RESTRICTIVE" literal="restrictive"/>
+    <eLiterals name="PERMISSIVE" value="1" literal="permissive"/>
+  </eClassifiers>
+</ecore:EPackage>

@@ -14,9 +14,9 @@ package org.mondo.collaboration.security.lens.bx
 import org.apache.log4j.Logger
 import org.eclipse.viatra.query.runtime.api.IPatternMatch
 import org.eclipse.xtend.lib.annotations.Data
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
 import org.mondo.collaboration.security.lens.arbiter.Asset
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.Lock
+import org.mondo.collaboration.policy.rules.User
 
 /**
  * Represent the reason the lens execution has been aborted.
@@ -35,7 +35,7 @@ public interface AbortReason {
 		
 		override logAbortion(Logger logger, String executionFullID) {
 			logger.error(
-			'''Aborting execution of «executionFullID» when invoking rule for «lhsMatch.prettyPrint» due to exception: «exception.message»''', 
+			'''Aborting execution of �executionFullID� when invoking rule for �lhsMatch.prettyPrint� due to exception: �exception.message�''', 
 			exception)
 		}
 		
@@ -56,11 +56,11 @@ public interface AbortReason {
 		
 		override logAbortion(Logger logger, String executionFullID) {
 			logger.warn(
-			'''Aborting execution of «executionFullID»: «prettyPrintProblem»''')
+			'''Aborting execution of �executionFullID�: �prettyPrintProblem�''')
 		}	
 		
 		override prettyPrintProblem() {
-			'''Permission denied - user "«user.name»" has no authorization for writing «assetClass.simpleName» at «authMatch.prettyPrint»'''
+			'''Permission denied - user "�user.name�" has no authorization for writing �assetClass.simpleName� at �authMatch.prettyPrint�'''
 		}
 		
 	}
@@ -73,11 +73,11 @@ public interface AbortReason {
 		
 		override logAbortion(Logger logger, String executionFullID) {
 			logger.warn(
-			'''Aborting execution of «executionFullID»: «prettyPrintProblem»''')
+			'''Aborting execution of �executionFullID�: �prettyPrintProblem�''')
 		}	
 		
 		override prettyPrintProblem() {
-			'''Operation by user "«manipulatorUserName»" violates lock granted to «lock.owner.name» at query match «violatingMatch.prettyPrint»'''
+			'''Operation by user "�manipulatorUserName�" violates lock granted to �lock.owner.name� at query match �violatingMatch.prettyPrint�'''
 		}
 		
 	}

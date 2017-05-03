@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="xtend-gen"/>
-	<classpathentry kind="src" path="src-gen/"/>
+	<classpathentry kind="src" path="src-gen"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.mondo.collaboration.security.mpbl.xtext"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

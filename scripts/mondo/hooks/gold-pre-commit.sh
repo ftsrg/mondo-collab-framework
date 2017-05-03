@@ -24,8 +24,11 @@ set -e # Exit from the script if any subcommand or pipeline returns an error.
 # Get the current directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+ROOT=$3
+
 # Load the configuration files
-. $DIR/../config/config.properties
+. $DIR/../config/$3/config.properties
+. $DIR/../config/global-config.properties
 
 function known_model_extension {
   contains=false
@@ -97,6 +100,10 @@ WORKSPACE_CURRENT=$(concate_path_parts $WORKSPACE "WORKSPACE_FRONT" "CURRENT")  
 REV="$2"                                                                                 # Revision number
 LOG="$DIR/../log/gold-pre-commit${GOLD_REPOS//\//-}.log"                                                           # Log file
 
+COMMITTER=$(svnlook author -t $REV $GOLD_REPOS)
+
+touch $LOG
+
 log "======================================================="
 log "Executing Gold Pre-commit on $GOLD_REPOS"
 log $GOLD_REPOS
@@ -105,7 +112,7 @@ log $GOLD_REPOS
 # Check for a lock file
 if [ -f $LOCK_FILE ]; then
   log "File exists, we have to reject your commit".
-  echo echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
+  echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
   exit 1
 else
   touch $LOCK_FILE
@@ -117,14 +124,18 @@ rm -rf $WORKSPACE_FRONTS
 log "Step 2: clear WORKSPACE Gold folder - $WORKSPACE_GOLD"
 rm -rf "$WORKSPACE_GOLD"
 
-log "Step 3: checkout gold - from $GOLD_REPOS_URL to $WORKSPACE_GOLD"
-svn checkout "$GOLD_REPOS_URL" "$WORKSPACE_GOLD" -r $REV --username $ADMIN_USER --password $ADMIN_PWD
+ log "Step 3: checkout lens related files from $GOLD_REPOS_URL to $WORKSPACE_GOLD"
+svn checkout "$GOLD_REPOS_URL" "$WORKSPACE_GOLD" --username $ADMIN_USER --password $ADMIN_PWD
 
-log "Step 4: check that the rules and queries files exist"
+mkdir -p "$(dirname "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT")" && svnlook cat -t $REV $GOLD_REPOS $PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT > "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT"
+mkdir -p "$(dirname "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT")" && svnlook cat -t $REV $GOLD_REPOS $PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT > "$WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
+
+
+log "Step 4: check that the rule, query and lock files exist"
 LENS_CAN_EXECUTE=false;
 if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT) ]
 then
-  if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT) ]
+  if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT) ]
   then
     LENS_CAN_EXECUTE=true;
     log "* Both files exist"
@@ -136,12 +147,12 @@ else
 fi
 
 log "Step 5: get change list"
-changes=$(svnlook changed -r $REV $GOLD_REPOS)
+changes=$(svnlook changed -t $REV $GOLD_REPOS)
 
 LENS_DIR="$DIR/../invoker/invoker.sh"
 
 log "Step 6: iterate over the front list"
-USER_FRONT_MAPPING=$(cat $DIR/../config/gen/user_front.properties)
+USER_FRONT_MAPPING=$(cat $DIR/../config/$3/gen/user_front.properties)
 for entry in $USER_FRONT_MAPPING; do
   oldIFS=$IFS
   IFS='='
@@ -182,28 +193,34 @@ for entry in $USER_FRONT_MAPPING; do
               then
                 mkdir -p $BASEDIR
               fi
+
+	      filename=$(basename "$nextChange")
+              EXTENSION="${filename##*.}"
+
+              svnlook cat -t $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange.$EXTENSION"
+              chmod oa+rw $CURRENT_REPO/$nextChange.$EXTENSION
+
               if [[ "$(known_model_extension $nextChange)" == "true" ]]
               then
                 if [[ "$LENS_CAN_EXECUTE" == "true" ]]
                 then
                   log "     -> Action: Execute lens $CURRENT_REPO/$nextChange"
 
+
                   OBFUSCATOR_SEED="seed_$CURRENT_REPO"
                   OBFUSCATOR_SALT="salt_$CURRENT_REPO"
                   OBFUSCATOR_PREFIX="mondo"
 
-                  svnlook cat -r $REV $GOLD_REPOS $nextChange > "$CURRENT_REPO/$nextChange"
-                  chmod oa+rw $CURRENT_REPO/$nextChange
-
-                  log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT"
-                  $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT
-                else
+                  log " access rules: $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT"
+                  $LENS_DIR $FRONT_USER $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange -performGet $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT "" $ROOT
+                  rm $CURRENT_REPO/$nextChange.$EXTENSION
+		else
                   log "     -> Action: Cannot execute lens. Copy to gold $CURRENT_REPO/$nextChange"
-                  cp -rf $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange
+		  mv $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange
                 fi
               else
-                log "     -> Action: Copy to gold $CURRENT_REPO/$nextChange"
-                cp -rf $WORKSPACE_GOLD/$nextChange $CURRENT_REPO/$nextChange
+                log "     -> Action: Copy to gold"
+		mv $CURRENT_REPO/$nextChange.$EXTENSION $CURRENT_REPO/$nextChange
               fi
               ;;
       	   esac
@@ -217,12 +234,10 @@ for entry in $USER_FRONT_MAPPING; do
     IFS="$oldIFS"
 
     log "Step 6.3: get commit message"
-    log "svn log -q -v --xml --with-all-revprops $WORKSPACE_GOLD"
-    MSG=$(svn log -q -v --xml --with-all-revprops $WORKSPACE_GOLD --username $ADMIN_USER --password $ADMIN_PWD | grep msg | sed -e "s/<msg>\([^<]*\)<\/msg>/\1/g")
+    MSG=$(svnlook log -t $REV $GOLD_REPOS)
     log "* commit message is: $MSG"
     log "Step 6.4: get author name"
-    AUTHOR=$(svn log -r $REV  $WORKSPACE_GOLD --username $ADMIN_USER --password $ADMIN_PWD | grep -E '\|' | cut -f2 -d'|' | sort | uniq)
-    log "* author name is: $AUTHOR"
+    log "* author name is: $COMMITTER"
     log "* step into the current folder - $CURRENT_REPO"
     cd $CURRENT_REPO
 
@@ -232,8 +247,8 @@ for entry in $USER_FRONT_MAPPING; do
     log "Step 6.6 store message into a WORKSPACE file"
     echo "$MSG" 1>"svn-commit.tmp"
 
-    log "Step 6.7 execute commit"
-    svn commit -F svn-commit.tmp --username $ADMIN_USER --password $ADMIN_PWD --quiet --non-interactive
+    log "Step 6.7 execute commit in the name of $COMMITTER"
+    svn commit -F svn-commit.tmp --username $COMMITTER --password $COMMITTER --quiet --non-interactive
   else
     log "* Skipping this repo: $FRONT_USER is the current committer"
   fi

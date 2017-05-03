@@ -26,13 +26,17 @@ set -e # Exit from the script if any subcommand or pipeline returns an error.
 # Get the current directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+ROOT=$3
+
 # Load the configuration files
-. $DIR/../config/config.properties
+. $DIR/../config/global-config.properties
+. $DIR/../config/$3/config.properties
+. $DIR/../config/global-config.properties
 
 function known_model_extension {
   contains=false
 
-  IFS_OLD=$IFS
+  IFS_OLD_SUB=$IFS
   IFS=","
   for extension in $MODEL_EXTENSIONS
   do
@@ -40,7 +44,7 @@ function known_model_extension {
       contains=true
     fi
   done
-  IFS=IFS_OLD
+  IFS=$IFS_OLD_SUB
 
   echo "$contains"
 }
@@ -101,6 +105,7 @@ FRONT_USER=$(svnlook author -t $TXN $CURRENT_FRONT_REPOS)                       
 CURRENT_FRONT_REPOS_NAME=$(replace $CURRENT_FRONT_REPOS "/$SVN_PATH_URL" "")                      #Remove SVN_PATH from repository
 
 LOG="$DIR/../log/front-pre-commit${CURRENT_FRONT_REPOS//\//-}.log"                                                                     #Log file
+touch $LOG
 
 log "======================================================="
 log "Executing Front-side Pre-commit on $CURRENT_FRONT_REPOS"
@@ -114,7 +119,7 @@ fi
 # Check for a lock file
 if [ -f $LOCK_FILE ]; then
   log "File exists, we have to reject your commit".
-  echo echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
+  echo "MONDO Error: Another commit is under execution. Please wait until it finishes." 1>&2
   exit 1
 else
   touch $LOCK_FILE
@@ -137,9 +142,10 @@ mkdir -p $WORKSPACE_FRONT
 
 log "Step 6: check that the rules and queries files exist"
 LENS_CAN_EXECUTE=false;
+LENS_EXECUTE_WITH_LOCK=false;
 if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT) ]
 then
-  if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT) ]
+  if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT) ]
   then
     LENS_CAN_EXECUTE=true;
     log "* Both files exist"
@@ -147,6 +153,11 @@ then
     OBFUSCATOR_SEED="seed_$CURRENT_FRONT_REPOS_NAME"
     OBFUSCATOR_SALT="salt_$CURRENT_FRONT_REPOS_NAME"
     OBFUSCATOR_PREFIX="mondo"
+    if [ -f $(concate_path_parts $WORKSPACE_GOLD $PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT) ]
+    then
+      LENS_EXECUTE_WITH_LOCK=true;
+      log "* Lock file exists"
+    fi
   fi
 else
   log "* Files don't exist"
@@ -188,7 +199,14 @@ for line in $changes; do
               log "     -> Action: Execute lens $WORKSPACE_FRONT/$nextChange"
               chmod oa+rw $WORKSPACE_GOLD/$nextChange
               chmod oa+rw $WORKSPACE_FRONT/$nextChange
-              $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_QUERIES_FROM_REPOSITORY_ROOT
+              if [ $LENS_EXECUTE_WITH_LOCK = true ]
+              then
+                log "     -> Lens is using locking feature"
+                $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT $ROOT
+              else
+                log "     -> Only Access Control rules will be used"
+                $LENS_DIR $FRONT_USER $WORKSPACE_GOLD/$nextChange $WORKSPACE_FRONT/$nextChange -performPutback $WORKSPACE $OBFUSCATOR_SALT $OBFUSCATOR_SEED $OBFUSCATOR_PREFIX $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT $WORKSPACE_GOLD/$PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT "" $3
+              fi
             else
               log "     -> Action: Have to be copied to gold $WORKSPACE_FRONT/$nextChange"
               cp -rf $WORKSPACE_FRONT/$nextChange $WORKSPACE_GOLD/$nextChange

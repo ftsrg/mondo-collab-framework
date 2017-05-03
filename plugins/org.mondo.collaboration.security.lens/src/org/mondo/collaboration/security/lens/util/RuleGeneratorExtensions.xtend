@@ -11,50 +11,42 @@
 
 package org.mondo.collaboration.security.lens.util
 
-import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
-import com.google.common.collect.Lists
-import com.google.common.collect.Maps
 import com.google.common.collect.Sets
-import java.util.Arrays
 import java.util.Collections
-import java.util.List
 import java.util.Map
 import java.util.Set
 import org.eclipse.viatra.query.runtime.api.IPatternMatch
 import org.eclipse.viatra.query.runtime.api.IQuerySpecification
-import org.eclipse.viatra.transformation.evm.specific.Jobs
-import org.eclipse.viatra.transformation.evm.specific.Lifecycles
-import org.eclipse.viatra.transformation.evm.specific.Rules
-import org.eclipse.viatra.transformation.evm.specific.crud.CRUDActivationStateEnum
+import org.eclipse.viatra.query.runtime.api.ViatraQueryMatcher
 import org.eclipse.viatra.query.runtime.matchers.context.IInputKey
 import org.eclipse.viatra.query.runtime.matchers.psystem.PBody
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExportedParameter
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.NegativePatternCall
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.PositivePatternCall
-import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.TypeConstraint
 import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameter
 import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PQuery
 import org.eclipse.viatra.query.runtime.matchers.psystem.queries.QueryInitializationException
 import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple
+import org.eclipse.viatra.transformation.evm.api.Activation
+import org.eclipse.viatra.transformation.evm.api.Context
+import org.eclipse.viatra.transformation.evm.api.Job
+import org.eclipse.viatra.transformation.evm.specific.Lifecycles
+import org.eclipse.viatra.transformation.evm.specific.Rules
+import org.eclipse.viatra.transformation.evm.specific.crud.CRUDActivationStateEnum
+import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
+import org.mondo.collaboration.security.lens.bx.AbortReason.RuntimeExceptionAbort
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution
 import org.mondo.collaboration.security.lens.context.BaseMondoLensPQuery
 import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification
 import org.mondo.collaboration.security.lens.relational.ActionStep
 import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
 import org.mondo.collaboration.security.lens.relational.QueryTemplate
-import org.mondo.collaboration.security.lens.relational.RelationalTransformationSpecification
 import org.mondo.collaboration.security.lens.relational.RuleExecutionEnvironment
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
-import org.apache.log4j.Logger
-import org.eclipse.viatra.transformation.evm.api.Job
-import org.eclipse.viatra.transformation.evm.api.Activation
-import org.eclipse.viatra.transformation.evm.api.Context
-import org.eclipse.viatra.query.runtime.api.ViatraQueryMatcher
-import org.mondo.collaboration.security.lens.bx.LensTransformationExecution
-import org.mondo.collaboration.security.lens.bx.AbortReason.RuntimeExceptionAbort
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -80,7 +72,7 @@ public class RuleGeneratorExtensions {
 				val LensTransformationExecution trExecution = context.get(LensTransformationExecution.name) as LensTransformationExecution
 				
 				if (trExecution.logger.isDebugEnabled) {
-					trExecution.logger.debug('''*** executing «ruleOp.rule.name» on «match»''')
+					trExecution.logger.debug('''*** executing �ruleOp.rule.name� on �match�''')
 				}
 				val environment = trExecution.initRHS(match)
 				for (currentAction: allActions) {
@@ -113,29 +105,29 @@ public class RuleGeneratorExtensions {
 	// queries
 	public def composeQuery(String queryFullyQualifiedName, Iterable<? extends QueryTemplate>... conjunctiveTemplates) {
 		val allTemplates = Iterables::concat(conjunctiveTemplates)
-		new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
-			queryFullyQualifiedName,
-			gatherParameters(allTemplates)
-		) {
-			override protected doGetContainedBodies() throws QueryInitializationException {
-				#{singleBody(allTemplates)}
-			}
-		})		
+		composeParametrizableQuery(queryFullyQualifiedName, gatherParameters(allTemplates)) [
+			#{singleBody(allTemplates)}
+		]
 	}
 	public def composeDisjunctiveQuery(String queryFullyQualifiedName, Iterable<? extends QueryTemplate>... disjunctiveTemplates) {
+		composeParametrizableQuery(queryFullyQualifiedName, gatherParameters(disjunctiveTemplates)) [
+			ImmutableSet.copyOf(disjunctiveTemplates.map[template | singleBody(template)])
+		]
+	}
+	public def composeParametrizableQuery(String queryFullyQualifiedName, Iterable<String> uniqueParameterVariables, Function1<PQuery, Set<PBody>> bodiesTemplate) {
 		new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
 			queryFullyQualifiedName,
-			gatherParameters(disjunctiveTemplates)
+			makePParameterList(uniqueParameterVariables)
 		) {
 			override protected doGetContainedBodies() throws QueryInitializationException {
-				ImmutableSet.copyOf(disjunctiveTemplates.map[template | singleBody(template)])
+				bodiesTemplate.apply(this)
 			}
 		})		
 	}
 	public def gatherParameters(Iterable<? extends QueryTemplate>... disjunctiveTemplates) {
 		val setOfUniqueVariablesPerBody = disjunctiveTemplates.map[bodyTemplates | ImmutableSet::copyOf(Iterables::concat(bodyTemplates.map[deducedVariables])) as Set<String>]
 		val commonVariables = setOfUniqueVariablesPerBody.reduce [ x, y | Sets::intersection(x,y)]
-		makePParameterList(commonVariables)
+		commonVariables
 	}
 	public def makePParameterList(Iterable<String> uniqueVariables) {
 		ImmutableList.copyOf(uniqueVariables.map[new PParameter(it)])
@@ -143,7 +135,7 @@ public class RuleGeneratorExtensions {
 	public def singleBody(PQuery query, Iterable<? extends Procedure1<PBody>> constrainers) {
 		val body = new PBody(query)
 		
-		body.exportedParameters = query.parameters.map[ param | 
+		body.symbolicParameters = query.parameters.map[ param | 
 			new ExportedParameter(body, body.getOrCreateVariableByName(param.name), param.name)
 		]
 		
@@ -201,8 +193,8 @@ public class RuleGeneratorExtensions {
 		val substitutionsCorrect = ImmutableSet::copyOf(calledQuery.parameterNamesSafe).equals(parameterSubstitutions.keySet)
 		if(!substitutionsCorrect) {
 			throw new IllegalArgumentException(
-				'''Parameters of query «calledQuery.fullyQualifiedName» are [«calledQuery.parameterNamesSafe.join(", ")»], ''' +
-				'''but called with substitutions {«parameterSubstitutions.entrySet.map['''«key» -> «value»'''].join(", ")»}.'''
+				'''Parameters of query <<calledQuery.fullyQualifiedName>> are [<<calledQuery.parameterNamesSafe.join(", ")>>], ''' +
+				'''but called with substitutions {<<parameterSubstitutions.entrySet.map[<<key>> -> <<value>>].join(", ")>>}.'''
 			)
 		}
 		calledQuery.parameterNamesSafe.map[parameterSubstitutions.get(it)]

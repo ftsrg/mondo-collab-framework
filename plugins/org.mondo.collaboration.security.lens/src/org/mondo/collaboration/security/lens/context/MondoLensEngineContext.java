@@ -53,16 +53,6 @@ public class MondoLensEngineContext implements IEngineContext {
 		}
 		return baseIndex;
 	}
-
-//	@Override
-//	public void initializeBackends(IQueryBackendInitializer initializer) throws ViatraQueryException {
-//		initializer.initializeWith(getRuntimeContext());
-//	}
-
-	@Override
-	public IQueryRuntimeContext getQueryRuntimeContext() throws ViatraQueryException {
-		return getRuntimeContext();
-	}
 	
 	private IQueryRuntimeContext getRuntimeContext() {
 		if (runtimeContext == null) {
@@ -75,5 +65,11 @@ public class MondoLensEngineContext implements IEngineContext {
 	public void dispose() {
 
 	}
+
+	@Override
+	public IQueryRuntimeContext getQueryRuntimeContext() throws ViatraQueryException {
+		return getRuntimeContext();
+	}
+
 
 }

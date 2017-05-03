@@ -207,7 +207,6 @@ public class OnlineLeg extends Leg {
 		
 		@Override
 		public void undo() {
-			super.undo();
 		}
 
 	}

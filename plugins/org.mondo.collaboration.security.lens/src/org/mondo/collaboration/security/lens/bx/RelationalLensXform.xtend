@@ -15,22 +15,29 @@ import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
 import java.util.Set
 import org.eclipse.emf.ecore.EAttribute
-import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine
-import org.eclipse.viatra.transformation.evm.api.Activation
-import org.eclipse.viatra.transformation.evm.api.Context
-import org.eclipse.viatra.transformation.evm.api.RuleEngine
-import org.eclipse.viatra.transformation.evm.api.RuleSpecification
-import org.eclipse.viatra.transformation.evm.specific.RuleEngines
+import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator
+import org.eclipse.viatra.query.runtime.api.AdvancedViatraQueryEngine
 import org.eclipse.viatra.query.runtime.matchers.psystem.IExpressionEvaluator
 import org.eclipse.viatra.query.runtime.matchers.psystem.IValueProvider
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.PatternMatchCounter
 import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple
-import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator
+import org.eclipse.viatra.transformation.evm.api.Activation
+import org.eclipse.viatra.transformation.evm.api.Context
+import org.eclipse.viatra.transformation.evm.api.RuleEngine
+import org.eclipse.viatra.transformation.evm.api.RuleSpecification
+import org.eclipse.viatra.transformation.evm.specific.RuleEngines
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.mondo.collaboration.policy.rules.User
 import org.mondo.collaboration.security.lens.arbiter.Asset
+import org.mondo.collaboration.security.lens.arbiter.Asset.ReferenceAsset
 import org.mondo.collaboration.security.lens.arbiter.AuthorizationQueries
+import org.mondo.collaboration.security.lens.arbiter.LockArbiter
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter.OperationKind
+import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason
+import org.mondo.collaboration.security.lens.bx.AbortReason.LockViolationDenial
+import org.mondo.collaboration.security.lens.bx.AbortReason.WriteAuthorizationDenial
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution.UndoableManipulationAction
 import org.mondo.collaboration.security.lens.context.MondoLensScope
 import org.mondo.collaboration.security.lens.context.keys.CollabLensModelInputKey
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey
@@ -43,19 +50,9 @@ import org.mondo.collaboration.security.lens.relational.RelationalRuleSpecificat
 import org.mondo.collaboration.security.lens.relational.RelationalTransformationSpecification
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
 import org.mondo.collaboration.security.lens.util.RuleGeneratorExtensions
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User
-import org.eclipse.xtend.lib.annotations.Data
 
 import static org.mondo.collaboration.security.lens.context.keys.WhichModel.*
 import static org.mondo.collaboration.security.lens.emf.ModelFactInputKey.*
-import org.eclipse.viatra.query.runtime.api.IPatternMatch
-import org.apache.log4j.Logger
-import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason
-import org.mondo.collaboration.security.lens.bx.LensTransformationExecution.UndoableManipulationAction
-import org.mondo.collaboration.security.lens.bx.AbortReason.WriteAuthorizationDenial
-import org.mondo.collaboration.security.lens.arbiter.LockArbiter
-import org.mondo.collaboration.security.lens.bx.AbortReason.LockViolationDenial
-import org.mondo.collaboration.security.lens.arbiter.LockArbiter.LockMonitoringSession
 
 /**
  * The lens (bidirectional asymmetric view-update mapping) between a gold model and a front model, 
@@ -74,6 +71,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	@Accessors(PUBLIC_GETTER) DataTypeObfuscator<String> stringObfuscator
 
 	@Accessors(PUBLIC_GETTER) AuthorizationQueries authorizationQueries
+	AdvancedViatraQueryEngine engine
 	
 	new(MondoLensScope scope, User user, DataTypeObfuscator<String> stringObfuscator) {
 		super(scope.manipulables, scope.queriables)
@@ -81,15 +79,16 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		this.scope = scope
 		this.stringObfuscator = stringObfuscator
 		
+		this.engine = AdvancedViatraQueryEngine.createUnmanagedEngine(scope)
 		this.authorizationQueries = scope.arbiter.instantiateAuthorizationQuerySpecificationsForUser(user)
-		
+
 		addRules
 		operationalize
 	}
 	
 	
 	override getFullyQualifiedName() {
-		'''Â«coreNameÂ».{user='Â«user.nameÂ»'}'''
+		'''«coreName».{user='«user.name»'}'''
 	}
 	
 	private Set<RuleOperationalization> ruleOperationalizations
@@ -101,12 +100,12 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 	private long nextTransformationSequenceID = 0; 
 	
 	public def doGet() {
-		val trExec = new LensTransformationExecution(this, '''GET.Â«nextTransformationSequenceID++Â»''')
+		val trExec = new LensTransformationExecution(this, '''GET.«nextTransformationSequenceID++»''')
 		fireAllRules(getRuleEngineForGet, trExec)	
 		trExec	
 	}
 	public def doPutback(boolean rollbackGoldIfDenied) {
-		val trExec = new LensTransformationExecution(this, '''PUTBACK.Â«nextTransformationSequenceID++Â»''')
+		val trExec = new LensTransformationExecution(this, '''PUTBACK.«nextTransformationSequenceID++»''')
 		
 		val LockArbiter.LockMonitoringSession lockSession =	scope.lockArbiter.openSession(user.name)
 		try {
@@ -126,7 +125,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			val undoStack = trExec.undoStack
 			
 			if (trExec.logger.isDebugEnabled) {
-				trExec.logger.debug('''Attempting to undo Â«undoStack.sizeÂ» operations after PUTBACK Â«trExec.executionSequenceIDÂ» aborted''')
+				trExec.logger.debug('''Attempting to undo «undoStack.size» operations after PUTBACK «trExec.executionSequenceID» aborted''')
 			}
 			
 			var UndoableManipulationAction toBeUndone;
@@ -181,8 +180,10 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			return ruleEngine
 	}
 	
+	
+
 	def getViatraQueryEngine() {
-		ViatraQueryEngine::on(scope)
+		engine
 	}
 	
 	private def inModel(ModelFactInputKey inputkey, WhichModel model) {
@@ -255,6 +256,7 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 			)
 			readAuthorization += checkReadAuthorization(Asset.ReferenceAsset, varGoldSrc, varEReference, varGoldTrg)
 			writeAuthorization += checkWriteAuthorization(Asset.ReferenceAsset, varGoldSrc, varEReference, varGoldTrg)
+			additivePreAuthorization += preAuthorizeReferenceAddition()
 		]
 		rules += new RelationalRuleSpecification => [
 			name = "attributes"
@@ -339,12 +341,34 @@ public class RelationalLensXform extends RelationalTransformationSpecification {
 		]
 	}
 	
+	def ActionStep preAuthorizeReferenceAddition() { // varGoldSrc, varEReference, varGoldTrg
+		val unreassignableSrcQuery = authorizationQueries.unReassignableSrcReference
+		val unreassignableTrgQuery = authorizationQueries.unReassignableTrgReference
+		val unreassignableSrcMatcher = unreassignableSrcQuery.getMatcher(viatraQueryEngine)
+		val unreassignableTrgMatcher = unreassignableTrgQuery.getMatcher(viatraQueryEngine)
+		return [
+			val unreassignableSrcMatch = unreassignableSrcQuery.newMatch(variables.get(varGoldSrc), variables.get(varEReference))
+			if (unreassignableSrcMatcher.hasMatch(unreassignableSrcMatch)) {
+				transformationExecution.abort(new WriteAuthorizationDenial(user, ReferenceAsset, unreassignableSrcMatch))
+			}
+			val unreassignableTrgMatch = unreassignableTrgQuery.newMatch(variables.get(varEReference), variables.get(varGoldTrg))
+			if (unreassignableTrgMatcher.hasMatch(unreassignableTrgMatch)) {
+				transformationExecution.abort(new WriteAuthorizationDenial(user, ReferenceAsset, unreassignableTrgMatch))
+			}
+		]
+	}
+	
 	
 	def QueryTemplate checkReadAuthorization(Class<? extends Asset> assetClass, String... assetVariables) {
 		authorizationQueries.effectivelyDeniedQuery.get(assetClass).get(OperationKind::READ).negativeCall(assetVariables)
 	}
+	
+	def void dispose() {
+		engine.dispose
+	}
+	
 //		return new GenericMondoLensQuerySpecification(new BaseMondoLensPQuery(
-//			'''Â«fullyQualifiedNameÂ».readDenied.Â«assetClass.simpleNameÂ»''',
+//			'''«fullyQualifiedName».readDenied.«assetClass.simpleName»''',
 //			makePParameterList(assetVariables) //, #[varUser])
 //		) {
 //			override protected doGetContainedBodies() throws QueryInitializationException {

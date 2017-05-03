@@ -1,7 +1,9 @@
 package org.mondo.collaboration.online.core;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -175,12 +177,13 @@ public class LensSessionManager {
 	private static OnlineCollaborationSession createSession(URI goldURI, StorageAccess sa) {
 		try {
 			logger.info(String.format("Lens is creating for uri: %s", goldURI.toString()));
-
-			Resource policyModel = sa.loadPolicyModel();
+			List<Resource> policyModelAndLockModels = sa.loadPolicyAndLockModels();
+			Resource policyModel = policyModelAndLockModels.get(0);
+			Resource lockModel = policyModelAndLockModels.get(1);
 			ResourceSetImpl rSet = new ResourceSetImpl();
 			rSet.getResource(goldURI, true);
 			OnlineCollaborationSession onlineCollaborationSession = new OnlineCollaborationSession(goldURI, rSet,
-					EObjectCorrespondence.getRegisteredIDProviderFactory(), policyModel, sa.getUsername(), sa.getPassword());
+					EObjectCorrespondence.getRegisteredIDProviderFactory(goldURI.fileExtension() + ".mondo"), policyModel, lockModel, sa.getUsername(), sa.getPassword());
 
 			NotifierManager.notifySuccess(EVENT_WHITEBOARD_SESSION_OPENED, goldURI);
 			logger.info("Lens created");
@@ -195,10 +198,15 @@ public class LensSessionManager {
 
 	private static final class HttpSessionListenerImplementation implements HttpSessionListener {
 
-		public static int MAX_INTERVAL = 15 * 60; // 15 minutes
-
+		public int MAX_INTERVAL = 15*60;  
+		
 		private static final Logger logger = Logger.getLogger(HttpSessionListenerImplementation.class);
 
+		public HttpSessionListenerImplementation() {
+			if(System.getProperty("mondo.online.timeout") != null)
+				MAX_INTERVAL = Integer.parseInt(System.getProperty("mondo.online.timeout"));
+		}
+		
 		@Override
 		public void sessionDestroyed(HttpSessionEvent se) {
 			HttpSession session = se.getSession();
@@ -260,5 +268,9 @@ public class LensSessionManager {
 				"(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME + "=*)");
 		bundleContext.registerService(new String[] { HttpSessionListener.class.getName() }, SERVICE_LISTENER,
 				properties);
+	}
+	
+	public static Collection<OnlineLeg> getAllOnlineLegs(){
+		return table.values();
 	}
 }

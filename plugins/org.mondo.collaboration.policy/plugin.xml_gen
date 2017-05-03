@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package 
+			uri = "http://www.mondo.org/collaboration/policy/Rules"
+			class = "org.mondo.collaboration.policy.rules.RulesPackage"
+			genModel = "model/generated/Rules.genmodel" />
+	</extension>
+</plugin>
