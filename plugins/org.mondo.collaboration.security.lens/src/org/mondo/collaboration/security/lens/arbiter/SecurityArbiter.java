@@ -26,31 +26,29 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.incquery.patternlanguage.emf.specification.SpecificationBuilder;
-import org.eclipse.incquery.patternlanguage.patternLanguage.Pattern;
-import org.eclipse.incquery.runtime.api.AdvancedIncQueryEngine;
-import org.eclipse.incquery.runtime.api.GenericPatternGroup;
-import org.eclipse.incquery.runtime.api.IMatchUpdateListener;
-import org.eclipse.incquery.runtime.api.IPatternMatch;
-import org.eclipse.incquery.runtime.api.IQuerySpecification;
-import org.eclipse.incquery.runtime.api.IncQueryMatcher;
-import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
-import org.eclipse.incquery.runtime.emf.EMFScope;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
-import org.eclipse.incquery.runtime.matchers.tuple.LeftInheritanceTuple;
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.eclipse.viatra.query.patternlanguage.emf.specification.SpecificationBuilder;
+import org.eclipse.viatra.query.patternlanguage.patternLanguage.Pattern;
+import org.eclipse.viatra.query.runtime.api.AdvancedViatraQueryEngine;
+import org.eclipse.viatra.query.runtime.api.GenericQueryGroup;
+import org.eclipse.viatra.query.runtime.api.IMatchUpdateListener;
+import org.eclipse.viatra.query.runtime.api.IPatternMatch;
+import org.eclipse.viatra.query.runtime.api.IQuerySpecification;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryMatcher;
+import org.eclipse.viatra.query.runtime.base.api.BaseIndexOptions;
+import org.eclipse.viatra.query.runtime.emf.EMFScope;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.eclipse.viatra.query.runtime.matchers.tuple.LeftInheritanceTuple;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
+import org.mondo.collaboration.policy.rules.Binding;
+import org.mondo.collaboration.policy.rules.Group;
+import org.mondo.collaboration.policy.rules.Model;
+import org.mondo.collaboration.policy.rules.Policy;
+import org.mondo.collaboration.policy.rules.Role;
+import org.mondo.collaboration.policy.rules.Rule;
+import org.mondo.collaboration.policy.rules.User;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTable;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.ConflictResolutionTypes;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.RuleRef;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Binding;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Group;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Role;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.Rule;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.ValueBind;
+import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.ValueBind;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableSet;
@@ -85,7 +83,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	public static SecurityArbiter create(
 			Resource policyResource, 
 			ResourceSet goldResourceSet,
-			User userFilter) throws IncQueryException 
+			User userFilter) throws ViatraQueryException 
 	{
 		Policy policyModel = extractPolicyElement(policyResource);
 		SecurityArbiter arbiter = new SecurityArbiter(
@@ -98,7 +96,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 
 
 	private static Policy extractPolicyElement(Resource policyResource) {
-		AccessControlModel accessControlModel = (AccessControlModel) policyResource.getContents().get(0);
+		Model accessControlModel = (Model) policyResource.getContents().get(0);
 		Policy policyModel = accessControlModel.getPolicy();
 		return policyModel;
 	}	
@@ -138,7 +136,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 
 	
 	private Policy policy;
-	private AdvancedIncQueryEngine policyQueryEngine;
+	private AdvancedViatraQueryEngine policyQueryEngine;
 	private SpecificationBuilder specBuilder;
 	private RuleConflictResolver ruleConflictResolver;
 	private Map<Rule, Asset.Factory> assetFactories;
@@ -150,7 +148,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	 * @param indexOptions 
 	 * @throws IncQueryException 
 	 */
-	public SecurityArbiter(Policy policy, Role roleRestriction, Set<? extends Notifier> goldModelRoots, BaseIndexOptions indexOptions) throws IncQueryException {
+	public SecurityArbiter(Policy policy, Role roleRestriction, Set<? extends Notifier> goldModelRoots, BaseIndexOptions indexOptions) throws ViatraQueryException {
 		super();
 		this.roleRestriction = roleRestriction;
 		this.goldModelRoots = goldModelRoots;
@@ -165,7 +163,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	 * Call if there is a new access control policy to parse. 
 	 * @param policyResource the new policy describing the security rules to be applied
 	 */
-	public void reinitializeWith(Resource policyResource) throws IncQueryException {
+	public void reinitializeWith(Resource policyResource) throws ViatraQueryException {
 		reinitializeWith(extractPolicyElement(policyResource));
 	}
 	
@@ -173,7 +171,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	 * Call if there is a new access control policy to parse. 
 	 * @param policy the new policy describing the security rules to be applied
 	 */
-	public void reinitializeWith(Policy policy) throws IncQueryException {
+	public void reinitializeWith(Policy policy) throws ViatraQueryException {
 		this.policy = policy;
 		
 		// clear up internal data structures
@@ -188,24 +186,18 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		assetFactories = new HashMap<>();
 		
 		List<Rule> rules = new ArrayList<>();
+		//Optimalize?
 		for (EObject ruleObject : policy.getRules()) {
-			if (ruleObject instanceof Rule) {
-				rules.add((Rule) ruleObject);
-			} else if (ruleObject instanceof RuleRef) {
-				final Rule rule = ((RuleRef) ruleObject).getRule();
-				if (rule != null) rules.add(rule);
-			}
+			rules.add((Rule) ruleObject);
 		}
 		
-		if (ConflictResolutionTypes.FIRST_APPLICABLE != policy.getType())
-			throw new UnsupportedOperationException(
-					"Unsupported conflict resolution: " + policy.getType());
+		// TODO: TIMI - itt lesz majd az új alg
 		this.ruleConflictResolver = new FirstApplicableResolution(rules);
 
 		if (policyQueryEngine != null) 
 			policyQueryEngine.wipe();
 		else 
-			policyQueryEngine = AdvancedIncQueryEngine.createUnmanagedEngine(
+			policyQueryEngine = AdvancedViatraQueryEngine.createUnmanagedEngine(
 					new EMFScope(this.goldModelRoots, this.indexOptions));
 		this.specBuilder = new SpecificationBuilder();
 		
@@ -213,36 +205,36 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		for (Rule rule : rules) {
 			preprocessRules(rule, ruleQueries);
 		}
-		new GenericPatternGroup(ruleQueries).prepare(policyQueryEngine);
+		new GenericQueryGroup(ruleQueries).prepare(policyQueryEngine);
 		for (final Rule rule : rules) {
 			initRuleListeners(rule);
 		}
 	}
 
 
-	private void preprocessRules(Rule rule, Set<IQuerySpecification<?>> ruleQueryAccumulator) throws IncQueryException {
+	private void preprocessRules(Rule rule, Set<IQuerySpecification<?>> ruleQueryAccumulator) throws ViatraQueryException {
 		for (Binding binding : rule.getBindings()) {
-			if (!(binding.getValue() instanceof ValueBind))
+			if (!(binding.getBind() instanceof String))
 				throw new UnsupportedOperationException(
-						"Unsupported binding " + binding.getValue() + " in rule " + rule.getName());
+						"Unsupported binding " + binding.getBind() + " in rule " + rule.getName());
 		}
 		
 		final Pattern pattern = rule.getPattern();
 		if (pattern == null || pattern.eIsProxy())
 			throw new IllegalArgumentException("Cannot resolve query of rule: " + rule.getName());
 		
-		IQuerySpecification<? extends IncQueryMatcher<? extends IPatternMatch>> query = 
+		IQuerySpecification<? extends ViatraQueryMatcher<? extends IPatternMatch>> query = 
 				specBuilder.getOrCreateSpecification(pattern);
 		ruleQueryAccumulator.add(query);
 		
 		assetFactories.put(rule, Asset.factoryFrom(query));
 	}
 
-	private void initRuleListeners(final Rule rule) throws IncQueryException {
-		IQuerySpecification<? extends IncQueryMatcher<? extends IPatternMatch>> query = 
+	private void initRuleListeners(final Rule rule) throws ViatraQueryException {
+		IQuerySpecification<? extends ViatraQueryMatcher<? extends IPatternMatch>> query = 
 				specBuilder.getOrCreateSpecification(rule.getPattern());
 
-		final IncQueryMatcher<? extends IPatternMatch> matcher = policyQueryEngine.getMatcher(query);
+		final ViatraQueryMatcher<? extends IPatternMatch> matcher = policyQueryEngine.getMatcher(query);
 		
 		policyQueryEngine.addMatchUpdateListener(matcher, new IMatchUpdateListener<IPatternMatch>() {
 			@Override
@@ -306,10 +298,10 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	private void reactToMatchUpdate(IPatternMatch match, Rule rule, boolean isAddition) {
 		// filter according to binding, only ValueBindings are supported now, only as string
 		for (Binding binding : rule.getBindings()) {
-			ValueBind boundValue = (ValueBind) binding.getValue();
-			Object matchedValue = match.get(binding.getParam().getName());
+			String boundValue = binding.getBind();
+			Object matchedValue = match.get(binding.getVariable().getName());
 			
-			if (! matchedValue.toString().equals(boundValue.getValue()))
+			if (! matchedValue.toString().equals(boundValue))
 				return;
 		}
 		
@@ -380,7 +372,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 	/**
 	 * Convenience method: finds the given user in the access control model.
 	 */
-	public static User getUserByName(AccessControlModel accessControlModel, String userName) {
+	public static User getUserByName(Model accessControlModel, String userName) {
 		for (Role role : accessControlModel.getRoles()) {
 			if (role instanceof User && userName.equals(role.getName()))
 				return (User) role;
@@ -389,7 +381,7 @@ public class SecurityArbiter { /*received through {@link #updateJudgement(Operat
 		return null;
 	}
 
-	public AdvancedIncQueryEngine getPolicyQueryEngine() {
+	public AdvancedViatraQueryEngine getPolicyQueryEngine() {
 		return policyQueryEngine;
 	} 
 

@@ -13,7 +13,6 @@ package org.mondo.collaboration.security.lens.bx.offline;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -21,10 +20,12 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.incquery.runtime.base.api.BaseIndexOptions;
-import org.eclipse.incquery.runtime.emf.EMFScope;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
+import org.eclipse.viatra.query.runtime.base.api.BaseIndexOptions;
+import org.eclipse.viatra.query.runtime.emf.EMFScope;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.mondo.collaboration.policy.rules.Policy;
+import org.mondo.collaboration.policy.rules.User;
 import org.mondo.collaboration.security.lens.arbiter.LockArbiter;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
@@ -36,8 +37,6 @@ import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondenc
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 import org.mondo.collaboration.security.lens.util.LiveTable;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
 import com.google.common.collect.ImmutableMap;
@@ -82,7 +81,7 @@ public class OfflineCollaborationSession {
 			Policy policy, 
 			User user,
 			PropertyBasedLockingModel lockingModel,
-			DataTypeObfuscator<String> stringObfuscator) throws IncQueryException {
+			DataTypeObfuscator<String> stringObfuscator) throws ViatraQueryException {
 		super();
 		this.goldConfinementURI = goldConfinementURI;
 		this.goldResourceSet = goldResourceSet;
@@ -98,7 +97,7 @@ public class OfflineCollaborationSession {
 	}
 
 
-	public RelationalLensXform setupLens() throws IncQueryException {
+	public RelationalLensXform setupLens() throws ViatraQueryException {
 		
         SecurityArbiter arbiter = new SecurityArbiter(
 				policy, 

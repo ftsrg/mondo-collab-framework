@@ -11,51 +11,42 @@
 
 package org.mondo.collaboration.security.lens.util
 
-import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
-import com.google.common.collect.Lists
-import com.google.common.collect.Maps
 import com.google.common.collect.Sets
-import java.util.Arrays
 import java.util.Collections
-import java.util.List
 import java.util.Map
 import java.util.Set
-import org.eclipse.incquery.runtime.api.IPatternMatch
-import org.eclipse.incquery.runtime.api.IQuerySpecification
-import org.eclipse.incquery.runtime.evm.specific.Jobs
-import org.eclipse.incquery.runtime.evm.specific.Lifecycles
-import org.eclipse.incquery.runtime.evm.specific.Rules
-import org.eclipse.incquery.runtime.evm.specific.event.IncQueryActivationStateEnum
-import org.eclipse.incquery.runtime.matchers.context.IInputKey
-import org.eclipse.incquery.runtime.matchers.psystem.PBody
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.ExportedParameter
-import org.eclipse.incquery.runtime.matchers.psystem.basicdeferred.NegativePatternCall
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.PositivePatternCall
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint
-import org.eclipse.incquery.runtime.matchers.psystem.queries.PParameter
-import org.eclipse.incquery.runtime.matchers.psystem.queries.PQuery
-import org.eclipse.incquery.runtime.matchers.psystem.queries.QueryInitializationException
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
+import org.eclipse.viatra.query.runtime.api.IPatternMatch
+import org.eclipse.viatra.query.runtime.api.IQuerySpecification
+import org.eclipse.viatra.query.runtime.api.ViatraQueryMatcher
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey
+import org.eclipse.viatra.query.runtime.matchers.psystem.PBody
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExportedParameter
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.NegativePatternCall
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.PositivePatternCall
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameter
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PQuery
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.QueryInitializationException
+import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple
+import org.eclipse.viatra.transformation.evm.api.Activation
+import org.eclipse.viatra.transformation.evm.api.Context
+import org.eclipse.viatra.transformation.evm.api.Job
+import org.eclipse.viatra.transformation.evm.specific.Lifecycles
+import org.eclipse.viatra.transformation.evm.specific.Rules
+import org.eclipse.viatra.transformation.evm.specific.crud.CRUDActivationStateEnum
+import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
+import org.mondo.collaboration.security.lens.bx.AbortReason.RuntimeExceptionAbort
+import org.mondo.collaboration.security.lens.bx.LensTransformationExecution
 import org.mondo.collaboration.security.lens.context.BaseMondoLensPQuery
 import org.mondo.collaboration.security.lens.context.GenericMondoLensQuerySpecification
 import org.mondo.collaboration.security.lens.relational.ActionStep
 import org.mondo.collaboration.security.lens.relational.ManipulableTemplate
 import org.mondo.collaboration.security.lens.relational.QueryTemplate
-import org.mondo.collaboration.security.lens.relational.RelationalTransformationSpecification
 import org.mondo.collaboration.security.lens.relational.RuleExecutionEnvironment
 import org.mondo.collaboration.security.lens.relational.RuleOperationalization
-import org.apache.log4j.Logger
-import org.eclipse.incquery.runtime.evm.api.Job
-import org.eclipse.incquery.runtime.evm.api.Activation
-import org.eclipse.incquery.runtime.evm.api.Context
-import org.eclipse.incquery.runtime.api.IncQueryMatcher
-import org.mondo.collaboration.security.lens.bx.LensTransformationExecution
-import org.mondo.collaboration.security.lens.bx.AbortReason.RuntimeExceptionAbort
-import org.eclipse.xtext.xbase.lib.Functions.Function1
 
 /**
  * Utilities for constructing precondition queries and actions during the operationalization of relational transformation specifications. 
@@ -68,13 +59,13 @@ public class RuleGeneratorExtensions {
 	// rules
 	public def <Match extends IPatternMatch> createEVMRule(
 		RuleOperationalization ruleOp, 
-		IQuerySpecification<? extends IncQueryMatcher<Match>> query, 
+		IQuerySpecification<? extends ViatraQueryMatcher<Match>> query, 
 		int priority, 
 		Iterable<ActionStep>... actions
 	) {
 		val transformation = ruleOp.transformation
 		val allActions = Iterables::concat(actions)
-		val Job<Match> job = new Job<Match>(IncQueryActivationStateEnum::APPEARED) {
+		val Job<Match> job = new Job<Match>(CRUDActivationStateEnum::CREATED) {
 			
 			override protected execute(Activation<? extends Match> activation, Context context) {
 				val match = activation.atom
@@ -144,7 +135,7 @@ public class RuleGeneratorExtensions {
 	public def singleBody(PQuery query, Iterable<? extends Procedure1<PBody>> constrainers) {
 		val body = new PBody(query)
 		
-		body.exportedParameters = query.parameters.map[ param | 
+		body.symbolicParameters = query.parameters.map[ param | 
 			new ExportedParameter(body, body.getOrCreateVariableByName(param.name), param.name)
 		]
 		

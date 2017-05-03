@@ -11,7 +11,7 @@
 
 package org.mondo.collaboration.security.lens.context.keys;
 
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
 
 /**
  * Common base interface for MONDO collaboration lens input keys.

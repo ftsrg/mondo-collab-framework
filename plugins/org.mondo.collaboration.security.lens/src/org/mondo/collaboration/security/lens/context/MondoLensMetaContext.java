@@ -14,7 +14,7 @@ package org.mondo.collaboration.security.lens.context;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
 import org.mondo.collaboration.security.lens.context.keys.CollabLensModelInputKey;
 import org.mondo.collaboration.security.lens.context.keys.CorrespondenceKey;
 import org.mondo.collaboration.security.lens.emf.ModelFactInputKey;

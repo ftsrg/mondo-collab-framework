@@ -11,12 +11,12 @@
 
 package org.mondo.collaboration.security.lens.context;
 
-import org.eclipse.incquery.runtime.api.GenericPatternMatcher;
-import org.eclipse.incquery.runtime.api.GenericQuerySpecification;
-import org.eclipse.incquery.runtime.api.IncQueryEngine;
-import org.eclipse.incquery.runtime.api.scope.IncQueryScope;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
-import org.eclipse.incquery.runtime.matchers.psystem.queries.PQuery;
+import org.eclipse.viatra.query.runtime.api.GenericPatternMatcher;
+import org.eclipse.viatra.query.runtime.api.GenericQuerySpecification;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine;
+import org.eclipse.viatra.query.runtime.api.scope.QueryScope;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PQuery;
 
 /**
  * Generic query specification for mondo lens patterns.
@@ -33,12 +33,12 @@ public class GenericMondoLensQuerySpecification extends GenericQuerySpecificatio
 	}
 
 	@Override
-	public Class<? extends IncQueryScope> getPreferredScopeClass() {
+	public Class<? extends QueryScope> getPreferredScopeClass() {
 		return MondoLensScope.class;
 	}
 
 	@Override
-	protected GenericPatternMatcher instantiate(IncQueryEngine engine) throws IncQueryException {
+	protected GenericPatternMatcher instantiate(ViatraQueryEngine engine) throws ViatraQueryException {
 		return defaultInstantiate(engine);
 	}
 

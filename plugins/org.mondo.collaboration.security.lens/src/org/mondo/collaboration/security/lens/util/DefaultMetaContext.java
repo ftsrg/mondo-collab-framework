@@ -16,9 +16,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
-import org.eclipse.incquery.runtime.matchers.context.IQueryMetaContext;
-import org.eclipse.incquery.runtime.matchers.context.InputKeyImplication;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.context.IQueryMetaContext;
+import org.eclipse.viatra.query.runtime.matchers.context.InputKeyImplication;
 
 /**
  * Gives the default answers for all input keys.
@@ -45,6 +45,11 @@ public class DefaultMetaContext implements IQueryMetaContext {
 	@Override
 	public Map<Set<Integer>, Set<Integer>> getFunctionalDependencies(IInputKey key) {
 		return Collections.emptyMap();
+	}
+
+	@Override
+	public boolean canLeadOutOfScope(IInputKey key) {
+		return false;
 	}
 
 }

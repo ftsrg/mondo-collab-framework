@@ -13,9 +13,9 @@ package org.mondo.collaboration.security.lens.context.manipulables;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple;
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
 import org.mondo.collaboration.security.lens.emf.ModelFactInputKey;
 import org.mondo.collaboration.security.lens.emf.ModelIndexer;
 

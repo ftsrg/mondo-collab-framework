@@ -14,7 +14,7 @@ package org.mondo.collaboration.security.lens.util;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
 
 /**
  * Represents a read-only live view of a dynamic set of {@link Tuple}s. 

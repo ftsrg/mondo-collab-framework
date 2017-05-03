@@ -14,10 +14,10 @@ package org.mondo.collaboration.security.lens.context;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
 
-import org.eclipse.incquery.runtime.api.scope.IBaseIndex;
-import org.eclipse.incquery.runtime.api.scope.IIndexingErrorListener;
-import org.eclipse.incquery.runtime.api.scope.IInstanceObserver;
-import org.eclipse.incquery.runtime.api.scope.IncQueryBaseIndexChangeListener;
+import org.eclipse.viatra.query.runtime.api.scope.IBaseIndex;
+import org.eclipse.viatra.query.runtime.api.scope.IIndexingErrorListener;
+import org.eclipse.viatra.query.runtime.api.scope.IInstanceObserver;
+import org.eclipse.viatra.query.runtime.api.scope.ViatraBaseIndexChangeListener;
 
 /**
  * @author Bergmann Gabor
@@ -41,12 +41,12 @@ public class MondoLensBaseIndex implements IBaseIndex {
 	}
 
 	@Override
-	public void addBaseIndexChangeListener(IncQueryBaseIndexChangeListener listener) {
+	public void addBaseIndexChangeListener(ViatraBaseIndexChangeListener listener) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void removeBaseIndexChangeListener(IncQueryBaseIndexChangeListener listener) {
+	public void removeBaseIndexChangeListener(ViatraBaseIndexChangeListener listener) {
 		throw new UnsupportedOperationException();
 	}
 

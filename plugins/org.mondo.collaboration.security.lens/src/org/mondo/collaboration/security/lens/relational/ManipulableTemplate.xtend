@@ -11,11 +11,11 @@
 
 package org.mondo.collaboration.security.lens.relational
 import org.eclipse.xtend.lib.annotations.Data
-import org.eclipse.incquery.runtime.matchers.context.IInputKey
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey
 import java.util.List
-import org.eclipse.incquery.runtime.matchers.psystem.basicenumerables.TypeConstraint
-import org.eclipse.incquery.runtime.matchers.tuple.FlatTuple
-import org.eclipse.incquery.runtime.matchers.psystem.PBody
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.TypeConstraint
+import org.eclipse.viatra.query.runtime.matchers.tuple.FlatTuple
+import org.eclipse.viatra.query.runtime.matchers.psystem.PBody
 
 /**
  * A tuple of variables associated with a manipulable base relation;

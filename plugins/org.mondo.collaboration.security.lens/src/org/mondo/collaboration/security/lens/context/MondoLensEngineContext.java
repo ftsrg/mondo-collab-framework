@@ -12,12 +12,12 @@
 package org.mondo.collaboration.security.lens.context;
 
 import org.apache.log4j.Logger;
-import org.eclipse.incquery.runtime.api.IncQueryEngine;
-import org.eclipse.incquery.runtime.api.scope.IBaseIndex;
-import org.eclipse.incquery.runtime.api.scope.IEngineContext;
-import org.eclipse.incquery.runtime.api.scope.IIndexingErrorListener;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
-import org.eclipse.incquery.runtime.matchers.context.IQueryRuntimeContext;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine;
+import org.eclipse.viatra.query.runtime.api.scope.IBaseIndex;
+import org.eclipse.viatra.query.runtime.api.scope.IEngineContext;
+import org.eclipse.viatra.query.runtime.api.scope.IIndexingErrorListener;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.eclipse.viatra.query.runtime.matchers.context.IQueryRuntimeContext;
 
 /**
  * @author Bergmann Gabor
@@ -27,14 +27,14 @@ public class MondoLensEngineContext implements IEngineContext {
 
 
 	private MondoLensScope scope;
-	private IncQueryEngine engine;
+	private ViatraQueryEngine engine;
 	private IIndexingErrorListener errorListener;
 	private Logger logger;
 
 	private MondoLensRuntimeContext runtimeContext;
 	private MondoLensBaseIndex baseIndex;
 
-	public MondoLensEngineContext(MondoLensScope scope, IncQueryEngine engine,
+	public MondoLensEngineContext(MondoLensScope scope, ViatraQueryEngine engine,
 			IIndexingErrorListener errorListener, Logger logger) {
 				this.scope = scope;
 				this.engine = engine;
@@ -43,7 +43,7 @@ public class MondoLensEngineContext implements IEngineContext {
 	}
 
 	@Override
-	public IBaseIndex getBaseIndex() throws IncQueryException {
+	public IBaseIndex getBaseIndex() throws ViatraQueryException {
 		return getBaseIndexInternal();
 	}
 
@@ -53,15 +53,6 @@ public class MondoLensEngineContext implements IEngineContext {
 		}
 		return baseIndex;
 	}
-
-	@Override
-	public void initializeBackends(IQueryBackendInitializer initializer) throws IncQueryException {
-		initializer.initializeWith(getRuntimeContext());
-	}
-//	@Override
-//	public IQueryRuntimeContext getQueryRuntimeContext() throws IncQueryException {
-//		return getRuntimeContext();
-//	}
 
 	private IQueryRuntimeContext getRuntimeContext() {
 		if (runtimeContext == null) {
@@ -73,6 +64,11 @@ public class MondoLensEngineContext implements IEngineContext {
 	@Override
 	public void dispose() {
 
+	}
+
+	@Override
+	public IQueryRuntimeContext getQueryRuntimeContext() throws ViatraQueryException {
+		return getRuntimeContext();
 	}
 
 

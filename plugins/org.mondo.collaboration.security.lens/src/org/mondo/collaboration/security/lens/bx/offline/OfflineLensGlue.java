@@ -28,19 +28,19 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.incquery.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
+import org.eclipse.viatra.query.patternlanguage.emf.EMFPatternLanguageStandaloneSetup;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
+import org.mondo.collaboration.policy.RulesStandaloneSetup;
+import org.mondo.collaboration.policy.rules.Model;
+import org.mondo.collaboration.policy.rules.Policy;
+import org.mondo.collaboration.policy.rules.User;
 import org.mondo.collaboration.security.lens.arbiter.SecurityArbiter;
 import org.mondo.collaboration.security.lens.bx.AbortReason.DenialReason;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence;
 import org.mondo.collaboration.security.lens.correspondence.EObjectCorrespondence.UniqueIDSchemeFactory;
 import org.mondo.collaboration.security.lens.emf.EMFUtil;
 import org.mondo.collaboration.security.lens.util.uri.URIWorkspaceMappingsHelper;
-import org.mondo.collaboration.security.macl.xtext.AccessControlLanguageStandaloneSetup;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.AccessControlModel;
-import org.mondo.collaboration.security.macl.xtext.mondoAccessControlLanguage.Policy;
-import org.mondo.collaboration.security.macl.xtext.rule.mACLRule.User;
 import org.mondo.collaboration.security.mpbl.xtext.MondoPropertyBasedLockingStandaloneSetup;
 import org.mondo.collaboration.security.mpbl.xtext.mondoPropertyBasedLocking.PropertyBasedLockingModel;
 
@@ -113,11 +113,11 @@ public class OfflineLensGlue {
 
     static {
         EMFPatternLanguageStandaloneSetup.doSetup();
-        AccessControlLanguageStandaloneSetup.doSetup();
+        RulesStandaloneSetup.doSetup();
         MondoPropertyBasedLockingStandaloneSetup.doSetup();
     }
     
-    private OfflineLensGlue(String[] argArray, Logger logger) throws FileNotFoundException, IOException, IncQueryException, CoreException {
+    private OfflineLensGlue(String[] argArray, Logger logger) throws FileNotFoundException, IOException, ViatraQueryException, CoreException {
         this.logger = logger;        
         
         List<String> goldPaths          	=  getRequiredCLIOptionValues(argArray, GOLD_MODEL_ROOTS_PATH_OPTION,      		PATH_VALUE);
@@ -175,9 +175,9 @@ public class OfflineLensGlue {
         final EList<EObject> policyModelContents = policyResource.getContents();
         if (policyModelContents.isEmpty())
             throw new OfflineLensParametrizationException(String.format("Empty or non-existing MACL resource %s", policyResource.getURI()));
-        AccessControlModel accessControlModel;
+        Model accessControlModel;
         try {
-            accessControlModel = (AccessControlModel) policyModelContents.get(0);
+            accessControlModel = (Model) policyModelContents.get(0);
         } catch (ClassCastException ex) {
             throw new OfflineLensParametrizationException(String.format("Could not interpret as an access control model: MACL resource %s", policyResource.getURI()));
         }

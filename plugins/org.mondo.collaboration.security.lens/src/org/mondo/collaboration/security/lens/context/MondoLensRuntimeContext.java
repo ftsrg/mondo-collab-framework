@@ -16,8 +16,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
-import org.eclipse.incquery.runtime.matchers.tuple.Tuple;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.context.IndexingService;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
 import org.mondo.collaboration.security.lens.util.ILiveRelation;
 import org.mondo.collaboration.security.lens.util.LiveTableBasedRuntimeContext;
 
@@ -80,6 +81,27 @@ public class MondoLensRuntimeContext extends LiveTableBasedRuntimeContext {
 
 	public Set<IInputKey> getInputKeys() {
 		return this.aggregatedTables.keySet();
+	}
+
+	@Override
+	public boolean isIndexed(IInputKey key, IndexingService service) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void ensureIndexed(IInputKey key, IndexingService service) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void ensureWildcardIndexing(IndexingService service) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void executeAfterTraversal(Runnable runnable) throws InvocationTargetException {
+		// TODO Auto-generated method stub
 	}
 	
 }

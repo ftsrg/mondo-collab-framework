@@ -13,7 +13,7 @@ package org.mondo.collaboration.security.lens.context.manipulables;
 
 import java.util.Map;
 
-import org.eclipse.incquery.runtime.matchers.context.IInputKey;
+import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
 import org.mondo.collaboration.security.lens.util.IManipulableRelation;
 
 /**
