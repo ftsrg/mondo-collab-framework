@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -30,6 +29,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
 import org.mondo.collaboration.online.core.LensSessionManager;
 import org.mondo.collaboration.online.core.OnlineLeg;
 import org.mondo.collaboration.online.core.StorageAccess;
@@ -101,7 +101,7 @@ public class MONDOTextEditor extends EditorPart {
 				}
 			}
 			setDirty(false);
-		} catch (IOException | IncQueryException e) {
+		} catch (IOException | ViatraQueryException e) {
 			Logger.getLogger(getClass()).error(e.getMessage());
 		}
 	}

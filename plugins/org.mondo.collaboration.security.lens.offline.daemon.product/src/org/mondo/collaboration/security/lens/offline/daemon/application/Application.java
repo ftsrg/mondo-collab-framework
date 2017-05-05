@@ -1,5 +1,7 @@
 package org.mondo.collaboration.security.lens.offline.daemon.application;
 
+import javax.servlet.Servlet;
+
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.http.servlet.ExtendedHttpService;
@@ -19,7 +21,7 @@ public class Application implements IApplication {
 		
 		httpService.registerServlet(
 				"/thrift-local/lens-daemon", 
-				new OfflineLensDaemonServlet(), 
+				(Servlet) new OfflineLensDaemonServlet(), 
 				null, 
 				null);
 		httpService.registerFilter(
