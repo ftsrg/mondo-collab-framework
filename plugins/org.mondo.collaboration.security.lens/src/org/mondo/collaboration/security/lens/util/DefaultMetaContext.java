@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.viatra.query.runtime.matchers.context.AbstractQueryMetaContext;
 import org.eclipse.viatra.query.runtime.matchers.context.IInputKey;
 import org.eclipse.viatra.query.runtime.matchers.context.IQueryMetaContext;
 import org.eclipse.viatra.query.runtime.matchers.context.InputKeyImplication;
@@ -25,7 +26,7 @@ import org.eclipse.viatra.query.runtime.matchers.context.InputKeyImplication;
  * @author Bergmann Gabor
  *
  */
-public class DefaultMetaContext implements IQueryMetaContext {
+public class DefaultMetaContext extends AbstractQueryMetaContext {
 
 	@Override
 	public boolean isEnumerable(IInputKey key) {
