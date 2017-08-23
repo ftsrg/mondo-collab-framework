@@ -3,7 +3,6 @@ package org.mondo.collaboration.online.core;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +14,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.URI;
 import org.mondo.collaboration.online.core.StorageModel.NodeType;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
-import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -146,7 +144,7 @@ public class StorageAccessSvn extends StorageAccess {
 		internalLockFile(path, admin_username, admin_password, true);
 	}
 	private void internalLockFile(String path, String username, String password, boolean unlock) {
-		URI fullUri = URI.createURI(path);
+		URI fullUri = OSValidator.isWindows() ? URI.createFileURI(path) : URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = "";
 		if(fullUri.isFile())
@@ -168,7 +166,7 @@ public class StorageAccessSvn extends StorageAccess {
 	}
 
 	private String internalCheckoutFile(String path, boolean doCheckout) {
-		URI fullUri = URI.createURI(path);
+		URI fullUri = OSValidator.isWindows() ? URI.createFileURI(path) : URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(path, file, "");
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
@@ -243,7 +241,7 @@ public class StorageAccessSvn extends StorageAccess {
 
 	@Override
 	public ExecutionResponse commit(String path, String msg, String ownerUsername, String ownerPassword) {
-		URI fullUri = URI.createURI(path);
+		URI fullUri = OSValidator.isWindows() ? URI.createFileURI(path) : URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = "";
 		if(fullUri.isFile())
@@ -281,7 +279,7 @@ public class StorageAccessSvn extends StorageAccess {
 
 	@Override
 	public FileStatus checkFileStatus(String path) throws Exception {
-		URI fullUri = URI.createURI(path);
+		URI fullUri = OSValidator.isWindows() ? URI.createFileURI(path) : URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(path, file, "");
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);
@@ -290,8 +288,10 @@ public class StorageAccessSvn extends StorageAccess {
 			return FileStatus.Normal;
 		}
 
+		String executor = OSValidator.isWindows() ? "bash" : "/bin/sh";
+		
 		String[] cmd = {
-				"/bin/sh",
+				executor,
 				"-c",
 				String.format(SVN_STATUS_COMMAND, file, getUsername(), getPassword(), "| " + AWK_PRINT_COLUMN1)
 				};
@@ -306,7 +306,7 @@ public class StorageAccessSvn extends StorageAccess {
 
 	@Override
 	public ExecutionResponse revert(String path, String username, String password) {
-		URI fullUri = URI.createURI(path);
+		URI fullUri = OSValidator.isWindows() ? URI.createFileURI(path) : URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = replaceLast(path, file, "");
 		String temp = replaceFirst(folder, getRepository(), getTempFolder()).replace("/", File.separator);

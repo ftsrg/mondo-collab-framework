@@ -17,14 +17,12 @@ import java.util.UUID;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.viatra.modelobfuscator.api.DataTypeObfuscator;
 import org.eclipse.viatra.modelobfuscator.util.StringObfuscator;
-import org.mondo.collaboration.online.core.StorageAccess.ExecutionResponse;
+import org.eclipse.xtext.util.Strings;
 import org.mondo.collaboration.online.core.StorageModel.StorageModelNode;
 
 import com.google.common.collect.ImmutableList;
@@ -52,7 +50,7 @@ public abstract class StorageAccess {
 	protected String repository_structure;
 	protected String admin_username;
 	protected String admin_password;
-	
+
 	protected final StringObfuscator obfuscator;
 
 	private Logger logger = Logger.getLogger(StorageAccess.class);
@@ -63,70 +61,74 @@ public abstract class StorageAccess {
 	private Properties globalProperties;
 	protected Properties usersProperties;
 	private String workspace;
-	
-	public StorageAccess(String username, String password, String repository) throws FileNotFoundException, IOException {
+
+	public StorageAccess(String username, String password, String repository)
+			throws FileNotFoundException, IOException {
 		logger.setLevel(Level.ALL);
-		
+
 		this.username = username;
 		this.password = password;
 		this.repository = repository;
-		
+
 		obfuscator = new StringObfuscator(UUID.randomUUID().toString(), username);
 
 		String scriptsLocation = System.getProperty("mondo.scripts.folder");
-		if(scriptsLocation == null) {
+		if (scriptsLocation == null) {
 			logger.error("MONDO Scripts location is not set. Please set it in the server.ini file.");
 		}
-		if(!this.repository.endsWith("/")) {
+		if (!this.repository.endsWith("/")) {
 			this.repository += "/";
 		}
-		if(!this.repository.startsWith("http")) {
+		if (!this.repository.startsWith("http")) {
 			this.repository = "http://" + this.repository;
 		}
-		
-		ExecutionResponse response = internalExecuteProcess("./lookup-gold-repository.sh " + this.repository, new String[0], new File(scriptsLocation));
+
+		ExecutionResponse response = internalExecuteProcess("./lookup-gold-repository.sh " + this.repository,
+				new String[0], new File(scriptsLocation));
 		String responseString = response.getResponseList().get(0);
-		if(responseString.contains("Could not resolve location")) {
+		if (responseString.contains("Could not resolve location")) {
 			logger.error(responseString);
 		}
-		
+
 		Path globalConfigPath = Paths.get(scriptsLocation, "..", "config", "global-config.properties");
 		File globalConfigFile = globalConfigPath.toFile();
-		if(!globalConfigFile.exists()) {
+		if (!globalConfigFile.exists()) {
 			logger.error("Config file not exists for " + responseString);
-		}		
+		}
 		globalProperties = new Properties();
 		globalProperties.load(new FileInputStream(globalConfigFile));
 		admin_password = globalProperties.getProperty(ADMIN_PWD);
 		admin_username = globalProperties.getProperty(ADMIN_USER);
-		repository_structure = globalProperties.getProperty("URL").replace("'", "") + globalProperties.getProperty("SVN_URL_PATH");
-		
+		repository_structure = globalProperties.getProperty("URL").replace("'", "")
+				+ globalProperties.getProperty("SVN_URL_PATH");
+
 		Path configPath = Paths.get(scriptsLocation, "..", "config", responseString, "config.properties");
 		File configFile = configPath.toFile();
-		if(!configFile.exists()) {
+		if (!configFile.exists()) {
 			logger.error("Config file not exists for " + responseString);
-		}		
+		}
 		configProperties = new Properties();
 		configProperties.load(new FileInputStream(configFile));
-		
-		Path userConfigPath = Paths.get(scriptsLocation, "..", "config", responseString, "gen", "user_front.properties");
+
+		Path userConfigPath = Paths.get(scriptsLocation, "..", "config", responseString, "gen",
+				"user_front.properties");
 		File userConfigFile = userConfigPath.toFile();
-		if(!userConfigFile.exists()) {
+		if (!userConfigFile.exists()) {
 			logger.error("Config file not exists for " + responseString);
-		}		
+		}
 		usersProperties = new Properties();
 		usersProperties.load(new FileInputStream(userConfigFile));
-		
+
 		Path workspacePath = Paths.get(scriptsLocation, "..", "workspace", "online");
 		File workspaceFile = workspacePath.toFile();
-		if(!workspaceFile.exists()) {
+		if (!workspaceFile.exists()) {
 			workspaceFile.mkdirs();
 		}
 		workspace = workspacePath.toString();
-		if(!workspace.endsWith(File.separator)) {
+		if (!workspace.endsWith(File.separator)) {
 			workspace += File.separator;
 		}
-		
+
 		logger.info("Storage access is created for " + username);
 	}
 
@@ -146,7 +148,7 @@ public abstract class StorageAccess {
 	 * @throws Exception
 	 */
 	public StorageModel explore() {
-		if(this.model == null) {
+		if (this.model == null) {
 			this.model = new StorageModel(this);
 		}
 		return this.model;
@@ -157,16 +159,17 @@ public abstract class StorageAccess {
 	 * 
 	 * @param path
 	 *            in the repository
-	 * @param gold 
-	 * 			  model file location in the repository
+	 * @param gold
+	 *            model file location in the repository
 	 * @throws Exception
 	 */
-	public abstract Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent, String gold);
+	public abstract Collection<StorageModelNode> explore(StorageModel model, String path, StorageModelNode parent,
+			String gold);
 
 	public abstract URI startSession(String path) throws Exception;
 
 	public abstract FileStatus checkFileStatus(String path) throws Exception;
-	
+
 	public List<Resource> loadPolicyAndLockModels() {
 		ResourceSetImpl resourceSet = new ResourceSetImpl();
 		resourceSet.getResource(getInternalEiqFile(), true);
@@ -179,12 +182,13 @@ public abstract class StorageAccess {
 	}
 
 	protected ExecutionResponse internalExecuteProcess(String cmd) throws Exception {
-		return internalExecuteProcess(new String[] {cmd}, new String[] {}, null);
+		return internalExecuteProcess(new String[] { cmd }, new String[] {}, null);
 	}
 
 	protected ExecutionResponse internalExecuteProcess(String cmd, String[] args, File ctx) {
-		return internalExecuteProcess(new String[] {cmd}, args, ctx);
+		return internalExecuteProcess(new String[] { cmd }, args, ctx);
 	}
+
 	protected ExecutionResponse internalExecuteProcess(String[] cmd, String[] args, File ctx) {
 		logger.info("Process executing:");
 		for (String command : cmd) {
@@ -196,7 +200,8 @@ public abstract class StorageAccess {
 		List<String> errorList = new ArrayList<String>();
 		try {
 			String line;
-			Process p = cmd.length == 1 ? Runtime.getRuntime().exec(cmd[0], args, ctx) : Runtime.getRuntime().exec(cmd, args, ctx);
+			Process p = createProcess(cmd, args, ctx);
+			p.waitFor();
 			{
 				BufferedReader bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 				while ((line = bre.readLine()) != null) {
@@ -213,13 +218,28 @@ public abstract class StorageAccess {
 				}
 				bri.close();
 			}
-			p.waitFor();
 			logger.info("Process finished");
 		} catch (Exception e) {
 			logger.error("Process failed", e);
 			e.printStackTrace();
 		}
 		return new ExecutionResponse(errorList, responseList);
+	}
+
+	private Process createProcess(String[] cmd, String[] args, File ctx) throws IOException {
+		
+		if(OSValidator.isWindows()) {
+			if(cmd[0].contains(".sh")) {
+				String bash = "bash";
+				String command = "\""+Strings.concat(" ", Lists.newArrayList(cmd))+"\"";
+				ProcessBuilder pb =  new ProcessBuilder(bash, "-c", command);
+				pb.directory(ctx);
+				return pb.start(); 
+			}
+		}
+		Process p = cmd.length == 1 ? Runtime.getRuntime().exec(cmd[0], args, ctx)
+				: Runtime.getRuntime().exec(cmd, args, ctx);
+		return p;
 	}
 
 	/**
@@ -276,7 +296,7 @@ public abstract class StorageAccess {
 	 */
 	public String getEiqFile() {
 		return repository + configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_QUERIES_FROM_REPOSITORY_ROOT)
-				.replace("$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT, 
+				.replace("$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT,
 						configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT));
 	}
 
@@ -286,20 +306,20 @@ public abstract class StorageAccess {
 	 * @return the MACL file location to be check out
 	 */
 	public String getMaclFile() {
-		return repository + configProperties.getProperty(PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT)
-				.replace("$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT, 
-						configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT));
-		}
-	
+		return repository + configProperties.getProperty(PATH_TO_ACCESS_CONTROL_RULES_FROM_REPOSITORY_ROOT).replace(
+				"$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT,
+				configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT));
+	}
+
 	/**
 	 * Returns the MPBL file location to be check out
 	 * 
 	 * @return the MPBL file location to be check out
 	 */
 	public String getMpblFile() {
-		return repository + configProperties.getProperty(PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT)
-				.replace("$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT, 
-						configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT));
+		return repository + configProperties.getProperty(PATH_TO_LOCK_RULES_FROM_REPOSITORY_ROOT).replace(
+				"$" + PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT,
+				configProperties.getProperty(PATH_TO_ACCESS_CONTROL_AND_LOCK_PLUGIN_FROM_REPOSITORY_ROOT));
 	}
 
 	/**
@@ -315,7 +335,7 @@ public abstract class StorageAccess {
 	 * @return the path of Macl file on the file system.
 	 */
 	protected abstract URI getInternalMaclFile();
-	
+
 	/**
 	 * Returns the path of MPBL file on the file system.
 	 * 
@@ -331,34 +351,40 @@ public abstract class StorageAccess {
 	public DataTypeObfuscator<String> getObfuscator() {
 		return obfuscator;
 	}
-	
+
 	/**
 	 * Finishes the session.
 	 */
 	public abstract void finishSession(URI goldConfimentUri, String ownerUsername, String ownerPassword);
-	
+
 	/**
 	 * Commits the changes made to the model.
-	 * @param path to the model
+	 * 
+	 * @param path
+	 *            to the model
 	 */
 	public abstract ExecutionResponse commit(String path, String message, OnlineLeg leg);
-	
+
 	/**
 	 * Commits the changes made to the model.
-	 * @param path to the model
+	 * 
+	 * @param path
+	 *            to the model
 	 */
 	public abstract ExecutionResponse commit(String path, String message, String username, String password);
-	
+
 	/**
 	 * Commits the changes made to the model.
-	 * @param path to the model
+	 * 
+	 * @param path
+	 *            to the model
 	 */
 	public abstract ExecutionResponse revert(String path, String username, String password);
-	
+
 	public static enum FileStatus {
 		Modified, Normal
 	}
-	
+
 	/**
 	 * This class represents the response of an executed command.
 	 * 
@@ -368,26 +394,25 @@ public abstract class StorageAccess {
 	public static class ExecutionResponse {
 		List<String> errorList;
 		List<String> responseList;
-		
+
 		public ExecutionResponse(List<String> errorList, List<String> responseList) {
 			super();
 			this.errorList = errorList;
 			this.responseList = responseList;
 		}
-		
+
 		public List<String> getErrorList() {
 			return ImmutableList.copyOf(errorList);
 		}
-		
+
 		public List<String> getResponseList() {
 			return ImmutableList.copyOf(responseList);
 		}
-		
+
 		public boolean hasError() {
 			return !errorList.isEmpty();
 		}
-		
+
 	}
 
-	
 }
