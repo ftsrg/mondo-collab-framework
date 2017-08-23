@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
@@ -100,6 +99,11 @@ public class ModelExplorer extends ViewPart {
 		loginForm = createLoginForm(container);
 		loginForm.setVisible(true);
 
+		if (System.getProperties().containsKey("mondo.repository.gold")
+				&& !System.getProperty("mondo.repository.gold").isEmpty()) {
+			repositoryField.setText(System.getProperty("mondo.repository.gold"));
+		}
+
 		if (retrieveHttpSession()) {
 			try {
 				processLogin(usernameField.getText(), passwordField.getText(), repositoryField.getText(), true);
@@ -111,8 +115,7 @@ public class ModelExplorer extends ViewPart {
 			layout.topControl = loginForm;
 		}
 
-
-		if(switchViews) {
+		if (switchViews) {
 			switchViews = false;
 			switchViews(access.explore());
 		}
@@ -205,7 +208,6 @@ public class ModelExplorer extends ViewPart {
 		repositoryLabel.setText("Gold Repository: "); //$NON-NLS-1$
 		repositoryField = new Text(loginPanel, SWT.SINGLE | SWT.BORDER);
 
-
 		final Label usernameLabel = new Label(loginPanel, SWT.RIGHT);
 		usernameLabel.setText("Username: "); //$NON-NLS-1$
 		usernameField = new Text(loginPanel, SWT.SINGLE | SWT.BORDER);
@@ -267,7 +269,7 @@ public class ModelExplorer extends ViewPart {
 			internalStoreHttpSession(username, password, repository);
 
 			StorageModel storageModel = access.explore();
-			if(treeViewer != null) {
+			if (treeViewer != null) {
 				switchViews(storageModel);
 			} else {
 				switchViews = true;
@@ -304,7 +306,7 @@ public class ModelExplorer extends ViewPart {
 		if (username != null && password != null) {
 			usernameField.setText((String) username);
 			passwordField.setText((String) password);
-			repositoryField.setText((String)repository);
+			repositoryField.setText((String) repository);
 			return true;
 		}
 		return false;
@@ -335,9 +337,9 @@ public class ModelExplorer extends ViewPart {
 		try {
 			uri = access.startSession(path);
 
-			if(!LensSessionManager.getUriSet().contains(uri)) {
+			if (!LensSessionManager.getUriSet().contains(uri)) {
 				if (access.checkFileStatus(path) == FileStatus.Modified) {
-					handleModifiedFile(path, workbenchWindow.getShell());					
+					handleModifiedFile(path, workbenchWindow.getShell());
 				}
 			}
 		} catch (Exception e) {
@@ -371,20 +373,20 @@ public class ModelExplorer extends ViewPart {
 				MessageDialog.WARNING, new String[] { "Commit", "Discard", "Open" }, 0);
 
 		int result = dialog.open();
-		if(result == 0) {
+		if (result == 0) {
 			CommitMessageDialog commitMessageDialog = new CommitMessageDialog(shell);
 			int resultCommitMessage = commitMessageDialog.open();
-			if(resultCommitMessage == MessageDialog.OK) {
+			if (resultCommitMessage == MessageDialog.OK) {
 				String message = commitMessageDialog.getCommitMessage();
 				ExecutionResponse response = access.commit(path, message, access.getUsername(), access.getPassword());
-				if(!response.getErrorList().isEmpty()) {
+				if (!response.getErrorList().isEmpty()) {
 					access.revert(path, access.getUsername(), access.getPassword());
 					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
-					messageBox.setMessage("An error occurred during commit (maybe conlifts), thus the model is reverted.");
+					messageBox.setMessage(
+							"An error occurred during commit (maybe conlifts), thus the model is reverted.");
 					messageBox.open();
 				}
-			}
-			else {
+			} else {
 				return false;
 			}
 		} else if (result == 1) {
@@ -400,7 +402,8 @@ public class ModelExplorer extends ViewPart {
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 
-		if (!usernameField.getText().trim().isEmpty() && !passwordField.getText().trim().isEmpty() && !repositoryField.getText().trim().isEmpty()) {
+		if (!usernameField.getText().trim().isEmpty() && !passwordField.getText().trim().isEmpty()
+				&& !repositoryField.getText().trim().isEmpty()) {
 			memento.putString(USERNAME, usernameField.getText());
 			memento.putString(PASSWORD, passwordField.getText());
 			memento.putString(REPOSITORY, repositoryField.getText());
@@ -414,12 +417,14 @@ public class ModelExplorer extends ViewPart {
 			return;
 		if (memento.getString(USERNAME) != null && memento.getString(PASSWORD) != null) {
 			try {
-				RWT.getUISession().getHttpSession().setAttribute(STORAGEACCESS, StorageAccessFactory
-						.createStorageAccess(memento.getString(USERNAME), memento.getString(PASSWORD), memento.getString(REPOSITORY)));
+				RWT.getUISession().getHttpSession().setAttribute(STORAGEACCESS,
+						StorageAccessFactory.createStorageAccess(memento.getString(USERNAME),
+								memento.getString(PASSWORD), memento.getString(REPOSITORY)));
 				RWT.getUISession().getHttpSession().setAttribute(USERNAME, memento.getString(USERNAME));
 				RWT.getUISession().getHttpSession().setAttribute(PASSWORD, memento.getString(PASSWORD));
 				RWT.getUISession().getHttpSession().setAttribute(REPOSITORY, memento.getString(REPOSITORY));
-				processLogin(memento.getString(USERNAME), memento.getString(PASSWORD), memento.getString(REPOSITORY), true);
+				processLogin(memento.getString(USERNAME), memento.getString(PASSWORD), memento.getString(REPOSITORY),
+						true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -429,31 +434,31 @@ public class ModelExplorer extends ViewPart {
 	public static StorageAccess getCurrentStorageAccess() {
 		return (StorageAccess) RWT.getUISession().getHttpSession().getAttribute(STORAGEACCESS);
 	}
-	
+
 	public static void logout() throws PartInitException {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchPage activePage = workbench.getActiveWorkbenchWindow().getActivePage();
 		IViewPart modelExplorer = activePage.findView(ModelExplorer.ID);
-		if(modelExplorer == null) {
+		if (modelExplorer == null) {
 			modelExplorer = activePage.showView(ModelExplorer.ID);
 		}
-		if(modelExplorer != null) {
+		if (modelExplorer != null) {
 			((ModelExplorer) modelExplorer).logoutInternal();
 		}
 	}
-	
+
 	private void logoutInternal() {
 		StorageAccess storageAccess = getCurrentStorageAccess();
-		
+
 		RWT.getUISession().getHttpSession().removeAttribute(USERNAME);
 		RWT.getUISession().getHttpSession().removeAttribute(PASSWORD);
 		RWT.getUISession().getHttpSession().removeAttribute(REPOSITORY);
 		RWT.getUISession().getHttpSession().removeAttribute(STORAGEACCESS);
-		
+
 		modelExplorer.setVisible(false);
 		loginForm.setVisible(true);
 		layout.topControl = loginForm;
-		
+
 		UINotifierManager.notifySuccess(UISessionManager.EVENT_USER_REMOVED, storageAccess.getUsername());
 	}
 }

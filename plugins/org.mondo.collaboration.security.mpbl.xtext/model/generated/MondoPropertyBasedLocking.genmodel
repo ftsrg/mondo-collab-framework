@@ -5,7 +5,7 @@
     modelPluginID="org.mondo.collaboration.security.mpbl.xtext" forceOverwrite="true"
     modelName="MondoPropertyBasedLocking" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     complianceLevel="6.0" copyrightFields="false" editPluginID="org.mondo.collaboration.security.mpbl.xtext.edit"
-    editorPluginID="org.mondo.collaboration.security.mpbl.xtext.editor" runtimeVersion="2.12"
+    editorPluginID="org.mondo.collaboration.security.mpbl.xtext.editor" runtimeVersion="2.11"
     usedGenPackages="platform:/resource/org.eclipse.incquery.patternlanguage/model/generated/PatternLanguage.genmodel#//patternLanguage">
   <genPackages prefix="MondoPropertyBasedLocking" basePackage="org.mondo.collaboration.security.mpbl.xtext"
       disposableProviderFactory="true" fileExtensions="mpbl" ecorePackage="MondoPropertyBasedLocking.ecore#/">

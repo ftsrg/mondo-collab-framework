@@ -38,6 +38,8 @@ public class LensSessionManager {
 	private static volatile Map<HttpSession, String> mapping = Maps.newHashMap();
 	private static volatile Set<URI> uriSet = Sets.newHashSet();
 
+	public static volatile boolean LOADING = false;
+
 	/**
 	 * When an user is registered to a new {@link OnlineLeg}.
 	 */
