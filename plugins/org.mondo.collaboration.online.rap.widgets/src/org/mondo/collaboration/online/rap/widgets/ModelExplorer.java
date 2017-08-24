@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
@@ -194,6 +195,8 @@ public class ModelExplorer extends ViewPart {
 			}
 		});
 
+		
+		
 		return explorer;
 	}
 
@@ -231,7 +234,6 @@ public class ModelExplorer extends ViewPart {
 		login.addListener(SWT.Selection, new Listener() {
 
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			public void handleEvent(Event event) {
 				try {
@@ -274,6 +276,9 @@ public class ModelExplorer extends ViewPart {
 			} else {
 				switchViews = true;
 			}
+			
+			DefaultPerspectiveAdvisor.openDefaultViews();
+			
 			UINotifierManager.notifySuccess(EVENT_USER_LOGGED_IN, username);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,8 +1,6 @@
 package org.mondo.collaboration.online.rap.widgets;
 
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
@@ -14,12 +12,7 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;
-import org.mondo.collaboration.online.core.LensSessionManager;
-import org.mondo.collaboration.online.core.OnlineLeg;
-import org.mondo.collaboration.online.core.StorageAccess;
-import org.mondo.collaboration.online.core.StorageAccessFactory;
 import org.mondo.collaboration.online.rap.UINotifierManager;
-import org.mondo.collaboration.security.lens.bx.online.OnlineCollaborationSession;
 
 import com.google.common.util.concurrent.FutureCallback;
 
@@ -47,6 +40,7 @@ public abstract class WhiteboardGenericView extends ViewPart {
 	protected URI currentURI;
 	protected Text txtMessagePool;
 	protected Text txtMessage;
+	private NewMessageArrived callback;
 
 	// TODO specializations should register an instance of the
 	// AddToWhiteboard implementation class and the RemoveFromWhiteboard class
@@ -77,6 +71,7 @@ public abstract class WhiteboardGenericView extends ViewPart {
 		txtMessagePool.getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
+				if(txtMessagePool.isDisposed()) return;
 				txtMessagePool.setText(getMessages(currentURI));
 				txtMessagePool.update();
 			}
@@ -105,7 +100,14 @@ public abstract class WhiteboardGenericView extends ViewPart {
 				txtMessage.setEnabled(false);
 			}
 		}
-		UINotifierManager.register(getNewMessageEventId(), RWT.getUISession(), new NewMessageArrived(this));
+		callback = new NewMessageArrived(this);
+		UINotifierManager.register(getNewMessageEventId(), RWT.getUISession(), callback);
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		UINotifierManager.unregister(getNewMessageEventId(), RWT.getUISession(), callback);
 	}
 
 	/**

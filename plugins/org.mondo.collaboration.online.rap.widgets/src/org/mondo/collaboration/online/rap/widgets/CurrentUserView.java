@@ -9,6 +9,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -29,6 +31,7 @@ public class CurrentUserView extends ViewPart {
 	private Button logout;
 
 	public static final String ID = "org.mondo.collaboration.online.rap.widgets.CurrentUserView";
+	private SetCurrentUser callback;
 
 	private final class SetCurrentUser implements FutureCallback<Object> {
 		@Override
@@ -71,7 +74,8 @@ public class CurrentUserView extends ViewPart {
 			logout.setVisible(false);
 		}
 
-		UINotifierManager.register(ModelExplorer.EVENT_USER_LOGGED_IN, RWT.getUISession(), new SetCurrentUser());
+		callback = new SetCurrentUser();
+		UINotifierManager.register(ModelExplorer.EVENT_USER_LOGGED_IN, RWT.getUISession(), callback);
 	}
 
 	protected void logout() {
@@ -90,6 +94,9 @@ public class CurrentUserView extends ViewPart {
 		label.update();
 
 		logout.setVisible(false);
+		
+		DefaultPerspectiveAdvisor.hideDefaultViews();
+		DefaultPerspectiveAdvisor.hideModelRelatedViews();
 
 	}
 
@@ -121,4 +128,10 @@ public class CurrentUserView extends ViewPart {
 		super.saveState(memento);
 	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
+		UINotifierManager.unregister(ModelExplorer.EVENT_USER_LOGGED_IN, RWT.getUISession(), callback);
+	}
+	
 }

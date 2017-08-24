@@ -34,7 +34,7 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 	public WhiteboardChatView() {
 	}
 
-	private static final String PLACEHOLDER = "User is currently not in a whiteboard";
+	private static final String PLACEHOLDER = "";
 	
 	private static AddChatToWhiteboard addCallback;
 	private static RemoveFromWhiteboard removeCallback;
@@ -53,6 +53,8 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 	private volatile static Map<URI, String> messages = Maps.newHashMap();
 	private TableViewer userList;
 	private Text txtMessage;
+
+	private UpdateCallback callback;
 
 	private void sendMessage() {
 		String message = txtMessage.getText();
@@ -107,10 +109,11 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 			txtMessagePool.setText("");
 		}
 		
-		UINotifierManager.register(UISessionManager.EVENT_USER_ONLINE, RWT.getUISession(), new UpdateCallback());
-		UINotifierManager.register(UISessionManager.EVENT_USER_INACTIVE, RWT.getUISession(), new UpdateCallback());
-		UINotifierManager.register(UISessionManager.EVENT_USER_OFFLINE, RWT.getUISession(), new UpdateCallback());
-		UINotifierManager.register(UISessionManager.EVENT_USER_REMOVED, RWT.getUISession(), new UpdateCallback());
+		callback = new UpdateCallback();
+		UINotifierManager.register(UISessionManager.EVENT_USER_ONLINE, RWT.getUISession(), callback);
+		UINotifierManager.register(UISessionManager.EVENT_USER_INACTIVE, RWT.getUISession(), callback);
+		UINotifierManager.register(UISessionManager.EVENT_USER_OFFLINE, RWT.getUISession(), callback);
+		UINotifierManager.register(UISessionManager.EVENT_USER_REMOVED, RWT.getUISession(), callback);
 
 		
 		Button btnSend = new Button(container, SWT.None);
@@ -141,6 +144,16 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 	}
 
 	@Override
+	public void dispose() {
+		super.dispose();
+		UINotifierManager.register(UISessionManager.EVENT_USER_ONLINE, RWT.getUISession(), callback);
+		UINotifierManager.register(UISessionManager.EVENT_USER_INACTIVE, RWT.getUISession(), callback);
+		UINotifierManager.register(UISessionManager.EVENT_USER_OFFLINE, RWT.getUISession(), callback);
+		UINotifierManager.register(UISessionManager.EVENT_USER_REMOVED, RWT.getUISession(), callback);
+
+	}
+	
+	@Override
 	protected void updateView() {
 		super.updateView();
 		if(userList == null) return;
@@ -149,6 +162,7 @@ public class WhiteboardChatView extends WhiteboardGenericView {
 			
 			@Override
 			public void run() {
+				if(userList.getControl().isDisposed()) return;
 				userList.refresh();
 			}
 		});
