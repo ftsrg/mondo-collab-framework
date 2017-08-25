@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
@@ -200,6 +199,13 @@ public class ModelExplorer extends ViewPart {
 		return explorer;
 	}
 
+	public boolean isLoginVisible() {
+		if(!loginForm.isDisposed())
+			if(loginForm.isVisible())
+				return true;
+		return false;
+	}
+	
 	private Composite createLoginForm(final Composite parent) {
 		final Composite loginPanel = new Composite(parent, SWT.None);
 		loginPanel.setLayout(new GridLayout());

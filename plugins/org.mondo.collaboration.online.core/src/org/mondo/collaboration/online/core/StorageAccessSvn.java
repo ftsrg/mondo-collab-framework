@@ -244,8 +244,11 @@ public class StorageAccessSvn extends StorageAccess {
 		URI fullUri = OSValidator.isWindows() ? URI.createFileURI(path) : URI.createURI(path);
 		String file = fullUri.lastSegment();
 		String folder = "";
-		if(fullUri.isFile())
+		if(fullUri.isFile()) {
 			folder = replaceLast(fullUri.toFileString(), file, "");
+			if(folder.startsWith("file:\\"))
+				folder = replaceFirst(folder, "file:\\", "");
+		}
 		else {
 			folder = replaceLast(fullUri.toString(), file, "");
 			if(folder.startsWith(getRepository()))
@@ -268,6 +271,11 @@ public class StorageAccessSvn extends StorageAccess {
 
 		svnCommit.delete();
 
+		if(path.startsWith("file:\\"))
+			path = replaceFirst(path, "file:\\", "");
+		if(path.startsWith("file:/"))
+			path = replaceFirst(path, "file:/", "");
+		
 		internalLockFile(path, admin_username, admin_password, false);
 		return response;
 	}
@@ -288,17 +296,20 @@ public class StorageAccessSvn extends StorageAccess {
 			return FileStatus.Normal;
 		}
 
-		String executor = OSValidator.isWindows() ? "bash" : "/bin/sh";
+		String[] cmd;
+		if(OSValidator.isWindows()) {
+			cmd = new String[] {
+					String.format(SVN_STATUS_COMMAND, file, getUsername(), getPassword(), "")
+			};
+		} else {
+			cmd = new String[] {
+					String.format(SVN_STATUS_COMMAND, file, getUsername(), getPassword(), "| " + AWK_PRINT_COLUMN1)
+			};
+		}
 		
-		String[] cmd = {
-				executor,
-				"-c",
-				String.format(SVN_STATUS_COMMAND, file, getUsername(), getPassword(), "| " + AWK_PRINT_COLUMN1)
-				};
-
 		ExecutionResponse response = internalExecuteProcess(cmd, new String[] {}, new File(temp));
 
-		if(response.getResponseList().contains("M"))
+		if(response.getResponseList().stream().anyMatch(x -> x.charAt(0) == 'M'))
 			return FileStatus.Modified;
 
 		return FileStatus.Normal;

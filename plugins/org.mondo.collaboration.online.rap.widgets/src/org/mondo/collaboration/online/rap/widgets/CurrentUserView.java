@@ -133,5 +133,4 @@ public class CurrentUserView extends ViewPart {
 		super.dispose();
 		UINotifierManager.unregister(ModelExplorer.EVENT_USER_LOGGED_IN, RWT.getUISession(), callback);
 	}
-	
 }

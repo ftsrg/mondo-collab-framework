@@ -14,10 +14,16 @@ public class DefaultPerspectiveAdvisor {
 	}
 	
 	public static void hideDefaultViews() {
-		hideView(CurrentUserView.ID);
-		hideView(WhiteboardChatView.ID);
-		hideView(ModelLogView.ID);
-		hideView(IPageLayout.ID_PROP_SHEET);
+		IViewPart view = getView(ModelExplorer.ID);
+		if(view != null) {
+			ModelExplorer explorer = (ModelExplorer) view;
+			if(explorer.isLoginVisible()) {
+				hideView(CurrentUserView.ID);
+				hideView(WhiteboardChatView.ID);
+				hideView(ModelLogView.ID);
+				hideView(IPageLayout.ID_PROP_SHEET);
+			}
+		}		
 	}
 	
 	public static void openModelRelatedViews() throws PartInitException {
@@ -39,10 +45,18 @@ public class DefaultPerspectiveAdvisor {
 	
 	private static void hideView(String id) {
 		IWorkbenchPage activePage = getActivePage();
-		IViewPart view = activePage.findView(id);
-		activePage.hideView(view);
+		IViewPart view = getView(id);
+		if(view != null)
+			activePage.hideView(view);		
 	}
 
+	private static IViewPart getView(String id) {
+		IWorkbenchPage activePage = getActivePage();
+		if(activePage != null)
+			return activePage.findView(id);
+		return null;
+	}	
+	
 	private static IWorkbenchPage getActivePage() {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchPage activePage = workbench.getActiveWorkbenchWindow().getActivePage();

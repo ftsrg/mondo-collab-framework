@@ -76,7 +76,10 @@ public class OnlineLeg extends Leg {
 	@Override
 	public DenialReason trySubmitModification() {
 		noUpdate = true;
-		return super.trySubmitModification();
+		DenialReason reason = super.trySubmitModification();
+		if(reason != null)
+			noUpdate = false;
+		return reason;
 	}
 
 	protected void internalOverWriteFromGold() {

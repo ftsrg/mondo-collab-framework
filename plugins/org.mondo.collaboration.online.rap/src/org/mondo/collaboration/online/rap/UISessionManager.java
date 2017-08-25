@@ -126,6 +126,7 @@ public class UISessionManager {
 	private static final class LegClosed implements FutureCallback<Object> {
 		@Override
 		public void onSuccess(Object arg0) {
+			if(arg0 == null) return;
 			OnlineLeg leg = (OnlineLeg) arg0;
 			String username = leg.getUserName();
 			URI uri = leg.getOnlineCollaborationSession().getGoldConfinementURI();

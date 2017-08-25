@@ -132,10 +132,12 @@ public class LensSessionManager {
 	public static void close(String user, HttpSession session, URI uri, OnlineLeg leg) {
 		mapping.remove(session);
 		if (!mapping.containsValue(user)) {
-			OnlineCollaborationSession collaborationSession = leg.getOnlineCollaborationSession();
-			leg.dispose();
+			if(leg != null) {
+				OnlineCollaborationSession collaborationSession = leg.getOnlineCollaborationSession();
+				leg.dispose();
 			if (collaborationSession.getLegs().isEmpty())
 				removeURI(uri, leg);
+			}
 			table.remove(user, uri);
 			NotifierManager.notifySuccess(EVENT_WHITEBOARD_LEG_CLOSED_BY_USER, leg);
 		}
