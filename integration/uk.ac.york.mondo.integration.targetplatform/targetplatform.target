@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="MONDO Integration Target Platform" sequenceNumber="375">
+<?pde version="3.8"?><target includeMode="feature" name="MONDO Integration Target Platform" sequenceNumber="380">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.team.svn.feature.group" version="3.0.1.I20150722-1700"/>
@@ -12,10 +12,6 @@
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.mondo.editor.feature.feature.group" version="0.3.16.201602251610"/>
 <repository location="http://jdelara.github.io/DSL-tao/update-site/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.gef.all.feature.group" version="3.11.0.201511090303"/>
-<repository location="http://download.eclipse.org/tools/gef/updates/milestones/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.incquery.sdk.feature.source.feature.group" version="1.1.0.201511122120"/>
@@ -58,10 +54,6 @@
 <unit id="org.apache.commons.lang.source" version="2.6.0.v201404270220"/>
 <unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.graphiti.sdk.feature.feature.group" version="0.12.1.v20150916-0905"/>
-<repository location="http://download.eclipse.org/graphiti/updates/0.12.1"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="4.5.1.v20150904-0015"/>
@@ -166,35 +158,6 @@
 <repository location="http://download.eclipse.org/modeling/emf/compare/updates/milestones/3.2/S201511010417/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.mwe.ui.feature.group" version="1.3.20.v201511100512"/>
-<unit id="org.eclipse.xtend.sdk.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.emf.mwe.core.feature.group" version="1.3.20.v201511100512"/>
-<unit id="org.eclipse.xtend.backend.sdk.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.middleend.xtend.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.typesystem.uml2.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.all.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.backend.xsdtypes.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.typesystem.emf.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.support.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.typesystem.xsd.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.backend.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.examples.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.xpand.ui.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.backend.uml2types.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.gwt.feature.group" version="2.9.0.v201511170433"/>
-<unit id="org.eclipse.xtend.middleend.xpand.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.doc.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xpand.sdk.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.ui.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.xtend.dependencies.feature.group" version="2.2.0.v201603220642"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201511100907"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.0.v201511100512"/>
-<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/milestones/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="ReactiveATLFeature.feature.group" version="1.0.0.201512041413"/>
 <repository location="http://atlanmod.github.io/org.eclipse.atl.reactive/UpdateSite/"/>
 </location>
@@ -208,10 +171,6 @@
 <repository location="http://mondo-project.github.io/mondo-integration/thirdparty-ecf-nightly/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.emf.splitter.feature.feature.group" version="0.1.0.201603141205"/>
-<repository location="http://antoniogarmendia.github.io/EMF-Splitter/update-site/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jdt.feature.group" version="3.11.1.v20150904-0015"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
@@ -219,6 +178,26 @@
 <unit id="org.eclipse.team.svn.feature.group" version="3.0.4.I20160131-1700"/>
 <unit id="org.eclipse.team.svn.source.feature.group" version="3.0.4.I20160131-1700"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.emf.splitter.feature.feature.group" version="0.1.0.201706011710"/>
+<repository location="https://antoniogarmendia.github.io/EMFSplitterSite/update-emf-splitter/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.gef.common.feature.group" version="5.0.0.201706131249"/>
+<repository location="http://download.eclipse.org/tools/gef/updates/releases"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.graphiti.sdk.feature.feature.group" version="0.14.0.201705161212"/>
+<repository location="http://download.eclipse.org/graphiti/updates/0.14.0"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.xtend.sdk.feature.group" version="2.6.2.v201407030533"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.0.v201512010527"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201605261103"/>
+<unit id="org.eclipse.xtend.gwt.feature.group" version="2.9.0.v201512010527"/>
+<unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.3.20.v201605261103"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
