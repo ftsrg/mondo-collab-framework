@@ -14,8 +14,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.resources.IProject;
@@ -30,11 +32,13 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.IVcsManager;
+import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.LocalHawkFactory;
 import org.hawk.emf.EMFPackage;
 import org.hawk.emf.metamodel.EMFMetaModelResource;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 import org.hawk.emfresource.impl.LocalHawkResourceImpl;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.orientdb.OrientDatabase;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
@@ -120,7 +124,7 @@ public class HawkCrossReferences implements IEditorCrossReferences {
 	}
 
 	@Override
-	public EList<?> getChoicesOfValues(String modularNature, Resource res, boolean searchAll, EClass anEClass) {
+	public EList<?> getChoicesOfValues(final String modularNature, final Resource res, final boolean searchAll, final EClass anEClass, final String eolFilter) {
 		LocalHawkResourceImpl hawkResource = null;
 		try {
 			final HModel hawkInstance = getHawkInstance();
@@ -143,24 +147,46 @@ public class HawkCrossReferences implements IEditorCrossReferences {
 				hawkResource.load(null);
 			}
 
-			// Look for instances of the types first
-			EList<EObject> instances;
-			if (searchAll) {
-				instances = hawkResource.fetchNodes(anEClass, true);
-			} else {
-				final String prefix = new Workspace().getLocation();
-				String resourceURI = res.getURI().toString();
-				if (resourceURI.startsWith(prefix)) {
-					resourceURI = resourceURI.substring(prefix.length());
+			// Construct the select condition
+			String selectCondition = eolFilter;
+			final Map<String, Object> queryArguments = new HashMap<>();
+			if (!searchAll) {
+				if (selectCondition != null) {
+					selectCondition += " and ";
+				} else {
+					selectCondition = "";
 				}
-				instances = hawkResource.fetchNodesByContainerFragment(anEClass, prefix, resourceURI);
+
+				final String repoURL = new Workspace().getLocation();
+				String filePath = res.getURI().toString();
+				if (filePath.startsWith(repoURL)) {
+					filePath = filePath.substring(repoURL.length());
+				}
+				queryArguments.put("repoURL", repoURL);
+				queryArguments.put("filePath", filePath);
+
+				selectCondition += "self.isContainedWithin(repoURL, filePath)";
 			}
+
+			// Construct the full EOL query
+			String query = String.format("return `%s`::`%s`.all", anEClass.getEPackage().getNsURI(), anEClass.getName());
+			if (selectCondition != null) {
+				query += String.format(".select(self|%s)", selectCondition);
+			}
+			query += ";";
+
+			// Run the query
+			final Map<String, Object> context = new HashMap<>();
+			context.put(IQueryEngine.PROPERTY_ARGUMENTS, queryArguments);
+			context.put(IQueryEngine.PROPERTY_FILECONTEXT, "*");
+			context.put(IQueryEngine.PROPERTY_REPOSITORYCONTEXT, "*");
+			EList<EObject> instances = hawkResource.fetchByQuery(EOLQueryEngine.TYPE, query, context);
 
 			// Optionally, filter by project nature
 			if (modularNature != null) {
 				final List<String> acceptedPrefixes = new ArrayList<>();
 				for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-					if (project.getNature(modularNature) != null) {
+					if (project.isOpen() && project.getNature(modularNature) != null) {
 						String prefix = URI.createPlatformResourceURI(project.getFullPath().toString(), false).path() + "/";
 						acceptedPrefixes.add(prefix);
 					}
