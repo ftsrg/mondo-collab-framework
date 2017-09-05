@@ -158,6 +158,9 @@ public class StorageAccessSvn extends StorageAccess {
 		if(unlock)
 			internalUnlockFile(file, folder);
 
+		// temporary fix
+		if(OSValidator.isUnix() && folder.startsWith("/"))
+			folder = "/" + folder;
 		internalExecuteProcess(String.format(SVN_LOCK_COMMAND, file, admin_username, admin_password), new String[] {}, new File(folder));
 	}
 
