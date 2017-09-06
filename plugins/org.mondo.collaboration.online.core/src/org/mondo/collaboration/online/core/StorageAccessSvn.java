@@ -279,7 +279,7 @@ public class StorageAccessSvn extends StorageAccess {
 		if(path.startsWith("file:/"))
 			path = replaceFirst(path, "file:/", "");
 		
-		internalLockFile(path, admin_username, admin_password, false);
+		//internalLockFile(path, admin_username, admin_password, false);
 		return response;
 	}
 
